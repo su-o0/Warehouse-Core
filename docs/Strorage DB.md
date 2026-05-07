@@ -1,5 +1,17 @@
 # Storage DB 
 **inventory domain model**
+*Location*
+*Container*
+*Item*
+*Stock*
+*Part*
+*Car*
+*ItemPhoto*
+*StockPhoto*
+*CarPhoto*
+*SalesArhive*
+*History*
+*Owner*
 
 ## Logistics 
 **Location** 
