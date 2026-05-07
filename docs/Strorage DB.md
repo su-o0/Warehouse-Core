@@ -1,0 +1,79 @@
+# Storage DB 
+**inventory domain model**
+
+## Logistics 
+**Location** 
+    *IdA*
+    *Address*
+**Container** 
+    *IdC*
+    *IdA*
+    *Type* > (Bulk, Box, Area)
+
+## Inventory
+**Item** 
+    *IdItem*
+    *IdC*
+    *IdPart*
+    *IdCar*
+    *Condition*
+    *ConditionNote*
+    *CreatedAt*
+**Stock**
+    *Id*
+    *IdC*
+    *IdPart*
+    *Qty*
+    *CreatedAt*
+
+### Metadata
+## Catalog 
+**Part**
+    *Id*
+    *Article*
+    *Name*
+    *CreatedAt*
+**Car**
+    *Id*
+    *Vin*
+    *CreatedAt*
+
+## Media 
+**ItemPhoto**
+    *Id*
+    *IdItem*
+    *IdOwner*
+    *File*
+**StockPhoto**
+    *Id*
+    *IdStock*
+    *File*
+    *Owner*
+**CarPhoto**
+    *Id*
+    *IdCar*
+    *File*
+
+## Audit
+**SalesArhive**
+    *Id*
+    *IdPart*
+    *IdItem*
+    *IdStock*
+    *Qty*
+    *SaleOwner*
+    *CreatedAt*
+**History**
+    *Id*
+    *Action*
+    *ActionOwner*
+    *EntityType*
+    *EntityId*
+    *Note*
+    *CreatedAt*
+**Owner**
+    *Id*
+    *IdUser*
+    *Permission* > ( admin, worker )
+    *Name*
+    *CreatedAt*
