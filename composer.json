@@ -1,0 +1,19 @@
+{
+    "name": "su-o0/storage-api",
+    "description": "Warehouse parts storage API",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SuO0\\StorageApi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yurri Plitman",
+            "email": "plitikyura@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
