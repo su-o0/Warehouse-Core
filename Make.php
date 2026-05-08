@@ -11,6 +11,7 @@ $config = [
     'table' => [
         'Location' => 'Location',
         'Container' => 'Container',
+        'PhysicalTag' => 'PhysicalTag',
         'Item' => 'Item',
         'Stock' => 'Strock',
         'Part' => 'Part',

@@ -7,6 +7,7 @@ use SuO0\StorageApi\Repository\SearchRepository;
 
 use SuO0\StorageApi\Repository\LocationRepository;
 use SuO0\StorageApi\Repository\ContainerRepository;
+use SuO0\StorageApi\Repository\PhysicalTagRepository;
 use SuO0\StorageApi\Repository\ItemRepository;
 use SuO0\StorageApi\Repository\StockRepository;
 use SuO0\StorageApi\Repository\PartRepository;
@@ -21,6 +22,7 @@ use SuO0\StorageApi\Repository\OwnerRepository;
 class SetupRepository {
     public LocationRepository $Location;
     public ContainerRepository $Container;
+    public PhysicalTagRepository $PhysicalTag;
     public ItemRepository $Item;
     public StockRepository $Stock;
     public PartRepository $Part;
@@ -32,12 +34,13 @@ class SetupRepository {
     public HistoryRepository $History;
     public OwnerRepository $Owner;
 
-    public SearchRepository $Search;
+    // public SearchRepository $Search;
 
     public function __construct(private \PDO $db, array $config) {
 
         $this->Location = new LocationRepository($this->db, $config['Location']);
         $this->Container = new ContainerRepository($this->db, $config['Container']);
+        $this->PhysicalTag = new PhysicalTagRepository($this->db, $config['PhysicalTag']);
         $this->Item = new ItemRepository($this->db, $config['Item']);
         $this->Stock = new StockRepository($this->db, $config['Stock']);
         $this->Part = new PartRepository($this->db, $config['Part']);
@@ -49,6 +52,6 @@ class SetupRepository {
         $this->History = new HistoryRepository($this->db, $config['History']);
         $this->Owner = new OwnerRepository($this->db, $config['Owner']);
 
-        $this->Search = new SearchRepository($this->db);
+        // $this->Search = new SearchRepository($this->db);
     }
 }
