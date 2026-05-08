@@ -16,7 +16,7 @@ class ItemPhotoRepository {
         else 
             return $result;
     }
-    
+
     public function findByItemId(int $itemId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName WHERE IdItem = :itemId"
@@ -53,7 +53,7 @@ class ItemPhotoRepository {
             return $result;
     }
 
-    public function add(int $itemId, int $ownerId, string $file ): int {
+    public function add(int $itemId, int $ownerId, string $file): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdItem, IdOwner, File) 
@@ -68,9 +68,9 @@ class ItemPhotoRepository {
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
-            if ($code === 1062)
-                throw new \RuntimeException($e->errorInfo[0]);
-
+            if ($code === 1452)
+                throw new \RuntimeException("Ошибка связи данных");
+            
             throw $e;
         }
     }
