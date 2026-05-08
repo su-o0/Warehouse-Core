@@ -5,7 +5,7 @@ class HistoryRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function add(string $action, int $actionOwner, int $entityType, int $entityId, ?string $note = null) {
+    public function add(string $action, int $actionOwner, string $entityType, int $entityId, ?string $note = null) {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (Action, Note, ActionOwner, EntityType, EntityId)
