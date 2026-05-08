@@ -1,7 +1,8 @@
-# Storage DB 
+# Storage Domain
 **inventory domain model**
 *Location*
 *Container*
+*PhysicalTag*
 *Item*
 *Stock*
 *Part*
@@ -13,7 +14,7 @@
 *History*
 *Owner*
 
-## Logistics 
+# Logistics 
 **Location** 
     *IdA*
     *Address*
@@ -21,13 +22,19 @@
     *IdC*
     *IdA*
     *Type* > (Bulk, Box, Area)
+**PhysicalTag**  
+    *IdTag*
+    *Status* > (Free, Assigned, Lost, Broken)
+    *CreatedAt*
 
-## Inventory
+# Inventory
 **Item** 
-    *IdItem*
+    *Id*
     *IdC*
+    *IdTag*
     *IdPart*
     *IdCar*
+    *Status* > (Active, Sold, Archived, Lost)
     *Condition* > (New, Good, Fair, Poor)
     *ConditionNote*
     *CreatedAt*
@@ -38,7 +45,6 @@
     *Qty*
     *CreatedAt*
 
-### Metadata
 ## Catalog 
 **Part**
     *Id*
@@ -50,7 +56,7 @@
     *Vin*
     *CreatedAt*
 
-## Media 
+# Media 
 **ItemPhoto**
     *Id*
     *IdItem*
