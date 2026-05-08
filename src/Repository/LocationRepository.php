@@ -4,44 +4,48 @@ namespace SuO0\StorageApi\Repository;
 class LocationRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
-    public function find(string $address): null|int {
+    public function findByAddress(string $Address): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE address = :address"
+            "SELECT * FROM $this->tableName 
+            WHERE address = :Address"
         );
-        $stmt->execute([":address" => $address]);
-        $result = $stmt->fetch();
+        $stmt->execute([":Address" => $Address]);
+        $result = $stmt->fetchAll();
         if(empty($result))
             return null;
         else 
-            return (int)$result['IdA'];
+            return $result;
     }
 
-    public function findById(int $id): null|string{
+    public function findByIdA(int $IdA): null|array{
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdA = :IdA"
+            "SELECT * FROM $this->tableName 
+            WHERE IdA = :IdA"
         );
-        $stmt->execute([":IdA" => $id]);
-        $result = $stmt->fetch();
+        $stmt->execute([":IdA" => $IdA]);
+        $result = $stmt->fetchAll();
 
         if(empty($result))
             return null;
         else 
-            return (string)$result['Address'];
+            return $result;
     }
 
-    public function add(string $address): int {
+    public function add(string $Address): bool {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (Address) VALUES (:address)"
+                "INSERT INTO $this->tableName (Address) 
+                VALUES (:Address)"
             );
-            $result = $stmt->execute([':address' => $address]);
-            return $this->db->lastInsertId();
+            return $stmt->execute([
+                ':Address' => $Address
+            ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                return $this->find($address);
-            
+                throw new \RuntimeException("Адресс $Address не найден");
+
             throw $e;
         }
     }

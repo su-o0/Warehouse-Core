@@ -5,23 +5,13 @@ class ContainerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function findAllByAddressId(int $addressId):null|array{
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdA = :IdA"
-        );
-        $stmt->execute([":IdA" => $addressId]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
-    }
-
-    public function findById(int $containerId):null|array{
+    public function findByIdC(int $IdC):null|array{
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName WHERE IdC = :IdC"
         );
-        $stmt->execute([":IdC" => $containerId]);
+        $stmt->execute([
+            ":IdC" => $IdC
+            ]);
         $result = $stmt->fetch();
         if(empty($result))
             return null;
@@ -29,28 +19,39 @@ class ContainerRepository {
             return $result;
     }
 
-    public function add(int $containerId, int $addressId, string $type): bool {
+    public function findByIdA(int $IdA):null|array{
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName 
+            WHERE IdA = :IdA"
+        );
+        $stmt->execute([
+            ":IdA" => $IdA
+        ]);
+        $result = $stmt->fetchAll();
+        if(empty($result))
+            return null;
+        else 
+            return $result;
+    }
+
+    public function add(int $IdC, int $IdA, string $Type): bool {
         try {
-            switch($type) {
-                case "Bulk": 
-                    break;
-                case "Box":
-                    break;
-                case "Area":
-                    break;
-                default:
-                    throw new \RuntimeException("Type $type должен быть Bulk|Box|Area");
-                    break;
+            switch($Type) {
+                case "Bulk": break;
+                case "Box": break;
+                case "Area": break;
+                default: 
+                    throw new \RuntimeException("Тип $Type должен быть Bulk|Box|Area");
             }
 
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdC, IdA, Type) 
-                VALUES (:idC, :idA, :type)"
+                VALUES (:IdC, :IdA, :Type)"
             );
             $result = $stmt->execute([
-                ':idC' => $containerId,
-                ':idA' => $addressId,
-                ':type' => $type
+                ':IdC' => $IdC,
+                ':IdA' => $IdA,
+                ':Type' => $Type
             ]);
             return $result;
 
@@ -58,36 +59,31 @@ class ContainerRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException("Контейнер $containerId уже существует");
+                throw new \RuntimeException("Контейнер $IdC уже существует");
 
             if ($code === 1452)
-                throw new \RuntimeException("Адрес $addressId не найден в Location");
+                throw new \RuntimeException("Адрес $IdA не найден");
 
             throw $e;
         }
     }
 
-    public function move(int $containerId, int $addressIdTo): bool {
+    public function updateIdA(int $IdC, int $IdA): bool {
         try{
-            $conteiner = $this->findById($containerId);
-            if(empty($conteiner)) {
-                throw new \RuntimeException("Контейнер $containerId не найден");
-            }
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET IdA = :addressIdTo 
-                WHERE IdC = :containerId"
+                SET IdA = :IdA 
+                WHERE IdC = :IdC"
             );
-            $result = $stmt->execute([
-                ':addressIdTo' => $addressIdTo,
-                ':containerId' => $containerId,
+            return $stmt->execute([
+                ':IdA' => $IdA,
+                ':IdC' => $IdC,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Контейнер $containerId не найден ил");
+                throw new \RuntimeException("Контейнер $IdC не найден");
 
             throw $e;
         }
