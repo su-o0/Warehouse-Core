@@ -206,3 +206,30 @@ throw
 `findOrCreate` ( *string article*, *?string name*)
 return 
     `array` - найден
+
+## **Car**
+### Найти по IdCar
+`find` ( *int id* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по Vin
+`findByVin` ( *string vin* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Добавить Car
+`add` ( *string vin* )
+return 
+    `int` - IdPart
+throw 
+    `RuntimeException` - Артикул `article` уже существует
+    `RuntimeException` - Ошибка связи данных
+
+### Найти или Добавить
+`findOrCreate` ( *string vin* )
+return 
+    `array` - найден
+    
