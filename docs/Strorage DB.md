@@ -28,7 +28,7 @@
     *IdC*
     *IdPart*
     *IdCar*
-    *Condition*
+    *Condition* > (New, Good, Fair, Poor)
     *ConditionNote*
     *CreatedAt*
 **Stock**
