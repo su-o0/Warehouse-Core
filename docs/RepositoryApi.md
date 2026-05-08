@@ -265,3 +265,36 @@ return
 throw 
     `RuntimeException` - Ошибка связи данных
 
+## **StockPhoto**
+### Найти по Id
+`find` ( *int id* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по IdItem
+`findByItemId` ( *int itemId* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по OwnerId
+`findByOwnerId` ( *int ownerId* )
+return 
+    `null` - не найден
+    `array` - найден
+    
+### Найти по File
+`findByFile` ( *string File* )
+return 
+    `null` - не найден
+    `array` - найден
+   
+### Добавить
+`add` ( *int itemId*, *int ownerId*, *string file* )
+return 
+    `null` - не найден
+    `array` - найден
+throw 
+    `RuntimeException` - Ошибка связи данных
+
