@@ -55,8 +55,8 @@ throw
 
 
 ## **Item**
-### Найти Item по номеру Бирки
-`findById` ( *int itemId* )
+### Найти 
+`find` ( *int itemId* )
 return 
     `null` - не найден
     `array` - найден
@@ -245,7 +245,7 @@ return
     `null` - не найден
     `array` - найден
 
-### Найти по OwnerId
+### Найти по IdOwner
 `findByOwnerId` ( *int ownerId* )
 return 
     `null` - не найден
@@ -277,7 +277,7 @@ return
     `null` - не найден
     `array` - найден
 
-### Найти по OwnerId
+### Найти по IdOwner
 `findByOwnerId` ( *int ownerId* )
 return 
     `null` - не найден
@@ -303,7 +303,7 @@ return
     `null` - не найден
     `array` - найден
 
-### Найти по CarId
+### Найти по IdCar
 `findByCarId` ( *int carId* )
 return 
     `null` - не найден
@@ -315,10 +315,71 @@ return
     `null` - не найден
     `array` - найден
    
-### Добавить
+### Добавить Фото авто
 `add` ( *int carId*, *string file* )
 return 
     `int` - Id
 throw 
     `RuntimeException` - Ошибка связи данных
 
+## **SalesArchive**
+### Добавить запись о продаже
+`add` ( *?int itemId*, *?int stockId*, *int partId*, *int containerId*, *?int carId*, *int saleOwnerId* )
+return 
+    `int` - Id
+throw 
+    `RuntimeException` - Ошибка связи данных
+
+## **History**
+### Добавить запись о продаже
+`add` ( *string action*, *int actionOwner*, *int entityType*, *int entityId*, *?string note*)
+return
+    `true` - в случае успеха
+    `false` - в случае неудачи
+throw 
+    `RuntimeException` - Ошибка связи данных
+
+## **Owner**
+### Найти по Id
+`find` ( *int id* )
+return 
+    `null` - не найден
+    `array` - найден
+    
+### Найти по IdUser
+`findByUserId` ( *int userId* )
+return 
+    `null` - не найден
+    `array` - найден
+    
+### Найти по Name
+`findByName` ( *int Name* )
+return 
+    `null` - не найден
+    `array` - найден
+    
+### Найти по Permission
+`findByPermission` ( *string permission* )
+return 
+    `null` - не найден
+    `array` - найден
+throw 
+    `RuntimeException` - Permission должен быть Admin|Worker
+
+### Добавить пользователя 
+`add` ( *int userId*, *string permission*, *string name*) 
+return 
+    `true` - в случае успеха
+    `false` - в случае неудачи
+throw 
+    `RuntimeException` - Permission должен быть Admin|Worker
+    `RuntimeException` - Ошибка связи данных
+
+### Изменить Права пользователя
+`changePermission` ( *int id*, *string newPermission* )
+retrun 
+    `true` - в случае успеха
+    `false` - в случае неудачи
+throw 
+    `RuntimeException` - Permission должен быть Admin|Worker
+    `RuntimeException` - Ошибка связи данных
