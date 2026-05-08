@@ -134,7 +134,9 @@ CREATE TABLE `StockPhoto` (
 CREATE TABLE `CarPhoto` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
   `IdCar`         INT NOT NULL,
+  `IdOwner`       INT NOT NULL,
   `File`          TEXT NOT NULL,
   PRIMARY KEY (`Id`),
   FOREIGN KEY (`IdCar`) REFERENCES `Car`(`Id`)
+  FOREIGN KEY (`IdOwner`) REFERENCES `Owner`(`Id`)
 ) ENGINE = InnoDB;

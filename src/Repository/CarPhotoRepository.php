@@ -5,11 +5,11 @@ class CarPhotoRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function find(int $id): null|array {
+    public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :id"
+            "SELECT * FROM $this->tableName WHERE Id = :Id"
         );
-        $stmt->execute([":id" => $id]);
+        $stmt->execute([":Id" => $Id]);
         $result = $stmt->fetchAll();
         if(empty($result))
             return null;
@@ -17,11 +17,11 @@ class CarPhotoRepository {
             return $result;
     }
 
-    public function findByCarId(int $carId): null|array {
+    public function findByIdCar(int $IdCar): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdCar = :carId"
+            "SELECT * FROM $this->tableName WHERE IdCar = :IdCar"
         );
-        $stmt->execute([":carId" => $carId]);
+        $stmt->execute([":IdCar" => $IdCar]);
         $result = $stmt->fetchAll();
         if(empty($result))
             return null;
@@ -29,11 +29,11 @@ class CarPhotoRepository {
             return $result;
     }
 
-    public function findByFile(string $file): null|array {
+    public function findByIdOwner(int $IdOwner): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE File = :file"
+            "SELECT * FROM $this->tableName WHERE IdOwner = :IdOwner"
         );
-        $stmt->execute([":file" => $file]);
+        $stmt->execute([":IdOwner" => $IdOwner]);
         $result = $stmt->fetchAll();
         if(empty($result))
             return null;
@@ -41,15 +41,28 @@ class CarPhotoRepository {
             return $result;
     }
 
-    public function add(int $carId, string $file): int {
+    public function findByFile(string $File): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName WHERE File = :File"
+        );
+        $stmt->execute([":File" => $File]);
+        $result = $stmt->fetchAll();
+        if(empty($result))
+            return null;
+        else 
+            return $result;
+    }
+
+    public function add(int $IdCar, int $IdOwner, string $File): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdCar, File) 
-                VALUES (:carId, :file)"
+                "INSERT INTO $this->tableName (IdCar, IdOwner, File) 
+                VALUES (:IdCar, :IdOwner, :File)"
             );
             $stmt->execute([
-               ':carId' => $carId,
-               ':file' => $file
+               ':IdCar' => $IdCar,
+               ':IdOwner' => $IdOwner,
+               ':File' => $File
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {

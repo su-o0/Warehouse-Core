@@ -70,7 +70,8 @@
 **CarPhoto**
     *Id*
     *IdCar*
-    *File*
+    *IdOwner*
+    *File*    
 
 ## Audit
 **SalesArhive**
