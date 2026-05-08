@@ -43,7 +43,7 @@ class CarRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException($e->errorInfo[0]);
+                throw new \RuntimeException("Vin уже существует");
 
             throw $e;
         }
