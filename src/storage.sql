@@ -72,7 +72,7 @@ CREATE TABLE `Car` (
 
 -- Item - Элемент
 CREATE TABLE `Item` (
-  `Id`     INT NOT NULL AUTO_INCREMENT,
+  `Id`     INT NOT NULL,
   `IdC`    INT NOT NULL,
   `IdPart` INT NULL,
   `IdCar`  INT NULL,
