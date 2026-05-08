@@ -180,3 +180,29 @@ return
     `false` - в случае неудачи
 throw
     `RuntimeException` - Ошибка связи данных
+
+## **Part**
+### Найти по IdPart
+`find` ( *int id* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по Article
+`findByArticle` ( *int article* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Добавить Part
+`add` ( *string article*, *?string name*)
+return 
+    `int` - IdPart
+throw 
+    `RuntimeException` - Артикул `article` уже существует
+    `RuntimeException` - Ошибка связи данных
+
+### Найти или Добавить
+`findOrCreate` ( *string article*, *?string name*)
+return 
+    `array` - найден
