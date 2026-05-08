@@ -260,8 +260,7 @@ return
 ### Добавить
 `add` ( *int itemId*, *int ownerId*, *string file* )
 return 
-    `null` - не найден
-    `array` - найден
+    `int` - Id
 throw 
     `RuntimeException` - Ошибка связи данных
 
@@ -293,8 +292,33 @@ return
 ### Добавить
 `add` ( *int stockId*, *int ownerId*, *string file* )
 return 
+    `int` - Id
+throw 
+    `RuntimeException` - Ошибка связи данных
+
+## **CarPhoto**
+### Найти по Id
+`find` ( *int id* )
+return 
     `null` - не найден
     `array` - найден
+
+### Найти по CarId
+`findByCarId` ( *int carId* )
+return 
+    `null` - не найден
+    `array` - найден
+    
+### Найти по File
+`findByFile` ( *string File* )
+return 
+    `null` - не найден
+    `array` - найден
+   
+### Добавить
+`add` ( *int carId*, *string file* )
+return 
+    `int` - Id
 throw 
     `RuntimeException` - Ошибка связи данных
 
