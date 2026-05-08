@@ -220,16 +220,48 @@ return
     `null` - не найден
     `array` - найден
 
-### Добавить Car
+### Добавить
 `add` ( *string vin* )
 return 
     `int` - IdPart
 throw 
-    `RuntimeException` - Артикул `article` уже существует
-    `RuntimeException` - Ошибка связи данных
+    `RuntimeException` - Vin уже существует
 
 ### Найти или Добавить
 `findOrCreate` ( *string vin* )
 return 
     `array` - найден
+
+## **ItemPhoto**
+### Найти по Id
+`find` ( *int id* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по IdItem
+`findByItemId` ( *int itemId* )
+return 
+    `null` - не найден
+    `array` - найден
+
+### Найти по OwnerId
+`findByOwnerId` ( *int ownerId* )
+return 
+    `null` - не найден
+    `array` - найден
     
+### Найти по File
+`findByFile` ( *string File* )
+return 
+    `null` - не найден
+    `array` - найден
+   
+### Добавить
+`add` ( *int itemId*, *int ownerId*, *string file* )
+return 
+    `null` - не найден
+    `array` - найден
+throw 
+    `RuntimeException` - Ошибка связи данных
+
