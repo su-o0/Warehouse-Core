@@ -7,7 +7,7 @@ class SalesArhiveRepository {
 
     public function add(?int $itemId, ?int $stockId, int $partId, int $containerId, ?int $carId, int $saleOwnerId): int {
         try {
-
+            return 1;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
