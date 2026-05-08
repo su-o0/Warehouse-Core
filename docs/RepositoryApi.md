@@ -272,8 +272,8 @@ return
     `null` - не найден
     `array` - найден
 
-### Найти по IdItem
-`findByItemId` ( *int itemId* )
+### Найти по IdStock
+`findByStockId` ( *int stockId* )
 return 
     `null` - не найден
     `array` - найден
@@ -291,7 +291,7 @@ return
     `array` - найден
    
 ### Добавить
-`add` ( *int itemId*, *int ownerId*, *string file* )
+`add` ( *int stockId*, *int ownerId*, *string file* )
 return 
     `null` - не найден
     `array` - найден
