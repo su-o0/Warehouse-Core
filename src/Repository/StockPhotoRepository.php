@@ -17,11 +17,11 @@ class StockPhotoRepository {
             return $result;
     }
 
-    public function findByItemId(int $itemId): null|array {
+    public function findByStockId(int $stockId): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdItem = :itemId"
+            "SELECT * FROM $this->tableName WHERE IdStock = :stockId"
         );
-        $stmt->execute([":itemId" => $itemId]);
+        $stmt->execute([":stockId" => $stockId]);
         $result = $stmt->fetchAll();
         if(empty($result))
             return null;
@@ -53,14 +53,14 @@ class StockPhotoRepository {
             return $result;
     }
 
-    public function add(int $itemId, int $ownerId, string $file): int {
+    public function add(int $stockId, int $ownerId, string $file): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdItem, IdOwner, File) 
-                VALUES (:itemId, :ownerId, :file)"
+                "INSERT INTO $this->tableName (IdStock, IdOwner, File) 
+                VALUES (:stockId, :ownerId, :file)"
             );
             $stmt->execute([
-               ':itemId' => $itemId,
+               ':stockId' => $stockId,
                ':ownerId' => $ownerId,
                ':file' => $file
             ]);
