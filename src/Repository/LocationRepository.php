@@ -34,13 +34,15 @@ class LocationRepository {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (Address) VALUES (:address)"
             );
-            $stmt->execute([':address' => $address]);
+            $result = $stmt->execute([':address' => $address]);
             return $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
                 return $this->find($address);
+            
+            throw $e;
         }
     }
 }
