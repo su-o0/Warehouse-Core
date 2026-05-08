@@ -5,11 +5,11 @@ class ItemRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function findById(int $itemId): null|array {
+    public function find(int $id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :Id"
+            "SELECT * FROM $this->tableName WHERE Id = :id"
         );
-        $stmt->execute([":Id" => $itemId]);
+        $stmt->execute([":id" => $id]);
         $result = $stmt->fetchAll();
         if(empty($result))
             return null;
@@ -19,7 +19,7 @@ class ItemRepository {
 
     public function move(int $itemId, int $toContainerId) : bool {
         try {
-            $item = $this->findById($itemId);
+            $item = $this->find($itemId);
             if(empty($item))
                 throw new \RuntimeException("Элемент $itemId не найден");
              
@@ -119,7 +119,7 @@ class ItemRepository {
 
     public function delete(int $itemId): bool{
         try {
-            $item = $this->findById($itemId);
+            $item = $this->find($itemId);
             if(empty($item))
                 throw new \RuntimeException("Элемент $itemId не найден");
             
@@ -142,7 +142,7 @@ class ItemRepository {
 
     public function changePartId(int $partId, int $itemId): bool{
         try {
-            $item = $this->findById($itemId);
+            $item = $this->find($itemId);
             if(empty($item))
                 throw new \RuntimeException("Элемент $itemId не найден");
             
@@ -168,7 +168,7 @@ class ItemRepository {
 
     public function changeCarId(int $carId, int $itemId): bool{
         try {
-            $item = $this->findById($itemId);
+            $item = $this->find($itemId);
             if(empty($item))
                 throw new \RuntimeException("Элемент $itemId не найден");
             
@@ -207,7 +207,7 @@ class ItemRepository {
                     throw new \RuntimeException("Condition type $condition должен быть New|Good|Fair|Poor");
                     break;
             }
-            $item = $this->findById($itemId);
+            $item = $this->find($itemId);
             if(empty($item))
                 throw new \RuntimeException("Элемент $itemId не найден");
 
