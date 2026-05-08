@@ -2,7 +2,7 @@
 CREATE TABLE `Owner` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
   `IdUser`        BIGINT NOT NULL,
-  `Permission`    ENUM('admin','worker') NOT NULL DEFAULT 'worker',
+  `Permission`    ENUM('Admin','Worker') NOT NULL DEFAULT 'Worker',
   `Name`          VARCHAR(255) NOT NULL,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
@@ -51,6 +51,14 @@ CREATE TABLE `Container` (
   FOREIGN KEY (`IdA`) REFERENCES `Location`(`IdA`)
 ) ENGINE = InnoDB;
 
+-- PhysicalTag - Физический идентификатор 
+CREATE TABLE `PhysicalTag` (
+  `IdTag`         INT NOT NULL AUTO_INCREMENT,
+  `Status`        ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free',
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`IdTag`)
+) ENGINE = InnoDB;
+
 -- Part - Часть
 CREATE TABLE `Part` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
@@ -72,15 +80,18 @@ CREATE TABLE `Car` (
 
 -- Item - Элемент
 CREATE TABLE `Item` (
-  `Id`            INT NOT NULL,
+  `Id`            INT NOT NULL AUTO_INCREMENT, 
   `IdC`           INT NOT NULL,
+  `IdTag`         INT NOT NULL,
   `IdPart`        INT NULL,
   `IdCar`         INT NULL,
-  `Condition`     ENUM('New', 'Good', 'Fair', 'Poor') NULL, 
+  `Status`        ENUM('Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Active', 
+  `Condition`     ENUM('New','Good','Fair','Poor') NULL, 
   `ConditionNote` Text NULL,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
   FOREIGN KEY (`IdC`)    REFERENCES `Container`(`IdC`),
+  FOREIGN KEY (`IdTag`)  REFERENCES `PhysicalTag`(`IdTag`),
   FOREIGN KEY (`IdPart`) REFERENCES `Part`(`Id`),
   FOREIGN KEY (`IdCar`)  REFERENCES `Car`(`Id`)
 ) ENGINE = InnoDB;
