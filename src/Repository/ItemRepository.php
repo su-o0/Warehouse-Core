@@ -283,6 +283,7 @@ class ItemRepository {
             ]);
             return $result;
         } catch (\PDOException $e) {
+            
             throw $e;
         }
     }
@@ -313,10 +314,7 @@ class ItemRepository {
             ]);
             return $result;
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
 
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
@@ -338,10 +336,7 @@ class ItemRepository {
             ]);
             return $result;
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
 
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
