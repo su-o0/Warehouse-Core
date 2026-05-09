@@ -65,8 +65,8 @@
 **StockPhoto**
     *Id*
     *IdStock*
+    *IdOwner*
     *File*
-    *Owner*
 **CarPhoto**
     *Id*
     *IdCar*
