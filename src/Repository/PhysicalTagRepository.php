@@ -65,6 +65,10 @@ class PhysicalTagRepository {
     }
 
     public function updateStatus(int $IdTag, string $Status) {
+        $IdTag = $this->findByIdTag($IdTag);
+        if ($IdTag === null) 
+            throw new \RuntimeException("Бирка $IdTag не найдена");
+
         try {
             switch($Status){
                 case "Free": break;

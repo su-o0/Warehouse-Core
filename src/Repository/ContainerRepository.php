@@ -27,7 +27,7 @@ class ContainerRepository {
         $stmt->execute([
             ":IdA" => $IdA
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         if(empty($result))
             return null;
         else 
@@ -69,6 +69,10 @@ class ContainerRepository {
     }
 
     public function updateIdA(int $IdC, int $IdA): bool {
+        $container = $this->findByIdC($IdC);
+        if($container === null) 
+            throw new \RuntimeException("Контейнер $IdC не найден");
+
         try{
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 

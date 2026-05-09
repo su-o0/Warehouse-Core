@@ -1,9 +1,5 @@
 <?php
-namespace SuO0\StorageApi\Payload;
-
-use SuO0\StorageApi\Connection\Connection;
-use SuO0\StorageApi\Repository\SearchRepository;
-
+namespace SuO0\StorageApi\Bootstrap;
 
 use SuO0\StorageApi\Repository\LocationRepository;
 use SuO0\StorageApi\Repository\ContainerRepository;
@@ -34,10 +30,7 @@ class SetupRepository {
     public HistoryRepository $History;
     public OwnerRepository $Owner;
 
-    // public SearchRepository $Search;
-
     public function __construct(private \PDO $db, array $config) {
-
         $this->Location = new LocationRepository($this->db, $config['Location']);
         $this->Container = new ContainerRepository($this->db, $config['Container']);
         $this->PhysicalTag = new PhysicalTagRepository($this->db, $config['PhysicalTag']);
@@ -51,7 +44,5 @@ class SetupRepository {
         $this->SalesArhive = new SalesArhiveRepository($this->db, $config['SalesArhive']);
         $this->History = new HistoryRepository($this->db, $config['History']);
         $this->Owner = new OwnerRepository($this->db, $config['Owner']);
-
-        // $this->Search = new SearchRepository($this->db);
     }
 }

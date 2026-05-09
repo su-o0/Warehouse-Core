@@ -13,7 +13,7 @@ class PartRepository {
         $stmt->execute([
             ":Id" => $Id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -25,6 +25,18 @@ class PartRepository {
         $stmt->execute([
             ":Article" => $Article
         ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
+    }
+
+    public function findByName(string $Name): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName 
+            WHERE Name = :Name"
+        );
+        $stmt->execute([
+            ":Name" => $Name
+            ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
@@ -48,6 +60,26 @@ class PartRepository {
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
+            throw $e;
+        }
+    }
+
+    public function updateName(int $Id, string $Name): bool {
+        $container = $this->findById($Id);
+        if($container === null) 
+            throw new \RuntimeException("Часть $Id не найдена");
+
+        try{
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET Name = :Name 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':Name' => $Name,
+            ]);
+        } catch (\PDOException $e) {
             throw $e;
         }
     }

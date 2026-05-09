@@ -13,7 +13,7 @@ class ItemRepository {
         $stmt->execute([
             ":Id" => $Id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -188,7 +188,7 @@ class ItemRepository {
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
 
-         try {
+        try {
             $stmt = $this->db->prepare( 
                 "UPDATE $this->tableName 
                 SET IdTag = :IdTag 
@@ -257,6 +257,7 @@ class ItemRepository {
             throw $e;
         }
     }
+
     public function updateStatus(int $Id, string $Status): bool {
         $item = $this->findById($Id);
         if($item === null) 

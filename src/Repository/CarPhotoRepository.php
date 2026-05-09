@@ -7,50 +7,48 @@ class CarPhotoRepository {
 
     public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :Id"
+            "SELECT * FROM $this->tableName 
+            WHERE Id = :Id"
         );
-        $stmt->execute([":Id" => $Id]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $stmt->execute([
+            ":Id" => $Id
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
     public function findByIdCar(int $IdCar): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdCar = :IdCar"
+            "SELECT * FROM $this->tableName 
+            WHERE IdCar = :IdCar"
         );
         $stmt->execute([":IdCar" => $IdCar]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
     public function findByIdOwner(int $IdOwner): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdOwner = :IdOwner"
+            "SELECT * FROM $this->tableName 
+            WHERE IdOwner = :IdOwner"
         );
-        $stmt->execute([":IdOwner" => $IdOwner]);
+        $stmt->execute([
+            ":IdOwner" => $IdOwner
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
     public function findByFile(string $File): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE File = :File"
+            "SELECT * FROM $this->tableName 
+            WHERE File = :File"
         );
-        $stmt->execute([":File" => $File]);
+        $stmt->execute([
+            ":File" => $File
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
     public function add(int $IdCar, int $IdOwner, string $File): int {

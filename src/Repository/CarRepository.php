@@ -5,38 +5,38 @@ class CarRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function find(int $id): null|array {
+    public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :id"
+            "SELECT * FROM $this->tableName 
+            WHERE Id = :Id"
         );
-        $stmt->execute([":id" => $id]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $stmt->execute([
+            ":Id" => $Id
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
-    public function findByVin(string $vin): null|array {
+    public function findByVin(string $Vin): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Vin = :Vin"
+            "SELECT * FROM $this->tableName 
+            WHERE Vin = :Vin"
         );
-        $stmt->execute([":Vin" => $vin]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $stmt->execute([
+            ":Vin" => $Vin
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
-    public function add(string $vin): int {
+    public function add(string $Vin): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (Vin) 
                 VALUES (:Vin)"
             );
             $stmt->execute([
-               ':Vin' => $vin
+               ':Vin' => $Vin
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -53,6 +53,6 @@ class CarRepository {
         $id = $this->findByVin($vin);
         if ($id !== null)
             return $id;
-        return $this->find($this->add($vin));
+        return $this->findById($this->add($vin));
     }
 }

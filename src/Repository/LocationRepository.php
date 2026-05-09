@@ -10,11 +10,8 @@ class LocationRepository {
             WHERE address = :Address"
         );
         $stmt->execute([":Address" => $Address]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
     public function findByIdA(int $IdA): null|array{
@@ -23,12 +20,8 @@ class LocationRepository {
             WHERE IdA = :IdA"
         );
         $stmt->execute([":IdA" => $IdA]);
-        $result = $stmt->fetchAll();
-
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
     public function add(string $Address): bool {

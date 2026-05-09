@@ -4,64 +4,81 @@ namespace SuO0\StorageApi\Repository;
 class StockRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
-
-    public function findByContainerId(int $containerId): null|array {
+    public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdC = :IdC"
+            "SELECT * FROM $this->tableName 
+            WHERE Id = :Id"
         );
-        $stmt->execute([":IdC" => $containerId]);
+        $stmt->execute([
+            ":Id" => $Id
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function findByPartId(int $partId): null|array {
+    public function findByIdC(int $IdC): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdPart = :partId"
+            "SELECT * FROM $this->tableName 
+            WHERE IdC = :IdC"
         );
-        $stmt->execute([":partId" => $partId]);
+        $stmt->execute([
+            ":IdC" => $IdC
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function add(int $containerId, int $partId, int $qty): int {
+    public function findByIdPart(int $IdPart): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName W
+            HERE IdPart = :partId"
+        );
+        $stmt->execute([
+            ":partId" => $IdPart
+        ]);
+        $result = $stmt->fetchAll();
+        return empty($result)? null : $result;
+    }
+
+    public function add(int $IdC, int $Qty, ?int $IdPart = null): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdC, IdPart, Qty) 
                 VALUES (:IdC, :IdPart, :Qty)"
             );
             $stmt->execute([
-            ':IdC'   => $containerId,
-            ':IdPart' => $partId,
-            ':Qty'   => $qty
+            ':IdC'   => $IdC,
+            ':IdPart' => $IdPart,
+            ':Qty'   => $Qty
             ]);
             return (int) $this->db->lastInsertId();
+
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
+
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
 
-    public function updateQty(int $containerId, int $partId, int $qty): bool {
+    public function updateQty(int $Id, int $Qty): bool {
+        $stock = $this->findByIdC($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+
         try {
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
                 SET Qty = :Qty 
-                WHERE IdC = :IdC AND IdPart = :partId"
+                WHERE Id = :Id"
             );
             $result = $stmt->execute([
-            ':IdC' => $containerId,
-            ':partId' => $partId,
-            ':Qty' => $qty
+            ':Id' => $Id,
+            ':Qty' => $Qty
             ]);
             return $result;
+
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -71,19 +88,23 @@ class StockRepository {
         }
     }
 
-    public function incrementQty(int $containerId, int $partId, int $qty = 1): bool {
+    public function incrementQty(int $Id, int $Qty = 1): bool {
+        $stock = $this->findByIdC($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+
         try {
            $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET Qty = Qty + :qty 
-                WHERE IdC = :IdC AND IdPart = :partId"
+                SET Qty = Qty + :Qty 
+                WHERE Id = :Id"
             );
             $result = $stmt->execute([
-                ':IdC' => $containerId,
-                ':partId' => $partId,
-                ':qty' => $qty
+                ':Id' => $Id,
+                ':Qty' => $Qty
             ]);
             return $result;
+
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -93,17 +114,20 @@ class StockRepository {
         }
     }
 
-    public function decrementQty(int $containerId, int $partId, int $qty = 1): int {
+    public function decrementQty(int $Id, int $Qty = 1): int {
+        $stock = $this->findByIdC($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+        
         try {
            $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET Qty = Qty - :qty 
-                WHERE IdC = :IdC AND IdPart = :partId"
+                SET Qty = Qty - :Qty 
+                WHERE Id = :Id"
             );
             $result = $stmt->execute([
-                ':IdC' => $containerId,
-                ':partId' => $partId,
-                ':qty' => $qty
+                ':Id' => $Id,
+                ':Qty' => $Qty
             ]);
             return $result;
         } catch (\PDOException $e) {
@@ -114,16 +138,18 @@ class StockRepository {
             throw $e;
         }
     }
-
-    public function delete(int $containerId, int $partId): int{
+    public function delete(int $Id): int{
+        $stock = $this->findByIdC($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+        
         try {
             $stmt = $this->db->prepare(
                 "DELETE FROM $this->tableName 
-                WHERE IdC = :IdC AND IdPart = :partId"
+                WHERE Id = :Id"
             );
             $result = $stmt->execute([
-                ':IdC' => $containerId,
-                ':partId' => $partId
+                ':Id' => $Id
             ]);
             return $result;
         } catch (\PDOException $e) {

@@ -5,91 +5,77 @@ class OwnerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function find(int $id): null|array {
+    public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :id"
+            "SELECT * FROM $this->tableName 
+            WHERE Id = :Id"
         );
-        $stmt->execute([":id" => $id]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $stmt->execute([
+            ":Id" => $Id
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
-    public function findByUserId(int $userId): null|array {
+    public function findByIdUser(int $IdUser): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdUser = :userId"
+            "SELECT * FROM $this->tableName 
+            WHERE IdUser = :IdUser"
         );
-        $stmt->execute([":userId" => $userId]);
+        $stmt->execute([":IdUser" => $IdUser]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function findByName(string $name): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Name = :name"
-        );
-        $stmt->execute([":name" => $name]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
-    }
     public function findByPermission(string $permission): null|array {
         switch($permission){
-            case "Admin":
-                break;
-            case "Worker":
-                break;
+            case "Admin": break;
+            case "Worker": break;
             default: 
                 throw new \RuntimeException("Permission должен быть Admin|Worker");
-                break;
         }
 
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Permission = :permission"
+            "SELECT * FROM $this->tableName 
+            WHERE Permission = :permission"
         );
         $stmt->execute([":permission" => $permission]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function add(int $userId, string $permission, string $name): bool {
-        try {
-            switch($permission){
-                case "Admin":
-                    break;
-                case "Worker":
-                    break;
-                default: 
-                    throw new \RuntimeException("Permission должен быть Admin|Worker");
-                    break;
-            }
+    public function findByName(string $Name): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName 
+            WHERE Name = :Name"
+        );
+        $stmt->execute([":Name" => $Name]);
+        $result = $stmt->fetchAll();
+        return empty($result)? null : $result;
+    }
 
+    public function add(int $IdUser, string $Permission, string $Name): bool {
+        switch($Permission){
+            case "Admin": break;
+            case "Worker":break;
+            default: 
+                throw new \RuntimeException("Права должни быть Admin|Worker");
+        }
+        
+        try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdC, IdA, Type) 
-                VALUES (:userId, :permission, :type)"
+                "INSERT INTO $this->tableName (IdUser, Permission, Name) 
+                VALUES (:IdUser, :Permission, :Name)"
             );
             $result = $stmt->execute([
-                ':userId' => $userId,
-                ':permission' => $permission,
-                ':name' => $name
+                ':userId' => $IdUser,
+                ':Permission' => $Permission,
+                ':Name' => $Name
             ]);
             return $result;
         
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
-            
-            if ($code === 1062)
-                throw new \RuntimeException("Пользователь $userId уже существует");
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
@@ -98,26 +84,27 @@ class OwnerRepository {
         }
     }
 
-    public function changePermission(int $id, string $newPermission) {
-        try {
-            switch($newPermission){
-                case "Admin":
-                    break;
-                case "Worker":
-                    break;
-                default: 
-                    throw new \RuntimeException("Permission должен быть Admin|Worker");
-                    break;
-            }
+    public function updatePermission(int $Id, string $Permission) {
+        $owner = $this->findById($Id);
+        if($owner === null) 
+            throw new \RuntimeException("Пользователь $Id не найден");
+        
+        switch($Permission){
+            case "Admin": break;
+            case "Worker": break;
+            default: 
+                throw new \RuntimeException("Права должни быть Admin|Worker");
+        }
 
+        try {
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET Permission = :newPermission 
-                WHERE Id = :id"
+                SET Permission = :Permission 
+                WHERE Id = :Id"
             );
             $result = $stmt->execute([
-            ':id' => $id,
-            ':newPermission' => $newPermission
+                ':Id' => $Id,
+                ':Permission' => $Permission
             ]);
             return $result;
         } catch (\PDOException $e) {
