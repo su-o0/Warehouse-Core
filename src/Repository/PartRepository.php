@@ -5,46 +5,46 @@ class PartRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function find(string $id): null|array{
+    public function findById(string $Id): null|array{
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE Id = :Id"
+            "SELECT * FROM $this->tableName 
+            WHERE Id = :Id"
         );
-        $stmt->execute([":Id" => $id]);
+        $stmt->execute([
+            ":Id" => $Id
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function findByArticle(string $article):null|array{
+    public function findByArticle(string $Article): null|array{
         $stmt = $this->db->prepare(
-            "SELECT * FROM $this->tableName WHERE Article = :article"
+            "SELECT * FROM $this->tableName 
+            WHERE Article = :Article"
         );
-        $stmt->execute([":article" => $article]);
+        $stmt->execute([
+            ":Article" => $Article
+        ]);
         $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
-    public function add(string $article, ?string $name = null): int {
+    public function add(string $Article, ?string $Name = null): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (Article, Name) 
-                VALUES (:article, :name)"
+                VALUES (:Article, :Name)"
             );
             $stmt->execute([
-                ':article' => $article,
-                ':name' => $name
+                ':Article' => $Article,
+                ':Name' => $Name
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException("Артикул $article уже существует");
+                throw new \RuntimeException("Артикул $Article уже существует");
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
@@ -52,10 +52,10 @@ class PartRepository {
         }
     }
 
-    public function findOrCreate(string $article, ?string $name = null): array {
-        $id = $this->findByArticle($article);
+    public function findOrCreate(string $Article, ?string $Name = null): array {
+        $id = $this->findByArticle($Article);
         if ($id !== null)
             return $id;
-        return $this->find($this->add($article, $name));
+        return $this->findById($this->add($Article, $Name));
     }
 }
