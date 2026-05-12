@@ -1,4 +1,5 @@
 # System Model 
+*sync docs<>code*
 
 **[System Decompositon]** 
 *CONTRACTS* → *FLOW* → *STATE* → *RULES* → *DOMAIN MODEL* → *BOUNDARIES*
@@ -55,7 +56,10 @@ Audit
 [What is allowed]
 PhysicalTag, Container Location уникальные сущности, имеют точку входа в реальный мир
 Placement описивает расположение Container, Item, Stock
+Placement только физически хранимые объекты.
+Placement это ЕДИНСТВЕННЫЙ способ пространственного соединения
 Container, Item, Stock обязательно располагаются в одном Location 
+Container это необязательная физическая группировка
 PhysicalTag может быть только в одном Placement
 Item может быть только в одном контейнере 
 Каждый Item имеет PhysicalTag
@@ -68,14 +72,14 @@ Worker может: Setup/Fill/Query/Sell/
 Admin может: всё
 
 ## DOMAIN MODEL 
-*Location* - Адресс
-*Placement* - Расположение
-*Container* - Контейнер 
-*PhysicalTag* - Бирка
-*Item* - Элемент
-*Stock* - Куча
-*Part* - Каталог Частей
-*Car* - Каталог Авто
+*Location* - Space - Площадь
+*Placement* - Ыpatial binding - Расположение
+*Container* - Ыhysical grouping - Физическая групировка 
+*PhysicalTag* - identity 
+*Item* - Shysical object - Обьект
+*Stock* - quantity - Куча
+*Part* - Каталог
+*Car* - Каталог 
 *ItemPhoto* - Фото Элементов
 *StockPhoto* - Фото Кучи
 *CarPhoto* - Фото Авто 

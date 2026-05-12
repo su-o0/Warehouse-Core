@@ -25,17 +25,16 @@
     *EntityType* > (Container, Item, Stock)
     *EntityId*
     *CreatedAt*
-**Container** 
-    *Id*
-    *IdLocation*
-    *Type* > (Box, Pallet)
-    *CreatedAt*
 **PhysicalTag**  
     *Id*
     *Status* > (Free, Assigned, Lost, Broken)
     *CreatedAt*
 
 # Inventory
+**Container** 
+    *Id*
+    *Type* > (Box, Pallet)
+    *CreatedAt*
 **Item** 
     *Id*
     *IdPhysicalTag*
@@ -51,7 +50,7 @@
     *Qty*
     *CreatedAt*
 
-## Catalog 
+## Identity 
 **Part**
     *Id*
     *Article*

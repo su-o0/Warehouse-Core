@@ -1,22 +1,34 @@
-# Repository API *SQL abstraction*
+# Repository API 
 
-# **Logistics**
-## Location
-`findByAddress`
-`findByIdA`
-`add`
-## Container
-`findByIdC`
-`findByIdA`
-`add`
-`updateIdA`
-## PhysicalTag
+## Logistics
+[Location](#location)
+[Placement](#placement)
+[PhysicalTag](#physicalTag)
+## Inventory
+[Container](#container)
+[Item](#item)
+[Stock](#stock)
+## Catalog
+[Part](#part)
+[Car](#car)
+## Media
+[ItemPhoto](#itemphoto)
+[StockPhoto](#stockphoto)
+[CarPhoto](#carphoto)
+## Audit 
+[History](#history)
+[Sales](#sales)
+[Owner](#owner)
+
+
+## [PhysicalTag](RepositoryAPI/PhysicalTagAPI.md)
 `findByIdTag`
 `findByStatus`
 `add`
 `updateStatus`
+
 # **Inventory**
-## Item
+## [Item](RepositoryAPI/ItemAPI.md)
 `findById`
 `findByIdC`
 `findByIdTag`
@@ -33,7 +45,7 @@
 `updateStatus`
 `updateCondition`
 `updateConditionNote`
-## Stock
+## [Stock](RepositoryAPI/StockAPI.md)
 `findById`
 `findByIdC`
 `findByIdPart`
@@ -42,44 +54,47 @@
 `incrementQty`
 `decrementQty`
 `delete`
+
 # **Catalog**
-## Part
+## [Part](RepositoryAPI/PartAPI.md)
 `findById`
 `findByArticle`
 `findByName`
 `add`
 `updateName`
 `findOrCreate`
-## Car
+## [Car](RepositoryAPI/CarAPI.md)
 `findById`
 `findByVin`
 `add`
 `findOrCreate`
+
 # **Media**
-## ItemPhoto
+## [ItemPhoto](RepositoryAPI/ItemPhotoAPI.md)
 `findById`
 `findByIdCar`
 `findByIdOwner`
 `findByFile`
 `add`
-## StockPhoto
+## [StockPhoto](RepositoryAPI/StockPhotoAPI.md)
 `findById`
 `findByIdCar`
 `findByIdOwner`
 `findByFile`
 `add`
-## CarPhoto 
+## [CarPhoto](RepositoryAPI/CarPhotoAPI.md)
 `findById`
 `findByIdCar`
 `findByIdOwner`
 `findByFile`
 `add`
+
 # **Audit**
-## History
+## [History](RepositoryAPI/HistoryAPI.md)
 `add`
-## Sales
+## [Sales](RepositoryAPI/SalesAPI.md)
 `add`
-## Owner
+## [Owner](RepositoryAPI/OwnerAPI.md)
 `findById`
 `findByIdUser`
 `findByPermission`
