@@ -17,25 +17,13 @@ class ItemRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdC(int $IdC): null|array {
+    public function findByIdPhysicalTag(int $IdPhysicalTag): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdC = :IdC"
+            WHERE IdPhysicalTag = :IdPhysicalTag"
         );
         $stmt->execute([
-            ":IdC" => $IdC
-        ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
-    }
-
-    public function findByIdTag(int $IdTag): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE IdTag = :IdTag"
-        );
-        $stmt->execute([
-            ":IdTag" => $IdTag
+            ":IdPhysicalTag" => $IdPhysicalTag
         ]);
         $result = $stmt->fetchAll();
         return empty($result) ? null : $result;
@@ -119,66 +107,33 @@ class ItemRepository {
         return empty($result) ? null : $result;
     }
 
-    public function add(int $IdC, int $IdTag, int $IdPart, ?int $IdCar = null, ?string $Condition = null, ?string $ConditionNote = null): int {
+    public function add(int $IdTag, int $IdPart, ?int $IdCar = null, ?string $Condition = null, ?string $ConditionNote = null): int {
+        if ($this->findActiveByIdTag($IdTag) !== null)
+            throw new \RuntimeException("Бирка $IdTag уже занята");
+
+        if(!$this->isStateCondition($Condition))
+            throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
+
         try {
-            if($Condition !== null)
-                switch($Condition) {
-                    case "New": break;
-                    case "Good": break;
-                    case "Fair": break;
-                    case "Poor": break;
-                    default: 
-                        throw new \RuntimeException("Состояние $Condition должен быть New|Good|Fair|Poor");
-                }
-
-            if ($this->findActiveByIdTag($IdTag) !== null)
-                throw new \RuntimeException("Бирка $IdTag уже занята");
-
+           
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName 
-                (IdC, IdTag, IdPart, IdCar, Condition, ConditionNote) 
+                (IdTag, IdPart, IdCar, Condition, ConditionNote) 
                 VALUES 
-                (:IdC, :IdTag, :IdPart, :IdCar, :Condition, :ConditionNote)"    
+                (:IdTag, :IdPart, :IdCar, :Condition, :ConditionNote)"    
             );
-            $stmt->execute([
-                ':IdC'              => $IdC,
+            return $stmt->execute([
                 ':IdTag'            => $IdTag,
                 ':IdPart'           => $IdPart,
                 ':IdCar'            => $IdCar,
                 ':Condition'        => $Condition,
                 ':ConditionNote'    => $ConditionNote
             ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
-            throw $e;
-        }
-    }
-
-    public function updateIdC(int $Id, int $IdC) : bool {
-        $item = $this->findById($Id);
-        if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
-
-        try {
-            $stmt = $this->db->prepare( 
-                "UPDATE $this->tableName 
-                SET IdC = :IdC 
-                WHERE Id = :Id"
-            );
-            $result = $stmt->execute([
-                ":Id" => $Id,
-                ":IdC" => $IdC
-            ]);
-            return $result;
-        }catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Контейнер $IdC не найден");
             throw $e;
         }
     }
@@ -194,11 +149,10 @@ class ItemRepository {
                 SET IdTag = :IdTag 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ":Id" => $Id,
                 ":IdTag" => $IdTag
             ]);
-            return $result;
         }catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -219,11 +173,10 @@ class ItemRepository {
                 SET IdPart = :IdPart
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':IdPart' => $IdPart,
                 ':Id' => $Id,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -244,11 +197,10 @@ class ItemRepository {
                 SET IdCar = :IdCar
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':IdCar' => $IdCar,
                 ':Id' => $Id,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -263,14 +215,8 @@ class ItemRepository {
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
 
-        switch($Status) {
-            case "Active": break;
-            case "Sold": break;
-            case "Archived": break;
-            case "Lost": break;
-            default:
-                throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
-        }
+        if(!$this->isStateStatus($Status))
+            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
 
         try {
             $stmt = $this->db->prepare(
@@ -278,35 +224,28 @@ class ItemRepository {
                 SET Status = :Status
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':Status' => $Status,
                 ':Id' => $Id,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             
             throw $e;
         }
     }
 
-    public function updateCondition(int $Id, string $Condition): bool{
+    public function updateCondition(int $Id, string $Condition, string $ConditionNote): bool{
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
 
-        switch($Condition) {
-            case "New": break;
-            case "Good": break;
-            case "Fair": break;
-            case "Poor": break;
-            default:
-                throw new \RuntimeException("Состояние $Condition должен быть New|Good|Fair|Poor");
-        }
+        if(!$this->isStateCondition($Condition))
+            throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
 
         try {
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET Condition = :Condition
+                SET Condition = :Condition, ConditionNote = :ConditionNote
                 WHERE Id = :Id"
             );
             $result = $stmt->execute([
@@ -320,25 +259,33 @@ class ItemRepository {
         }
     }
 
-    public function updateConditionNote(int $Id, string $ConditionNote): bool {
-        $item = $this->findById($Id);
-        if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
-
-        try {
-            $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET ConditionNote = :ConditionNote
-                WHERE Id = :Id"
-            );
-            $result = $stmt->execute([
-                ':ConditionNote' => $ConditionNote,
-                ':Id' => $Id,
-            ]);
-            return $result;
-        } catch (\PDOException $e) {
-
-            throw $e;
+    public function isStateStatus(string $Status): bool {
+        switch($Status) {
+            case "Active": 
+                return true;
+            case "Sold": 
+                return true;
+            case "Archived": 
+                return true;
+            case "Lost": 
+                return true;
+            default:
+                return false;
+        }
+    }
+    
+    public function isStateCondition(string $Condition): bool {
+        switch($Condition) {
+            case "New": 
+                return true;
+            case "Good": 
+                return true;
+            case "Fair": 
+                return true;
+            case "Poor": 
+                return true;
+            default:
+                return false;
         }
     }
 }

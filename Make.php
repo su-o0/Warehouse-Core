@@ -10,6 +10,7 @@ $config = [
     ],    
     'table' => [
         'Location' => 'Location',
+        'Placement' => 'Placement',
         'Container' => 'Container',
         'PhysicalTag' => 'PhysicalTag',
         'Item' => 'Item',

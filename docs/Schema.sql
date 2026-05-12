@@ -36,27 +36,37 @@ CREATE TABLE `History` (
 
 -- Location - Адресс
 CREATE TABLE `Location` (
-  `IdA`           INT NOT NULL AUTO_INCREMENT,
+  `Id`            INT NOT NULL AUTO_INCREMENT,
   `Address`       VARCHAR(32) NOT NULL,
-  PRIMARY KEY (`IdA`),
+  PRIMARY KEY (`Id`),
   UNIQUE (`Address`)
+) ENGINE = InnoDB;
+
+-- Placement - Расположение 
+CREATE TABLE `Placement` (
+  `Id`            INT NOT NULL AUTO_INCREMENT,
+  `IdLocation`    INT NOT NULL,
+  `EntityType`    ENUM('Container','Item','Stock') NOT NULL,
+  `EntityId`      INT NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  FOREIGN KEY (`IdLocation`)  REFERENCES `Location`(`Id`)
 ) ENGINE = InnoDB;
 
 -- Container - Контейнер
 CREATE TABLE `Container` (
-  `IdC`           INT NOT NULL,
-  `IdA`           INT NOT NULL,
-  `Type`          ENUM('Box','Bulk','Area') NOT NULL,
-  PRIMARY KEY (`IdC`),
-  FOREIGN KEY (`IdA`) REFERENCES `Location`(`IdA`)
+  `Id`            INT NOT NULL,
+  `Type`          ENUM('Box','Pallet') NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB;
 
 -- PhysicalTag - Физический идентификатор 
 CREATE TABLE `PhysicalTag` (
-  `IdTag`         INT NOT NULL AUTO_INCREMENT,
+  `Id`            INT NOT NULL AUTO_INCREMENT,
   `Status`        ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free',
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`IdTag`)
+  PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB;
 
 -- Part - Часть
@@ -81,8 +91,7 @@ CREATE TABLE `Car` (
 -- Item - Элемент
 CREATE TABLE `Item` (
   `Id`            INT NOT NULL AUTO_INCREMENT, 
-  `IdC`           INT NOT NULL,
-  `IdTag`         INT NOT NULL,
+  `IdPhysicalTag` INT NOT NULL,
   `IdPart`        INT NULL,
   `IdCar`         INT NULL,
   `Status`        ENUM('Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Active', 
@@ -90,8 +99,7 @@ CREATE TABLE `Item` (
   `ConditionNote` Text NULL,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  FOREIGN KEY (`IdC`)    REFERENCES `Container`(`IdC`),
-  FOREIGN KEY (`IdTag`)  REFERENCES `PhysicalTag`(`IdTag`),
+  FOREIGN KEY (`IdPhysicalTag`)  REFERENCES `PhysicalTag`(`Id`),
   FOREIGN KEY (`IdPart`) REFERENCES `Part`(`Id`),
   FOREIGN KEY (`IdCar`)  REFERENCES `Car`(`Id`)
 ) ENGINE = InnoDB;
@@ -99,12 +107,10 @@ CREATE TABLE `Item` (
 -- Stock - Ассортимент
 CREATE TABLE `Stock` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
-  `IdC`           INT NOT NULL,
   `IdPart`        INT NULL,
   `Qty`           INT NOT NULL DEFAULT 1,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`), 
-  FOREIGN KEY (`IdC`) REFERENCES `Container`(`IdC`),
   FOREIGN KEY (`IdPart`) REFERENCES `Part`(`Id`)
 ) ENGINE = InnoDB;
 
@@ -137,6 +143,6 @@ CREATE TABLE `CarPhoto` (
   `IdOwner`       INT NOT NULL,
   `File`          TEXT NOT NULL,
   PRIMARY KEY (`Id`),
-  FOREIGN KEY (`IdCar`) REFERENCES `Car`(`Id`)
+  FOREIGN KEY (`IdCar`) REFERENCES `Car`(`Id`),
   FOREIGN KEY (`IdOwner`) REFERENCES `Owner`(`Id`)
 ) ENGINE = InnoDB;

@@ -5,19 +5,16 @@ class PhysicalTagRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function findByIdTag(int $IdTag): null|array {
+    public function findByIdPhysicalTag(int $IdPhysicalTag): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdTag = :IdTag"
+            WHERE IdPhysicalTag = :IdPhysicalTag"
         );
         $stmt->execute([
-            ":IdTag" => $IdTag
+            ":IdPhysicalTag" => $IdPhysicalTag
         ]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
     }
 
     public function findByStatus(string $Status): null|array{
@@ -28,73 +25,77 @@ class PhysicalTagRepository {
         $stmt->execute([
             ":Status" => $Status
         ]);
-        $result = $stmt->fetchAll();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
-    }   
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
+    }
 
-    public function add(int $IdTag, string $Status): bool {
+    public function add(int $IdPhysicalTag, string $Status): bool {
+        $PhysicalTag = $this->findByIdPhysicalTag($IdPhysicalTag);
+        if ($PhysicalTag === null) 
+            throw new \RuntimeException("Бирка $IdPhysicalTag не найдена");
+
+        if($this->isStateStatus($Status))
+            throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
+
         try {
-            switch($Status){
-                case "Free": break;
-                case "Assigned": break;
-                case "Lost": break;
-                case "Broken": break;
-                default: 
-                    throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
-            }
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdTag, Status) 
-                VALUES (:IdTag, :Status)"
+                "INSERT INTO $this->tableName (IdPhysicalTag, Status) 
+                VALUES (:IdPhysicalTag, :Status)"
             );
-            $result = $stmt->execute([
-                ':IdTag'    => $IdTag,
-                ':Status'   => $Status,
+            return $stmt->execute([
+                ':IdPhysicalTag' => $IdPhysicalTag,
+                ':Status' => $Status,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Физический идентификатор #$IdTag уже существует");            
+                throw new \RuntimeException("Физический идентификатор $IdPhysicalTag уже существует");            
             
             throw $e;
         }
     }
 
-    public function updateStatus(int $IdTag, string $Status) {
-        $IdTag = $this->findByIdTag($IdTag);
-        if ($IdTag === null) 
-            throw new \RuntimeException("Бирка $IdTag не найдена");
+    public function updateStatus(int $IdPhysicalTag, string $Status) {
+        $PhysicalTag = $this->findByIdPhysicalTag($IdPhysicalTag);
+        if ($PhysicalTag === null) 
+            throw new \RuntimeException("Бирка $IdPhysicalTag не найдена");
+
+        if($this->isStateStatus($Status))
+            throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
 
         try {
-            switch($Status){
-                case "Free": break;
-                case "Assigned": break;
-                case "Lost": break;
-                case "Broken": break;
-                default: 
-                    throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
-            }
             $stmt = $this->db->prepare(
                  "UPDATE $this->tableName 
-                SET IdTag = :IdTag 
-                WHERE IdTag = :IdTag"
+                SET Status = :Status 
+                WHERE IdPhysicalTag = :IdPhysicalTag"
             );
-            $result = $stmt->execute([
-                ':IdTag'    => $IdTag,
-                ':Status'   => $Status,
+            return $stmt->execute([
+                ':IdPhysicalTag' => $IdPhysicalTag,
+                ':Status' => $Status,
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Физический идентификатор #$IdTag уже существует");            
+                throw new \RuntimeException("Физический идентификатор $IdPhysicalTag уже существует");            
             
             throw $e;
+        }
+    }
+
+    public function isStateStatus(string $Status): bool {
+        switch($Status){
+            case "Free": 
+                return true;
+            case "Assigned": 
+                return true;
+            case "Lost": 
+                return true;
+            case "Broken": 
+                return true;
+            default: 
+                return false;
         }
     }
 }

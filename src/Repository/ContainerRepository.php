@@ -5,119 +5,119 @@ class ContainerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function findByIdC(int $IdC):null|array{
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName WHERE IdC = :IdC"
-        );
-        $stmt->execute([
-            ":IdC" => $IdC
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
-    }
-
-    public function findByIdA(int $IdA):null|array{
+    public function findById(int $Id):null|array{
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdA = :IdA"
+            WHERE Id = :Id"
         );
         $stmt->execute([
-            ":IdA" => $IdA
+            ":Id" => $Id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdC, int $IdA, string $Type): bool {
-        $Container = $this->findByIdC($IdC);
-        if($Container !== null) 
-            throw new \RuntimeException("Контейнер $IdC уже существует");
+    public function findByIdLocation(int $IdLocation):null|array{
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName 
+            WHERE IdLocation = :IdLocation"
+        );
+        $stmt->execute([
+            ":IdLocation" => $IdLocation
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : $result;
+    }
 
-        switch($Type) {
-            case "Bulk": break;
-            case "Box": break;
-            case "Area": break;
-            default: 
-                throw new \RuntimeException("Тип контейнера $Type должен быть Bulk|Box|Area");
-        }
+    public function add(int $Id, int $IdLocation, string $Type): bool {
+        $Container = $this->findById($Id);
+        if($Container !== null) 
+            throw new \RuntimeException("Контейнер $Id уже существует");
+        
+        if($this->isStateType($Type))
+            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdC, IdA, Type) 
-                VALUES (:IdC, :IdA, :Type)"
+                "INSERT INTO $this->tableName (Id, IdLocation, Type) 
+                VALUES (:Id, :IdLocation, :Type)"
             );
-            $result = $stmt->execute([
-                ':IdC' => $IdC,
-                ':IdA' => $IdA,
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':IdLocation' => $IdLocation,
                 ':Type' => $Type
             ]);
-            return $result;
-
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Адрес $IdA не найден");
+                throw new \RuntimeException("Адрес $IdLocation не найден");
 
             throw $e;
         }
     }
 
-    public function updateIdA(int $IdC, int $IdA): bool {
-        $container = $this->findByIdC($IdC);
+    public function updateIdLocation(int $Id, int $IdLocation): bool {
+        $container = $this->findById($Id);
         if($container === null) 
-            throw new \RuntimeException("Контейнер $IdC не найден");
+            throw new \RuntimeException("Контейнер $Id не найден");
 
         try{
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET IdA = :IdA 
-                WHERE IdC = :IdC"
+                SET IdLocation = :IdLocation 
+                WHERE Id = :Id"
             );
             return $stmt->execute([
-                ':IdA' => $IdA,
-                ':IdC' => $IdC,
+                ':IdLocation' => $IdLocation,
+                ':Id' => $Id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Контейнер $IdC не найден");
+                throw new \RuntimeException("Контейнер $IdLocation не найден");
 
             throw $e;
         }
     }
 
-    public function updateType(int $IdC, string $Type): bool {
-        $Container = $this->findByIdC($IdC);
-        if($Container === null) 
-            throw new \RuntimeException("Контейнер $IdC уже существует");
+    public function updateType(int $Id, string $Type): bool {
+        $container = $this->findById($Id);
+        if($container === null) 
+            throw new \RuntimeException("Контейнер $Id уже существует");
 
-        switch($Type) {
-            case "Bulk": break;
-            case "Box": break;
-            case "Area": break;
-            default: 
-                throw new \RuntimeException("Тип контейнера $Type должен быть Bulk|Box|Area");
-        }
+        if($this->isStateType($Type))
+            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
 
         try{
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
                 SET Type = :Type 
-                WHERE IdC = :IdC"
+                WHERE Id = :Id"
             );
             return $stmt->execute([
                 ':Type' => $Type,
-                ':IdC' => $IdC,
+                ':Id' => $Id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Контейнер $IdC не найден");
+                throw new \RuntimeException("Контейнер $Id не найден");
 
             throw $e;
+        }
+    }
+
+    public function isStateType(string $Type):bool {
+        switch($Type) {
+            case "Box": 
+                return true;
+            case "Pallet": 
+                return true;
+            default: 
+                return false;
         }
     }
 }

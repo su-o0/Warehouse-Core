@@ -16,17 +16,6 @@ class StockRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdC(int $IdC): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE IdC = :IdC"
-        );
-        $stmt->execute([
-            ":IdC" => $IdC
-        ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
-    }
 
     public function findByIdPart(int $IdPart): null|array {
         $stmt = $this->db->prepare( 
@@ -40,19 +29,16 @@ class StockRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdC, int $Qty, ?int $IdPart = null): int {
+    public function add(int $Qty, ?int $IdPart = null): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdC, IdPart, Qty) 
-                VALUES (:IdC, :IdPart, :Qty)"
+                "INSERT INTO $this->tableName (IdPart, Qty) 
+                VALUES (:IdPart, :Qty)"
             );
-            $stmt->execute([
-            ':IdC'   => $IdC,
+            return $stmt->execute([
             ':IdPart' => $IdPart,
             ':Qty'   => $Qty
             ]);
-            return (int) $this->db->lastInsertId();
-
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -63,7 +49,7 @@ class StockRepository {
     }
 
     public function updateQty(int $Id, int $Qty): bool {
-        $stock = $this->findByIdC($Id);
+        $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
 
@@ -73,12 +59,10 @@ class StockRepository {
                 SET Qty = :Qty 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
-            ':Id' => $Id,
-            ':Qty' => $Qty
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':Qty' => $Qty
             ]);
-            return $result;
-
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -89,7 +73,7 @@ class StockRepository {
     }
 
     public function incrementQty(int $Id, int $Qty = 1): bool {
-        $stock = $this->findByIdC($Id);
+        $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
 
@@ -99,12 +83,10 @@ class StockRepository {
                 SET Qty = Qty + :Qty 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':Id' => $Id,
                 ':Qty' => $Qty
             ]);
-            return $result;
-
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -115,7 +97,7 @@ class StockRepository {
     }
 
     public function decrementQty(int $Id, int $Qty = 1): int {
-        $stock = $this->findByIdC($Id);
+        $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
         
@@ -125,11 +107,10 @@ class StockRepository {
                 SET Qty = Qty - :Qty 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':Id' => $Id,
                 ':Qty' => $Qty
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -139,7 +120,7 @@ class StockRepository {
         }
     }
     public function delete(int $Id): int{
-        $stock = $this->findByIdC($Id);
+        $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
         
@@ -148,10 +129,9 @@ class StockRepository {
                 "DELETE FROM $this->tableName 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':Id' => $Id
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
