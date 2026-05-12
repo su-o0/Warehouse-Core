@@ -1,6 +1,7 @@
 # Storage Domain
 **inventory domain model**
 *Location*
+*Placement*
 *Container*
 *PhysicalTag*
 *Item*
@@ -16,22 +17,28 @@
 
 # Logistics 
 **Location** 
-    *IdA*
+    *Id*
     *Address*
+**Placement**
+    *Id*
+    *IdLocation*
+    *EntityType* > (Container, Item, Stock)
+    *EntityId*
+    *CreatedAt*
 **Container** 
-    *IdC*
-    *IdA*
-    *Type* > (Bulk, Box, Area)
+    *Id*
+    *IdLocation*
+    *Type* > (Box, Pallet)
+    *CreatedAt*
 **PhysicalTag**  
-    *IdTag*
+    *Id*
     *Status* > (Free, Assigned, Lost, Broken)
     *CreatedAt*
 
 # Inventory
 **Item** 
     *Id*
-    *IdC*
-    *IdTag*
+    *IdPhysicalTag*
     *IdPart*
     *IdCar*
     *Status* > (Active, Sold, Archived, Lost)
@@ -40,7 +47,6 @@
     *CreatedAt*
 **Stock**
     *Id*
-    *IdC*
     *IdPart*
     *Qty*
     *CreatedAt*
