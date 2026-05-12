@@ -2,7 +2,7 @@
 CREATE TABLE `Owner` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
   `IdUser`        BIGINT NOT NULL,
-  `Permission`    ENUM('Admin','Worker') NOT NULL DEFAULT 'Worker',
+  `Permission`    ENUM('Admin','Worker','Salesman') NOT NULL DEFAULT 'Worker',
   `Name`          VARCHAR(255) NOT NULL,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),

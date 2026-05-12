@@ -98,6 +98,6 @@
 **Owner**
     *Id*
     *IdUser*
-    *Permission* > ( admin, worker )
+    *Permission* > ( admin, worker, Salesman )
     *Name*
     *CreatedAt*
