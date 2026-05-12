@@ -20,34 +20,55 @@
 [Sales](#sales)
 [Owner](#owner)
 
+**----------------**
 
-## [PhysicalTag](RepositoryAPI/PhysicalTagAPI.md)
-`findByIdTag`
+# *Location*
+`findByAddress`
+`findById`
+`add`
+
+# *Placement*
+`findById`
+`findByIdLocation`
+`findByEntityType`
+`findByEntity`
+`isStateEntityType`
+`add`
+`updateEntity`
+`delete`
+
+# *Container*
+`findById`
+`add`
+`updateType`
+`isStateType`
+
+# *PhysicalTag*
+`findByIdPhysicalTag`
 `findByStatus`
 `add`
 `updateStatus`
+`isStateStatus`
 
-# **Inventory**
-## [Item](RepositoryAPI/ItemAPI.md)
+# *Item*
 `findById`
-`findByIdC`
-`findByIdTag`
+`findByIdPhysicalTag`
 `findByIdPart`
 `findByIdCar`
 `findByStatus`
 `findByCondition`
 `findActiveByIdTag`
 `add`
-`updateIdC`
-`updateIdTag`
+`updateIdPhysicalTag`
 `updatePartId`
 `updateCarId`
 `updateStatus`
 `updateCondition`
-`updateConditionNote`
-## [Stock](RepositoryAPI/StockAPI.md)
+`isStateStatus`
+`isStateCondition`
+
+# *Stock*
 `findById`
-`findByIdC`
 `findByIdPart`
 `add`
 `updateQty`
@@ -55,49 +76,50 @@
 `decrementQty`
 `delete`
 
-# **Catalog**
-## [Part](RepositoryAPI/PartAPI.md)
+# *Part*
 `findById`
 `findByArticle`
 `findByName`
 `add`
 `updateName`
 `findOrCreate`
-## [Car](RepositoryAPI/CarAPI.md)
+
+# *Car*
 `findById`
 `findByVin`
 `add`
 `findOrCreate`
 
-# **Media**
-## [ItemPhoto](RepositoryAPI/ItemPhotoAPI.md)
+# *ItemPhoto*
 `findById`
-`findByIdCar`
-`findByIdOwner`
-`findByFile`
-`add`
-## [StockPhoto](RepositoryAPI/StockPhotoAPI.md)
-`findById`
-`findByIdCar`
-`findByIdOwner`
-`findByFile`
-`add`
-## [CarPhoto](RepositoryAPI/CarPhotoAPI.md)
-`findById`
-`findByIdCar`
+`findByIdItem`
 `findByIdOwner`
 `findByFile`
 `add`
 
-# **Audit**
-## [History](RepositoryAPI/HistoryAPI.md)
+# *StockPhoto*
+`findById`
+`findByIdItem`
+`findByIdOwner`
+`findByFile`
 `add`
-## [Sales](RepositoryAPI/SalesAPI.md)
+
+# *CarPhoto*
+`findById`
+`findByIdItem`
+`findByIdOwner`
+`findByFile`
 `add`
-## [Owner](RepositoryAPI/OwnerAPI.md)
+
+# SalesArhive
+
+# History
+
+# *Owner*
 `findById`
 `findByIdUser`
 `findByPermission`
 `findByName`
 `add`
 `updatePermission`
+`isStatePermission`

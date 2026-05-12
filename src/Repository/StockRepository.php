@@ -119,6 +119,7 @@ class StockRepository {
             throw $e;
         }
     }
+    
     public function delete(int $Id): int{
         $stock = $this->findById($Id);
         if($stock === null)

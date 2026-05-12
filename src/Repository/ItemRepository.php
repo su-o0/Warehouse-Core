@@ -54,14 +54,8 @@ class ItemRepository {
     }
 
     public function findByStatus(string $Status): null|array {
-        switch($Status) {
-            case "Active": break;
-            case "Sold": break;
-            case "Archived": break;
-            case "Lost": break;
-            default: 
-                throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
-        }
+        if(!$this->isStateStatus($Status))
+            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
     
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -75,14 +69,8 @@ class ItemRepository {
     }
 
     public function findByCondition(string $Condition): null|array {
-        switch($Condition) {
-            case "New": break;
-            case "Good": break;
-            case "Fair": break;
-            case "Poor": break;
-            default: 
-                throw new \RuntimeException("Состояние $Condition должен быть New|Good|Fair|Poor");
-        }
+        if(!$this->isStateCondition($Condition))
+            throw new \RuntimeException("Состояние $Condition должен быть New|Good|Fair|Poor");
     
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -107,9 +95,9 @@ class ItemRepository {
         return empty($result) ? null : $result;
     }
 
-    public function add(int $IdTag, int $IdPart, ?int $IdCar = null, ?string $Condition = null, ?string $ConditionNote = null): int {
-        if ($this->findActiveByIdTag($IdTag) !== null)
-            throw new \RuntimeException("Бирка $IdTag уже занята");
+    public function add(int $IdPhysicalTag, int $IdPart, ?int $IdCar = null, ?string $Condition = null, ?string $ConditionNote = null): int {
+        if ($this->findActiveByIdTag($IdPhysicalTag) !== null)
+            throw new \RuntimeException("Бирка $IdPhysicalTag уже занята");
 
         if(!$this->isStateCondition($Condition))
             throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
@@ -118,12 +106,12 @@ class ItemRepository {
            
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName 
-                (IdTag, IdPart, IdCar, Condition, ConditionNote) 
+                (IdPhysicalTag, IdPart, IdCar, Condition, ConditionNote) 
                 VALUES 
-                (:IdTag, :IdPart, :IdCar, :Condition, :ConditionNote)"    
+                (:IdPhysicalTag, :IdPart, :IdCar, :Condition, :ConditionNote)"    
             );
             return $stmt->execute([
-                ':IdTag'            => $IdTag,
+                ':IdPhysicalTag'            => $IdPhysicalTag,
                 ':IdPart'           => $IdPart,
                 ':IdCar'            => $IdCar,
                 ':Condition'        => $Condition,
@@ -138,7 +126,7 @@ class ItemRepository {
         }
     }
 
-    public function updateIdTag(int $Id, int $IdTag): bool {
+    public function updateIdPhysicalTag(int $Id, int $IdPhysicalTag): bool {
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
@@ -146,18 +134,18 @@ class ItemRepository {
         try {
             $stmt = $this->db->prepare( 
                 "UPDATE $this->tableName 
-                SET IdTag = :IdTag 
+                SET IdPhysicalTag = :IdPhysicalTag 
                 WHERE Id = :Id"
             );
             return $stmt->execute([
                 ":Id" => $Id,
-                ":IdTag" => $IdTag
+                ":IdPhysicalTag" => $IdPhysicalTag
             ]);
         }catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Бирка $IdTag не найдена");
+                throw new \RuntimeException("Бирка $IdPhysicalTag не найдена");
             throw $e;
         }
     }
@@ -234,7 +222,7 @@ class ItemRepository {
         }
     }
 
-    public function updateCondition(int $Id, string $Condition, string $ConditionNote): bool{
+    public function updateCondition(int $Id, string $Condition, string $ConditionNote = null): bool{
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
@@ -243,16 +231,29 @@ class ItemRepository {
             throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
 
         try {
-            $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Condition = :Condition, ConditionNote = :ConditionNote
-                WHERE Id = :Id"
-            );
-            $result = $stmt->execute([
-                ':Condition' => $Condition,
-                ':Id' => $Id,
-            ]);
-            return $result;
+            if($ConditionNote === null) {
+                $stmt = $this->db->prepare(
+                    "UPDATE $this->tableName 
+                    SET Condition = :Condition
+                    WHERE Id = :Id"
+                );
+                return $stmt->execute([
+                    ':Condition' => $Condition,
+                    ':Id' => $Id,
+                ]);    
+            }
+            else {
+                $stmt = $this->db->prepare(
+                    "UPDATE $this->tableName 
+                    SET Condition = :Condition, ConditionNote = :ConditionNote
+                    WHERE Id = :Id"
+                );
+                return $stmt->execute([
+                    ':Condition' => $Condition,
+                    ':ConditionNote' => $ConditionNote,
+                    ':Id' => $Id,
+                ]);
+            }
         } catch (\PDOException $e) {
 
             throw $e;

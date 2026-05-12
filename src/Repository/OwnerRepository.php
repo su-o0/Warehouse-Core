@@ -27,19 +27,16 @@ class OwnerRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByPermission(string $permission): null|array {
-        switch($permission){
-            case "Admin": break;
-            case "Worker": break;
-            default: 
-                throw new \RuntimeException("Permission должен быть Admin|Worker");
-        }
+    public function findByPermission(string $Permission): null|array {
+        if(!$this->isStatePermission($Permission))
+                throw new \RuntimeException("Права должни быть Admin|Worker");
+      
 
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE Permission = :permission"
+            WHERE Permission = :Permission"
         );
-        $stmt->execute([":permission" => $permission]);
+        $stmt->execute([":Permission" => $Permission]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
@@ -55,25 +52,23 @@ class OwnerRepository {
     }
 
     public function add(int $IdUser, string $Permission, string $Name): bool {
-        switch($Permission){
-            case "Admin": break;
-            case "Worker":break;
-            default: 
+        $owner = $this->findByIdUser($IdUser);
+        if($owner !== null) 
+            throw new \RuntimeException("Пользователь существует");
+    
+        if(!$this->isStatePermission($Permission))
                 throw new \RuntimeException("Права должни быть Admin|Worker");
-        }
-        
+      
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdUser, Permission, Name) 
                 VALUES (:IdUser, :Permission, :Name)"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':userId' => $IdUser,
                 ':Permission' => $Permission,
                 ':Name' => $Name
             ]);
-            return $result;
-        
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -89,12 +84,8 @@ class OwnerRepository {
         if($owner === null) 
             throw new \RuntimeException("Пользователь $Id не найден");
         
-        switch($Permission){
-            case "Admin": break;
-            case "Worker": break;
-            default: 
+        if(!$this->isStatePermission($Permission))
                 throw new \RuntimeException("Права должни быть Admin|Worker");
-        }
 
         try {
             $stmt = $this->db->prepare(
@@ -102,17 +93,29 @@ class OwnerRepository {
                 SET Permission = :Permission 
                 WHERE Id = :Id"
             );
-            $result = $stmt->execute([
+            return $stmt->execute([
                 ':Id' => $Id,
                 ':Permission' => $Permission
             ]);
-            return $result;
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
             throw $e;
+        }
+    }
+
+    public function isStatePermission(string $Permission): bool {
+        switch($Permission) {
+            case "Admin":
+                return true;
+            case "Worker":
+                return true;
+            case "Salesman":
+                return true;
+            default:
+                return false;
         }
     }
 }

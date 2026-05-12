@@ -56,32 +56,7 @@ class ContainerRepository {
             throw $e;
         }
     }
-
-    public function updateIdLocation(int $Id, int $IdLocation): bool {
-        $container = $this->findById($Id);
-        if($container === null) 
-            throw new \RuntimeException("Контейнер $Id не найден");
-
-        try{
-            $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET IdLocation = :IdLocation 
-                WHERE Id = :Id"
-            );
-            return $stmt->execute([
-                ':IdLocation' => $IdLocation,
-                ':Id' => $Id,
-            ]);
-        } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Контейнер $IdLocation не найден");
-
-            throw $e;
-        }
-    }
-
+    
     public function updateType(int $Id, string $Type): bool {
         $container = $this->findById($Id);
         if($container === null) 
