@@ -11,12 +11,9 @@ class ContainerRepository {
         );
         $stmt->execute([
             ":IdC" => $IdC
-            ]);
+        ]);
         $result = $stmt->fetch();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
     public function findByIdA(int $IdA):null|array{
@@ -28,15 +25,12 @@ class ContainerRepository {
             ":IdA" => $IdA
         ]);
         $result = $stmt->fetch();
-        if(empty($result))
-            return null;
-        else 
-            return $result;
+        return empty($result)? null : $result;
     }
 
     public function add(int $IdC, int $IdA, string $Type): bool {
         $Container = $this->findByIdC($IdC);
-        if($Container === null) 
+        if($Container !== null) 
             throw new \RuntimeException("Контейнер $IdC уже существует");
 
         switch($Type) {
@@ -82,6 +76,39 @@ class ContainerRepository {
             );
             return $stmt->execute([
                 ':IdA' => $IdA,
+                ':IdC' => $IdC,
+            ]);
+        } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+
+            if ($code === 1452)
+                throw new \RuntimeException("Контейнер $IdC не найден");
+
+            throw $e;
+        }
+    }
+
+    public function updateType(int $IdC, string $Type): bool {
+        $Container = $this->findByIdC($IdC);
+        if($Container === null) 
+            throw new \RuntimeException("Контейнер $IdC уже существует");
+
+        switch($Type) {
+            case "Bulk": break;
+            case "Box": break;
+            case "Area": break;
+            default: 
+                throw new \RuntimeException("Тип контейнера $Type должен быть Bulk|Box|Area");
+        }
+
+        try{
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET Type = :Type 
+                WHERE IdC = :IdC"
+            );
+            return $stmt->execute([
+                ':Type' => $Type,
                 ':IdC' => $IdC,
             ]);
         } catch (\PDOException $e) {
