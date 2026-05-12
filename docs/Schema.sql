@@ -103,7 +103,7 @@ CREATE TABLE `Stock` (
   `IdPart`        INT NULL,
   `Qty`           INT NOT NULL DEFAULT 1,
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Id`),
+  PRIMARY KEY (`Id`), 
   FOREIGN KEY (`IdC`) REFERENCES `Container`(`IdC`),
   FOREIGN KEY (`IdPart`) REFERENCES `Part`(`Id`)
 ) ENGINE = InnoDB;

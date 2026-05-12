@@ -35,15 +35,19 @@ class ContainerRepository {
     }
 
     public function add(int $IdC, int $IdA, string $Type): bool {
-        try {
-            switch($Type) {
-                case "Bulk": break;
-                case "Box": break;
-                case "Area": break;
-                default: 
-                    throw new \RuntimeException("Тип $Type должен быть Bulk|Box|Area");
-            }
+        $Container = $this->findByIdC($IdC);
+        if($Container === null) 
+            throw new \RuntimeException("Контейнер $IdC уже существует");
 
+        switch($Type) {
+            case "Bulk": break;
+            case "Box": break;
+            case "Area": break;
+            default: 
+                throw new \RuntimeException("Тип контейнера $Type должен быть Bulk|Box|Area");
+        }
+
+        try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdC, IdA, Type) 
                 VALUES (:IdC, :IdA, :Type)"
@@ -57,9 +61,6 @@ class ContainerRepository {
 
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
-
-            if ($code === 1062)
-                throw new \RuntimeException("Контейнер $IdC уже существует");
 
             if ($code === 1452)
                 throw new \RuntimeException("Адрес $IdA не найден");
