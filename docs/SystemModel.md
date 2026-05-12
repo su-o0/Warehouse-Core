@@ -1,13 +1,5 @@
 # System Model 
 
-Storage topology
-Location
-    ↓
-(optional)
-Container
-    ↓
-Item / Stock
-
 **[System Decompositon]** 
 *CONTRACTS* → *FLOW* → *STATE* → *RULES* → *DOMAIN MODEL* → *BOUNDARIES*
 
