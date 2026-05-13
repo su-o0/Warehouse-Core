@@ -39,7 +39,7 @@ Audit
 ## STATE
 Placement.EntityType: *Container*/*Item*/*Stock*
 Container.Type: *Box*/*Pallet*
-PhysicalTag: *Free*/*Assigned*/*Lost*/*Broken*
+PhysicalTag.Status.: *Free*/*Assigned*/*Lost*/*Broken*
 Item.Status: *Active*/*Sold*/*Archived*/*Lost*
 Item.Condition: *New*/*Good*/*Fair*/*Poor*
 Owner.Permission: *Admin*/*Worker*/*Salesman*

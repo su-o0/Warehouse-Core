@@ -95,27 +95,21 @@ class ItemRepository {
         return empty($result) ? null : $result;
     }
 
-    public function add(int $IdPhysicalTag, int $IdPart, ?int $IdCar = null, ?string $Condition = null, ?string $ConditionNote = null): int {
+    public function add(int $IdPhysicalTag, int $IdPart, ?int $IdCar = null): int {
         if ($this->findActiveByIdTag($IdPhysicalTag) !== null)
             throw new \RuntimeException("Бирка $IdPhysicalTag уже занята");
 
-        if(!$this->isStateCondition($Condition))
-            throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
-
         try {
-           
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName 
-                (IdPhysicalTag, IdPart, IdCar, Condition, ConditionNote) 
+                (IdPhysicalTag, IdPart, IdCar) 
                 VALUES 
-                (:IdPhysicalTag, :IdPart, :IdCar, :Condition, :ConditionNote)"    
+                (:IdPhysicalTag, :IdPart, :IdCar)"    
             );
             return $stmt->execute([
-                ':IdPhysicalTag'            => $IdPhysicalTag,
+                ':IdPhysicalTag'    => $IdPhysicalTag,
                 ':IdPart'           => $IdPart,
                 ':IdCar'            => $IdCar,
-                ':Condition'        => $Condition,
-                ':ConditionNote'    => $ConditionNote
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -222,7 +216,7 @@ class ItemRepository {
         }
     }
 
-    public function updateCondition(int $Id, string $Condition, string $ConditionNote = null): bool{
+    public function updateCondition(int $Id, string $Condition, ?string $ConditionNote = null): bool{
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
@@ -231,29 +225,17 @@ class ItemRepository {
             throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
 
         try {
-            if($ConditionNote === null) {
-                $stmt = $this->db->prepare(
-                    "UPDATE $this->tableName 
-                    SET Condition = :Condition
-                    WHERE Id = :Id"
-                );
-                return $stmt->execute([
-                    ':Condition' => $Condition,
-                    ':Id' => $Id,
-                ]);    
-            }
-            else {
-                $stmt = $this->db->prepare(
-                    "UPDATE $this->tableName 
-                    SET Condition = :Condition, ConditionNote = :ConditionNote
-                    WHERE Id = :Id"
-                );
-                return $stmt->execute([
-                    ':Condition' => $Condition,
-                    ':ConditionNote' => $ConditionNote,
-                    ':Id' => $Id,
-                ]);
-            }
+            
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET Condition = :Condition, ConditionNote = :ConditionNote
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Condition' => $Condition,
+                ':ConditionNote' => $ConditionNote,
+                ':Id' => $Id,
+            ]);
         } catch (\PDOException $e) {
 
             throw $e;
