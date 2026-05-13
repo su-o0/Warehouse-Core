@@ -1,5 +1,5 @@
 <?php
-namespace SuO0\StorageApi\Repository;
+namespace SuO0\StorageApi\Repository\Inventory;
 
 class StockRepository {
     public function __construct(private \PDO $db, private string $tableName) {

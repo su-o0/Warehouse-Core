@@ -1,17 +1,12 @@
 # Storage Domain
-**inventory domain model**
-*Location*
-*Placement*
-*PhysicalTag*
-*Container*
-*Item*
-*Stock*
-*Part*
-*Car*
-*Photo*
-*SalesArhive*
-*History*
-*Owner*
+**Storage architecture model**
+*Topology*
+*Inventory*
+*Catalog*
+*Media*
+*Audit*
+
+**----------------**
 
 # Topology 
 **Location** 

@@ -10,7 +10,7 @@ class AddPhysicalTagScenario {
     }
 
     public function execute(int $TagId): void {
-        $Tag = $this->PhysicalTag->findByIdPhysicalTag($TagId);
+        $Tag = $this->PhysicalTag->findById($TagId);
         if($Tag !== null)
             throw new \RuntimeException("Бирка $TagId уже существует");
 

@@ -1,5 +1,5 @@
 <?php
-namespace SuO0\StorageApi\Repository;
+namespace SuO0\StorageApi\Repository\Audit;
 
 class SalesArhiveRepository {
     public function __construct(private \PDO $db, private string $tableName) {

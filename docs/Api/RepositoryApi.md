@@ -3,6 +3,8 @@
 ## Logistics
 [Location](#location)
 [Placement](#placement)
+[Placement](#placement)
+[Placement](#placement)
 [PhysicalTag](#physicalTag)
 ## Inventory
 [Container](#container)
@@ -46,7 +48,7 @@
 `isStateType`
 
 # *PhysicalTag*
-`findByIdPhysicalTag`
+`findById`
 `findByStatus`
 `add`
 `updateStatus`
