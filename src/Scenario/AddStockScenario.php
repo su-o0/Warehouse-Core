@@ -21,25 +21,25 @@ class AddStockScenario {
     }
 
     public function execute(int $ContainerId, int $Qcy, string $Article = null):void {
-        $Container = $this->Container->findByIdC($ContainerId);
+        // $Container = $this->Container->findById($ContainerId);
 
-        if(empty($Container))
-            throw new \RuntimeException("Контейнер $ContainerId не найден");
+        // if(empty($Container))
+        //     throw new \RuntimeException("Контейнер $ContainerId не найден");
 
-        if($Container['Type'] != 'Bulk')
-            throw new \RuntimeException("Контейнера должен быть Bulk");
+        // if($Container['Type'] != 'Bulk')
+        //     throw new \RuntimeException("Контейнера должен быть Bulk");
 
-        $Stock = $this->Stock->findByIdC($ContainerId);
+        // $Stock = $this->Stock->findByIdC($ContainerId);
 
-        if(!empty($Stock))
-            throw new \RuntimeException("Контейнер $ContainerId занят");
+        // if(!empty($Stock))
+        //     throw new \RuntimeException("Контейнер $ContainerId занят");
 
-        if($Article != null)
-            $IdPart = $this->Part->findOrCreate($Article)['Id'];
-        else 
-            $IdPart = null;
+        // if($Article != null)
+        //     $IdPart = $this->Part->findOrCreate($Article)['Id'];
+        // else 
+        //     $IdPart = null;
 
-        $this->Stock->add($ContainerId, $Qcy, $IdPart);
+        // $this->Stock->add($ContainerId, $Qcy, $IdPart);
         
     }
 }

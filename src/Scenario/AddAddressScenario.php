@@ -10,10 +10,6 @@ class AddAddressScenario {
     }
 
     public function execute(string $Address): void {
-        $Location = $this->Location->findByAddress($Address);
-        if($Location !== null)
-            throw new \RuntimeException("Адресс $Address уже существует");
-
         $this->Location->add($Address);
     }
 }
