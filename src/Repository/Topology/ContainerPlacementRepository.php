@@ -62,7 +62,7 @@ class ContainerPlacementRepository {
         }
     }
 
-    public function delete(int $Id): int{
+    public function delete(int $Id): bool{
         $placement = $this->findById($Id);
         if($placement === null)
             throw new \RuntimeException("Расположение не найдено");

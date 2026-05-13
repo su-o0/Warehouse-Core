@@ -1,129 +1,106 @@
 # Repository API 
 
-## Logistics
+## Topology
+
 [Location](#location)
-[Placement](#placement)
-[Placement](#placement)
-[Placement](#placement)
-[PhysicalTag](#physicalTag)
+
+[ContainerPlacement](#containerplacement)
+
+[ItemPlacement](#itemplacement)
+
+[StockPlacement](#stockplacement)
+
 ## Inventory
 [Container](#container)
+
 [Item](#item)
+
 [Stock](#stock)
+
 ## Catalog
 [Part](#part)
+
 [Car](#car)
+
 ## Media
 [ItemPhoto](#itemphoto)
+
 [StockPhoto](#stockphoto)
+
 [CarPhoto](#carphoto)
+
 ## Audit 
 [History](#history)
+
 [Sales](#sales)
+
 [Owner](#owner)
 
 **----------------**
 
-# *Location*
-`findByAddress`
-`findById`
-`add`
+# _Location_
+### `findByAddress(string $address)`
 
-# *Placement*
-`findById`
-`findByIdLocation`
-`findByEntityType`
-`findByEntity`
-`isStateEntityType`
-`add`
-`updateEntity`
-`delete`
+#### Return
+- `null` — not found
+- `array` — location data
 
-# *Container*
-`findById`
-`findByType`
-`add`
-`updateType`
-`delete`
-`isStateType`
+---
 
-# *PhysicalTag*
-`findById`
-`findByStatus`
-`add`
-`updateStatus`
-`isStateStatus`
+### `findById(int $id)`
 
-# *Item*
-`findById`
-`findByIdPhysicalTag`
-`findByIdPart`
-`findByIdCar`
-`findByStatus`
-`findByCondition`
-`findActiveByIdTag`
-`add`
-`updateIdPhysicalTag`
-`updatePartId`
-`updateCarId`
-`updateStatus`
-`updateCondition`
-`isStateStatus`
-`isStateCondition`
+#### Return
+- `null` — not found
+- `array` — location data
 
-# *Stock*
-`findById`
-`findByIdPart`
-`add`
-`updateQty`
-`incrementQty`
-`decrementQty`
-`delete`
+---
 
-# *Part*
-`findById`
-`findByArticle`
-`findByName`
-`add`
-`updateName`
-`findOrCreate`
+### `add(string $address)`
 
-# *Car*
-`findById`
-`findByVin`
-`add`
-`findOrCreate`
+#### Return
+- `int` — created Location Id
 
-# *ItemPhoto*
-`findById`
-`findByIdItem`
-`findByIdOwner`
-`findByFile`
-`add`
+#### Throws
+- `RuntimeException` — address already exists
 
-# *StockPhoto*
-`findById`
-`findByIdItem`
-`findByIdOwner`
-`findByFile`
-`add`
+# _ContainerPlacement_
+### `findById(int $Id)`
 
-# *CarPhoto*
-`findById`
-`findByIdItem`
-`findByIdOwner`
-`findByFile`
-`add`
+#### Return
+- `null` — not found
+- `array` — container placement data
 
-# SalesArhive
+--- 
+### `findByLocationId(int $LocationId)`
 
-# History
+#### Return
+- `null` — not found
+- `array` — containers placement data
 
-# *Owner*
-`findById`
-`findByIdUser`
-`findByPermission`
-`findByName`
-`add`
-`updatePermission`
-`isStatePermission`
+---
+
+### `findByContainerId(string $ContainerId)`
+
+#### Return
+- `null` — not found
+- `array` — container placement data
+
+---
+
+### `add(int $LocationId, string $ContainerId)`
+
+#### Return
+- `int` — created containers placement Id
+
+#### Throws
+- `RuntimeException` — Ошибка связи данных
+
+---
+
+### `delete(int $Id)`
+
+#### Return
+- `bool` - true on success, false on failure
+
+#### Throws
+- `RuntimeException` — not found

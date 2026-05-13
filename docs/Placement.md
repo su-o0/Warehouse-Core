@@ -1,9 +1,9 @@
-# Placement Model
+### Placement Model
 
-Item/Stock хранится, либо Placement, либо Container
+**Item** / **Stock** _хранится либо_ **Placement** _либо_ **Container**
 
-
+```
 Item/Stock -> Placement
                 /\
 Item/Stock -> Container
-
+```

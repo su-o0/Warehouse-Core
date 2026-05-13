@@ -30,10 +30,6 @@ class LocationRepository {
     }
 
     public function add(string $Address): int {
-        $location = $this->findByAddress($Address);
-        if($location !== null) 
-            throw new \RuntimeException("Адресс $Address уже существует");
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (Address) 
@@ -47,7 +43,7 @@ class LocationRepository {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Адресс $Address не найден");
+                throw new \RuntimeException("Адресс $Address уже существует");
 
             throw $e;
         }
