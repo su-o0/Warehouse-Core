@@ -1,7 +1,7 @@
 <?php
 namespace SuO0\StorageApi\Repository;
 
-class StockPhotoRepository {
+class CarPhotoRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
@@ -17,25 +17,25 @@ class StockPhotoRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdStock(int $IdStock): null|array {
+    public function findByCarId(int $CarId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdStock = :IdStock"
+            WHERE CarId = :CarId"
         );
         $stmt->execute([
-            ":IdStock" => $IdStock
+            ":CarId" => $CarId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByIdOwner(int $IdOwner): null|array {
+    public function findByOwnerId(int $OwnerId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdOwner = :IdOwner"
+            WHERE OwnerId = :OwnerId"
         );
         $stmt->execute([
-            ":IdOwner" => $IdOwner
+            ":OwnerId" => $OwnerId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
@@ -49,19 +49,23 @@ class StockPhotoRepository {
         $stmt->execute([
             ":File" => $File
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdStock, int $IdOwner, string $File): int {
+    public function add(int $CarId, int $OwnerId, string $File): int {
+        $Car = $this->findByFile($File);
+        if(!$Car)
+            throw new \RuntimeException("Файл уже записан");
+
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdStock, IdOwner, File) 
-                VALUES (:IdStock, :IdOwner, :File)"
+                "INSERT INTO $this->tableName (CarId, OwnerId, File) 
+                VALUES (:CarId, :OwnerId, :File)"
             );
             $stmt->execute([
-               ':IdStock' => $IdStock,
-               ':IdOwner' => $IdOwner,
+               ':CarId' => $CarId,
+               ':OwnerId' => $OwnerId,
                ':File' => $File
             ]);
             return (int) $this->db->lastInsertId();

@@ -13,7 +13,7 @@
 *History*
 *Owner*
 
-# Logistics 
+# Topology 
 **Location** 
     *Id*
     *Address*
@@ -60,7 +60,7 @@
     *Qty*
     *CreatedAt*
 
-## Identity 
+## Catalog 
 **Part**
     *Id*
     *Article*

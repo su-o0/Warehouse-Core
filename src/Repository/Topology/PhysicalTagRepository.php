@@ -1,5 +1,5 @@
 <?php
-namespace SuO0\StorageApi\Repository;
+namespace SuO0\StorageApi\Repository\Topology;
 
 class PhysicalTagRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -29,7 +29,7 @@ class PhysicalTagRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $Id, string $Status): bool {
+    public function add(int $Id, string $Status): int {
         $PhysicalTag = $this->findById($Id);
         if ($PhysicalTag !== null) 
             throw new \RuntimeException("Бирка $Id существует");
@@ -42,10 +42,11 @@ class PhysicalTagRepository {
                 "INSERT INTO $this->tableName (Id, Status) 
                 VALUES (:Id, :Status)"
             );
-            return $stmt->execute([
+            $stmt->execute([
                 ':Id' => $Id,
                 ':Status' => $Status,
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
@@ -56,7 +57,7 @@ class PhysicalTagRepository {
         }
     }
 
-    public function updateStatus(int $Id, string $Status) {
+    public function updateStatus(int $Id, string $Status):bool {
         $PhysicalTag = $this->findById($Id);
         if ($PhysicalTag === null) 
             throw new \RuntimeException("Бирка $Id не найдена");

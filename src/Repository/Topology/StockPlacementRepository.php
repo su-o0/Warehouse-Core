@@ -1,7 +1,7 @@
 <?php
-namespace SuO0\StorageApi\Repository;
+namespace SuO0\StorageApi\Repository\Topology;
 
-class CarPhotoRepository {
+class StockPlacementRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
@@ -17,50 +17,39 @@ class CarPhotoRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdCar(int $IdCar): null|array {
+    public function findByLocationId(int $LocationId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdCar = :IdCar"
-        );
-        $stmt->execute([":IdCar" => $IdCar]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
-    }
-
-    public function findByIdOwner(int $IdOwner): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE IdOwner = :IdOwner"
+            WHERE LocationId = :LocationId"
         );
         $stmt->execute([
-            ":IdOwner" => $IdOwner
+            ":LocationId" => $LocationId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByFile(string $File): null|array {
+    public function findByStockId(string $StockId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE File = :File"
+            WHERE StockId = :StockId"
         );
         $stmt->execute([
-            ":File" => $File
+            ":StockId" => $StockId
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdCar, int $IdOwner, string $File): int {
+    public function add(int $LocationId, string $StockId): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdCar, IdOwner, File) 
-                VALUES (:IdCar, :IdOwner, :File)"
+                "INSERT INTO $this->tableName (LocationId, StockId) 
+                VALUES (:LocationId, :StockId)"
             );
             $stmt->execute([
-               ':IdCar' => $IdCar,
-               ':IdOwner' => $IdOwner,
-               ':File' => $File
+                ':LocationId' => $LocationId,
+                ':StockId' => $StockId
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -68,9 +57,26 @@ class CarPhotoRepository {
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
-            
             throw $e;
         }
     }
 
+    public function delete(int $Id): int{
+        $placement = $this->findById($Id);
+        if($placement === null)
+            throw new \RuntimeException("Расположение не найдено");
+        
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM $this->tableName 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id
+            ]);
+        } catch (\PDOException $e) {
+
+            throw $e;
+        }
+    }
 }

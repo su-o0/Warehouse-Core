@@ -17,37 +17,37 @@ class ItemRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdPhysicalTag(int $IdPhysicalTag): null|array {
+    public function findByPhysicalTagId(int $PhysicalTagId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdPhysicalTag = :IdPhysicalTag"
+            WHERE PhysicalTagId = :PhysicalTagId"
         );
         $stmt->execute([
-            ":IdPhysicalTag" => $IdPhysicalTag
+            ":PhysicalTagId" => $PhysicalTagId
         ]);
         $result = $stmt->fetchAll();
         return empty($result) ? null : $result;
     }
 
-    public function findByIdPart(int $IdPart): null|array {
+    public function findByPartId(int $PartId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdPart = :IdPart"
+            WHERE PartId = :PartId"
         );
         $stmt->execute([
-            ":IdPart" => $IdPart
+            ":PartId" => $PartId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByIdCar(int $IdCar): null|array {
+    public function findByCarId(string $CarId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdCar = :IdCar"
+            WHERE CarId = :CarId"
         );
         $stmt->execute([
-            ":IdCar" => $IdCar
+            ":CarId" => $CarId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
@@ -83,34 +83,38 @@ class ItemRepository {
         return empty($result)? null : $result;
     }
 
-    public function findActiveByIdTag(int $IdTag): null|array {
+    public function findByPhysicalTagIdStatus(int $PhysicalTagId, string $Status): null|array {
+        if(!$this->isStateStatus($Status))
+            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
+    
         $stmt = $this->db->prepare(
             "SELECT * FROM $this->tableName 
-            WHERE IdTag = :IdTag AND Status = 'Active'"
+            WHERE PhysicalTagId = :PhysicalTagId AND Status = 'Active'"
         );
         $stmt->execute([
-            ":IdTag" => $IdTag
+            ":PhysicalTagId" => $PhysicalTagId
         ]);
         $result = $stmt->fetch();
         return empty($result) ? null : $result;
     }
 
-    public function add(int $IdPhysicalTag, int $IdPart, ?int $IdCar = null): int {
-        if ($this->findActiveByIdTag($IdPhysicalTag) !== null)
-            throw new \RuntimeException("Бирка $IdPhysicalTag уже занята");
+    public function add(int $PhysicalTagId, int $PartId, ?int $CarId = null): int {
+        if ($this->findByPhysicalTagIdStatus($PhysicalTagId, "Active") !== null)
+            throw new \RuntimeException("Бирка $PhysicalTagId уже занята");
 
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName 
-                (IdPhysicalTag, IdPart, IdCar) 
+                (PhysicalTagId, PartId, CarId) 
                 VALUES 
-                (:IdPhysicalTag, :IdPart, :IdCar)"    
+                (:PhysicalTagId, :IdPart, :CarId)"    
             );
-            return $stmt->execute([
-                ':IdPhysicalTag'    => $IdPhysicalTag,
-                ':IdPart'           => $IdPart,
-                ':IdCar'            => $IdCar,
+            $stmt->execute([
+                ':PhysicalTagId'    => $PhysicalTagId,
+                ':PartId'           => $PartId,
+                ':CarId'            => $CarId,
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             
@@ -120,7 +124,7 @@ class ItemRepository {
         }
     }
 
-    public function updateIdPhysicalTag(int $Id, int $IdPhysicalTag): bool {
+    public function updatePhysicalTagId(int $Id, int $PhysicalTagId): bool {
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
@@ -128,18 +132,42 @@ class ItemRepository {
         try {
             $stmt = $this->db->prepare( 
                 "UPDATE $this->tableName 
-                SET IdPhysicalTag = :IdPhysicalTag 
+                SET PhysicalTagId = :PhysicalTagId 
                 WHERE Id = :Id"
             );
             return $stmt->execute([
                 ":Id" => $Id,
-                ":IdPhysicalTag" => $IdPhysicalTag
+                ":PhysicalTagId" => $PhysicalTagId
             ]);
         }catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Бирка $IdPhysicalTag не найдена");
+                throw new \RuntimeException("Бирка $PhysicalTagId не найдена");
+            throw $e;
+        }
+    }
+
+    public function updateContainerId(int $Id, int $ContainerId): bool {
+        $item = $this->findById($Id);
+        if($item === null) 
+            throw new \RuntimeException("Элемент $Id не найден");
+
+        try {
+            $stmt = $this->db->prepare( 
+                "UPDATE $this->tableName 
+                SET ContainerId = :ContainerId 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ":Id" => $Id,
+                ":ContainerId" => $ContainerId
+            ]);
+        }catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+
+            if ($code === 1452)
+                throw new \RuntimeException("Контейнер $ContainerId не найдена");
             throw $e;
         }
     }
@@ -168,7 +196,7 @@ class ItemRepository {
         }
     }
 
-    public function updateCarId(int $Id, int $IdCar): bool{
+    public function updateCarId(int $Id, int $CarId): bool{
         $item = $this->findById($Id);
         if($item === null) 
             throw new \RuntimeException("Элемент $Id не найден");
@@ -176,18 +204,18 @@ class ItemRepository {
         try {
             $stmt = $this->db->prepare(
                 "UPDATE $this->tableName 
-                SET IdCar = :IdCar
+                SET CarId = :CarId
                 WHERE Id = :Id"
             );
             return $stmt->execute([
-                ':IdCar' => $IdCar,
+                ':CarId' => $CarId,
                 ':Id' => $Id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Авто $IdCar не найдено");
+                throw new \RuntimeException("Авто $CarId не найдено");
             throw $e;
         }
     }
@@ -237,7 +265,6 @@ class ItemRepository {
                 ':Id' => $Id,
             ]);
         } catch (\PDOException $e) {
-
             throw $e;
         }
     }

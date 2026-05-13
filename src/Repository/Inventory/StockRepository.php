@@ -17,33 +17,82 @@ class StockRepository {
     }
 
 
-    public function findByIdPart(int $IdPart): null|array {
+    public function findByPartId(int $PartId): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName W
-            HERE IdPart = :partId"
+            "SELECT * FROM $this->tableName
+            WHERE PartId = :PartId"
         );
         $stmt->execute([
-            ":partId" => $IdPart
+            ":PartId" => $PartId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function add(int $Qty, ?int $IdPart = null): int {
+    public function add(int $Qty, ?int $PartId = null): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdPart, Qty) 
-                VALUES (:IdPart, :Qty)"
+                "INSERT INTO $this->tableName (PartId, Qty) 
+                VALUES (:PartId, :Qty)"
             );
-            return $stmt->execute([
-            ':IdPart' => $IdPart,
-            ':Qty'   => $Qty
+            $stmt->execute([
+                ':PartId' => $PartId,
+                ':Qty'   => $Qty
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
                 throw new \RuntimeException("Ошибка связи данных");
+            throw $e;
+        }
+    }
+
+    public function updateContainerId(int $Id, int $ContainerId): bool {
+        $stock = $this->findById($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET ContainerId = :ContainerId 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':ContainerId' => $ContainerId
+            ]);
+        } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+
+            if ($code === 1452)
+                throw new \RuntimeException("Контейнер $ContainerId не найдена");
+            throw $e;
+        }
+    }
+
+    public function updatePartId(int $Id, string $PartId): bool {
+        $stock = $this->findById($Id);
+        if($stock === null)
+            throw new \RuntimeException("Асортимент $Id не найден");
+
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET PartId = :PartId 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':PartId' => $PartId
+            ]);
+        } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+
+            if ($code === 1452)
+                throw new \RuntimeException("Часть $PartId не найдена");
             throw $e;
         }
     }
@@ -64,10 +113,6 @@ class StockRepository {
                 ':Qty' => $Qty
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
@@ -88,15 +133,11 @@ class StockRepository {
                 ':Qty' => $Qty
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
 
-    public function decrementQty(int $Id, int $Qty = 1): int {
+    public function decrementQty(int $Id, int $Qty = 1): bool {
         $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
@@ -112,15 +153,11 @@ class StockRepository {
                 ':Qty' => $Qty
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }
     
-    public function delete(int $Id): int{
+    public function delete(int $Id): bool{
         $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Асортимент $Id не найден");
@@ -134,10 +171,6 @@ class StockRepository {
                 ':Id' => $Id
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }

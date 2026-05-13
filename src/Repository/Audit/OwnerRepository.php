@@ -30,7 +30,6 @@ class OwnerRepository {
     public function findByPermission(string $Permission): null|array {
         if(!$this->isStatePermission($Permission))
                 throw new \RuntimeException("Права должни быть Admin|Worker");
-      
 
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -51,7 +50,7 @@ class OwnerRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdUser, string $Permission, string $Name): bool {
+    public function add(int $IdUser, string $Permission, string $Name): int {
         $owner = $this->findByIdUser($IdUser);
         if($owner !== null) 
             throw new \RuntimeException("Пользователь существует");
@@ -64,11 +63,12 @@ class OwnerRepository {
                 "INSERT INTO $this->tableName (IdUser, Permission, Name) 
                 VALUES (:IdUser, :Permission, :Name)"
             );
-            return $stmt->execute([
+            $stmt->execute([
                 ':userId' => $IdUser,
                 ':Permission' => $Permission,
                 ':Name' => $Name
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
@@ -79,7 +79,7 @@ class OwnerRepository {
         }
     }
 
-    public function updatePermission(int $Id, string $Permission) {
+    public function updatePermission(int $Id, string $Permission):bool {
         $owner = $this->findById($Id);
         if($owner === null) 
             throw new \RuntimeException("Пользователь $Id не найден");

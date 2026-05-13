@@ -1,5 +1,5 @@
 <?php
-namespace SuO0\StorageApi\Repository;
+namespace SuO0\StorageApi\Repository\Topology;
 
 class LocationRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -29,7 +29,7 @@ class LocationRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(string $Address): bool {
+    public function add(string $Address): int {
         $location = $this->findByAddress($Address);
         if($location !== null) 
             throw new \RuntimeException("Адресс $Address уже существует");
@@ -39,9 +39,10 @@ class LocationRepository {
                 "INSERT INTO $this->tableName (Address) 
                 VALUES (:Address)"
             );
-            return $stmt->execute([
+            $stmt->execute([
                 ':Address' => $Address
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
             

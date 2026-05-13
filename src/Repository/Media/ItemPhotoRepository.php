@@ -13,29 +13,29 @@ class ItemPhotoRepository {
         $stmt->execute([
             ":Id" => $Id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByIdItem(int $IdItem): null|array {
+    public function findByItemId(int $ItemId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdItem = :IdItem"
+            WHERE ItemId = :ItemId"
         );
         $stmt->execute([
-            ":IdItem" => $IdItem
+            ":ItemId" => $ItemId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByIdOwner(int $IdOwner): null|array {
+    public function findByOwnerId(int $OwnerId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdOwner = :IdOwner"
+            WHERE OwnerId = :OwnerId"
         );
         $stmt->execute([
-            ":IdOwner" => $IdOwner
+            ":OwnerId" => $OwnerId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
@@ -49,19 +49,23 @@ class ItemPhotoRepository {
         $stmt->execute([
             ":File" => $File
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdItem, int $IdOwner, string $File): int {
+    public function add(int $ItemId, int $OwnerId, string $File): int {
+        $Car = $this->findByFile($File);
+        if(!$Car)
+            throw new \RuntimeException("Файл уже записан");
+
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdItem, IdOwner, File) 
-                VALUES (:IdItem, :IdOwner, :File)"
+                "INSERT INTO $this->tableName (ItemId, OwnerId, File) 
+                VALUES (:ItemId, :OwnerId, :File)"
             );
             $stmt->execute([
-               ':IdItem' => $IdItem,
-               ':IdOwner' => $IdOwner,
+               ':ItemId' => $ItemId,
+               ':OwnerId' => $OwnerId,
                ':File' => $File
             ]);
             return (int) $this->db->lastInsertId();
@@ -74,5 +78,4 @@ class ItemPhotoRepository {
             throw $e;
         }
     }
-    
 }

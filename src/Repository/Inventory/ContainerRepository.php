@@ -32,12 +32,7 @@ class ContainerRepository {
         return empty($result)? null : $result;
     }
 
-
-    public function add(int $Id, string $Type): bool {
-        $Container = $this->findById($Id);
-        if($Container !== null) 
-            throw new \RuntimeException("Контейнер $Id уже существует");
-        
+    public function add(int $Id, string $Type): int {
         if($this->isStateType($Type))
             throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
 
@@ -46,11 +41,16 @@ class ContainerRepository {
                 "INSERT INTO $this->tableName (Id, Type) 
                 VALUES (:Id, :Type)"
             );
-            return $stmt->execute([
+            $stmt->execute([
                 ':Id' => $Id,
                 ':Type' => $Type
             ]);
+            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+
+            if ($code === 1062)
+                throw new \RuntimeException("Контейнер $Id уже существует");
 
             throw $e;
         }
@@ -84,7 +84,7 @@ class ContainerRepository {
         }
     }
 
-    public function delete(int $Id): int {
+    public function delete(int $Id): bool {
         $stock = $this->findById($Id);
         if($stock === null)
             throw new \RuntimeException("Контейнер $Id не найден");
