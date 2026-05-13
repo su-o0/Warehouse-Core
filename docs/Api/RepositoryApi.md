@@ -39,8 +39,10 @@
 
 # *Container*
 `findById`
+`findByType`
 `add`
 `updateType`
+`delete`
 `isStateType`
 
 # *PhysicalTag*
