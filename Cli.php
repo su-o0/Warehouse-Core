@@ -10,6 +10,7 @@ $config = [
     ],    
     'table' => [
         'Location' => 'Location',
+        'Placement' => 'Placement',
         'Container' => 'Container',
         'PhysicalTag' => 'PhysicalTag',
         'Item' => 'Item',
@@ -25,6 +26,14 @@ $config = [
     ]
 ]; 
 $storage = new StorageApi($config);
+
+if (!isset($argv[1])) 
+    die("Storage API:\n".
+        "\tAddAddress <Address>\n".
+        "\tAddContainer <Address> <ContainerId> <Type>\n".
+        "\tAddStock <ContainerId> <Qcy> ?<Article>\n".
+        "\tAddPlacement <Address> <Container|Item|Stock> <Id>\n"
+    );
 
 switch($argv[1]) {
     case "AddAddress":
@@ -49,8 +58,5 @@ switch($argv[1]) {
         }
         break;
     default: 
-        echo "Storage API:\n".
-        "AddContainer <Address>\n".
-        "AddContainer <Address> <ContainerId> <Type>\n".
-        "AddStock <ContainerId> <Qcy> ?<Article>";
+        break;
 }
