@@ -19,11 +19,21 @@
 **Location** 
     *Id*
     *Address*
-**Placement**
+    *CreatedAt*
+**ContainerPlacement**
     *Id*
     *LocationId*
-    *EntityType* > (Container, Item, Stock)
-    *EntityId*
+    *ContainerId*
+    *CreatedAt*
+**ItemPlacement**
+    *Id*
+    *LocationId*
+    *ItemId*
+    *CreatedAt*
+**StockPlacement**
+    *Id*
+    *LocationId*
+    *StockId*
     *CreatedAt*
 **PhysicalTag**  
     *Id*
@@ -66,7 +76,7 @@
 # Media 
 **ItemPhoto**
     *Id*
-    *ItemID*
+    *ItemId*
     *OwnerId*
     *File*
 **StockPhoto**
@@ -83,7 +93,6 @@
 ## Audit
 **SalesArhive**
     *Id*
-    *PartId*
     *ItemId*
     *StockId*
     *Qty*
