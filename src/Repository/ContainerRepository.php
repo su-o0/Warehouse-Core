@@ -5,7 +5,7 @@ class ContainerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }
 
-    public function findById(int $Id):null|array{
+    public function findById(int $Id): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
             WHERE Id = :Id"
@@ -17,19 +17,23 @@ class ContainerRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdLocation(int $IdLocation):null|array{
+    public function findByType(int $Type): null|array {
+        if($this->isStateType($Type))
+            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
+
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdLocation = :IdLocation"
+            WHERE Type = :Type"
         );
         $stmt->execute([
-            ":IdLocation" => $IdLocation
+            ":Type" => $Type
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function add(int $Id, int $IdLocation, string $Type): bool {
+
+    public function add(int $Id, string $Type): bool {
         $Container = $this->findById($Id);
         if($Container !== null) 
             throw new \RuntimeException("Контейнер $Id уже существует");
@@ -39,19 +43,14 @@ class ContainerRepository {
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (Id, IdLocation, Type) 
-                VALUES (:Id, :IdLocation, :Type)"
+                "INSERT INTO $this->tableName (Id, Type) 
+                VALUES (:Id, :Type)"
             );
             return $stmt->execute([
                 ':Id' => $Id,
-                ':IdLocation' => $IdLocation,
                 ':Type' => $Type
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Адрес $IdLocation не найден");
 
             throw $e;
         }
@@ -85,7 +84,26 @@ class ContainerRepository {
         }
     }
 
-    public function isStateType(string $Type):bool {
+    public function delete(int $Id): int {
+        $stock = $this->findById($Id);
+        if($stock === null)
+            throw new \RuntimeException("Контейнер $Id не найден");
+        
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM $this->tableName 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id
+            ]);
+        } catch (\PDOException $e) {
+
+            throw $e;
+        }
+    }
+
+    public function isStateType(string $Type): bool {
         switch($Type) {
             case "Box": 
                 return true;
