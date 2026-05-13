@@ -37,7 +37,6 @@ Audit
 *getSells* - История продаж
 
 ## STATE
-Placement.EntityType: *Container*/*Item*/*Stock*
 Container.Type: *Box*/*Pallet*
 PhysicalTag.Status.: *Free*/*Assigned*/*Lost*/*Broken*
 Item.Status: *Active*/*Sold*/*Archived*/*Lost*
