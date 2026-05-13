@@ -2,15 +2,13 @@
 **inventory domain model**
 *Location*
 *Placement*
-*Container*
 *PhysicalTag*
+*Container*
 *Item*
 *Stock*
 *Part*
 *Car*
-*ItemPhoto*
-*StockPhoto*
-*CarPhoto*
+*Photo*
 *SalesArhive*
 *History*
 *Owner*
