@@ -54,27 +54,37 @@ Audit
 
 ## RULES
 [What is allowed]
-PhysicalTag, Container Location уникальные сущности, имеют точку входа в реальный мир
-Placement описивает расположение Container, Item, Stock
-Placement только физически хранимые объекты.
-Placement это ЕДИНСТВЕННЫЙ способ пространственного соединения
-Container, Item, Stock обязательно располагаются в одном Location 
-Container это необязательная физическая группировка
-PhysicalTag может быть только в одном Placement
-Item может быть только в одном контейнере 
-Каждый Item имеет PhysicalTag
-Item должен иметь 1 ItemPhoto 
-Stock должен иметь 1 StockPhoto 
-Car должен иметь 1 CarPhoto 
+PhysicalTag, Container, Location - уникальные сущности, имеющие точку входа в реальный мир.
 
-Salesman может: Query/Sell
-Worker может: Setup/Fill/Query/Sell/
-Admin может: всё
+Placement описывает физическое расположение объектов.
+
+Placement применяется только к физически хранимым объектам:
+Container, Item, Stock.
+
+Placement — единственный источник Location.
+
+Container — необязательная физическая группировка объектов.
+
+Container всегда имеет Placement.
+
+Item/Stock имеют либо Placement, либо ContainerId.
+
+Location Item/Stock может определяться через Container.
+
+Item имеет PhysicalTag.
+
+Item должен иметь минимум 1 ItemPhoto.
+Stock должен иметь минимум 1 StockPhoto.
+Car должен иметь минимум 1 CarPhoto.
+
+Salesman: Query/Sell
+Worker: Setup/Fill/Query/Sell
+Admin: full access
 
 ## DOMAIN MODEL 
 *Location* - Space - Площадь
-*Placement* - Ыpatial binding - Расположение
-*Container* - Ыhysical grouping - Физическая групировка 
+*Placement* - Spatial binding - Расположение
+*Container* - Shysical grouping - Физическая групировка 
 *PhysicalTag* - identity 
 *Item* - Shysical object - Обьект
 *Stock* - quantity - Куча

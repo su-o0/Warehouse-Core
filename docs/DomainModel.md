@@ -21,7 +21,7 @@
     *Address*
 **Placement**
     *Id*
-    *IdLocation*
+    *LocationId*
     *EntityType* > (Container, Item, Stock)
     *EntityId*
     *CreatedAt*
@@ -37,16 +37,18 @@
     *CreatedAt*
 **Item** 
     *Id*
-    *IdPhysicalTag*
-    *IdPart*
-    *IdCar*
+    *PhysicalTagId*
+    *ContainerId* 
+    *PartId*
+    *CarId*
     *Status* > (Active, Sold, Archived, Lost)
     *Condition* > (New, Good, Fair, Poor)
     *ConditionNote*
     *CreatedAt*
 **Stock**
     *Id*
-    *IdPart*
+    *ContainerId* 
+    *PartId*
     *Qty*
     *CreatedAt*
 
@@ -64,40 +66,40 @@
 # Media 
 **ItemPhoto**
     *Id*
-    *IdItem*
-    *IdOwner*
+    *ItemID*
+    *OwnerId*
     *File*
 **StockPhoto**
     *Id*
-    *IdStock*
-    *IdOwner*
+    *StockId*
+    *OwnerId*
     *File*
 **CarPhoto**
     *Id*
-    *IdCar*
-    *IdOwner*
+    *CarId*
+    *OwnerId*
     *File*    
 
 ## Audit
 **SalesArhive**
     *Id*
-    *IdPart*
-    *IdItem*
-    *IdStock*
+    *PartId*
+    *ItemId*
+    *StockId*
     *Qty*
-    *SaleOwner*
+    *OwnerId*
     *CreatedAt*
 **History**
     *Id*
     *Action*
-    *ActionOwner*
     *EntityType*
     *EntityId*
     *Note*
+    *OwnerId*
     *CreatedAt*
 **Owner**
     *Id*
-    *IdUser*
+    *UserId*
     *Permission* > ( admin, worker, Salesman )
     *Name*
     *CreatedAt*
