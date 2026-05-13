@@ -9,20 +9,6 @@ CREATE TABLE `Owner` (
   UNIQUE (`UserId`)
 ) ENGINE = InnoDB;
 
--- SalesArchive - Архив продаж
-CREATE TABLE `SalesArchive` (
-  `Id`  INT NOT NULL AUTO_INCREMENT,
-  `ItemId`        INT NULL,
-  `StockId`       INT NULL,
-  `Qty`           INT NULL,
-  `OwnerId`       INT NOT NULL,
-  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`),
-  FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`),
-  FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`),
-  PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
-
 -- History - История операций
 CREATE TABLE `History` (
   `Id`            INT NOT NULL AUTO_INCREMENT,
@@ -43,42 +29,6 @@ CREATE TABLE `Location` (
   `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
   UNIQUE (`Address`)
-) ENGINE = InnoDB;
-
--- Placement - Расположение Контейнера
-CREATE TABLE `ContainerPlacement` (
-  `Id`            INT NOT NULL AUTO_INCREMENT,
-  `LocationId`    INT NOT NULL,
-  `ContainerId`   INT NOT NULL,
-  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (`ContainerId`),
-  PRIMARY KEY (`Id`),
-  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
-  FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`)
-) ENGINE = InnoDB;
-
--- Placement - Расположение Элемента
-CREATE TABLE `ItemPlacement` (
-  `Id`            INT NOT NULL AUTO_INCREMENT,
-  `LocationId`    INT NOT NULL,
-  `ItemId`        INT NOT NULL,
-  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (`ContainerId`),
-  PRIMARY KEY (`ItemId`),
-  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
-  FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`)
-) ENGINE = InnoDB;
-
--- Placement - Расположение Асортимента
-CREATE TABLE `StockPlacement` (
-  `Id`            INT NOT NULL AUTO_INCREMENT,
-  `LocationId`    INT NOT NULL,
-  `StockId`       INT NOT NULL,
-  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (`StockId`),
-  PRIMARY KEY (`Id`),
-  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
-  FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`)
 ) ENGINE = InnoDB;
 
 -- Container - Контейнер
@@ -144,6 +94,56 @@ CREATE TABLE `Stock` (
   PRIMARY KEY (`Id`), 
   FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`),
   FOREIGN KEY (`PartId`)          REFERENCES `Part`(`Id`)
+) ENGINE = InnoDB;
+
+-- Placement - Расположение Контейнера
+CREATE TABLE `ContainerPlacement` (
+  `Id`            INT NOT NULL AUTO_INCREMENT,
+  `LocationId`    INT NOT NULL,
+  `ContainerId`   INT NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
+  FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`),
+  UNIQUE (`ContainerId`),
+  PRIMARY KEY (`Id`)
+) ENGINE = InnoDB;
+
+-- Placement - Расположение Элемента
+CREATE TABLE `ItemPlacement` (
+  `Id`            INT NOT NULL AUTO_INCREMENT,
+  `LocationId`    INT NOT NULL,
+  `ItemId`        INT NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
+  FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`),
+  UNIQUE (`ItemId`),
+  PRIMARY KEY (`Id`)
+) ENGINE = InnoDB;
+
+-- Placement - Расположение Асортимента
+CREATE TABLE `StockPlacement` (
+  `Id`            INT NOT NULL AUTO_INCREMENT,
+  `LocationId`    INT NOT NULL,
+  `StockId`       INT NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`),
+  FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`),
+  UNIQUE (`StockId`),
+  PRIMARY KEY (`Id`)
+) ENGINE = InnoDB;
+
+-- SalesArchive - Архив продаж
+CREATE TABLE `SalesArchive` (
+  `Id`  INT NOT NULL AUTO_INCREMENT,
+  `ItemId`        INT NULL,
+  `StockId`       INT NULL,
+  `Qty`           INT NULL,
+  `OwnerId`       INT NOT NULL,
+  `CreatedAt`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`),
+  FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`),
+  FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`),
+  PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB;
 
 -- ItemPhoto - Фото Элемента
