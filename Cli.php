@@ -1,38 +1,17 @@
 <?php
 use SuO0\StorageApi\StorageApi;
 require 'vendor/autoload.php';
-$config = [
-    'db' => [
-        'host' => '127.0.0.1',
-        'dbname' => 'Storage',
-        'user' => 'devuser',
-        'password' => 'devnon',
-    ],    
-    'table' => [
-        'Location' => 'Location',
-        'Placement' => 'Placement',
-        'Container' => 'Container',
-        'PhysicalTag' => 'PhysicalTag',
-        'Item' => 'Item',
-        'Stock' => 'Stock',
-        'Part' => 'Part',
-        'Car' => 'Car',
-        'ItemPhoto' => 'ItemPhoto',
-        'StockPhoto' => 'StockPhoto',
-        'CarPhoto' => 'CarPhoto',
-        'SalesArhive' => 'SalesArhive',
-        'History' => 'History',
-        'Owner' => 'Owner',
-    ]
-]; 
+$config = require 'config.php';
 $storage = new StorageApi($config);
 
 if (!isset($argv[1])) 
     die("Storage API:\n".
         "\tAddAddress <Address>\n".
-        "\tAddContainer <Address> <ContainerId> <Type>\n".
-        "\tAddStock <ContainerId> <Qcy> ?<Article>\n".
-        "\tAddPlacement <Address> <Container|Item|Stock> <Id>\n"
+        "\tAddContainer <ContainerId> [Box|Pallet]\n".
+        "\tAddPhysicalTag <Id>\n".
+        "\tAddPlacement <Address> [Container|Item|Stock] <Id>\n".
+        "\tAddItem <PhysicalTag> <Article> ?<IdCar>\n".
+        "\tAddStock <ContainerId> <Qcy> ?<Article>\n"
     );
 
 switch($argv[1]) {
@@ -50,9 +29,30 @@ switch($argv[1]) {
             echo $e->getMessage()."\n";
         }
         break;
+    case "AddPhysicalTag":
+        try {
+            $storage->AddPhysicalTag($argv[2]);
+        }catch(\RuntimeException $e) {
+            echo $e->getMessage()."\n";
+        }
+        break;
+    case "AddPlacement":
+        try {
+            $storage->AddPlacement($argv[2], $argv[3], $argv[4]);
+        }catch(\RuntimeException $e) {
+            echo $e->getMessage()."\n";
+        }
+        break;
     case "AddStock":
         try {
             $storage->AddStock($argv[2], $argv[3], isset($argv[4])?$argv[4]:null);
+        }catch(\RuntimeException $e) {
+            echo $e->getMessage()."\n";
+        }
+        break;
+    case "AddItem":
+        try {
+            $storage->AddItem($argv[2], $argv[3] );
         }catch(\RuntimeException $e) {
             echo $e->getMessage()."\n";
         }
