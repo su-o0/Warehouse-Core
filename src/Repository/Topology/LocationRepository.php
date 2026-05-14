@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Topology;
+use SuO0\StorageApi\Exception\StorageException;
 
 class LocationRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -43,7 +44,7 @@ class LocationRepository {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Адресс $Address уже существует");
+                throw StorageException::LOCATION_ALREADY_EXISTS();
 
             throw $e;
         }

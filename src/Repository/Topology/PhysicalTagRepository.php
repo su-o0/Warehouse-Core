@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Topology;
+use SuO0\StorageApi\Exception\StorageException;
 
 class PhysicalTagRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -30,12 +31,8 @@ class PhysicalTagRepository {
     }
 
     public function add(int $Id, string $Status): int {
-        $PhysicalTag = $this->findById($Id);
-        if ($PhysicalTag !== null) 
-            throw new \RuntimeException("Бирка $Id существует");
-
         if(!$this->isStateStatus($Status))
-            throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
+            throw StorageException::INVALID_PHYSICAL_TAG_STATUS();
 
         try {
             $stmt = $this->db->prepare(
@@ -51,7 +48,7 @@ class PhysicalTagRepository {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Физический идентификатор $Id уже существует");            
+                throw StorageException::PHYSICAL_TAG_ALREADY_EXISTS();            
             
             throw $e;
         }
@@ -63,8 +60,8 @@ class PhysicalTagRepository {
             throw new \RuntimeException("Бирка $Id не найдена");
 
         if(!$this->isStateStatus($Status))
-            throw new \RuntimeException("Статут физического идентификатора должен быть Free|Assigned|Lost|Broken");            
-
+            throw StorageException::INVALID_PHYSICAL_TAG_STATUS();
+        
         try {
             $stmt = $this->db->prepare(
                  "UPDATE $this->tableName 
@@ -79,7 +76,7 @@ class PhysicalTagRepository {
             $code = $e->errorInfo[1];
             
             if ($code === 1062)
-                throw new \RuntimeException("Физический идентификатор $Id уже существует");            
+                throw StorageException::PHYSICAL_TAG_ALREADY_EXISTS();
             
             throw $e;
         }

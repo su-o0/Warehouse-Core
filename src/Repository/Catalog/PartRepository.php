@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Catalog;
+use SuO0\StorageApi\Exception\StorageException;
 
 class PartRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -56,10 +57,10 @@ class PartRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException("Артикул $Article уже существует");
+                throw StorageException::PART_ALREADY_EXISTS();
 
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -67,7 +68,7 @@ class PartRepository {
     public function updateName(int $Id, string $Name): bool {
         $container = $this->findById($Id);
         if($container === null) 
-            throw new \RuntimeException("Часть $Id не найдена");
+            throw StorageException::PART_NOT_FOUND();
 
         try{
             $stmt = $this->db->prepare(

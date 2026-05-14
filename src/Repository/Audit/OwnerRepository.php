@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Audit;
+use SuO0\StorageApi\Exception\StorageException;
 
 class OwnerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -29,7 +30,7 @@ class OwnerRepository {
 
     public function findByPermission(string $Permission): null|array {
         if(!$this->isStatePermission($Permission))
-                throw new \RuntimeException("Права должни быть Admin|Worker");
+            throw StorageException::OWNER_INVALID_PERMISSION();
 
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -53,11 +54,11 @@ class OwnerRepository {
     public function add(int $IdUser, string $Permission, string $Name): int {
         $owner = $this->findByIdUser($IdUser);
         if($owner !== null) 
-            throw new \RuntimeException("Пользователь существует");
+            throw StorageException::OWNER_ALREADY_EXISTS();
     
         if(!$this->isStatePermission($Permission))
-                throw new \RuntimeException("Права должни быть Admin|Worker");
-      
+            throw StorageException::OWNER_INVALID_PERMISSION();
+
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (IdUser, Permission, Name) 
@@ -73,7 +74,7 @@ class OwnerRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             
             throw $e;
         }
@@ -82,10 +83,10 @@ class OwnerRepository {
     public function updatePermission(int $Id, string $Permission):bool {
         $owner = $this->findById($Id);
         if($owner === null) 
-            throw new \RuntimeException("Пользователь $Id не найден");
+            throw StorageException::OWNER_NOT_FOUND();
         
         if(!$this->isStatePermission($Permission))
-                throw new \RuntimeException("Права должни быть Admin|Worker");
+            throw StorageException::OWNER_INVALID_PERMISSION();
 
         try {
             $stmt = $this->db->prepare(
@@ -98,10 +99,6 @@ class OwnerRepository {
                 ':Permission' => $Permission
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
             throw $e;
         }
     }

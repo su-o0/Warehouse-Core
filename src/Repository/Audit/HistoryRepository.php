@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Audit;
+use SuO0\StorageApi\Exception\StorageException;
 
 class HistoryRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -23,7 +24,7 @@ class HistoryRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }   

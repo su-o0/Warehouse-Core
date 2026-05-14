@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Topology;
+use SuO0\StorageApi\Exception\StorageException;
 
 class ItemPlacementRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -56,7 +57,7 @@ class ItemPlacementRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -64,7 +65,7 @@ class ItemPlacementRepository {
     public function delete(int $Id): int{
         $placement = $this->findById($Id);
         if($placement === null)
-            throw new \RuntimeException("Расположение не найдено");
+            throw StorageException::ITEM_PLACEMENT_NOT_FOUND();
         
         try {
             $stmt = $this->db->prepare(

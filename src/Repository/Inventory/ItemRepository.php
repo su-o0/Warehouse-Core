@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Inventory;
+use SuO0\StorageApi\Exception\StorageException;
 
 class ItemRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -55,8 +56,8 @@ class ItemRepository {
 
     public function findByStatus(string $Status): null|array {
         if(!$this->isStateStatus($Status))
-            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
-    
+            throw StorageException::ITEM_INVALID_STATUS();
+
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
             WHERE Status = :Status"
@@ -70,7 +71,7 @@ class ItemRepository {
 
     public function findByCondition(string $Condition): null|array {
         if(!$this->isStateCondition($Condition))
-            throw new \RuntimeException("Состояние $Condition должен быть New|Good|Fair|Poor");
+            throw StorageException::ITEM_INVALID_CONDITION();
     
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -85,7 +86,7 @@ class ItemRepository {
 
     public function findByPhysicalTagIdStatus(int $PhysicalTagId, string $Status): null|array {
         if(!$this->isStateStatus($Status))
-            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
+            throw StorageException::ITEM_INVALID_STATUS();
     
         $stmt = $this->db->prepare(
             "SELECT * FROM $this->tableName 
@@ -100,7 +101,7 @@ class ItemRepository {
 
     public function add(int $PhysicalTagId, int $PartId, ?int $CarId = null): int {
         if ($this->findByPhysicalTagIdStatus($PhysicalTagId, "Active") !== null)
-            throw new \RuntimeException("Бирка $PhysicalTagId уже занята");
+            throw StorageException::ITEM_PHYSICAL_TAG_ALREADY_USED();
 
         try {
             $stmt = $this->db->prepare(
@@ -119,7 +120,7 @@ class ItemRepository {
             $code = $e->errorInfo[1];
             
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -127,7 +128,7 @@ class ItemRepository {
     public function updatePhysicalTagId(int $Id, int $PhysicalTagId): bool {
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare( 
@@ -143,7 +144,7 @@ class ItemRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Бирка $PhysicalTagId не найдена");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -151,7 +152,7 @@ class ItemRepository {
     public function updateContainerId(int $Id, int $ContainerId): bool {
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare( 
@@ -167,7 +168,7 @@ class ItemRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Контейнер $ContainerId не найдена");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -175,7 +176,7 @@ class ItemRepository {
     public function updatePartId(int $Id, int $IdPart): bool{
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
@@ -191,7 +192,7 @@ class ItemRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Часть $IdPart не найдена");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -199,7 +200,7 @@ class ItemRepository {
     public function updateCarId(int $Id, int $CarId): bool{
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
@@ -215,7 +216,7 @@ class ItemRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Авто $CarId не найдено");
+                throw StorageException::DB_RELATION_ERROR();
             throw $e;
         }
     }
@@ -223,10 +224,10 @@ class ItemRepository {
     public function updateStatus(int $Id, string $Status): bool {
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         if(!$this->isStateStatus($Status))
-            throw new \RuntimeException("Статус $Status должен быть Active|Sold|Archived|Lost");
+            throw StorageException::ITEM_INVALID_STATUS();
 
         try {
             $stmt = $this->db->prepare(
@@ -247,10 +248,10 @@ class ItemRepository {
     public function updateCondition(int $Id, string $Condition, ?string $ConditionNote = null): bool{
         $item = $this->findById($Id);
         if($item === null) 
-            throw new \RuntimeException("Элемент $Id не найден");
+            throw StorageException::ITEM_NOT_FOUND();
 
         if(!$this->isStateCondition($Condition))
-            throw new \RuntimeException("Состояние должно быть New|Good|Fair|Poor");
+            throw StorageException::ITEM_INVALID_CONDITION();
 
         try {
             

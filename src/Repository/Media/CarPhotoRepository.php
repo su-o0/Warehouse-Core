@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Media;
+use SuO0\StorageApi\Exception\StorageException;
 
 class CarPhotoRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -56,7 +57,7 @@ class CarPhotoRepository {
     public function add(int $CarId, int $OwnerId, string $File): int {
         $Car = $this->findByFile($File);
         if(!$Car)
-            throw new \RuntimeException("Файл уже записан");
+            throw StorageException::CAR_PHOTO_ALREADY_EXISTS();
 
         try {
             $stmt = $this->db->prepare(
@@ -73,7 +74,7 @@ class CarPhotoRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Ошибка связи данных");
+                throw StorageException::DB_RELATION_ERROR();
             
             throw $e;
         }

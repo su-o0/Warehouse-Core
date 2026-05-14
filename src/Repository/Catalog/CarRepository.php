@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Catalog;
+use SuO0\StorageApi\Exception\StorageException;
 
 class CarRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -43,7 +44,7 @@ class CarRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException("Vin уже существует");
+                throw StorageException::CAR_ALREADY_EXISTS();
 
             throw $e;
         }

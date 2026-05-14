@@ -1,5 +1,6 @@
 <?php
 namespace SuO0\StorageApi\Repository\Inventory;
+use SuO0\StorageApi\Exception\StorageException;
 
 class ContainerRepository {
     public function __construct(private \PDO $db, private string $tableName) {
@@ -19,7 +20,7 @@ class ContainerRepository {
 
     public function findByType(int $Type): null|array {
         if($this->isStateType($Type))
-            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
+            throw StorageException::CONTAINER_INVALID_TYPE();
 
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
@@ -34,7 +35,7 @@ class ContainerRepository {
 
     public function add(int $Id, string $Type): int {
         if($this->isStateType($Type))
-            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
+            throw StorageException::CONTAINER_INVALID_TYPE();
 
         try {
             $stmt = $this->db->prepare(
@@ -50,7 +51,7 @@ class ContainerRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1062)
-                throw new \RuntimeException("Контейнер $Id уже существует");
+                throw StorageException::CONTAINER_ALREADY_EXISTS();
 
             throw $e;
         }
@@ -59,10 +60,10 @@ class ContainerRepository {
     public function updateType(int $Id, string $Type): bool {
         $container = $this->findById($Id);
         if($container === null) 
-            throw new \RuntimeException("Контейнер $Id уже существует");
+                throw StorageException::CONTAINER_ALREADY_EXISTS();
 
         if($this->isStateType($Type))
-            throw new \RuntimeException("Тип контейнера $Type должен быть Box|Pallet");
+            throw StorageException::CONTAINER_INVALID_TYPE();
 
         try{
             $stmt = $this->db->prepare(
@@ -78,7 +79,7 @@ class ContainerRepository {
             $code = $e->errorInfo[1];
 
             if ($code === 1452)
-                throw new \RuntimeException("Контейнер $Id не найден");
+                throw StorageException::CONTAINER_NOT_FOUND();
 
             throw $e;
         }
@@ -87,7 +88,7 @@ class ContainerRepository {
     public function delete(int $Id): bool {
         $stock = $this->findById($Id);
         if($stock === null)
-            throw new \RuntimeException("Контейнер $Id не найден");
+            throw StorageException::CONTAINER_NOT_FOUND();
         
         try {
             $stmt = $this->db->prepare(
