@@ -58,10 +58,6 @@ class ContainerRepository {
     }
     
     public function updateType(int $Id, string $Type): bool {
-        $container = $this->findById($Id);
-        if($container === null) 
-                throw StorageException::CONTAINER_ALREADY_EXISTS();
-
         if($this->isStateType($Type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 

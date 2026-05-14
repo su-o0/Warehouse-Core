@@ -10,7 +10,7 @@ class StorageApi {
     private SetupScenario $scenario;
 
     public function __construct(array $config) {
-        $this->repo = new SetupRepository(Connection::get($config['db']), $config['table']);
+        $this->repo = new SetupRepository(Connection::get($config['db']), $config['tables']);
         $this->scenario = new SetupScenario($this->repo);
     }
 
