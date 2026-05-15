@@ -37,6 +37,8 @@ class SetupService {
             $this->repo->PhysicalTag
         );
         $this->AddItem = new AddItemService(
+            $this->repo->Location,
+            $this->repo->ItemPlacement,
             $this->repo->PhysicalTag,
             $this->repo->Item,
             $this->repo->Part,

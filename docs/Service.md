@@ -2,7 +2,7 @@
 scenario - UseCases 
 
 Атомарные бизнес операции 
-
+```
 SetupService
 ├── Setup
 │   ├── addAddress
@@ -40,7 +40,7 @@ SetupService
     ├── addOwner
     ├── getHistory
     └── getSales
-
+```
 
 ```
                         addOwner
@@ -49,7 +49,7 @@ SetupService
                             /\
                            Audit
                              |
-     ___________________ SetupScenario ___________________
+     ___________________ SetupService ___________________
     /          |             |                  |         \
   Setup        |         Placement              |      Movement
     \/         |             \/                 |         \/
