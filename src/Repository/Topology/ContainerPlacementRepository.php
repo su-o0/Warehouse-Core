@@ -30,7 +30,7 @@ class ContainerPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByContainerId(string $ContainerId): null|array {
+    public function findByContainerId(int $ContainerId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
             WHERE ContainerId = :ContainerId"
@@ -42,7 +42,7 @@ class ContainerPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $LocationId, string $ContainerId): int{
+    public function add(int $LocationId, int $ContainerId): int{
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (LocationId, ContainerId) 
@@ -53,10 +53,8 @@ class ContainerPlacementRepository {
                 ':ContainerId' => $ContainerId
             ]);
             return (int) $this->db->lastInsertId();
-
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
-
             if ($code === 1452)
                 throw StorageException::DB_RELATION_ERROR();
             throw $e;

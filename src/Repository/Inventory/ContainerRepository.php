@@ -19,7 +19,7 @@ class ContainerRepository {
     }
 
     public function findByType(int $Type): null|array {
-        if($this->isStateType($Type))
+        if(!$this->isValidType($Type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         $stmt = $this->db->prepare( 
@@ -34,7 +34,7 @@ class ContainerRepository {
     }
 
     public function add(int $Id, string $Type): int {
-        if($this->isStateType($Type))
+        if(!$this->isValidType($Type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         try {
@@ -58,7 +58,7 @@ class ContainerRepository {
     }
     
     public function updateType(int $Id, string $Type): bool {
-        if($this->isStateType($Type))
+        if(!$this->isValidType($Type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         try{
@@ -82,8 +82,8 @@ class ContainerRepository {
     }
 
     public function delete(int $Id): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+        $Container = $this->findById($Id);
+        if($Container === null)
             throw StorageException::CONTAINER_NOT_FOUND();
         
         try {
@@ -100,7 +100,7 @@ class ContainerRepository {
         }
     }
 
-    public function isStateType(string $Type): bool {
+    public function isValidType(string $Type): bool {
         switch($Type) {
             case "Box": 
                 return true;

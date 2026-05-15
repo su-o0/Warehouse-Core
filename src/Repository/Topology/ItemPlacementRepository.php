@@ -30,7 +30,7 @@ class ItemPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByItemId(string $ItemId): null|array {
+    public function findByItemId(int $ItemId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
             WHERE ItemId = :ItemId"
@@ -42,7 +42,7 @@ class ItemPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $LocationId, string $ItemId): int {
+    public function add(int $LocationId, int $ItemId): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO $this->tableName (LocationId, ItemId) 

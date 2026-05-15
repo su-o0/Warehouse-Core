@@ -30,6 +30,18 @@ class ItemRepository {
         return empty($result) ? null : $result;
     }
 
+    public function findByContainerId(int $ContainerId): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName 
+            WHERE ContainerId = :ContainerId"
+        );
+        $stmt->execute([
+            ":ContainerId" => $ContainerId
+        ]);
+        $result = $stmt->fetchAll();
+        return empty($result)? null : $result;
+    }
+
     public function findByPartId(int $PartId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 

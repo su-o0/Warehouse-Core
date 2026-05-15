@@ -13,7 +13,7 @@ class StockRepository {
         $stmt->execute([
             ":Id" => $Id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -24,6 +24,18 @@ class StockRepository {
         );
         $stmt->execute([
             ":PartId" => $PartId
+        ]);
+        $result = $stmt->fetchAll();
+        return empty($result)? null : $result;
+    }
+
+    public function findByContainerId(int $ContainerId): null|array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM $this->tableName
+            WHERE ContainerId = :ContainerId"
+        );
+        $stmt->execute([
+            ":ContainerId" => $ContainerId
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;

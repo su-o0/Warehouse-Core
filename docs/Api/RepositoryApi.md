@@ -32,13 +32,13 @@
 
 ## Audit 
 [History](#history)
-
+ 
 [Sales](#sales)
 
 [Owner](#owner)
 
 
-
+isState -> isValid
 
 ------
 
@@ -208,7 +208,7 @@
 
 ---
 
-### `findByItemId(string $StockId)`
+### `findByStockId(string $StockId)`
 #### Return
 - `null` — not found
 - `array` — stock placement data
@@ -220,6 +220,7 @@
 - `int` — created stockPlacement Id
 #### Throws 
 - `StorageException` - `DB_RELATION_ERROR`
+
 ---
 
 ### `delete(int $Id)`
@@ -276,7 +277,7 @@
 
 ---
 
-### `isStateType(string $Type)`
+### `isValidType(string $Type)`
 #### Return 
 - `bool` - true on success, false on failure
 
@@ -294,6 +295,13 @@
 ---
 
 ### `findByPhysicalTagId(int $PhysicalTagId)`
+#### Return 
+- `null` — not found
+- `array` — items data
+
+---
+
+### `findByContainerId(int $ContainerId)`
 #### Return 
 - `null` — not found
 - `array` — items data
@@ -419,6 +427,10 @@
 ---
 
 ### `findByPartId(int $PartId)`
+
+---
+
+### `findByContainerId(int $ContainerId)`
 
 ---
 
