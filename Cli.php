@@ -17,78 +17,9 @@ if (!isset($argv[1]))
         "\tPlaceItemToContainer <PhysicalTagId> <ContainerId> \n"
     );
 
-switch($argv[1]) {
-    case "AddAddress":
-        try{
-            $storage->AddAddress($argv[2]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "AddContainer":
-        try {
-            $storage->AddContainer($argv[2], $argv[3]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "AddPhysicalTag":
-        try {
-            $storage->AddPhysicalTag($argv[2]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "AddPlacement":
-        try {
-            $storage->AddPlacement($argv[2], $argv[3], $argv[4]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "AddStock":
-        try {
-            $storage->AddStock($argv[2], $argv[3], isset($argv[4])?$argv[4]:null);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "AddItem":
-        try {
-            $storage->AddItem($argv[2], $argv[3], $argv[4], isset($argv[5])?$argv[5]:null);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "PlaceContainerToLocation":
-        try {
-            $storage->PlaceContainerToLocation($argv[2], $argv[3]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "PlaceStockToContainer":
-        try {
-            $storage->PlaceStockToContainer($argv[2], $argv[3]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    case "PlaceItemToContainer":
-        try {
-            $storage->PlaceItemToContainer($argv[2], $argv[3]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-
-    case "GetAddressContent":
-        try {
-            $storage->GetAddressContent($argv[2]);
-        }catch(\RuntimeException $e) {
-            echo $e->getMessage()."\n";
-        }
-        break;
-    default: 
-        break;
+try{
+    $call = $argv[1]??null;
+    $storage->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
+}catch(\RuntimeException $e) {
+    echo $e->getMessage()."\n";
 }

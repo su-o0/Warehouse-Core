@@ -10,7 +10,7 @@ use SuO0\StorageApi\Repository\Inventory\StockRepository;
 use SuO0\StorageApi\Repository\Catalog\PartRepository;
 
 
-class GetAddressContentService {
+class GetLocationContentService {
     public function __construct(
         public LocationRepository $Location,
         public ContainerPlacementRepository $ContainerPlacement,

@@ -1,33 +1,35 @@
 <?php
 namespace SuO0\StorageApi\Bootstrap;
 
-use SuO0\StorageApi\Service\Setup\AddAddressService;
+use SuO0\StorageApi\Service\Setup\AddLocationService;
 use SuO0\StorageApi\Service\Setup\AddContainerService;
 use SuO0\StorageApi\Service\Setup\AddPhysicalTagService;
 use SuO0\StorageApi\Service\Setup\AddItemService;
 use SuO0\StorageApi\Service\Setup\AddStockService;
 
-use SuO0\StorageApi\Service\Query\GetAddressContentService;
+use SuO0\StorageApi\Service\Query\GetAllLocationService;
+use SuO0\StorageApi\Service\Query\GetLocationContentService;
 
 use SuO0\StorageApi\Service\Placement\PlaceContainerToLocationService;
 use SuO0\StorageApi\Service\Placement\PlaceItemToContainerService;
 use SuO0\StorageApi\Service\Placement\PlaceStockToContainerService;
 
 class SetupService {
-    public AddAddressService $AddAddress;
+    public AddLocationService $AddLocation;
     public AddContainerService $AddContainer;
     public AddPhysicalTagService $AddPhysicalTag;
     public AddItemService $AddItem;
     public AddStockService $AddStock;
 
-    public GetAddressContentService $GetAddressContent;
+    public GetAllLocationService $GetAllLocation;
+    public GetLocationContentService $GetLocationContent;
 
     public PlaceContainerToLocationService $PlaceContainerToLocation;
     public PlaceItemToContainerService $PlaceItemToContainer;
     public PlaceStockToContainerService $PlaceStockToContainer;
 
     public function __construct(private SetupRepository $repo) {
-        $this->AddAddress = new AddAddressService(
+        $this->AddLocation = new AddLocationService(
             $this->repo->Location
         );
         $this->AddContainer = new AddContainerService(
@@ -51,8 +53,11 @@ class SetupService {
             $this->repo->Part,
         );
 
+        $this->GetAllLocation = new GetAllLocationService(
+            $this->repo->Location
+        );
 
-        $this->GetAddressContent = new GetAddressContentService(
+        $this->GetLocationContent = new GetLocationContentService(
             $this->repo->Location,
             $this->repo->ContainerPlacement,
             $this->repo->ItemPlacement,

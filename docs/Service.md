@@ -30,7 +30,8 @@ SetupService
 │   └── returnItem
 │
 ├── Query
-│   ├── getAddressContent
+│   ├── getAllLocation
+│   ├── getLocationContent
 │   ├── getContainerContent
 │   ├── findItem
 │   ├── findStock

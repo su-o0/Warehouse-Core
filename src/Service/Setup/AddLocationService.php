@@ -3,7 +3,7 @@ namespace SuO0\StorageApi\Service\Setup;
 
 use SuO0\StorageApi\Repository\Topology\LocationRepository;
         
-class AddAddressService {
+class AddLocationService {
     public function __construct(
         public LocationRepository $Location
         ) {
