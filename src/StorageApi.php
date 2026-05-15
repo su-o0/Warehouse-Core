@@ -3,7 +3,7 @@ namespace SuO0\StorageApi;
 
 use SuO0\StorageApi\Connection\Connection;
 use SuO0\StorageApi\Bootstrap\SetupRepository;
-use SuO0\StorageApi\Bootstrap\SetupScenario;
+use SuO0\StorageApi\Bootstrap\SetupService;
 
 class StorageApi {
     private SetupRepository $repo;

@@ -9,7 +9,6 @@ if (!isset($argv[1]))
         "\tAddAddress <Address>\n".
         "\tAddContainer <ContainerId> [Box|Pallet]\n".
         "\tAddPhysicalTag <Id>\n".
-        "\tAddPlacement <Address> [Container|Item|Stock] <Id>\n".
         "\tAddItem <PhysicalTag> <Article> ?<IdCar>\n".
         "\tAddStock <Address> <Qcy> ?<Article>\n".
         "\tGetAddressContent <Address>\n".
@@ -61,7 +60,13 @@ switch($argv[1]) {
             echo $e->getMessage()."\n";
         }
         break;
-
+    case "PlaceContainerToLocation":
+        try {
+            $storage->PlaceContainerToLocation($argv[2], $argv[3]);
+        }catch(\RuntimeException $e) {
+            echo $e->getMessage()."\n";
+        }
+        break;
     case "PlaceStockToContainer":
         try {
             $storage->PlaceStockToContainer($argv[2], $argv[3]);
@@ -69,6 +74,14 @@ switch($argv[1]) {
             echo $e->getMessage()."\n";
         }
         break;
+    case "PlaceItemToContainer":
+        try {
+            $storage->PlaceItemToContainer($argv[2], $argv[3]);
+        }catch(\RuntimeException $e) {
+            echo $e->getMessage()."\n";
+        }
+        break;
+
     case "GetAddressContent":
         try {
             $storage->GetAddressContent($argv[2]);

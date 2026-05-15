@@ -12,12 +12,12 @@ class PlaceContainerToLocationService {
         private ContainerRepository $Container
     ) { }
 
-    public function execute(int $ContainerId, int $LocationId): void {
-        echo "Размещение контейнера $ContainerId в локацию $LocationId\n";      
+    public function execute(int $ContainerId, string $Address): void {
+        echo "Размещение контейнера $ContainerId в локацию $Address\n";      
 
-        $LocationEntity = $this->Location->findById($LocationId);
+        $LocationEntity = $this->Location->findByAddress($Address);
         if($LocationEntity === null)
-            throw new \RuntimeException("Локация $LocationId не существует");
+            throw new \RuntimeException("Локация $Address не существует");
 
         $ContainerEntity = $this->Container->findById($ContainerId);
         if($ContainerEntity === null)
@@ -26,7 +26,7 @@ class PlaceContainerToLocationService {
         if($ContainerPlacementEntity !== null)
             throw new \RuntimeException("Контейнер $ContainerId уже размещен");
 
-        $this->ContainerPlacement->add($LocationId, $ContainerId);  
-        echo "Контейнер $ContainerId успешно размещен в локацию $LocationId\n";
+        $this->ContainerPlacement->add($LocationEntity['Id'], $ContainerId);  
+        echo "Контейнер $ContainerId успешно размещен в локацию $Address\n";
     }
 }   

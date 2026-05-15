@@ -5,7 +5,6 @@ use SuO0\StorageApi\Service\Setup\AddAddressService;
 use SuO0\StorageApi\Service\Setup\AddContainerService;
 use SuO0\StorageApi\Service\Setup\AddPhysicalTagService;
 use SuO0\StorageApi\Service\Setup\AddItemService;
-use SuO0\StorageApi\Service\Setup\AddPlacementService;
 use SuO0\StorageApi\Service\Setup\AddStockService;
 
 use SuO0\StorageApi\Service\Query\GetAddressContentService;
@@ -20,7 +19,6 @@ class SetupService {
     public AddPhysicalTagService $AddPhysicalTag;
     public AddItemService $AddItem;
     public AddStockService $AddStock;
-    public AddPlacementService $AddPlacement;
 
     public GetAddressContentService $GetAddressContent;
 
@@ -37,15 +35,6 @@ class SetupService {
         );
         $this->AddPhysicalTag = new AddPhysicalTagService(
             $this->repo->PhysicalTag
-        );
-        $this->AddPlacement = new AddPlacementService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->ItemPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->Container,
-            $this->repo->Stock,
-            $this->repo->Item
         );
         $this->AddItem = new AddItemService(
             $this->repo->PhysicalTag,
