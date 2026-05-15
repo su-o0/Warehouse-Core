@@ -66,6 +66,10 @@ isState -> isValid
 #### Throws
 - `StorageException` — `LOCATION_ALREADY_EXISTS`
 
+---
+### `getAll()` 
+#### Return
+- `array` — All Location Id
 
 ------ 
 

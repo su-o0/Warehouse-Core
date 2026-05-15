@@ -49,4 +49,12 @@ class LocationRepository {
             throw $e;
         }
     }
+
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM $this->tableName"
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
