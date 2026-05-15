@@ -26,7 +26,7 @@ class PlaceItemToContainerService {
         if($ItemEntity === null)
             throw new \RuntimeException("Предмет $PhysicalTagId не существует");
         
-        $ItemPlacementEntity = $this->ItemPlacement->findByItemId($ItemEntity['Id']);
+        $ItemPlacementEntity = $this->ItemPlacement->findByItemId($ItemEntity[0]['Id']);
         if($ItemPlacementEntity === null) 
             throw new \RuntimeException("Предмет $PhysicalTagId уже размещен");
 
@@ -39,7 +39,7 @@ class PlaceItemToContainerService {
             throw new \RuntimeException("Контейнер $ContainerId не размещен");
 
         $this->ItemPlacement->delete($ItemPlacementEntity['Id']);
-        $this->Item->updateContainerId($ItemEntity['Id'], $ContainerId);
+        $this->Item->updateContainerId($ItemEntity[0]['Id'], $ContainerId);
         echo "Предмет $PhysicalTagId успешно размещен в контейнер $ContainerId\n";
     }
 }
