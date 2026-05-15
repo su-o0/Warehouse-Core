@@ -102,16 +102,17 @@ class ItemRepository {
     
         $stmt = $this->db->prepare(
             "SELECT * FROM $this->tableName 
-            WHERE PhysicalTagId = :PhysicalTagId AND Status = 'Active'"
+            WHERE PhysicalTagId = :PhysicalTagId AND Status = :Status"
         );
         $stmt->execute([
-            ":PhysicalTagId" => $PhysicalTagId
+            ":PhysicalTagId" => $PhysicalTagId,
+            ":Status" => $Status
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
         return empty($result) ? null : $result;
     }
 
-    public function add(int $PhysicalTagId, int $PartId, ?int $CarId = null): int {
+    public function add(int $PhysicalTagId, ?int $PartId = null, ?int $CarId = null): int {
         if ($this->findByPhysicalTagIdStatus($PhysicalTagId, "Active") !== null)
             throw StorageException::ITEM_PHYSICAL_TAG_ALREADY_USED();
 
@@ -120,7 +121,7 @@ class ItemRepository {
                 "INSERT INTO $this->tableName 
                 (PhysicalTagId, PartId, CarId) 
                 VALUES 
-                (:PhysicalTagId, :IdPart, :CarId)"    
+                (:PhysicalTagId, :PartId, :CarId)"    
             );
             $stmt->execute([
                 ':PhysicalTagId'    => $PhysicalTagId,
