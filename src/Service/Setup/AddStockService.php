@@ -28,7 +28,7 @@ class AddStockService {
         // if($Stock !== null)
         //     throw new \RuntimeException("Асортимент с артикулом $Article уже существует");    
         
-        $StockId = $this->Stock->add($Qcy, $Part['Id']);
+        $StockId = $this->Stock->add($Qcy, $Part['Id'] ?? null);
 
         $this->StockPlacement->add($Location['Id'], $StockId);
 
