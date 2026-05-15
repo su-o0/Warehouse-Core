@@ -38,18 +38,18 @@ class GetAddressContentService {
                 echo "\t- Контейнер " . $ContainerPlacement['ContainerId'] . "\n";
                 $StocksInContainer = $this->Stock->findByContainerId($ContainerPlacement['ContainerId']);
                 if($StocksInContainer !== null) {
-                    foreach($StocksInContainer as $StockPlacement) {
-                        echo "\t\tСток " . $this->Part->findById($StockPlacement['StockId'])['Article'] . "\n";
-                        echo "\t\tКоличество: " . $StockPlacement['Qty'] . "\n";
+                    foreach($StocksInContainer as $Stock) {
+                        $Stock = $this->Stock->findById($Stock['Id']);    
+                        echo "\t\t".(($Stock['PartId'] == null)? "Без артикула" : $this->Part->findById($Stock['PartId'])['Article']) . " - Количество: " . $Stock['Qty'] . "\n";
                     }
                 }
                 
-                
                 $ItemPlacementsInContainer = $this->Item->findByContainerId($ContainerPlacement['ContainerId']);
                 if($ItemPlacementsInContainer !== null) {
-                    echo "\tПредметы:\n";
                     foreach($ItemPlacementsInContainer as $ItemPlacement) {
-                        echo " - Предмет " . $this->Part->findById($ItemPlacement['ItemId'])['Article'] . "\n";
+                        echo "\t\t Бирка " . $ItemPlacement['PhysicalTagId'] 
+                        . " - Предмет " . ($ItemPlacement['PartId'] ? $this->Part->findById($ItemPlacement['PartId'])['Article'] : "Без артикула") 
+                        . "\n";
                     }
                 }
             }
@@ -57,14 +57,18 @@ class GetAddressContentService {
         if($ItemPlacements !== null) {
             echo "Предметы на адресе:\n";
             foreach($ItemPlacements as $ItemPlacement) {
-                echo " - Предмет " . $this->Part->findById($ItemPlacement['ItemId'])['Article'] . "\n";    
+                $Item = $this->Item->findById($ItemPlacement['ItemId']);
+                echo "\t Бирка " . $Item['PhysicalTagId'] 
+                    . " - Предмет " . ($Item['PartId'] ? $this->Part->findById($Item['PartId'])['Article'] : "Без артикула") 
+                    . "\n";
             }
         }
         if($StockPlacements !== null) {
             echo "Стоки на адресе:\n";
             foreach($StockPlacements as $StockPlacement) {
-                $Stock = $this->Stock->findById($StockPlacement['StockId']);
-                echo " - Сток " . $this->Part->findById($Stock['PartId'])['Article'] . " - Количество: " . $Stock['Qty'] . "\n";
+                $Stock = $this->Stock->findById($StockPlacement['StockId']);    
+                echo "\t - Сток ".$Stock['Id']." - " . 
+                (($Stock['PartId'] == null)? "Без артикула" : $this->Part->findById($Stock['PartId'])['Article']) . " - Количество: " . $Stock['Qty'] . "\n";
             }
         }
         
