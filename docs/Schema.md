@@ -15,5 +15,16 @@ src
 ├── Bootstrap *Composition*
 ├── Connection *Соединение с Базой*
 ├── Repository *SQL domain abstraction API*
-├── Scenario *Busines API*
+│   ├── Audit
+│   ├── Catalog
+│   ├── Inventory
+│   ├── Media
+│   └── Topology
+├── Service *Atomic Bissunes API*
+│   ├── Setup
+│   ├── Placement
+│   ├── Movement
+│   ├── Inventory
+│   ├── Query
+│   └── Audit
 └── StorageApi.php *Composition Root*
