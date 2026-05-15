@@ -7,11 +7,11 @@ use SuO0\StorageApi\Bootstrap\SetupScenario;
 
 class StorageApi {
     private SetupRepository $repo;
-    private SetupScenario $scenario;
+    private SetupService $scenario;
 
     public function __construct(array $config) {
         $this->repo = new SetupRepository(Connection::get($config['db']), $config['tables']);
-        $this->scenario = new SetupScenario($this->repo);
+        $this->scenario = new SetupService($this->repo);
     }
 
     public function __call(string $name, array $arguments) {
