@@ -1,5 +1,5 @@
 <?php
-use SuO0\StorageApi\StorageApi;
+use StorageApi\StorageApi;
 require 'vendor/autoload.php';
 
 $config = require 'config.php';

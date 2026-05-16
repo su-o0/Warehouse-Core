@@ -1,12 +1,11 @@
 <?php 
-namespace SuO0\StorageApi\Service\Movement;
+namespace StorageApi\Service\Movement;
 
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
-use SuO0\StorageApi\Repository\Topology\ItemPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\StockPlacementRepository;
-
-use SuO0\StorageApi\Repository\Inventory\ItemRepository;
-use SuO0\StorageApi\Repository\Inventory\StockRepository;   
+use StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\ItemPlacementRepository;
+use StorageApi\Repository\Topology\StockPlacementRepository;
+use StorageApi\Repository\Inventory\ItemRepository;
+use StorageApi\Repository\Inventory\StockRepository;   
 
 class MoveService {
     public function __construct(

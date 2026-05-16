@@ -1,6 +1,6 @@
 <?php
-namespace SuO0\StorageApi\Repository\Catalog;
-use SuO0\StorageApi\Exception\StorageException;
+namespace StorageApi\Repository\Catalog;
+use StorageApi\Exception\StorageException;
 
 class PartRepository {
     public function __construct(private \PDO $db, private string $tableName) {

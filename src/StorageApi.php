@@ -1,9 +1,9 @@
 <?php
-namespace SuO0\StorageApi;
+namespace StorageApi;
 
-use SuO0\StorageApi\Connection\Connection;
-use SuO0\StorageApi\Bootstrap\SetupRepository;
-use SuO0\StorageApi\Bootstrap\SetupService;
+use StorageApi\Connection\Connection;
+use StorageApi\Bootstrap\SetupRepository;
+use StorageApi\Bootstrap\SetupService;
 
 class StorageApi {
     private SetupRepository $repo;

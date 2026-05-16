@@ -5,40 +5,48 @@ scenario - UseCases
 ```
 SetupService
 ├── Setup
-│   ├── addAddress
-│   ├── addContainer
-│   ├── addPhysicalTag
-│   ├── addCar
-│   ├── addItem
-│   └── addStock
+│   ├── addAddress -> добавляет новий адресс
+│   ├── addContainer -> добавлет новий контейнер
+│   ├── addPhysicalTag -> добавляет новий физический идентификатор
+    ├── addOwner -> добавить пользователя 
+│   ├── addCar -> добавляет новое авто
+│   ├── addItem -> добавляет новый элемент
+│   └── addStock -> добавляет новый асортимент 
 │
-├── Placement
-│   ├── placeContainerToLocation
-│   ├── placeItemIntoContainer
-│   └── placeStockIntoContainer
+├── Placement 
+│   └── setPlacement -> помещает элемент/асортимент/контейнер в адресс
 │
 ├── Movement
-│   ├── moveContainer
-│   ├── moveItem
-│   └── moveStock
+│   ├── move -> перемещает  элемент/асортимент из адресса на адресс 
+│   ├── moveContainer -> перемещает контейнер из адресса на адресс 
+│   ├── putIntoContainer -> помещяет  элемент/асортимент в контейнер по этому адресу  
+│   └── removeFromContainer -> перемещает элемент/асортимент/ из контейнера на адресс 
 │
 ├── Inventory
 │   ├── incrementStockQty
 │   ├── decrementStockQty
+│   ├── deleteStock
+│   ├── setItemCondition
 │   ├── markItemSold
 │   ├── archiveItem
 │   └── returnItem
 │
 ├── Query
 │   ├── getAllLocation
+│   ├── getAllCar
 │   ├── getLocationContent
 │   ├── getContainerContent
-│   ├── findItem
+│   ├── findPhysicalTag
 │   ├── findStock
 │   └── findByTag
 │
+├── Media
+│   ├── addPhoto -> добавляет фото элемента/асортимента/авто
+│   └── deletePhoto -> удаляет фото элемента/асортимента/авто
+│
 └── Audit
-    ├── addOwner
+    ├── setOwnerPermisition
+    ├── deleteOwner
     ├── getHistory
     └── getSales
 ```

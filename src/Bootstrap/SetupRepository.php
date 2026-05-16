@@ -1,26 +1,21 @@
 <?php
-namespace SuO0\StorageApi\Bootstrap;
-
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
-use SuO0\StorageApi\Repository\Topology\PhysicalTagRepository;
-use SuO0\StorageApi\Repository\Topology\ContainerPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\ItemPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\StockPlacementRepository;
-
-use SuO0\StorageApi\Repository\Media\ItemPhotoRepository;
-use SuO0\StorageApi\Repository\Media\StockPhotoRepository;
-use SuO0\StorageApi\Repository\Media\CarPhotoRepository;
-
-use SuO0\StorageApi\Repository\Catalog\PartRepository;
-use SuO0\StorageApi\Repository\Catalog\CarRepository;
-
-use SuO0\StorageApi\Repository\Inventory\ContainerRepository;
-use SuO0\StorageApi\Repository\Inventory\ItemRepository;
-use SuO0\StorageApi\Repository\Inventory\StockRepository;
-
-use SuO0\StorageApi\Repository\Audit\SalesArhiveRepository;
-use SuO0\StorageApi\Repository\Audit\HistoryRepository;
-use SuO0\StorageApi\Repository\Audit\OwnerRepository;
+namespace StorageApi\Bootstrap;
+use StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\PhysicalTagRepository;
+use StorageApi\Repository\Topology\ContainerPlacementRepository;
+use StorageApi\Repository\Topology\ItemPlacementRepository;
+use StorageApi\Repository\Topology\StockPlacementRepository;
+use StorageApi\Repository\Media\ItemPhotoRepository;
+use StorageApi\Repository\Media\StockPhotoRepository;
+use StorageApi\Repository\Media\CarPhotoRepository;
+use StorageApi\Repository\Catalog\PartRepository;
+use StorageApi\Repository\Catalog\CarRepository;
+use StorageApi\Repository\Inventory\ContainerRepository;
+use StorageApi\Repository\Inventory\ItemRepository;
+use StorageApi\Repository\Inventory\StockRepository;
+use StorageApi\Repository\Audit\SalesArhiveRepository;
+use StorageApi\Repository\Audit\HistoryRepository;
+use StorageApi\Repository\Audit\OwnerRepository;
 
 class SetupRepository {
     public LocationRepository $Location;

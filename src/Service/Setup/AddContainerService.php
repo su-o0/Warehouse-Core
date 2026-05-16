@@ -1,7 +1,7 @@
 <?php
-namespace SuO0\StorageApi\Service\Setup;
+namespace StorageApi\Service\Setup;
 
-use SuO0\StorageApi\Repository\Inventory\ContainerRepository;
+use StorageApi\Repository\Inventory\ContainerRepository;
 
 class AddContainerService {
     public function __construct(

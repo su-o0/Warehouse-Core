@@ -1,8 +1,9 @@
 <?php 
-namespace SuO0\StorageApi\Service\Movement;
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
-use SuO0\StorageApi\Repository\Topology\ContainerPlacementRepository;
-use SuO0\StorageApi\Repository\Inventory\ContainerRepository;
+namespace StorageApi\Service\Movement;
+
+use StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\ContainerPlacementRepository;
+use StorageApi\Repository\Inventory\ContainerRepository;
 
 class MoveContainerService {
     public function __construct(

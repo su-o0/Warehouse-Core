@@ -1,6 +1,6 @@
 <?php
-namespace SuO0\StorageApi\Repository\Inventory;
-use SuO0\StorageApi\Exception\StorageException;
+namespace StorageApi\Repository\Inventory;
+use StorageApi\Exception\StorageException;
 
 class StockRepository {
     public function __construct(private \PDO $db, private string $tableName) {

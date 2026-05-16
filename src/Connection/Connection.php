@@ -1,5 +1,5 @@
 <?php 
-namespace SuO0\StorageApi\Connection;
+namespace StorageApi\Connection;
 
 class Connection {
     private static ?\PDO $instance = null;

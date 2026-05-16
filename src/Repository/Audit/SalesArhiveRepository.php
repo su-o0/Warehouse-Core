@@ -1,6 +1,6 @@
 <?php
-namespace SuO0\StorageApi\Repository\Audit;
-use SuO0\StorageApi\Exception\StorageException;
+namespace StorageApi\Repository\Audit;
+use StorageApi\Exception\StorageException;
 
 class SalesArhiveRepository {
     public function __construct(private \PDO $db, private string $tableName) {

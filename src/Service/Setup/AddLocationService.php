@@ -1,7 +1,7 @@
 <?php
-namespace SuO0\StorageApi\Service\Setup;
+namespace StorageApi\Service\Setup;
 
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\LocationRepository;
         
 class AddLocationService {
     public function __construct(

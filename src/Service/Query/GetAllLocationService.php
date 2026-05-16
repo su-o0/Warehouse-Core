@@ -1,7 +1,7 @@
 <?php 
-namespace SuO0\StorageAPI\Service\Query;
+namespace StorageAPI\Service\Query;
 
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\LocationRepository;
 
 class GetAllLocationService {
     public function __construct(

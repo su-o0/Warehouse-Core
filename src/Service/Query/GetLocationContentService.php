@@ -1,13 +1,12 @@
 <?php
-namespace SuO0\StorageApi\Service\Query;
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
-use SuO0\StorageApi\Repository\Topology\ContainerPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\ItemPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\StockPlacementRepository;
-
-use SuO0\StorageApi\Repository\Inventory\ItemRepository;
-use SuO0\StorageApi\Repository\Inventory\StockRepository;
-use SuO0\StorageApi\Repository\Catalog\PartRepository;
+namespace StorageApi\Service\Query;
+use StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\ContainerPlacementRepository;
+use StorageApi\Repository\Topology\ItemPlacementRepository;
+use StorageApi\Repository\Topology\StockPlacementRepository;
+use StorageApi\Repository\Inventory\ItemRepository;
+use StorageApi\Repository\Inventory\StockRepository;
+use StorageApi\Repository\Catalog\PartRepository;
 
 
 class GetLocationContentService {

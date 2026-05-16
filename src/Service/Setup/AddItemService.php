@@ -1,12 +1,12 @@
 <?php 
-namespace SuO0\StorageApi\Service\Setup;
+namespace StorageApi\Service\Setup;
 
-use SuO0\StorageApi\Repository\Topology\LocationRepository;
-use SuO0\StorageApi\Repository\Topology\ItemPlacementRepository;
-use SuO0\StorageApi\Repository\Topology\PhysicalTagRepository;
-use SuO0\StorageApi\Repository\Inventory\ItemRepository;
-use SuO0\StorageApi\Repository\Catalog\PartRepository;
-use SuO0\StorageApi\Repository\Catalog\CarRepository;
+use StorageApi\Repository\Topology\LocationRepository;
+use StorageApi\Repository\Topology\ItemPlacementRepository;
+use StorageApi\Repository\Topology\PhysicalTagRepository;
+use StorageApi\Repository\Inventory\ItemRepository;
+use StorageApi\Repository\Catalog\PartRepository;
+use StorageApi\Repository\Catalog\CarRepository;
 
 class AddItemService {
     public function __Construct(

@@ -1,21 +1,17 @@
 <?php
-namespace SuO0\StorageApi\Bootstrap;
-
-use SuO0\StorageApi\Service\Setup\AddLocationService;
-use SuO0\StorageApi\Service\Setup\AddContainerService;
-use SuO0\StorageApi\Service\Setup\AddPhysicalTagService;
-use SuO0\StorageApi\Service\Setup\AddItemService;
-use SuO0\StorageApi\Service\Setup\AddStockService;
-
-use SuO0\StorageApi\Service\Query\GetAllLocationService;
-use SuO0\StorageApi\Service\Query\GetLocationContentService;
-
-use SuO0\StorageApi\Service\Placement\SetPlacementService;
-
-use SuO0\StorageApi\Service\Movement\MoveService;
-use SuO0\StorageApi\Service\Movement\MoveContainerService;
-use SuO0\StorageApi\Service\Movement\PutIntoContainerService;
-use SuO0\StorageApi\Service\Movement\RemoveFromContainerService;
+namespace StorageApi\Bootstrap;
+use StorageApi\Service\Setup\AddLocationService;
+use StorageApi\Service\Setup\AddContainerService;
+use StorageApi\Service\Setup\AddPhysicalTagService;
+use StorageApi\Service\Setup\AddItemService;
+use StorageApi\Service\Setup\AddStockService;
+use StorageApi\Service\Query\GetAllLocationService;
+use StorageApi\Service\Query\GetLocationContentService;
+use StorageApi\Service\Placement\SetPlacementService;
+use StorageApi\Service\Movement\MoveService;
+use StorageApi\Service\Movement\MoveContainerService;
+use StorageApi\Service\Movement\PutIntoContainerService;
+use StorageApi\Service\Movement\RemoveFromContainerService;
 
 
 class SetupService {
