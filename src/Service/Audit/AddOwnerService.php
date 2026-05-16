@@ -1,6 +1,6 @@
 <?php
-namespace SuO0\StorageApi\Service\Setup;
-use SuO0\StorageApi\Repository\Audit\OwnerRepository;
+namespace StorageApi\Service\Setup;
+use StorageApi\Repository\Audit\OwnerRepository;
 
 class AddOwnerService {
     public function __construct(
