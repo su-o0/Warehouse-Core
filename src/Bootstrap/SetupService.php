@@ -15,6 +15,7 @@ use SuO0\StorageApi\Service\Placement\SetPlacementService;
 use SuO0\StorageApi\Service\Movement\MoveService;
 use SuO0\StorageApi\Service\Movement\MoveContainerService;
 use SuO0\StorageApi\Service\Movement\PutIntoContainerService;
+use SuO0\StorageApi\Service\Movement\RemoveFromContainerService;
 
 
 class SetupService {
@@ -29,6 +30,7 @@ class SetupService {
     public MoveService $Move;
     public MoveContainerService $MoveContainer;
     public PutIntoContainerService $PutIntoContainer;
+    public RemoveFromContainerService $RemoveFromContainer;
 
     public GetAllLocationService $GetAllLocation;
     public GetLocationContentService $GetLocationContent;
@@ -89,7 +91,14 @@ class SetupService {
             $this->SetPlacement
         );
 
-
+        $this->RemoveFromContainer = new RemoveFromContainerService(
+            $this->repo->ContainerPlacement,
+            $this->repo->ItemPlacement,
+            $this->repo->StockPlacement,
+            $this->repo->Item,
+            $this->repo->Stock
+        );
+        
 
         $this->GetAllLocation = new GetAllLocationService(
             $this->repo->Location
