@@ -61,7 +61,7 @@ class StockRepository {
         }
     }
 
-    public function updateContainerId(int $Id, int $ContainerId): bool {
+    public function updateContainerId(int $Id, ?int $ContainerId = null): bool {
         $stock = $this->findById($Id);
         if($stock === null)
             throw StorageException::STOCK_NOT_FOUND();

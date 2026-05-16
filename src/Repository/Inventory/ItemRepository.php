@@ -162,7 +162,7 @@ class ItemRepository {
         }
     }
 
-    public function updateContainerId(int $Id, int $ContainerId): bool {
+    public function updateContainerId(int $Id, ?int $ContainerId = null): bool {
         $item = $this->findById($Id);
         if($item === null) 
             throw StorageException::ITEM_NOT_FOUND();

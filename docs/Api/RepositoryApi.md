@@ -393,7 +393,7 @@ isState -> isValid
 
 ---
 
-### `updateContainerId(int $Id, int $ContainerId)`
+### `updateContainerId(int $Id, ?int $ContainerId = null)`
 #### Return
 - `bool` - true on success, false on failure
 #### Throws 
@@ -470,7 +470,7 @@ isState -> isValid
 
 ---
 
-### `updateContainerId(int $Id, int $ContainerId)`
+### `updateContainerId(int $Id, ?int $ContainerId = null)`
 
 ---
 
