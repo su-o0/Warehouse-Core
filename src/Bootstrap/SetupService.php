@@ -76,6 +76,8 @@ class SetupService {
             $this->repo->Location,
             $this->repo->ItemPlacement,
             $this->repo->StockPlacement,
+            $this->repo->Item,
+            $this->repo->Stock
         );
 
         $this->MoveContainer = new MoveContainerService(
@@ -98,7 +100,7 @@ class SetupService {
             $this->repo->Item,
             $this->repo->Stock
         );
-        
+
 
         $this->GetAllLocation = new GetAllLocationService(
             $this->repo->Location
