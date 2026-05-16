@@ -101,7 +101,7 @@
     *CreatedAt*
 **Owner**
     *Id*
+    *Name*
     *UserId*
     *Permission* > ( admin, worker, Salesman )
-    *Name*
     *CreatedAt*

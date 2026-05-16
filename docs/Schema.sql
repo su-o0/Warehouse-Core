@@ -1,11 +1,12 @@
 -- Owner - Пользователь 
 CREATE TABLE `Owner` (
   `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`UserId`         BIGINT NOT NULL
+  ,`Name`           VARCHAR(32) NOT NULL
+  ,`UserId`         BIGINT NULL
   ,`Permission`     ENUM('Admin','Worker','Salesman') NOT NULL DEFAULT 'Salesman'
-  ,`Name`           VARCHAR(255) NOT NULL
   ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
   ,PRIMARY KEY (`Id`)
+  ,UNIQUE (`Name`)
   ,UNIQUE (`UserId`)
 ) ENGINE = InnoDB;
 
