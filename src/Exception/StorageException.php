@@ -214,6 +214,20 @@ class StorageException extends \RuntimeException {
             'Permission must be Admin|Worker|Salesman'
         );
     }
+
+    public static function OWNER_USERID_ALREADY_EXISTS(): self {
+        return new self(
+            ErrorCode::OWNER_USERID_ALREADY_EXISTS,
+            'Owner with the same UserId already exists'
+        );
+    }
+    
+    public static function OWNER_NAME_ALREADY_EXISTS(): self {
+        return new self(
+            ErrorCode::OWNER_NAME_ALREADY_EXISTS,
+            'Owner with the same Name already exists'
+        );
+    }
     
     public static function PART_ALREADY_EXISTS(): self {
         return new self(

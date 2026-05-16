@@ -18,12 +18,12 @@ class OwnerRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByIdUser(int $IdUser): null|array {
+    public function findByUserId(int $UserId): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->tableName 
-            WHERE IdUser = :IdUser"
+            WHERE UserId = :UserId"
         );
-        $stmt->execute([":IdUser" => $IdUser]);
+        $stmt->execute([":UserId" => $UserId]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
@@ -51,23 +51,25 @@ class OwnerRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(int $IdUser, string $Permission, string $Name): int {
-        $owner = $this->findByIdUser($IdUser);
-        if($owner !== null) 
-            throw StorageException::OWNER_ALREADY_EXISTS();
-    
+    public function add(string $Name, int $UserId, string $Permission): int {
+        if($this->findByName($Name) !== null)
+            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
+
+        if($this->findByUserId($UserId) !== null)
+            throw StorageException::OWNER_USERID_ALREADY_EXISTS();
+
         if(!$this->isStatePermission($Permission))
             throw StorageException::OWNER_INVALID_PERMISSION();
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (IdUser, Permission, Name) 
-                VALUES (:IdUser, :Permission, :Name)"
+                "INSERT INTO $this->tableName (Name, UserId, Permission) 
+                VALUES (:Name, :UserId, :Permission)"
             );
             $stmt->execute([
-                ':userId' => $IdUser,
-                ':Permission' => $Permission,
-                ':Name' => $Name
+                ':Name' => $Name,
+                ':userId' => $UserId,
+                ':Permission' => $Permission
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -79,6 +81,8 @@ class OwnerRepository {
             throw $e;
         }
     }
+
+
 
     public function updatePermission(int $Id, string $Permission):bool {
         $owner = $this->findById($Id);

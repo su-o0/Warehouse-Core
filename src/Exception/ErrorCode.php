@@ -56,12 +56,16 @@ final class ErrorCode {
     public const ITEM_INVALID_CONDITION         = 'ITEM_008';
     public const ITEM_PHYSICAL_TAG_ALREADY_USED = 'ITEM_009';
 
+
     public const STOCK_ALREADY_EXISTS   = 'STOCK_001';
     public const STOCK_NOT_FOUND        = 'STOCK_002';
 
-    public const OWNER_ALREADY_EXISTS       = 'OWNER_001';
-    public const OWNER_NOT_FOUND            = 'OWNER_002';
-    public const OWNER_INVALID_PERMISSION   = 'PERMISSION_006';
+
+    public const OWNER_ALREADY_EXISTS           = 'OWNER_001';
+    public const OWNER_NOT_FOUND                = 'OWNER_002';
+    public const OWNER_INVALID_PERMISSION       = 'OWNER_003';
+    public const OWNER_USERID_ALREADY_EXISTS    = 'OWNER_004';
+    public const OWNER_NAME_ALREADY_EXISTS      = 'OWNER_005';
 
     public const PART_ALREADY_EXISTS    = 'PART_001';
     public const PART_NOT_FOUND         = 'PART_002';
