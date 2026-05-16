@@ -62,6 +62,27 @@ class StockPlacementRepository {
         }
     }
 
+    public function updateLocationId(int $Id, int $LocationId): int {
+        $placement = $this->findById($Id);
+        if($placement === null)
+            throw StorageException::STOCK_PLACEMENT_NOT_FOUND();
+
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET LocationId = :LocationId 
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':LocationId' => $LocationId,
+                ':Id' => $Id
+            ]);
+        } catch (\PDOException $e) {
+
+            throw $e;
+        }
+    }
+
     public function delete(int $Id): int{
         $placement = $this->findById($Id);
         if($placement === null)

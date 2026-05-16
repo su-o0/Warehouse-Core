@@ -145,6 +145,15 @@ isState -> isValid
 
 ---
 
+### `updateLocationId(int $Id, int $LocationId)`
+#### Return
+- `bool` - true on success, false on failure
+#### Throws
+- `StorageException` — `DB_RELATION_ERROR`
+- `StorageException` - `CONTAINER_PLACEMENT_NOT_FOUND`
+
+---
+
 ### `delete(int $Id)`
 
 #### Return
@@ -184,6 +193,16 @@ isState -> isValid
 - `int` — created ItemPlacement Id
 #### Throws 
 - `StorageException` - `DB_RELATION_ERROR`
+
+---
+
+### `updateLocationId(int $Id, int $LocationId)`
+#### Return
+- `bool` - true on success, false on failure
+#### Throws
+- `StorageException` — `DB_RELATION_ERROR`
+- `StorageException` - `ITEM_PLACEMENT_NOT_FOUND`
+
 ---
 
 ### `delete(int $Id)`
@@ -224,6 +243,15 @@ isState -> isValid
 - `int` — created stockPlacement Id
 #### Throws 
 - `StorageException` - `DB_RELATION_ERROR`
+
+---
+
+### `updateLocationId(int $Id, int $LocationId)`
+#### Return
+- `bool` - true on success, false on failure
+#### Throws
+- `StorageException` — `DB_RELATION_ERROR`
+- `StorageException` - `STOCK_PLACEMENT_NOT_FOUND`
 
 ---
 

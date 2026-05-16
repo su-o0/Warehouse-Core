@@ -62,6 +62,26 @@ class ItemPlacementRepository {
         }
     }
 
+    public function updateLocationId(int $Id, int $LocationId): bool {
+        $placement = $this->findById($Id);
+        if($placement === null)
+            throw StorageException::ITEM_PLACEMENT_NOT_FOUND();
+        
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET LocationId = :LocationId
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':Id' => $Id,
+                ':LocationId' => $LocationId
+            ]);
+        } catch (\PDOException $e) {
+            throw $e;
+        }
+    }
+
     public function delete(int $Id): int{
         $placement = $this->findById($Id);
         if($placement === null)

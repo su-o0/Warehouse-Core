@@ -61,6 +61,29 @@ class ContainerPlacementRepository {
         }
     }
 
+    public function updateLocationId(int $Id, int $LocationId): bool{
+        $placement = $this->findById($Id);
+        if($placement === null)
+            throw StorageException::CONTAINER_PLACEMENT_NOT_FOUND();
+
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE $this->tableName 
+                SET LocationId = :LocationId
+                WHERE Id = :Id"
+            );
+            return $stmt->execute([
+                ':LocationId' => $LocationId,
+                ':Id' => $Id
+            ]);
+        } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+            if ($code === 1452)
+                throw StorageException::DB_RELATION_ERROR();
+            throw $e;
+        }
+    }
+
     public function delete(int $Id): bool{
         $placement = $this->findById($Id);
         if($placement === null)
