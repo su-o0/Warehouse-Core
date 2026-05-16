@@ -10,9 +10,11 @@ use SuO0\StorageApi\Service\Setup\AddStockService;
 use SuO0\StorageApi\Service\Query\GetAllLocationService;
 use SuO0\StorageApi\Service\Query\GetLocationContentService;
 
-use SuO0\StorageApi\Service\Placement\PlaceContainerToLocationService;
-use SuO0\StorageApi\Service\Placement\PlaceItemToContainerService;
-use SuO0\StorageApi\Service\Placement\PlaceStockToContainerService;
+use SuO0\StorageApi\Service\Placement\SetPlacementService;
+
+use SuO0\StorageApi\Service\Movement\MoveService;
+use SuO0\StorageApi\Service\Movement\MoveContainerService;
+
 
 class SetupService {
     public AddLocationService $AddLocation;
@@ -21,12 +23,14 @@ class SetupService {
     public AddItemService $AddItem;
     public AddStockService $AddStock;
 
+    public SetPlacementService $SetPlacement;
+
+    public MoveService $Move;
+    public MoveContainerService $MoveContainer;
+
     public GetAllLocationService $GetAllLocation;
     public GetLocationContentService $GetLocationContent;
 
-    public PlaceContainerToLocationService $PlaceContainerToLocation;
-    public PlaceItemToContainerService $PlaceItemToContainer;
-    public PlaceStockToContainerService $PlaceStockToContainer;
 
     public function __construct(private SetupRepository $repo) {
         $this->AddLocation = new AddLocationService(
@@ -53,6 +57,31 @@ class SetupService {
             $this->repo->Part,
         );
 
+        $this->SetPlacement = new SetPlacementService(
+            $this->repo->Location,
+            $this->repo->ContainerPlacement,
+            $this->repo->ItemPlacement,
+            $this->repo->StockPlacement,
+            $this->repo->PhysicalTag,
+            $this->repo->Container,
+            $this->repo->Item,
+            $this->repo->Stock
+        );
+
+        $this->Move = new MoveService(
+            $this->repo->Location,
+            $this->repo->ItemPlacement,
+            $this->repo->StockPlacement,
+        );
+
+        $this->MoveContainer = new MoveContainerService(
+            $this->repo->Location,
+            $this->repo->ContainerPlacement,
+            $this->repo->Container
+        );
+
+
+
         $this->GetAllLocation = new GetAllLocationService(
             $this->repo->Location
         );
@@ -67,25 +96,6 @@ class SetupService {
             $this->repo->Part
         );
 
-        $this->PlaceContainerToLocation = new PlaceContainerToLocationService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->Container
-        );
 
-        $this->PlaceItemToContainer = new PlaceItemToContainerService(
-            $this->repo->ContainerPlacement,
-            $this->repo->ItemPlacement,
-            $this->repo->PhysicalTag,
-            $this->repo->Item,
-            $this->repo->Container
-        );
-
-        $this->PlaceStockToContainer = new PlaceStockToContainerService(
-            $this->repo->ContainerPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->Container,
-            $this->repo->Stock
-        );
     }
 }
