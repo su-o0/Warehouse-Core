@@ -43,9 +43,8 @@ isState -> isValid
 ------
 
 
-
 # _Location_
-[Source File](../../src/Repository/Topology/LocationRepository.php)
+[Source File](../src/Repository/Topology/LocationRepository.php)
 ### `findByAddress(string $address)`
 #### Return
 - `null` — not found
@@ -62,20 +61,20 @@ isState -> isValid
 
 ### `add(string $address)`
 #### Return
-- `int` — created Location Id
+- `int` — created location Id
 #### Throws
 - `StorageException` — `LOCATION_ALREADY_EXISTS`
 
 ---
 ### `getAll()` 
 #### Return
-- `array` — All Location Id
+- `array` — all location id
 
 ------ 
 
 
 # _PhysicalTag_
-[Source File](../../src/Repository/Topology/PhysicalTagRepository.php)
+[Source File](../src/Repository/Topology/PhysicalTagRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -91,7 +90,7 @@ isState -> isValid
 --- 
 ### `add(int $Id, string $Status)`
 #### Return
-- `int` — created Location Id
+- `int` — created Location id
 #### Throws
 - `StorageException` - `PHYSICAL_TAG_INVALID_STATUS`
 
@@ -106,7 +105,7 @@ isState -> isValid
 
 ---
 
-### `isStateStatus(string $Status)`
+### `isValidStatus(string $Status)`
 #### Return 
 - `bool` - true on success, false on failure
 
@@ -115,7 +114,7 @@ isState -> isValid
 
 
 # _ContainerPlacement_
-[Source File](../../src/Repository/Topology/ContainerPlacementRepository.php)
+[Source File](../src/Repository/Topology/ContainerPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -139,7 +138,7 @@ isState -> isValid
 
 ### `add(int $LocationId, string $ContainerId)`
 #### Return
-- `int` — created containers placement Id
+- `int` — created containers placement id
 #### Throws
 - `StorageException` — `DB_RELATION_ERROR`
 
@@ -166,7 +165,7 @@ isState -> isValid
 
 
 # _ItemPlacement_
-[Source File](../../src/Repository/Topology/ItemPlacementRepository.php)
+[Source File](../src/Repository/Topology/ItemPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -190,7 +189,7 @@ isState -> isValid
 
 ### `add(int $LocationId, string $ItemId)`
 #### Return
-- `int` — created ItemPlacement Id
+- `int` — created ItemPlacement id
 #### Throws 
 - `StorageException` - `DB_RELATION_ERROR`
 
@@ -216,7 +215,7 @@ isState -> isValid
 
 
 # _StockPlacement_
-[Source File](../../src/Repository/Topology/StockPlacementRepository.php)
+[Source File](../src/Repository/Topology/StockPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -240,7 +239,7 @@ isState -> isValid
 
 ### `add(int $LocationId, string $StockId)`
 #### Return
-- `int` — created stockPlacement Id
+- `int` — created stockPlacement id
 #### Throws 
 - `StorageException` - `DB_RELATION_ERROR`
 
@@ -266,7 +265,7 @@ isState -> isValid
 
 
 # _Container_
-[Source File](../../src/Repository/Inventory/ContainerRepository.php)
+[Source File](../src/Repository/Inventory/ContainerRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -285,7 +284,7 @@ isState -> isValid
 
 ### `add(int $Id, string $Type)`
 #### Return
-- `int` — created container Id
+- `int` — created container id
 #### Throws
 - `StorageException` - `CONTAINER_INVALID_TYPE`
 - `StorageException` - `CONTAINER_ALREADY_EXISTS`
@@ -318,7 +317,7 @@ isState -> isValid
 
 
 # _Item_
-[Source File](../../src/Repository/Inventory/ItemRepository.php)
+[Source File](../src/Repository/Inventory/ItemRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -377,7 +376,7 @@ isState -> isValid
 
 ### `add(int $PhysicalTagId, int $PartId, ?int $CarId = null)`
 #### Return 
-- `int` — created container Id
+- `int` — created container id
 #### Throws 
 - `StorageException` - `ITEM_PHYSICAL_TAG_ALREADY_USED`
 - `StorageException` - `DB_RELATION_ERROR`
@@ -438,13 +437,13 @@ isState -> isValid
 
 ---
 
-### `isStateStatus(string $Status)`
+### `isValidStatus(string $Status)`
 #### Return 
 - `bool` - true on success, false on failure
 
 ---
 
-### `isStateCondition(string $Condition)`
+### `isValidCondition(string $Condition)`
 #### Return 
 - `bool` - true on success, false on failure
 
@@ -455,42 +454,85 @@ isState -> isValid
 # _Stock_
 [Source File](../../src/Repository/Inventory/StockRepository.php)
 ### `findById(int $Id)`
+#### Return 
+- `null` — not found
+- `array` — stock data
 
 ---
 
 ### `findByPartId(int $PartId)`
+#### Return 
+- `null` — not found
+- `array` — stock data
 
 ---
 
 ### `findByContainerId(int $ContainerId)`
+#### Return 
+- `null` — not found
+- `array` — stock data
 
 ---
 
 ### `add(int $Qty, ?int $PartId = null)`
+#### Return 
+- `int` — created stock id
+#### Throws 
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `updateContainerId(int $Id, ?int $ContainerId = null)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `updatePartId(int $Id, string $PartId)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `updateQty(int $Id, int $Qty)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `incrementQty(int $Id, int $Qty = 1)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `decrementQty(int $Id, int $Qty = 1)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `delete(int $Id)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `STOCK_NOT_FOUND`
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -499,26 +541,46 @@ isState -> isValid
 # _Part_
 [Source File](../../src/Repository/Catalog/PartRepository.php)
 ### `findById(string $Id)`
+#### Return 
+- `null` — not found
+- `array` — part data
 
 ---
 
 ### `findByArticle(string $Article)`
+#### Return 
+- `null` — not found
+- `array` — part data
 
 ---
 
 ### `findByName(string $Name)`
+#### Return 
+- `null` — not found
+- `array` — part data
 
 ---
 
 ### `add(string $Article, ?string $Name = null)`
+#### Return 
+- `int` — created part id
+#### Throws 
+- `StorageException` - `PART_ALREADY_EXISTS`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `updateName(int $Id, string $Name)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `PART_NOT_FOUND`
 
 ---
 
 ### `findOrCreate(string $Article, ?string $Name = null)`
+#### Return 
+- `array` — part data
 
 
 ------
@@ -527,22 +589,35 @@ isState -> isValid
 # _Car_
 [Source File](../../src/Repository/Catalog/CarRepository.php)
 ### `findById(string $Id)`
+#### Return 
+- `null` — not found
+- `array` — car data
 
 ---
 
 ### `findByVin(string $Vin)`
+#### Return 
+- `null` — not found
+- `array` — car data
 
 ---
 
 ### `findByName(string $Name)`
+#### Return 
+- `null` — not found
+- `array` — car data
 
 ---
 
 ### `add(string $Vin)`
-
----
+#### Return 
+--- `int` — created car id  
+#### Throws 
+- `StorageException` - `CAR_ALREADY_EXISTS`
 
 ### `findOrCreate(string $vin)`
+#### Return 
+- `array` — car data
 
 
 ------
@@ -550,6 +625,39 @@ isState -> isValid
 
 # _ItemPhoto_
 [Source File](../../src/Repository/Media/ItemPhotoRepository.php)
+### `findById(int $Id)`
+#### Return 
+- `null` — not found
+- `array` — itemphoto data
+
+---
+
+### `findByItemPId(int $ItemPId)`
+#### Return 
+- `null` — not found
+- `array` — itemphoto data
+
+---
+
+### `findByOwnerId(int $OwnerId)`
+#### Return 
+- `null` — not found
+- `array` — itemphoto data
+
+---
+
+### `findByFile(string $File)`
+#### Return
+- `null` — not found
+- `array` — itemphoto data
+
+---
+### `add(int $ItemPId, int $OwnerId, string $File)`
+#### Return 
+--- `int` — created itemphoto id
+#### Throws 
+- `StorageException` - `ITEM_PHOTO_ALREADY_EXISTS`
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -557,6 +665,40 @@ isState -> isValid
 
 # _Stockhoto_
 [Source File](../../src/Repository/Media/StockPhotoRepository.php)
+### `findById(int $Id)`
+#### Return 
+- `null` — not found
+- `array` — stockphoto data
+
+---
+
+### `findByStockId(int $StockId)`
+#### Return 
+- `null` — not found
+- `array` — stockphoto data
+
+---
+
+### `findByOwnerId(int $OwnerId)`
+#### Return 
+- `null` — not found
+- `array` — stockphoto data
+
+---
+
+### `findByFile(string $File)`
+#### Return
+- `null` — not found
+- `array` — stockphoto data
+
+---
+
+### `add(int $StockId, int $OwnerId, string $File)`
+#### Return 
+--- `int` — created stockphoto id
+#### Throws 
+- `StorageException` - `STOCK_PHOTO_ALREADY_EXISTS`
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -564,6 +706,39 @@ isState -> isValid
 
 # _Carhoto_
 [Source File](../../src/Repository/Media/CarPhotoRepository.php)
+### `findById(int $Id)`
+#### Return 
+- `null` — not found
+- `array` — carphoto data
+
+---
+
+### `findByCarId(int $CarId)`
+#### Return 
+- `null` — not found
+- `array` — carphoto data
+
+---
+
+### `findByOwnerId(int $OwnerId)`
+#### Return 
+- `null` — not found
+- `array` — carphoto data
+
+---
+
+### `findByFile(string $File)`
+#### Return
+- `null` — not found
+- `array` — carphoto data
+
+---
+### `add(int $CarId, int $OwnerId, string $File)`
+#### Return 
+--- `int` — created carphoto id
+#### Throws 
+- `StorageException` - `CAR_PHOTO_ALREADY_EXISTS`
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -571,6 +746,11 @@ isState -> isValid
 
 # _History_
 [Source File](../../src/Repository/Audit/HistoryRepository.php)
+### `add(string $Action, string $EntityType, int $EntityId, int $OwnerId, ?string $Note = null)`
+#### Return 
+--- `int` — created owner id
+#### Throws
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -578,6 +758,11 @@ isState -> isValid
 
 # _Sales_
 [Source File](../../src/Repository/Audit/SalesArhiveRepository.php)
+### `add(?int $itemId, ?int $stockId, int $partId, int $containerId, ?int $carId, int $saleOwnerId)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws
+- `StorageException` - `DB_RELATION_ERROR`
 
 
 ------
@@ -586,27 +771,53 @@ isState -> isValid
 # _Owner_
 [Source File](../../src/Repository/Audit/OwnerRepository.php)
 ### `findById(int $Id)`
+#### Return 
+- `null` — not found
+- `array` — owner data
 
 ---
 
 ### `findByIdUser(int $IdUser)`
+#### Return 
+- `null` — not found
+- `array` — owner data
 
 ---
 
 ### `findByPermission(string $Permission)`
+#### Return 
+- `null` — not found
+- `array` — owner data
 
 ---
 
 ### `findByName(string $Name)`
+#### Return 
+- `null` — not found
+- `array` — owner data
 
 ---
 
 ### `add(int $IdUser, string $Permission, string $Name)`
+#### Return 
+--- `int` — created owner id
+#### Throws 
+- `StorageException` - `OWNER_NAME_ALREADY_EXISTS`
+- `StorageException` - `OWNER_USERID_ALREADY_EXISTS`
+- `StorageException` - `OWNER_INVALID_PERMISSION`
+- `StorageException` - `DB_RELATION_ERROR`
 
 ---
 
 ### `updatePermission(int $Id, string $Permission)`
+#### Return 
+- `bool` - true on success, false on failure
+#### Throws 
+- `StorageException` - `OWNER_NOT_FOUND`
+- `StorageException` - `OWNER_INVALID_PERMISSION`
 
 ---
 
-### `isStatePermission(string $Permission)`
+### `isValidPermission(string $Permission)`
+#### Return 
+- `bool` - true on success, false on failure
