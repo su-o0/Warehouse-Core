@@ -7,17 +7,17 @@ use StorageApi\Bootstrap\SetupService;
 
 class StorageApi {
     private SetupRepository $repo;
-    private SetupService $scenario;
+    private SetupService $service;
 
     public function __construct(array $config) {
         $this->repo = new SetupRepository(Connection::get($config['db']), $config['tables']);
-        $this->scenario = new SetupService($this->repo);
+        $this->service = new SetupService($this->repo);
     }
 
     public function __call(string $name, array $arguments) {
-        if (!property_exists($this->scenario, $name)) 
-            throw new \RuntimeException("Scenario [$name] not found" );
+        if (!property_exists($this->service, $name)) 
+            throw new \RuntimeException("Service [$name] not found" );
         
-        $this->scenario->$name->execute(...$arguments);
+        $this->service->$name->execute(...$arguments);
     }
 }
