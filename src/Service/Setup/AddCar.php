@@ -1,6 +1,6 @@
 <?  
-namespace SuO0\StorageApi\Service\Setup;
-use SuO0\StorageAPI\Repository\Catalog\CarRepository;
+namespace StorageApi\Service\Setup;
+use StorageAPI\Repository\Catalog\CarRepository;
 
 class AddCar {
     public function __construct(
@@ -8,11 +8,12 @@ class AddCar {
     ) {}
 
     public function execute(string $Vin): void {
-        $ExistingCar = $this->Car->findByName($Name);
+        echo "Добавление автомобиля с VIN $Vin\n";
+        $ExistingCar = $this->Car->findByVin($Vin);
         if($ExistingCar !== null)
-            throw new \RuntimeException("Автомобиль с именем $Name уже существует");
+            throw new \RuntimeException("Автомобиль с VIN $Vin уже существует");
 
-        $this->Car->add($Name);
-        echo "Автомобиль $Name успешно добавлен\n";
+        $this->Car->add($Vin);
+        echo "Автомобиль успешно добавлен\n";
     }
 }
