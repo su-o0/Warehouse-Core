@@ -29,7 +29,7 @@ class OwnerRepository {
     }
 
     public function findByPermission(string $Permission): null|array {
-        if(!$this->isStatePermission($Permission))
+        if(!$this->isValidPermission($Permission))
             throw StorageException::OWNER_INVALID_PERMISSION();
 
         $stmt = $this->db->prepare( 
@@ -58,7 +58,7 @@ class OwnerRepository {
         if($this->findByUserId($UserId) !== null)
             throw StorageException::OWNER_USERID_ALREADY_EXISTS();
 
-        if(!$this->isStatePermission($Permission))
+        if(!$this->isValidPermission($Permission))
             throw StorageException::OWNER_INVALID_PERMISSION();
 
         try {
@@ -82,14 +82,12 @@ class OwnerRepository {
         }
     }
 
-
-
     public function updatePermission(int $Id, string $Permission):bool {
         $owner = $this->findById($Id);
         if($owner === null) 
             throw StorageException::OWNER_NOT_FOUND();
         
-        if(!$this->isStatePermission($Permission))
+        if(!$this->isValidPermission($Permission))
             throw StorageException::OWNER_INVALID_PERMISSION();
 
         try {
@@ -107,7 +105,7 @@ class OwnerRepository {
         }
     }
 
-    public function isStatePermission(string $Permission): bool {
+    public function isValidPermission(string $Permission): bool {
         switch($Permission) {
             case "Admin":
                 return true;

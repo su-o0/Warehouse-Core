@@ -2,6 +2,7 @@
 namespace StorageApi\Repository\Audit;
 use StorageApi\Exception\StorageException;
 
+
 class HistoryRepository {
     public function __construct(private \PDO $db, private string $tableName) {
     }

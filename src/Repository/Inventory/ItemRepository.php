@@ -67,7 +67,7 @@ class ItemRepository {
     }
 
     public function findByStatus(string $Status): null|array {
-        if(!$this->isStateStatus($Status))
+        if(!$this->isValidStatus($Status))
             throw StorageException::ITEM_INVALID_STATUS();
 
         $stmt = $this->db->prepare( 
@@ -82,7 +82,7 @@ class ItemRepository {
     }
 
     public function findByCondition(string $Condition): null|array {
-        if(!$this->isStateCondition($Condition))
+        if(!$this->isValidCondition($Condition))
             throw StorageException::ITEM_INVALID_CONDITION();
     
         $stmt = $this->db->prepare( 
@@ -97,7 +97,7 @@ class ItemRepository {
     }
 
     public function findByPhysicalTagIdStatus(int $PhysicalTagId, string $Status): null|array {
-        if(!$this->isStateStatus($Status))
+        if(!$this->isValidStatus($Status))
             throw StorageException::ITEM_INVALID_STATUS();
     
         $stmt = $this->db->prepare(
@@ -239,7 +239,7 @@ class ItemRepository {
         if($item === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
-        if(!$this->isStateStatus($Status))
+        if(!$this->isValidStatus($Status))
             throw StorageException::ITEM_INVALID_STATUS();
 
         try {
@@ -263,7 +263,7 @@ class ItemRepository {
         if($item === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
-        if(!$this->isStateCondition($Condition))
+        if(!$this->isValidCondition($Condition))
             throw StorageException::ITEM_INVALID_CONDITION();
 
         try {
@@ -283,7 +283,7 @@ class ItemRepository {
         }
     }
 
-    public function isStateStatus(string $Status): bool {
+    public function isValidStatus(string $Status): bool {
         switch($Status) {
             case "Active": 
                 return true;
@@ -298,7 +298,7 @@ class ItemRepository {
         }
     }
     
-    public function isStateCondition(string $Condition): bool {
+    public function isValidCondition(string $Condition): bool {
         switch($Condition) {
             case "New": 
                 return true;

@@ -31,7 +31,7 @@ class PhysicalTagRepository {
     }
 
     public function add(int $Id, string $Status): int {
-        if(!$this->isStateStatus($Status))
+        if(!$this->isValidStatus($Status))
             throw StorageException::PHYSICAL_TAG_INVALID_STATUS();
 
         try {
@@ -59,7 +59,7 @@ class PhysicalTagRepository {
         if ($PhysicalTag === null) 
             throw new \RuntimeException("Бирка $Id не найдена");
 
-        if(!$this->isStateStatus($Status))
+        if(!$this->isValidStatus($Status))
             throw StorageException::PHYSICAL_TAG_INVALID_STATUS();
         
         try {
@@ -82,7 +82,7 @@ class PhysicalTagRepository {
         }
     }
 
-    public function isStateStatus(string $Status): bool {
+    public function isValidStatus(string $Status): bool {
         switch($Status){
             case "Free": 
                 return true;
