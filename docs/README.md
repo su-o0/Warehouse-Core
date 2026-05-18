@@ -37,6 +37,14 @@ Warehouse workers and salesmen should be able to:
 - identify quantity
 
 ---
+## Road map 
+
+- [] Repository docs Api 
+- [] Service Api 
+- [] Service Api error code/exception
+- [] Service Api docs 
+- [] wer
+
 
 ## Stack
 
