@@ -13,7 +13,7 @@ final class ErrorCode {
     // 008 - authentication error
     // 009 - rate limit exceeded
     // 010 - unknown error
-
+    public const SERVICE_NOT_FOUND = 'SERVICE_001';
 
     public const DB_CONNECTION_ERROR = 'DB_CONNECTION_004';
     public const DB_QUERY_ERROR      = 'DB_QUERY_004';

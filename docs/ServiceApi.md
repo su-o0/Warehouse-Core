@@ -1,7 +1,7 @@
 # Service API
 
 ## Setup
-[addAddress]
+[addLocation]
 [addContainer]
 [addPhysicalTag]
 [addOwner]
@@ -42,6 +42,7 @@
 
 ## Audit
 [setOwnerPermisition]
+[getAllOwner]
 [deleteOwner]
 [getHistory]
 [getSales]

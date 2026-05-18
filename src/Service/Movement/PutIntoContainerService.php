@@ -1,15 +1,9 @@
 <?php
 namespace StorageApi\Service\Movement;
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\ContainerPlacementRepository;
-use StorageApi\Repository\Inventory\ContainerRepository;
 use StorageApi\Service\Placement\SetPlacementService;  
 
 class PutIntoContainerService {
     public function __construct(
-        private LocationRepository $Location,
-        private ContainerPlacementRepository $ContainerPlacement,
-        private ContainerRepository $Container,
         private SetPlacementService $SetPlacement
     ) {}
 

@@ -4,6 +4,7 @@ namespace StorageApi;
 use StorageApi\Connection\Connection;
 use StorageApi\Bootstrap\SetupRepository;
 use StorageApi\Bootstrap\SetupService;
+use StorageApi\Exception\StorageException;
 
 class StorageApi {
     private SetupRepository $repo;
@@ -16,7 +17,7 @@ class StorageApi {
 
     public function __call(string $name, array $arguments) {
         if (!property_exists($this->service, $name)) 
-            throw new \RuntimeException("Service [$name] not found" );
+            throw StorageException::SERVICE_NOT_FOUND($name);
         
         $this->service->$name->execute(...$arguments);
     }
