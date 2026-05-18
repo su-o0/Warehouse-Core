@@ -3,9 +3,9 @@
 ### Warehouse Core
 Physical inventory and storage tracking system.
 
-![Status](https://img.shields.io/badge/status-in%20development-yellow)
-![PHP](https://img.shields.io/badge/PHP-8.5-blue)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
+![Status](./img/status-in%20development-yellow.svg)
+![PHP](./img/PHP-8.5-blue.svg)
+![MySQL](./img/MySQL-8.0-orange.svg)
 
 Placement-centric warehouse system with strict relational integrity.
 
