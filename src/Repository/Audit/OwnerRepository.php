@@ -117,4 +117,12 @@ class OwnerRepository {
                 return false;
         }
     }
+
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM $this->tableName"
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
