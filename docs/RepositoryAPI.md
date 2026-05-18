@@ -66,9 +66,10 @@ isState -> isValid
 - `StorageException` — `LOCATION_ALREADY_EXISTS`
 
 ---
+
 ### `getAll()` 
 #### Return
-- `array` — all location id
+- `array` — all location
 
 ------ 
 
@@ -821,3 +822,9 @@ isState -> isValid
 ### `isValidPermission(string $Permission)`
 #### Return 
 - `bool` - true on success, false on failure
+
+---
+
+### `getAll()` 
+#### Return
+- `array` — all owner
