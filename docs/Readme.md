@@ -1,25 +1,36 @@
-# About me
-**Warehouse core** *a physical inventory query system module*
+# About
 
-Database layer preserves strict relational integrity.
-Placement-centric system
+### Warehouse Core
+Physical inventory and storage tracking system.
 
-Application layer provides unified polymorphic access
-through API service, provide operationally readable output. Without requiring database knowledge.
+![Status](https://img.shields.io/badge/status-in%20development-yellow)
+![PHP](https://img.shields.io/badge/PHP-8.5-blue)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
 
---- 
+Placement-centric warehouse system with strict relational integrity.
 
-Warehouse core responsible for:
+Database layer enforces data consistency.  
+Application layer provides unified operational access through service API without direct database interaction.
+
+---
+
+## Responsibilities
+
+Warehouse Core is responsible for:
+
 - Placement
-- Inventory
+- Inventory tracking
 - Search
 - Movement
-- Status
+- Status management
 - Audit trail
 
---- 
+---
 
-Warehouse workers or salesman should be able to:
+## Operational goals
+
+Warehouse workers and salesmen should be able to:
+
 - identify storage location
 - identify container
 - identify item
@@ -27,5 +38,11 @@ Warehouse workers or salesman should be able to:
 
 ---
 
+## Stack
+
+Built with:
+
+- PHP
+- MySQL
+
 Designed for auto salvage yards and small warehouses.
-Built with PHP + MySQL. 
