@@ -1,6 +1,6 @@
 <?  
-namespace StorageApi\Service\Setup;
-use StorageAPI\Repository\Catalog\CarRepository;
+namespace WarehouseCore\Service\Setup;
+use WarehouseCore\Repository\Catalog\CarRepository;
 
 class AddCarService {
     public function __construct(

@@ -1,2 +1,2 @@
 <?php 
-namespace StorageAPI\Service\Query;
+namespace WarehouseCore\Service\Query;

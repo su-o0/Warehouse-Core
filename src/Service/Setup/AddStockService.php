@@ -1,9 +1,9 @@
 <?php 
-namespace StorageApi\Service\Setup;
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\StockPlacementRepository;
-use StorageApi\Repository\Inventory\StockRepository;
-use StorageApi\Repository\Catalog\PartRepository;
+namespace WarehouseCore\Service\Setup;
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Repository\Catalog\PartRepository;
 
 class AddStockService {
     public function __Construct(

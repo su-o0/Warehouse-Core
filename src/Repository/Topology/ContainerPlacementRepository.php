@@ -1,6 +1,6 @@
 <?php
-namespace StorageApi\Repository\Topology;
-use StorageApi\Exception\StorageException;
+namespace WarehouseCore\Repository\Topology;
+use WarehouseCore\Exception\StorageException;
 
 class ContainerPlacementRepository {
     public function __construct(private \PDO $db, private string $tableName) {

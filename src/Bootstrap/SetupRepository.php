@@ -1,21 +1,21 @@
 <?php
-namespace StorageApi\Bootstrap;
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\PhysicalTagRepository;
-use StorageApi\Repository\Topology\ContainerPlacementRepository;
-use StorageApi\Repository\Topology\ItemPlacementRepository;
-use StorageApi\Repository\Topology\StockPlacementRepository;
-use StorageApi\Repository\Media\ItemPhotoRepository;
-use StorageApi\Repository\Media\StockPhotoRepository;
-use StorageApi\Repository\Media\CarPhotoRepository;
-use StorageApi\Repository\Catalog\PartRepository;
-use StorageApi\Repository\Catalog\CarRepository;
-use StorageApi\Repository\Inventory\ContainerRepository;
-use StorageApi\Repository\Inventory\ItemRepository;
-use StorageApi\Repository\Inventory\StockRepository;
-use StorageApi\Repository\Audit\SalesArhiveRepository;
-use StorageApi\Repository\Audit\HistoryRepository;
-use StorageApi\Repository\Audit\OwnerRepository;
+namespace WarehouseCore\Bootstrap;
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Media\ItemPhotoRepository;
+use WarehouseCore\Repository\Media\StockPhotoRepository;
+use WarehouseCore\Repository\Media\CarPhotoRepository;
+use WarehouseCore\Repository\Catalog\PartRepository;
+use WarehouseCore\Repository\Catalog\CarRepository;
+use WarehouseCore\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Repository\Audit\SalesArhiveRepository;
+use WarehouseCore\Repository\Audit\HistoryRepository;
+use WarehouseCore\Repository\Audit\OwnerRepository;
 
 class SetupRepository {
     public LocationRepository $Location;

@@ -1,6 +1,6 @@
 <?php
-namespace StorageApi\Repository\Inventory;
-use StorageApi\Exception\StorageException;
+namespace WarehouseCore\Repository\Inventory;
+use WarehouseCore\Exception\StorageException;
 
 class ContainerRepository {
     public function __construct(private \PDO $db, private string $tableName) {

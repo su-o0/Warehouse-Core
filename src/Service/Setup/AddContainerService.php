@@ -1,7 +1,7 @@
 <?php
-namespace StorageApi\Service\Setup;
+namespace WarehouseCore\Service\Setup;
 
-use StorageApi\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Inventory\ContainerRepository;
 
 class AddContainerService {
     public function __construct(

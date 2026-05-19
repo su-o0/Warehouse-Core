@@ -1,6 +1,6 @@
 <?php
-namespace StorageApi\Repository\Audit;
-use StorageApi\Exception\StorageException;
+namespace WarehouseCore\Repository\Audit;
+use WarehouseCore\Exception\StorageException;
 
 
 class HistoryRepository {

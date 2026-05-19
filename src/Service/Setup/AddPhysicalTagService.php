@@ -1,7 +1,7 @@
 <?php
-namespace StorageApi\Service\Setup;
+namespace WarehouseCore\Service\Setup;
 
-use StorageApi\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Topology\PhysicalTagRepository;
 
 class AddPhysicalTagService{
     public function __construct(

@@ -1,8 +1,8 @@
 <?php
-use StorageApi\StorageApi;
+use WarehouseCore\WarehouseCore;
 require 'vendor/autoload.php';
 $config = require 'config.php';
-$storage = new StorageApi($config);
+$storage = new WarehouseCore($config);
 
 if (!isset($argv[1])) 
 die(

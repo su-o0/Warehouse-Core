@@ -1,12 +1,12 @@
 <?php
-namespace StorageApi;
+namespace WarehouseCore;
 
-use StorageApi\Connection\Connection;
-use StorageApi\Bootstrap\SetupRepository;
-use StorageApi\Bootstrap\SetupService;
-use StorageApi\Exception\StorageException;
+use WarehouseCore\Connection\Connection;
+use WarehouseCore\Bootstrap\SetupRepository;
+use WarehouseCore\Bootstrap\SetupService;
+use WarehouseCore\Exception\StorageException;
 
-class StorageApi {
+class WarehouseCore {
     private SetupRepository $repo;
     private SetupService $service;
 

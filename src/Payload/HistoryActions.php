@@ -1,5 +1,5 @@
 <?php 
-namespace StorageApi\Payload;
+namespace WarehouseCore\Payload;
 
 final class HistoryAction
 {

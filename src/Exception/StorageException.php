@@ -1,5 +1,5 @@
 <?php 
-namespace StorageApi\Exception;
+namespace WarehouseCore\Exception;
 
 class StorageException extends \RuntimeException {
 

@@ -1,6 +1,6 @@
 <?php
-namespace StorageApi\Service\Movement;
-use StorageApi\Service\Placement\SetPlacementService;  
+namespace WarehouseCore\Service\Movement;
+use WarehouseCore\Service\Placement\SetPlacementService;  
 
 class PutIntoContainerService {
     public function __construct(

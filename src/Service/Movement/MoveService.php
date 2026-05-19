@@ -1,11 +1,11 @@
 <?php 
-namespace StorageApi\Service\Movement;
+namespace WarehouseCore\Service\Movement;
 
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\ItemPlacementRepository;
-use StorageApi\Repository\Topology\StockPlacementRepository;
-use StorageApi\Repository\Inventory\ItemRepository;
-use StorageApi\Repository\Inventory\StockRepository;   
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;   
 
 class MoveService {
     public function __construct(

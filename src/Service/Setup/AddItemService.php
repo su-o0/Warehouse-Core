@@ -1,12 +1,12 @@
 <?php 
-namespace StorageApi\Service\Setup;
+namespace WarehouseCore\Service\Setup;
 
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\ItemPlacementRepository;
-use StorageApi\Repository\Topology\PhysicalTagRepository;
-use StorageApi\Repository\Inventory\ItemRepository;
-use StorageApi\Repository\Catalog\PartRepository;
-use StorageApi\Repository\Catalog\CarRepository;
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Catalog\PartRepository;
+use WarehouseCore\Repository\Catalog\CarRepository;
 
 class AddItemService {
     public function __Construct(

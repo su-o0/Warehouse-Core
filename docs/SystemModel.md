@@ -103,7 +103,7 @@ Admin: full access
 ## BOUNDARIES
 [Who is responsible for what]
 ```
-StorageApi -> entry point
+WarehouseCore -> entry point
 Repository -> SQL abstraction
 Scenario -> business logic (contracts implementation)
 ```

@@ -1,6 +1,6 @@
 <?php
-namespace StorageApi\Repository\Media;
-use StorageApi\Exception\StorageException;
+namespace WarehouseCore\Repository\Media;
+use WarehouseCore\Exception\StorageException;
 
 class CarPhotoRepository {
     public function __construct(private \PDO $db, private string $tableName) {

@@ -1,2 +1,2 @@
 <?php 
-namespace StorageAPI\Service\Audit;
+namespace WarehouseCore\Service\Audit;

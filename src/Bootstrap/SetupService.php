@@ -1,23 +1,52 @@
 <?php
-namespace StorageApi\Bootstrap;
-use StorageApi\Service\Setup\AddLocationService;
-use StorageApi\Service\Setup\AddContainerService;
-use StorageApi\Service\Setup\AddPhysicalTagService;
-use StorageApi\Service\Setup\AddItemService;
-use StorageApi\Service\Setup\AddStockService;
-use StorageApi\Service\Query\GetAllLocationService;
-use StorageApi\Service\Query\GetLocationContentService;
-use StorageApi\Service\Placement\SetPlacementService;
-use StorageApi\Service\Movement\MoveService;
-use StorageApi\Service\Movement\MoveContainerService;
-use StorageApi\Service\Movement\PutIntoContainerService;
-use StorageApi\Service\Movement\RemoveFromContainerService;
+namespace WarehouseCore\Bootstrap;
+use WarehouseCore\Service\Setup\AddLocationService;
+use WarehouseCore\Service\Setup\AddContainerService;
+use WarehouseCore\Service\Setup\AddPhysicalTagService;
+use WarehouseCore\Service\Setup\AddOwnerService;
+use WarehouseCore\Service\Setup\AddCarService;
+use WarehouseCore\Service\Setup\AddItemService;
+use WarehouseCore\Service\Setup\AddStockService;
+
+use WarehouseCore\Service\Placement\SetPlacementService;
+
+use WarehouseCore\Service\Movement\MoveService;
+use WarehouseCore\Service\Movement\MoveContainerService;
+use WarehouseCore\Service\Movement\PutIntoContainerService;
+use WarehouseCore\Service\Movement\RemoveFromContainerService;
+
+use WarehouseCore\Service\Inventory\IncrementStockQtyService;
+use WarehouseCore\Service\Inventory\DecrementStockQtyService;
+use WarehouseCore\Service\Inventory\DeleteStockService;
+use WarehouseCore\Service\Inventory\SetItemConditionService;
+use WarehouseCore\Service\Inventory\MarkItemSoldService;
+use WarehouseCore\Service\Inventory\ArchiveItemService;
+use WarehouseCore\Service\Inventory\ReturnItemService;
+
+use WarehouseCore\Service\Query\GetAllLocationService;
+use WarehouseCore\Service\Query\GetAllCarService;
+use WarehouseCore\Service\Query\GetLocationContentService;
+use WarehouseCore\Service\Query\GetContainerContentService;
+use WarehouseCore\Service\Query\FindPhysicalTagService;
+use WarehouseCore\Service\Query\FindStockService;
+use WarehouseCore\Service\Query\FindByTagService;
+
+use WarehouseCore\Service\Photo\AddPhotoService;
+use WarehouseCore\Service\Photo\DeletePhotoService;
+
+use WarehouseCore\Service\Audit\SetOwnerPermisitionService;
+use WarehouseCore\Service\Audit\GetAllOwnerService;
+use WarehouseCore\Service\Audit\DeleteOwnerService;
+use WarehouseCore\Service\Audit\GetHistoryService;
+use WarehouseCore\Service\Audit\GetSalesService;
 
 
 class SetupService {
     public AddLocationService $AddLocation;
     public AddContainerService $AddContainer;
     public AddPhysicalTagService $AddPhysicalTag;
+    public AddOwnerService $AddOwner;
+    public AddCarService $AddCar;
     public AddItemService $AddItem;
     public AddStockService $AddStock;
 
@@ -28,9 +57,21 @@ class SetupService {
     public PutIntoContainerService $PutIntoContainer;
     public RemoveFromContainerService $RemoveFromContainer;
 
-    public GetAllLocationService $GetAllLocation;
-    public GetLocationContentService $GetLocationContent;
+    public IncrementStockQtyService $IncrementStockQty;
+    public DecrementStockQtyService $DecrementStockQty;
+    public DeleteStockService $DeleteStock;
+    public SetItemConditionService $SetItemCondition;
+    public MarkItemSoldService $MarkItemSold;
+    public ArchiveItemService $ArchiveItem;
+    public ReturnItemService $ReturnItem;
 
+    public GetAllCarService $GetAllCar;
+    public GetLocationContentService $GetLocationContent;
+    public GetContainerContentService $GetContainerContent;
+    public FindPhysicalTagService $FindPhysicalTag;
+    public FindStockService $FindStock;
+    public FindByTagService $FindByTag;
+  
 
     public function __construct(private SetupRepository $repo) {
         $this->AddLocation = new AddLocationService(
@@ -83,9 +124,6 @@ class SetupService {
         );
 
         $this->PutIntoContainer = new PutIntoContainerService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->Container,
             $this->SetPlacement
         );
 

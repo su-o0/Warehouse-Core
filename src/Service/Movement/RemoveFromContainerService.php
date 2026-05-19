@@ -1,11 +1,11 @@
 <?php 
-namespace StorageApi\Service\Movement;
+namespace WarehouseCore\Service\Movement;
 
-use StorageApi\Repository\Topology\ContainerPlacementRepository;
-use StorageApi\Repository\Topology\ItemPlacementRepository;
-use StorageApi\Repository\Topology\StockPlacementRepository;
-use StorageApi\Repository\Inventory\ItemRepository;
-use StorageApi\Repository\Inventory\StockRepository;
+use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;
 
 class RemoveFromContainerService {
     public function __construct(

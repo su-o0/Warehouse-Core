@@ -1,6 +1,6 @@
 <? 
-namespace StorageApi\Service\Audit;
-use StorageApi\Repository\Audit\OwnerRepository;
+namespace WarehouseCore\Service\Audit;
+use WarehouseCore\Repository\Audit\OwnerRepository;
 
 class GetAllOwnerService {
     public function __construct(

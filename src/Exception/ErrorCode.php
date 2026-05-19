@@ -1,5 +1,5 @@
 <?php
-namespace StorageApi\Exception;
+namespace WarehouseCore\Exception;
 
 final class ErrorCode {
 

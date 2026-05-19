@@ -1,7 +1,7 @@
 <?php
-namespace StorageApi\Service\Setup;
+namespace WarehouseCore\Service\Setup;
 
-use StorageApi\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\LocationRepository;
         
 class AddLocationService {
     public function __construct(

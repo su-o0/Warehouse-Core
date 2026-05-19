@@ -1,14 +1,14 @@
 <?php
-namespace StorageApi\Service\Placement;
+namespace WarehouseCore\Service\Placement;
 
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\ContainerPlacementRepository;
-use StorageApi\Repository\Topology\ItemPlacementRepository;
-use StorageApi\Repository\Topology\StockPlacementRepository;
-use StorageApi\Repository\Topology\PhysicalTagRepository;
-use StorageApi\Repository\Inventory\ContainerRepository;
-use StorageApi\Repository\Inventory\ItemRepository;
-use StorageApi\Repository\Inventory\StockRepository;
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;
 
 class SetPlacementService {
     public function __construct(

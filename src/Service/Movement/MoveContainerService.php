@@ -1,9 +1,9 @@
 <?php 
-namespace StorageApi\Service\Movement;
+namespace WarehouseCore\Service\Movement;
 
-use StorageApi\Repository\Topology\LocationRepository;
-use StorageApi\Repository\Topology\ContainerPlacementRepository;
-use StorageApi\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
+use WarehouseCore\Repository\Inventory\ContainerRepository;
 
 class MoveContainerService {
     public function __construct(

@@ -1,11 +1,11 @@
 {
-    "name": "su-o0/storage-api",
-    "description": "Warehouse parts storage API",
+    "name": "su-o0/warehouse-core",
+    "description": "Warehouse Core. Common library for warehouse management system.",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "StorageApi\\": "src/"
+            "WarehouseCore\\": "src/"
         }
     },
     "authors": [
