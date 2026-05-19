@@ -1,41 +1,30 @@
 # Repository API 
 
 ## Topology
-[Location](#location)
-
-[PhysicalTag](#physicaltag)
-
-[ContainerPlacement](#containerplacement)
-
-[ItemPlacement](#itemplacement)
-
-[StockPlacement](#stockplacement)
+- [Location](#location)
+- [PhysicalTag](#physicaltag)
+- [ContainerPlacement](#containerplacement)
+- [ItemPlacement](#itemplacement)
+- [StockPlacement](#stockplacement)
 
 ## Inventory
-[Container](#container)
-
-[Item](#item)
-
-[Stock](#stock)
+- [Container](#container)
+- [Item](#item)
+- [Stock](#stock)
 
 ## Catalog
-[Part](#part)
-
-[Car](#car)
+- [Part](#part)
+- [Car](#car)
 
 ## Media
-[ItemPhoto](#itemphoto)
-
-[StockPhoto](#stockphoto)
-
-[CarPhoto](#carphoto)
+- [ItemPhoto](#itemphoto)
+- [StockPhoto](#stockphoto)
+- [CarPhoto](#carphoto)
 
 ## Audit 
-[History](#history)
- 
-[Sales](#sales)
-
-[Owner](#owner)
+- [History](#history)
+- [Sales](#sales)
+- [Owner](#owner)
 
 
 isState -> isValid
@@ -44,7 +33,7 @@ isState -> isValid
 
 
 # _Location_
-[Source File](../src/Repository/Topology/LocationRepository.php)
+- [Source File](../src/Repository/Topology/LocationRepository.php)
 ### `findByAddress(string $address)`
 #### Return
 - `null` — not found
@@ -73,9 +62,8 @@ isState -> isValid
 
 ------ 
 
-
 # _PhysicalTag_
-[Source File](../src/Repository/Topology/PhysicalTagRepository.php)
+- [Source File](../src/Repository/Topology/PhysicalTagRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -113,9 +101,8 @@ isState -> isValid
 
 ------
 
-
 # _ContainerPlacement_
-[Source File](../src/Repository/Topology/ContainerPlacementRepository.php)
+- [Source File](../src/Repository/Topology/ContainerPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -164,9 +151,8 @@ isState -> isValid
 
 ------
 
-
 # _ItemPlacement_
-[Source File](../src/Repository/Topology/ItemPlacementRepository.php)
+- [Source File](../src/Repository/Topology/ItemPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -214,9 +200,8 @@ isState -> isValid
 
 ------
 
-
 # _StockPlacement_
-[Source File](../src/Repository/Topology/StockPlacementRepository.php)
+- [Source File](../src/Repository/Topology/StockPlacementRepository.php)
 ### `findById(int $Id)`
 #### Return
 - `null` — not found
@@ -264,9 +249,8 @@ isState -> isValid
 
 ------
 
-
 # _Container_
-[Source File](../src/Repository/Inventory/ContainerRepository.php)
+- [Source File](../src/Repository/Inventory/ContainerRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -316,9 +300,8 @@ isState -> isValid
 
 ------
 
-
 # _Item_
-[Source File](../src/Repository/Inventory/ItemRepository.php)
+- [Source File](../src/Repository/Inventory/ItemRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -451,9 +434,8 @@ isState -> isValid
 
 ------
 
-
 # _Stock_
-[Source File](../../src/Repository/Inventory/StockRepository.php)
+- [Source File](../src/Repository/Inventory/StockRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -538,9 +520,8 @@ isState -> isValid
 
 ------
 
-
 # _Part_
-[Source File](../../src/Repository/Catalog/PartRepository.php)
+- [Source File](../src/Repository/Catalog/PartRepository.php)
 ### `findById(string $Id)`
 #### Return 
 - `null` — not found
@@ -586,9 +567,8 @@ isState -> isValid
 
 ------
 
-
 # _Car_
-[Source File](../../src/Repository/Catalog/CarRepository.php)
+- [Source File](../src/Repository/Catalog/CarRepository.php)
 ### `findById(string $Id)`
 #### Return 
 - `null` — not found
@@ -623,9 +603,8 @@ isState -> isValid
 
 ------
 
-
 # _ItemPhoto_
-[Source File](../../src/Repository/Media/ItemPhotoRepository.php)
+- [Source File](../src/Repository/Media/ItemPhotoRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -663,9 +642,8 @@ isState -> isValid
 
 ------
 
-
 # _Stockhoto_
-[Source File](../../src/Repository/Media/StockPhotoRepository.php)
+- [Source File](../src/Repository/Media/StockPhotoRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -704,9 +682,8 @@ isState -> isValid
 
 ------
 
-
 # _Carhoto_
-[Source File](../../src/Repository/Media/CarPhotoRepository.php)
+- [Source File](../src/Repository/Media/CarPhotoRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -744,9 +721,8 @@ isState -> isValid
 
 ------
 
-
 # _History_
-[Source File](../../src/Repository/Audit/HistoryRepository.php)
+- [Source File](../src/Repository/Audit/HistoryRepository.php)
 ### `add(string $Action, string $EntityType, int $EntityId, int $OwnerId, ?string $Note = null)`
 #### Return 
 --- `int` — created owner id
@@ -756,9 +732,8 @@ isState -> isValid
 
 ------
 
-
 # _Sales_
-[Source File](../../src/Repository/Audit/SalesArhiveRepository.php)
+- [Source File](../src/Repository/Audit/SalesArhiveRepository.php)
 ### `add(?int $itemId, ?int $stockId, int $partId, int $containerId, ?int $carId, int $saleOwnerId)`
 #### Return 
 - `bool` - true on success, false on failure
@@ -768,9 +743,8 @@ isState -> isValid
 
 ------
 
-
 # _Owner_
-[Source File](../../src/Repository/Audit/OwnerRepository.php)
+- [Source File](../src/Repository/Audit/OwnerRepository.php)
 ### `findById(int $Id)`
 #### Return 
 - `null` — not found
@@ -828,3 +802,6 @@ isState -> isValid
 ### `getAll()` 
 #### Return
 - `array` — all owner
+
+
+------

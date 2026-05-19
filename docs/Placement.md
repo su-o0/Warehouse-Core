@@ -1,9 +1,16 @@
 ### Placement Model
 
-**Item** / **Stock** _хранится либо_ **Placement** _либо_ **Container**
-
-```
-Item/Stock -> Placement
+```text
+Item/Stock -> Location
                 /\
 Item/Stock -> Container
 ```
+
+```text 
+Location
+├──Container
+│   ├── Item
+│   └── Stock
+│
+├──Item
+└──Stock

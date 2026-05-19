@@ -1,6 +1,6 @@
 # About
 
-### Warehouse Core
+### Warehouse Domain
 Physical inventory and storage tracking system.
 
 ![Status](./img/status-in%20development-yellow.svg)
@@ -16,7 +16,7 @@ Application layer provides unified operational access through service API withou
 
 ## Responsibilities
 
-Warehouse Core is responsible for:
+Warehouse Domain is responsible for:
 
 - Placement
 - Inventory tracking

@@ -2,7 +2,7 @@
 namespace StorageApi\Service\Setup;
 use StorageAPI\Repository\Catalog\CarRepository;
 
-class AddCar {
+class AddCarService {
     public function __construct(
         private CarRepository $Car
     ) {}
