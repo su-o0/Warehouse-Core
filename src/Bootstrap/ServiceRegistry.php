@@ -49,14 +49,11 @@ class ServiceRegistry {
     public AddCarService $AddCar;
     public AddItemService $AddItem;
     public AddStockService $AddStock;
-
     public SetPlacementService $SetPlacement;
-
     public MoveService $Move;
     public MoveContainerService $MoveContainer;
     public PutIntoContainerService $PutIntoContainer;
     public RemoveFromContainerService $RemoveFromContainer;
-
     public IncrementStockQtyService $IncrementStockQty;
     public DecrementStockQtyService $DecrementStockQty;
     public DeleteStockService $DeleteStock;
@@ -64,92 +61,47 @@ class ServiceRegistry {
     public MarkItemSoldService $MarkItemSold;
     public ArchiveItemService $ArchiveItem;
     public ReturnItemService $ReturnItem;
-
     public GetAllCarService $GetAllCar;
+    public GetAllLocationService $GetAllLocation;
     public GetLocationContentService $GetLocationContent;
     public GetContainerContentService $GetContainerContent;
     public FindPhysicalTagService $FindPhysicalTag;
     public FindStockService $FindStock;
     public FindByTagService $FindByTag;
-  
+
+    public AddPhotoService $AddPhoto;
+    public DeletePhotoService $DeletePhoto;
+    public SetOwnerPermisitionService $SetOwnerPermisition
+    public GetAllOwnerService $GetAllOwner;
+    public DeleteOwnerService $DeleteOwner;
+    public GetHistoryService $GetHistory;
+    public GetSalesService $GetSales;
+
 
     public function __construct(private RepositoryRegistry $repo) {
-        $this->AddLocation = new AddLocationService(
-            $this->repo->Location
-        );
-        $this->AddContainer = new AddContainerService(
-            $this->repo->Container
-        );
-        $this->AddPhysicalTag = new AddPhysicalTagService(
-            $this->repo->PhysicalTag
-        );
-        $this->AddItem = new AddItemService(
-            $this->repo->Location,
-            $this->repo->ItemPlacement,
-            $this->repo->PhysicalTag,
-            $this->repo->Item,
-            $this->repo->Part,
-            $this->repo->Car
-        );
-        $this->AddStock = new AddStockService(
-            $this->repo->Location,
-            $this->repo->StockPlacement,
-            $this->repo->Stock,
-            $this->repo->Part,
-        );
-
-        $this->SetPlacement = new SetPlacementService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->ItemPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->PhysicalTag,
-            $this->repo->Container,
-            $this->repo->Item,
-            $this->repo->Stock
-        );
-
-        $this->Move = new MoveService(
-            $this->repo->Location,
-            $this->repo->ItemPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->Item,
-            $this->repo->Stock
-        );
-
-        $this->MoveContainer = new MoveContainerService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->Container
-        );
-
-        $this->PutIntoContainer = new PutIntoContainerService(
-            $this->SetPlacement
-        );
-
-        $this->RemoveFromContainer = new RemoveFromContainerService(
-            $this->repo->ContainerPlacement,
-            $this->repo->ItemPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->Item,
-            $this->repo->Stock
-        );
-
-
-        $this->GetAllLocation = new GetAllLocationService(
-            $this->repo->Location
-        );
-
-        $this->GetLocationContent = new GetLocationContentService(
-            $this->repo->Location,
-            $this->repo->ContainerPlacement,
-            $this->repo->ItemPlacement,
-            $this->repo->StockPlacement,
-            $this->repo->Item,
-            $this->repo->Stock,
-            $this->repo->Part
-        );
-
-
+        $this->AddLocation          = new AddLocationService($this->repo->Location);
+        $this->AddContainer         = new AddContainerService($this->repo->Container);
+        $this->AddPhysicalTag       = new AddPhysicalTagService($this->repo->PhysicalTag);
+        $this->AddOwner             = new AddOwnerService($this->repo->Owner);
+        $this->AddItem              = new AddItemService($this->repo->Location, $this->repo->ItemPlacement, $this->repo->PhysicalTag, $this->repo->Item, $this->repo->Part, $this->repo->Car);
+        $this->AddStock             = new AddStockService($this->repo->Location, $this->repo->StockPlacement, $this->repo->Stock, $this->repo->Part);
+        $this->SetPlacement         = new SetPlacementService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->PhysicalTag, $this->repo->Container, $this->repo->Item, $this->repo->Stock);
+        $this->Move                 = new MoveService( $this->repo->Location, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock);
+        $this->MoveContainer        = new MoveContainerService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->Container);
+        $this->PutIntoContainer     = new PutIntoContainerService($this->SetPlacement);
+        $this->RemoveFromContainer  = new RemoveFromContainerService($this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock);
+        $this->IncrementStockQty    = new IncrementStockQtyService();
+        $this->DecrementStockQty    = new DecrementStockQtyService();
+        $this->DeleteStock          = new DeleteStockService();
+        $this->SetItemCondition     = new SetItemConditionService();
+        $this->MarkItemSold         = new MarkItemSoldService();
+        $this->ArchiveItem          = new ArchiveItemService();
+        $this->ReturnItem           = new ReturnItemService();
+        $this->GetAllCar            = new GetAllCarService($this->Car);
+        $this->GetAllLocation       = new GetAllLocationService($this->repo->Location);
+        $this->GetLocationContent   = new GetLocationContentService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock, $this->repo->Part);
+        $this->FindPhysicalTag      = new FindPhysicalTagService();
+        $this->FindStock            = new FindStockService();
+        $this->FindByTag            = new FindByTagService();
     }
 }
