@@ -31,8 +31,8 @@ use WarehouseCore\Service\Query\FindPhysicalTagService;
 use WarehouseCore\Service\Query\FindStockService;
 use WarehouseCore\Service\Query\FindByTagService;
 
-use WarehouseCore\Service\Photo\AddPhotoService;
-use WarehouseCore\Service\Photo\DeletePhotoService;
+use WarehouseCore\Service\Media\AddPhotoService;
+use WarehouseCore\Service\Media\DeletePhotoService;
 
 use WarehouseCore\Service\Audit\SetOwnerPermisitionService;
 use WarehouseCore\Service\Audit\GetAllOwnerService;
@@ -71,7 +71,7 @@ class ServiceRegistry {
 
     public AddPhotoService $AddPhoto;
     public DeletePhotoService $DeletePhoto;
-    public SetOwnerPermisitionService $SetOwnerPermisition
+    public SetOwnerPermisitionService $SetOwnerPermisition;
     public GetAllOwnerService $GetAllOwner;
     public DeleteOwnerService $DeleteOwner;
     public GetHistoryService $GetHistory;
@@ -90,18 +90,26 @@ class ServiceRegistry {
         $this->MoveContainer        = new MoveContainerService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->Container);
         $this->PutIntoContainer     = new PutIntoContainerService($this->SetPlacement);
         $this->RemoveFromContainer  = new RemoveFromContainerService($this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock);
-        $this->IncrementStockQty    = new IncrementStockQtyService();
-        $this->DecrementStockQty    = new DecrementStockQtyService();
-        $this->DeleteStock          = new DeleteStockService();
-        $this->SetItemCondition     = new SetItemConditionService();
+        $this->IncrementStockQty    = new IncrementStockQtyService($this->repo->Stock);
+        $this->DecrementStockQty    = new DecrementStockQtyService($this->repo->Stock);
+        $this->DeleteStock          = new DeleteStockService($this->repo->Stock);
+        $this->SetItemCondition     = new SetItemConditionService($this->repo->Item);
         $this->MarkItemSold         = new MarkItemSoldService();
         $this->ArchiveItem          = new ArchiveItemService();
         $this->ReturnItem           = new ReturnItemService();
-        $this->GetAllCar            = new GetAllCarService($this->Car);
+        $this->GetAllCar            = new GetAllCarService();
         $this->GetAllLocation       = new GetAllLocationService($this->repo->Location);
         $this->GetLocationContent   = new GetLocationContentService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock, $this->repo->Part);
         $this->FindPhysicalTag      = new FindPhysicalTagService();
         $this->FindStock            = new FindStockService();
         $this->FindByTag            = new FindByTagService();
+
+        $this->AddPhoto = new AddPhotoService();
+        $this->DeletePhoto = new DeletePhotoService();
+        $this->SetOwnerPermisition = new SetOwnerPermisitionService();
+        $this->GetAllOwner = new GetAllOwnerService($this->repo->Owner);
+        $this->DeleteOwner = new DeleteOwnerService();
+        $this->GetHistory = new GetHistoryService();
+        $this->GetSales = new GetSalesService();
     }
 }
