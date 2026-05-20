@@ -41,7 +41,7 @@ use WarehouseCore\Service\Audit\GetHistoryService;
 use WarehouseCore\Service\Audit\GetSalesService;
 
 
-class SetupService {
+class ServiceRegistry {
     public AddLocationService $AddLocation;
     public AddContainerService $AddContainer;
     public AddPhysicalTagService $AddPhysicalTag;
@@ -73,7 +73,7 @@ class SetupService {
     public FindByTagService $FindByTag;
   
 
-    public function __construct(private SetupRepository $repo) {
+    public function __construct(private RepositoryRegistry $repo) {
         $this->AddLocation = new AddLocationService(
             $this->repo->Location
         );

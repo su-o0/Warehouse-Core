@@ -17,7 +17,7 @@ use WarehouseCore\Repository\Audit\SalesArhiveRepository;
 use WarehouseCore\Repository\Audit\HistoryRepository;
 use WarehouseCore\Repository\Audit\OwnerRepository;
 
-class SetupRepository {
+class RepositoryRegistry {
     public LocationRepository $Location;
     public ContainerPlacementRepository $ContainerPlacement;
     public ItemPlacementRepository $ItemPlacement;
