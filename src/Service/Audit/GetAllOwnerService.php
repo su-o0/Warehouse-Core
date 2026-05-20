@@ -1,4 +1,4 @@
-<? 
+<?php
 namespace WarehouseCore\Service\Audit;
 use WarehouseCore\Repository\Audit\OwnerRepository;
 
