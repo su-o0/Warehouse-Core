@@ -1,6 +1,10 @@
 # Architecture
 
 Warehouse Core follows a two-layer architecture:
+Warehouse Core = Hybrid Inventory System, Dual inventory system:
+- Serialized tracking > Item
+- Bulk tracking       > Stock
+
 
 ```text 
 Service
