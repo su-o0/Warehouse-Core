@@ -1,8 +1,8 @@
 <?php
-namespace WarehouseCore\Repository\Media;
+namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Exception\StorageException;
 
-final class StockPhotoRepository {
+final class VehicleRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
@@ -22,59 +22,50 @@ final class StockPhotoRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByStockId(
-        int $stock_id
+    public function findByVin(
+        string $vin
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE stock_id = :stock_id"
+            WHERE vin = :vin"
         );
         $stmt->execute([
-            ":stock_id" => $stock_id
-        ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
-    }
-
-    public function findByFile(
-        string $file
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE file = :file"
-        );
-        $stmt->execute([
-            ":file" => $file
+            ":vin" => $vin
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
     public function add(
-        int $stock_id, 
-        string $file
+        string $vin
     ): int {
-        if(!$this->findByFile($file))
-            throw StorageException::ITEM_PHOTO_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (stock_id, file) 
-                VALUES (:stock_id, :file)"
+                (vin) 
+                VALUES (:vin)"
             );
             $stmt->execute([
-               ':stock_id' => $stock_id,
-               ':file' => $file
+               ':vin' => $vin
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
 
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            
+            if ($code === 1062)
+                throw StorageException::CAR_ALREADY_EXISTS();
+
             throw $e;
         }
     }
+
+    public function findOrCreate(
+        string $vin
+    ): array {
+        $id = $this->findByVin($vin);
+        if ($id !== null)
+            return $id;
+        return $this->findById($this->add($vin));
+    }
+
 }

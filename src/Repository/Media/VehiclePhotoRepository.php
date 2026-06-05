@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Media;
 use WarehouseCore\Exception\StorageException;
 
-final class StockPhotoRepository {
+final class VehiclePhotoRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
@@ -22,15 +22,15 @@ final class StockPhotoRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByStockId(
-        int $stock_id
+    public function findByVehicleId(
+        int $vehicle_id
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE stock_id = :stock_id"
+            WHERE vehicle_id = :vehicle_id"
         );
         $stmt->execute([
-            ":stock_id" => $stock_id
+            ":vehicle_id" => $vehicle_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
@@ -51,7 +51,7 @@ final class StockPhotoRepository {
     }
 
     public function add(
-        int $stock_id, 
+        int $vehicle_id, 
         string $file
     ): int {
         if(!$this->findByFile($file))
@@ -60,11 +60,11 @@ final class StockPhotoRepository {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (stock_id, file) 
-                VALUES (:stock_id, :file)"
+                (vehicle_id, file) 
+                VALUES (:vehicle_id, :file)"
             );
             $stmt->execute([
-               ':stock_id' => $stock_id,
+               ':vehicle_id' => $vehicle_id,
                ':file' => $file
             ]);
             return (int) $this->db->lastInsertId();

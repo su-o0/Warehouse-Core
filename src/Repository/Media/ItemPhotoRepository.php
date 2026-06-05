@@ -2,72 +2,70 @@
 namespace WarehouseCore\Repository\Media;
 use WarehouseCore\Exception\StorageException;
 
-class ItemPhotoRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
-    }
+final class ItemPhotoRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name
+    ) { }
 
-    public function findById(int $Id): null|array {
+    public function findById(
+        int $id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByItemId(int $ItemId): null|array {
+    public function findByItemId(
+        int $item_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE ItemId = :ItemId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE item_id = :item_id"
         );
         $stmt->execute([
-            ":ItemId" => $ItemId
+            ":item_id" => $item_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByOwnerId(int $OwnerId): null|array {
+    public function findByFile(
+        string $file
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE OwnerId = :OwnerId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE file = :file"
         );
         $stmt->execute([
-            ":OwnerId" => $OwnerId
-        ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
-    }
-
-    public function findByFile(string $File): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE File = :File"
-        );
-        $stmt->execute([
-            ":File" => $File
+            ":file" => $file
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $ItemId, int $OwnerId, string $File): int {
-        $Car = $this->findByFile($File);
-        if(!$Car)
+    public function add(
+        int $item_id, 
+        string $file
+    ): int {
+        if(!$this->findByFile($file))
             throw StorageException::ITEM_PHOTO_ALREADY_EXISTS();
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (ItemId, OwnerId, File) 
-                VALUES (:ItemId, :OwnerId, :File)"
+                "INSERT INTO {$this->table_name} 
+                (item_id, file) 
+                VALUES (:item_id, :file)"
             );
             $stmt->execute([
-               ':ItemId' => $ItemId,
-               ':OwnerId' => $OwnerId,
-               ':File' => $File
+               ':item_id' => $item_id,
+               ':file' => $file
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {

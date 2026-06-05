@@ -2,131 +2,154 @@
 namespace WarehouseCore\Repository\Inventory;
 use WarehouseCore\Exception\StorageException;
 
-class ItemRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
+final class ItemRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name) {
     }
 
-    public function findById(int $Id): null|array {
+    public function findById(
+        int $id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByPhysicalTagId(int $PhysicalTagId): null|array {
+    public function findByPhysicalTagId(
+        int $physical_tag_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE PhysicalTagId = :PhysicalTagId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE physical_tag_id = :physical_tag_id"
         );
         $stmt->execute([
-            ":PhysicalTagId" => $PhysicalTagId
+            ":physical_tag_id" => $physical_tag_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result) ? null : $result;
     }
 
-    public function findByContainerId(int $ContainerId): null|array {
+    public function findByContainerId(
+        int $container_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE ContainerId = :ContainerId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
         );
         $stmt->execute([
-            ":ContainerId" => $ContainerId
+            ":container_id" => $container_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByPartId(int $PartId): null|array {
+    public function findByPartId(
+        int $part_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE PartId = :PartId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE part_id = :part_id"
         );
         $stmt->execute([
-            ":PartId" => $PartId
+            ":part_id" => $part_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByCarId(string $CarId): null|array {
+    public function findByVehicleId(
+        string $vehicle_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE CarId = :CarId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE vehicle_id = :vehicle_id"
         );
         $stmt->execute([
-            ":CarId" => $CarId
+            ":vehicle_id" => $vehicle_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByStatus(string $Status): null|array {
-        if(!$this->isValidStatus($Status))
+    public function findByStatus(
+        string $status
+    ): null|array {
+        if(!$this->isValidStatus($status))
             throw StorageException::ITEM_INVALID_STATUS();
 
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Status = :Status"
+            "SELECT * FROM {$this->table_name} 
+            WHERE status = :status"
         );
         $stmt->execute([
-            ":Status" => $Status
+            ":status" => $status
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByCondition(string $Condition): null|array {
-        if(!$this->isValidCondition($Condition))
+    public function findByCondition(
+        string $condition_level
+    ): null|array {
+        if(!$this->isValidCondition($condition_level))
             throw StorageException::ITEM_INVALID_CONDITION();
     
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Condition = :Condition"
+            "SELECT * FROM {$this->table_name} 
+            WHERE condition_level = :condition_level"
         );
         $stmt->execute([
-            ":Condition" => $Condition
+            ":condition_level" => $condition_level
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByPhysicalTagIdStatus(int $PhysicalTagId, string $Status): null|array {
-        if(!$this->isValidStatus($Status))
+    public function findByPhysicalTagIdStatus(
+        int $physical_tag_id, 
+        string $status
+    ): null|array {
+        if(!$this->isValidStatus($status))
             throw StorageException::ITEM_INVALID_STATUS();
     
         $stmt = $this->db->prepare(
-            "SELECT * FROM $this->tableName 
-            WHERE PhysicalTagId = :PhysicalTagId AND Status = :Status"
+            "SELECT * FROM {$this->table_name} 
+            WHERE physical_tag_id = :physical_tag_id AND status = :status"
         );
         $stmt->execute([
-            ":PhysicalTagId" => $PhysicalTagId,
-            ":Status" => $Status
+            ":physical_tag_id" => $physical_tag_id,
+            ":status" => $status
         ]);
         $result = $stmt->fetchAll();
         return empty($result) ? null : $result;
     }
 
-    public function add(int $PhysicalTagId, ?int $PartId = null, ?int $CarId = null): int {
-        if ($this->findByPhysicalTagIdStatus($PhysicalTagId, "Active") !== null)
+    public function add(
+        int $physical_tag_id, 
+        int $owner_id,
+        ?int $part_id = null, 
+        ?int $vehicle_id = null,
+    ): int {
+        if ($this->findByPhysicalTagIdStatus($physical_tag_id, "Active") !== null)
             throw StorageException::ITEM_PHYSICAL_TAG_ALREADY_USED();
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName 
-                (PhysicalTagId, PartId, CarId) 
-                VALUES 
-                (:PhysicalTagId, :PartId, :CarId)"    
+                "INSERT INTO {$this->table_name} 
+                (physical_tag_id, part_id, vehicle_id, owner_id) 
+                VALUES (:physical_tag_id, :part_id, :vehicle_id, owner_id)"    
             );
             $stmt->execute([
-                ':PhysicalTagId'    => $PhysicalTagId,
-                ':PartId'           => $PartId,
-                ':CarId'            => $CarId,
+                ':physical_tag_id' => $physical_tag_id,
+                ':part_id' => $part_id,
+                ':vehicle_id' => $vehicle_id,
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -138,20 +161,22 @@ class ItemRepository {
         }
     }
 
-    public function updatePhysicalTagId(int $Id, int $PhysicalTagId): bool {
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updatePhysicalTagId(
+        int $id, 
+        int $physical_tag_id
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare( 
-                "UPDATE $this->tableName 
-                SET PhysicalTagId = :PhysicalTagId 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET physical_tag_id = :physical_tag_id 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ":Id" => $Id,
-                ":PhysicalTagId" => $PhysicalTagId
+                ":id" => $id,
+                ":physical_tag_id" => $physical_tag_id
             ]);
         }catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -162,20 +187,22 @@ class ItemRepository {
         }
     }
 
-    public function updateContainerId(int $Id, ?int $ContainerId = null): bool {
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updateContainerId(
+        int $id, 
+        ?int $container_id = null
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare( 
-                "UPDATE $this->tableName 
-                SET ContainerId = :ContainerId 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET container_id = :container_id 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ":Id" => $Id,
-                ":ContainerId" => $ContainerId
+                ":id" => $id,
+                ":container_id" => $container_id
             ]);
         }catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -186,20 +213,22 @@ class ItemRepository {
         }
     }
 
-    public function updatePartId(int $Id, int $IdPart): bool{
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updatePartId(
+        int $id, 
+        int $part_id
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET IdPart = :IdPart
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET part_id = :part_id
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':IdPart' => $IdPart,
-                ':Id' => $Id,
+                ':part_id' => $part_id,
+                ':id' => $id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -210,20 +239,22 @@ class ItemRepository {
         }
     }
 
-    public function updateCarId(int $Id, int $CarId): bool{
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updateVehicleId(
+        int $id, 
+        int $vehicle_id
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET CarId = :CarId
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET vehicle_id = :vehicle_id
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':CarId' => $CarId,
-                ':Id' => $Id,
+                ':vehicle_id' => $vehicle_id,
+                ':id' => $id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -234,23 +265,25 @@ class ItemRepository {
         }
     }
 
-    public function updateStatus(int $Id, string $Status): bool {
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updateStatus(
+        int $id, 
+        string $status
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
-        if(!$this->isValidStatus($Status))
+        if(!$this->isValidStatus($status))
             throw StorageException::ITEM_INVALID_STATUS();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Status = :Status
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET status = :status
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Status' => $Status,
-                ':Id' => $Id,
+                ':status' => $status,
+                ':id' => $id,
             ]);
         } catch (\PDOException $e) {
             
@@ -258,33 +291,38 @@ class ItemRepository {
         }
     }
 
-    public function updateCondition(int $Id, string $Condition, ?string $ConditionNote = null): bool{
-        $item = $this->findById($Id);
-        if($item === null) 
+    public function updateCondition(
+        int $id, 
+        string $condition_level, 
+        ?string $ConditionNote = null
+    ): bool {
+        if($this->findById($id) === null) 
             throw StorageException::ITEM_NOT_FOUND();
 
-        if(!$this->isValidCondition($Condition))
+        if(!$this->isValidCondition($condition_level))
             throw StorageException::ITEM_INVALID_CONDITION();
 
         try {
             
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Condition = :Condition, ConditionNote = :ConditionNote
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET condition_level = :condition_level, ConditionNote = :ConditionNote
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Condition' => $Condition,
+                'condition_level' => $condition_level,
                 ':ConditionNote' => $ConditionNote,
-                ':Id' => $Id,
+                ':id' => $id,
             ]);
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 
-    public function isValidStatus(string $Status): bool {
-        switch($Status) {
+    private function isValidStatus(
+        string $status
+    ): bool {
+        switch($status) {
             case "Active": 
                 return true;
             case "Sold": 
@@ -298,8 +336,10 @@ class ItemRepository {
         }
     }
     
-    public function isValidCondition(string $Condition): bool {
-        switch($Condition) {
+    private function isValidCondition(
+        string $condition_level
+    ): bool {
+        switch($condition_level) {
             case "New": 
                 return true;
             case "Good": 
@@ -311,5 +351,5 @@ class ItemRepository {
             default:
                 return false;
         }
-    }
+    } 
 }

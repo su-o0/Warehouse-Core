@@ -1,8 +1,8 @@
 <?php
-namespace WarehouseCore\Repository\Media;
+namespace WarehouseCore\Repository\Audit;
 use WarehouseCore\Exception\StorageException;
 
-final class StockPhotoRepository {
+final class StockSalesArhiveRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
@@ -10,7 +10,7 @@ final class StockPhotoRepository {
 
     public function findById(
         int $id
-    ): null|array {
+    ): null|array  {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -23,49 +23,48 @@ final class StockPhotoRepository {
     }
 
     public function findByStockId(
-        int $stock_id
+        int $item_id
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE stock_id = :stock_id"
+            WHERE item_id = :item_id"
         );
         $stmt->execute([
-            ":stock_id" => $stock_id
+            ":item_id" => $item_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByFile(
-        string $file
+    public function findByUserId(
+        int $user_id
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE file = :file"
+            WHERE user_id = :user_id"
         );
         $stmt->execute([
-            ":file" => $file
+            ":user_id" => $user_id
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
     public function add(
         int $stock_id, 
-        string $file
+        int $qty, 
+        int $user_id, 
     ): int {
-        if(!$this->findByFile($file))
-            throw StorageException::ITEM_PHOTO_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (stock_id, file) 
-                VALUES (:stock_id, :file)"
+                (stock_id, qty, user_id)
+                VALUE (:stock_id, :qty, :user_id)"
             );
             $stmt->execute([
-               ':stock_id' => $stock_id,
-               ':file' => $file
+                ':stock_id' => $stock_id,
+                ':qty' => $qty,
+                ':user_id' => $user_id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -73,8 +72,7 @@ final class StockPhotoRepository {
 
             if ($code === 1452)
                 throw StorageException::DB_RELATION_ERROR();
-            
             throw $e;
         }
-    }
+    }   
 }

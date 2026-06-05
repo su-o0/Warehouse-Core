@@ -2,42 +2,51 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\StorageException;
 
-class LocationRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
-    }
+final class LocationRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name
+    ) { }
 
-    public function findByAddress(string $Address): null|array {
+    public function findById(
+        int $id
+    ): null|array{
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE address = :Address"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Address" => $Address
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findById(int $Id): null|array{
+    public function findByAddress(
+        string $address
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE address = :address"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":address" => $address
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(string $Address): int {
+    public function add(
+        string $address
+    ): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (Address) 
-                VALUES (:Address)"
+                "INSERT INTO {$this->table_name} 
+                (address) 
+                VALUES (:address)"
             );
             $stmt->execute([
-                ':Address' => $Address
+                ':address' => $address
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -50,9 +59,27 @@ class LocationRepository {
         }
     }
 
+    public function delete(
+        int $id
+    ): int {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE (:id)"
+            );
+            $stmt->execute([
+                ':id' => $id
+            ]);
+            return (int) $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            $code = $e->errorInfo[1];
+            throw $e;
+        }
+    }
+
     public function getAll(): array {
         $stmt = $this->db->prepare(
-            "SELECT * FROM $this->tableName"
+            "SELECT * FROM $this->table_name"
         );
         $stmt->execute();
         return $stmt->fetchAll();

@@ -2,49 +2,59 @@
 namespace WarehouseCore\Repository\Inventory;
 use WarehouseCore\Exception\StorageException;
 
-class ContainerRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
+final class ContainerRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name) {
     }
 
-    public function findById(int $Id): null|array {
+    public function findById(
+        int $id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByType(int $Type): null|array {
-        if(!$this->isValidType($Type))
+    public function findByType(
+        int $type
+    ): null|array {
+        if(!$this->isValidType($type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Type = :Type"
+            "SELECT * FROM {$this->table_name} 
+            WHERE type = :type"
         );
         $stmt->execute([
-            ":Type" => $Type
+            ":type" => $type
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function add(int $Id, string $Type): int {
-        if(!$this->isValidType($Type))
+    public function add(
+        int $id, 
+        string $type
+    ): int {
+        if(!$this->isValidType($type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (Id, Type) 
-                VALUES (:Id, :Type)"
+                "INSERT INTO {$this->table_name} 
+                (id, type) 
+                VALUES (:id, :type)"
             );
             $stmt->execute([
-                ':Id' => $Id,
-                ':Type' => $Type
+                ':id' => $id,
+                ':type' => $type
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -57,19 +67,22 @@ class ContainerRepository {
         }
     }
     
-    public function updateType(int $Id, string $Type): bool {
-        if(!$this->isValidType($Type))
+    public function updateType(
+        int $id, 
+        string $type
+    ): bool {
+        if(!$this->isValidType($type))
             throw StorageException::CONTAINER_INVALID_TYPE();
 
         try{
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Type = :Type 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET type = :type 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Type' => $Type,
-                ':Id' => $Id,
+                ':type' => $type,
+                ':id' => $id,
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -81,18 +94,19 @@ class ContainerRepository {
         }
     }
 
-    public function delete(int $Id): bool {
-        $Container = $this->findById($Id);
-        if($Container === null)
+    public function delete(
+        int $id
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::CONTAINER_NOT_FOUND();
         
         try {
             $stmt = $this->db->prepare(
-                "DELETE FROM $this->tableName 
-                WHERE Id = :Id"
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
 
@@ -100,8 +114,10 @@ class ContainerRepository {
         }
     }
 
-    public function isValidType(string $Type): bool {
-        switch($Type) {
+    private function isValidType(
+        string $type
+    ): bool {
+        switch($type) {
             case "Box": 
                 return true;
             case "Pallet": 

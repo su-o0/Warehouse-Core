@@ -2,55 +2,67 @@
 namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Exception\StorageException;
 
-class PartRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
-    }
+final class PartRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name
+    ) { }
 
-    public function findById(string $Id): null|array{
+    public function findById(
+        string $id
+    ): null|array{
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByArticle(string $Article): null|array{
+    public function findByArticle(
+        string $article
+    ): null|array{
         $stmt = $this->db->prepare(
-            "SELECT * FROM $this->tableName 
-            WHERE Article = :Article"
+            "SELECT * FROM {$this->table_name} 
+            WHERE article = :article"
         );
         $stmt->execute([
-            ":Article" => $Article
+            ":article" => $article
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByName(string $Name): null|array {
+    public function findByName(
+        string $name
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Name = :Name"
+            "SELECT * FROM $this->table_name 
+            WHERE name = :name"
         );
         $stmt->execute([
-            ":Name" => $Name
-            ]);
+            ":name" => $name
+        ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function add(string $Article, ?string $Name = null): int {
+    public function add(
+        string $article, 
+        ?string $name = null
+    ): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (Article, Name) 
-                VALUES (:Article, :Name)"
+                "INSERT INTO {$this->table_name} 
+                (article, name) 
+                VALUES (:article, :name)"
             );
             $stmt->execute([
-                ':Article' => $Article,
-                ':Name' => $Name
+                ':article' => $article,
+                ':name' => $name
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -65,30 +77,36 @@ class PartRepository {
         }
     }
 
-    public function updateName(int $Id, string $Name): bool {
-        $container = $this->findById($Id);
+    public function updateName(
+        int $id, 
+        string $name
+    ): bool {
+        $container = $this->findByid($id);
         if($container === null) 
             throw StorageException::PART_NOT_FOUND();
 
         try{
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Name = :Name 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET name = :name 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':Name' => $Name,
+                ':id' => $id,
+                ':name' => $name,
             ]);
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 
-    public function findOrCreate(string $Article, ?string $Name = null): array {
-        $id = $this->findByArticle($Article);
+    public function findOrCreate(
+        string $article, 
+        ?string $name = null
+    ): array {
+        $id = $this->findByArticle($article);
         if ($id !== null)
             return $id;
-        return $this->findById($this->add($Article, $Name));
+        return $this->findById($this->add($article, $name));
     }
 }

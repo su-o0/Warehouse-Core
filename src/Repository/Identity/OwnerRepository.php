@@ -1,8 +1,8 @@
 <?php
-namespace WarehouseCore\Repository\Topology;
+namespace WarehouseCore\Repository\Identity;
 use WarehouseCore\Exception\StorageException;
 
-final class StockPlacementRepository {
+final class OwnerRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
@@ -22,47 +22,53 @@ final class StockPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByLocationId(
-        int $location_id
+    public function findByUserId(
+        int $user_id
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE location_id = :location_id"
+            WHERE user_id = :user_id"
         );
         $stmt->execute([
-            ":location_id" => $location_id
+            ":user_id" => $user_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByStockId(
-        string $stock_id
+    public function findByName(
+        string $name
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE stock_id = :stock_id"
+            WHERE name = :name"
         );
         $stmt->execute([
-            ":stock_id" => $stock_id
+            ":name" => $name
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
     public function add(
-        int $location_id, 
-        string $stock_id
+        string $name, 
+        int $user_id, 
     ): int {
+        if($this->findByName($name) !== null)
+            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
+
+        if($this->findByUserId($user_id) !== null)
+            throw StorageException::OWNER_USERID_ALREADY_EXISTS();
+
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (location_id, stock_id) 
-                VALUES (:location_id, :stock_id)"
+                "INSERT INTO {$this->table_name}
+                (name, user_id) 
+                VALUES (:name, :user_id)"
             );
             $stmt->execute([
-                ':location_id' => $location_id,
-                ':stock_id' => $stock_id
+                ':name' => $name,
+                ':user_id' => $user_id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -70,50 +76,41 @@ final class StockPlacementRepository {
 
             if ($code === 1452)
                 throw StorageException::DB_RELATION_ERROR();
+            
             throw $e;
         }
     }
 
-    public function updateLocationId(
+    public function updateName(
         int $id, 
-        int $location_id
-    ): int {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_PLACEMENT_NOT_FOUND();
+        string $name
+    ):bool {
+        if($this->findById($id) === null) 
+            throw StorageException::OWNER_NOT_FOUND();
+        
+        if($this->findByName($name) !== null)
+            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
 
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
-                SET location_id = :location_id 
+                SET name = :name 
                 WHERE id = :id"
             );
             return $stmt->execute([
-                ':location_id' => $location_id,
-                ':id' => $id
+                ':id' => $id,
+                ':name' => $name
             ]);
         } catch (\PDOException $e) {
-
             throw $e;
         }
     }
 
-    public function delete(
-        int $id
-    ): int{
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_PLACEMENT_NOT_FOUND();
-        
-        try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
-            );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
-        } catch (\PDOException $e) {
-
-            throw $e;
-        }
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM {$this->table_name}"
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

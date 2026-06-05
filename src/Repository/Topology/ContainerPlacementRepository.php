@@ -2,55 +2,66 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\StorageException;
 
-class ContainerPlacementRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
-    }
+final class ContainerPlacementRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name
+    ) { }
 
-    public function findById(int $Id): null|array {
+    public function findById(
+        int $id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            "id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByLocationId(int $LocationId): null|array {
+    public function findByLocationId(
+        int $location_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE LocationId = :LocationId"
+            "SELECT * FROM {$this->table_name}
+            WHERE location_id = :location_id"
         );
         $stmt->execute([
-            ":LocationId" => $LocationId
+            ":location_id" => $location_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByContainerId(int $ContainerId): null|array {
+    public function findByContainerId(
+        int $container_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE ContainerId = :ContainerId"
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
         );
         $stmt->execute([
-            ":ContainerId" => $ContainerId
+            ":container_id" => $container_id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function add(int $LocationId, int $ContainerId): int{
+    public function add(
+        int $location_id, 
+        int $container_id
+    ): int{
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (LocationId, ContainerId) 
-                VALUES (:LocationId, :ContainerId)"
+                "INSERT INTO {$this->table_name} (location_id, container_id) 
+                VALUES (:location_id, :container_id)"
             );
             $stmt->execute([
-                ':LocationId' => $LocationId,
-                ':ContainerId' => $ContainerId
+                ':location_id' => $location_id,
+                ':container_id' => $container_id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -61,20 +72,22 @@ class ContainerPlacementRepository {
         }
     }
 
-    public function updateLocationId(int $Id, int $LocationId): bool{
-        $placement = $this->findById($Id);
-        if($placement === null)
+    public function updateLocationId(
+        int $id, 
+        int $location_id
+    ): bool{
+        if($this->findById($id) === null)
             throw StorageException::CONTAINER_PLACEMENT_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET LocationId = :LocationId
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name}
+                SET location_id = :location_id
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':LocationId' => $LocationId,
-                ':Id' => $Id
+                ':location_id' => $location_id,
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -84,21 +97,21 @@ class ContainerPlacementRepository {
         }
     }
 
-    public function delete(int $Id): bool{
-        $placement = $this->findById($Id);
-        if($placement === null)
+    public function delete(
+        int $id
+    ): bool{
+        if($this->findById($id) === null)
             throw StorageException::CONTAINER_PLACEMENT_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "DELETE FROM $this->tableName 
-                WHERE Id = :Id"
+                "DELETE FROM $this->table_name 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
-
             throw $e;
         }
     }

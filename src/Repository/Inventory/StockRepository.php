@@ -2,54 +2,67 @@
 namespace WarehouseCore\Repository\Inventory;
 use WarehouseCore\Exception\StorageException;
 
-class StockRepository {
-    public function __construct(private \PDO $db, private string $tableName) {
-    }
-    public function findById(int $Id): null|array {
+final class StockRepository {
+    public function __construct(
+        private \PDO $db, 
+        private string $table_name
+    ) { }
+
+    public function findById(
+        int $id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName 
-            WHERE Id = :Id"
+            "SELECT * FROM {$this->table_name} 
+            WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $Id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
-    public function findByPartId(int $PartId): null|array {
+    public function findByPartId(
+        int $part_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName
-            WHERE PartId = :PartId"
+            "SELECT * FROM {$this->table_name}
+            WHERE part_id = :part_id"
         );
         $stmt->execute([
-            ":PartId" => $PartId
+            ":part_id" => $part_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function findByContainerId(int $ContainerId): null|array {
+    public function findByContainerId(
+        int $container_id
+    ): null|array {
         $stmt = $this->db->prepare( 
-            "SELECT * FROM $this->tableName
-            WHERE ContainerId = :ContainerId"
+            "SELECT * FROM {$this->table_name}
+            WHERE container_id = :container_id"
         );
         $stmt->execute([
-            ":ContainerId" => $ContainerId
+            ":container_id" => $container_id
         ]);
         $result = $stmt->fetchAll();
         return empty($result)? null : $result;
     }
 
-    public function add(int $Qty, ?int $PartId = null): int {
+    public function add(
+        int $qty, 
+        ?int $part_id = null
+    ): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO $this->tableName (PartId, Qty) 
-                VALUES (:PartId, :Qty)"
+                "INSERT INTO 1this->table_name
+                (part_id, qty) 
+                VALUES (:part_id, :qty)"
             );
             $stmt->execute([
-                ':PartId' => $PartId,
-                ':Qty'   => $Qty
+                ':part_id' => $part_id,
+                ':qty'   => $qty
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -61,20 +74,22 @@ class StockRepository {
         }
     }
 
-    public function updateContainerId(int $Id, ?int $ContainerId = null): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function updatePartId(
+        int $id, 
+        string $part_id
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET ContainerId = :ContainerId 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET part_id = :part_id 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':ContainerId' => $ContainerId
+                ':id' => $id,
+                ':part_id' => $part_id
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -85,20 +100,22 @@ class StockRepository {
         }
     }
 
-    public function updatePartId(int $Id, string $PartId): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function updateContainerId(
+        int $id, 
+        ?int $container_id = null
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET PartId = :PartId 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET container_id = :container_id 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':PartId' => $PartId
+                ':id' => $id,
+                ':container_id' => $container_id
             ]);
         } catch (\PDOException $e) {
             $code = $e->errorInfo[1];
@@ -109,78 +126,85 @@ class StockRepository {
         }
     }
 
-    public function updateQty(int $Id, int $Qty): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function updateQty(
+        int $id, 
+        int $qty
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
 
         try {
             $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Qty = :Qty 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET qty = :qty 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':Qty' => $Qty
+                ':id' => $id,
+                ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 
-    public function incrementQty(int $Id, int $Qty = 1): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function incrementQty(
+        int $id, 
+        int $qty = 1
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
 
         try {
            $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Qty = Qty + :Qty 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET qty = qty + :qty 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':Qty' => $Qty
+                ':id' => $id,
+                ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
             throw $e;
         }
     }
 
-    public function decrementQty(int $Id, int $Qty = 1): bool {
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function decrementQty(
+        int $id, 
+        int $qty = 1
+    ): bool {
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
         
         try {
            $stmt = $this->db->prepare(
-                "UPDATE $this->tableName 
-                SET Qty = Qty - :Qty 
-                WHERE Id = :Id"
+                "UPDATE {$this->table_name} 
+                SET qty = qty - :qty 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id,
-                ':Qty' => $Qty
+                ':id' => $id,
+                ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
             throw $e;
         }
     }
     
-    public function delete(int $Id): bool{
-        $stock = $this->findById($Id);
-        if($stock === null)
+    public function delete(
+        int $id
+    ): bool{
+        if($this->findById($id) === null)
             throw StorageException::STOCK_NOT_FOUND();
         
         try {
             $stmt = $this->db->prepare(
-                "DELETE FROM $this->tableName 
-                WHERE Id = :Id"
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
             );
             return $stmt->execute([
-                ':Id' => $Id
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
             throw $e;
