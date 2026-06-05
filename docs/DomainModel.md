@@ -1,12 +1,31 @@
 # Domain
-Storage architecture model
+Warehouse Core architecture model
+```
+Location
+ContainerPlacement
+ItemPlacement
+StockPlacement
+Container
+Item
+Stock
+Part
+Vehicle
+ItemPhoto
+StockPhoto
+VehiclePhoto
+Event
+ItemSalesArhive
+StockSalesArhive
+User
+Owner
+PhysicalTag
+```
 ```md
 Topology
 ├── Location
 ├── ContainerPlacement
 ├── ItemPlacement
-├── StockPlacement
-└── PhysicalTag
+└── StockPlacement
 
 Inventory
 ├── Container
@@ -15,23 +34,29 @@ Inventory
 
 Catalog
 ├── Part
-└── Car
+└── Vehicle
 
 Media
 ├── ItemPhoto
 ├── StockPhoto
-└── CarPhoto
+└── VehiclePhoto
 
 Audit
-├── SalesArhive
-├── History
-└── Owner
+├── Event
+├── ItemSalesArhive
+└── StockSalesArhive
+
+Identity
+├── User
+├── Owner
+└── PhysicalTag
 ```
 ----------------
 
 # Topology 
+*where things are*
 ```text
-Location 
+Location
 ├── Id
 ├── Address
 └── CreatedAt
@@ -53,26 +78,23 @@ StockPlacement
 ├── LocationId
 ├── StockId
 └── CreatedAt
-
-PhysicalTag  
-├── Id
-├── Status > (Free, Assigned, Lost, Broken)
-└── CreatedAt
 ```
 
 # Inventory
+*what exists*
 ```text
 Container 
 ├── Id
 ├── Type > (Box, Pallet)
 └── CreatedAt
 
-Item 
+Item
 ├── Id
 ├── PhysicalTagId
-├── ContainerId 
+├── ContainerId
 ├── PartId
-├── CarId
+├── VehicleId
+├── OwnerId
 ├── Status > (Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
@@ -80,13 +102,14 @@ Item
 
 Stock
 ├── Id
-├── ContainerId 
+├── ContainerId
 ├── PartId
 ├── Qty
 └── CreatedAt
 ```
 
 ## Catalog 
+*definitions*
 ```text
 Part
 ├── Id
@@ -94,55 +117,76 @@ Part
 ├── Name
 └── CreatedAt
 
-Car
+Vehicle
 ├── Id
 ├── Vin
 └── CreatedAt
 ```
 
-# Media 
+# Media
+*normalized* 
 ```
 ItemPhoto
 ├── Id
 ├── ItemId
-├── OwnerId
 └── File
 
 StockPhoto
 ├── Id
 ├── StockId
-├── OwnerId
 └── File
 
-CarPhoto
+VehiclePhoto
 ├── Id
-├── CarId
-├── OwnerId
+├── VehicleId
 └── File    
 ```
-## Audit
-```text
-SalesArhive
-├── Id
-├── ItemId
-├── StockId
-├── Qty
-├── OwnerId
-└── CreatedAt
 
-History
+## Audit
+*domain events + sales ledger*
+```text
+Event
 ├── Id
-├── Action
 ├── EntityType
 ├── EntityId
-├── Note
+├── Action
+├── Payload
 ├── OwnerId
+├── UserId
+└── CreatedAt
+
+ItemSalesArchive
+├── Id
+├── ItemId
+├── UserId
+└── CreatedAt
+
+StockSalesArchive
+├── Id
+├── StockId
+├── Qty
+├── UserId
+└── CreatedAt
+
+```
+### Identity
+*actors + ownership*
+```
+User
+├── Id
+├── TelegramId
+├── Name
+├── RoleId
 └── CreatedAt
 
 Owner
 ├── Id
 ├── Name
 ├── UserId
-├── Permission > ( admin, worker, Salesman )
+└── CreatedAt
+
+PhysicalTag  
+├── Id
+├── Status > (Free, Assigned, Lost, Broken)
 └── CreatedAt
 ```

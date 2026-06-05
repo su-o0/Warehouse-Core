@@ -1,181 +1,216 @@
--- Owner - Пользователь 
-CREATE TABLE `Owner` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Name`           VARCHAR(32) NOT NULL
-  ,`UserId`         BIGINT NULL
-  ,`Permission`     ENUM('Admin','Worker','Salesman') NOT NULL DEFAULT 'Salesman'
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,UNIQUE (`Name`)
-  ,UNIQUE (`UserId`)
-) ENGINE = InnoDB;
+-- =========================
+-- IDENTITY
+-- =========================
 
--- History - История операций
-CREATE TABLE `History` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Action`         VARCHAR(64) NOT NULL
-  ,`EntityType`     VARCHAR(64) NOT NULL
-  ,`EntityId`       INT NOT NULL
-  ,`Note`           TEXT NULL
-  ,`OwnerId`        INT NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,telegram_id VARCHAR(64) UNIQUE
+    ,name VARCHAR(255) NOT NULL
+    ,role_id TINYINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Location - Адресс
-CREATE TABLE `Location` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Address`        VARCHAR(32) NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,UNIQUE (`Address`)
-) ENGINE = InnoDB;
+CREATE TABLE owners (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,name VARCHAR(255) NOT NULL
+    ,user_id BIGINT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
--- Container - Контейнер
-CREATE TABLE `Container` (
-  `Id`              INT NOT NULL
-  ,`Type`           ENUM('Box','Pallet') NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE physical_tags (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,status ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free'
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- PhysicalTag - Физический идентификатор 
-CREATE TABLE `PhysicalTag` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Status`         ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free'
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+-- =========================
+-- CATALOG
+-- =========================
 
--- Part - Часть
-CREATE TABLE `Part` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Article`        VARCHAR(128) NOT NULL
-  ,`Name`           VARCHAR(255) NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,UNIQUE (`Article`)
-) ENGINE = InnoDB;
+CREATE TABLE parts (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,article VARCHAR(128) NOT NULL UNIQUE
+    ,name VARCHAR(255) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Car - Авто 
-CREATE TABLE `Car` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`Vin`            CHAR(17) NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,UNIQUE (`Vin`)
-) ENGINE = InnoDB;
+CREATE TABLE vehicles (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,vin VARCHAR(64) NOT NULL UNIQUE
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Item - Элемент
-CREATE TABLE `Item` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`ContainerId`    INT NULL
-  ,`PhysicalTagId`  INT NOT NULL
-  ,`PartId`         INT NULL
-  ,`CarId`          INT NULL
-  ,`Status`         ENUM('Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Active'
-  ,`Condition`      ENUM('New','Good','Fair','Poor') NULL
-  ,`ConditionNote`  Text NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`)
-  ,FOREIGN KEY (`PhysicalTagId`)   REFERENCES `PhysicalTag`(`Id`)
-  ,FOREIGN KEY (`PartId`)          REFERENCES `Part`(`Id`)
-  ,FOREIGN KEY (`CarId`)           REFERENCES `Car`(`Id`)
-) ENGINE = InnoDB;
+-- =========================
+-- INVENTORY
+-- =========================
 
--- Stock - Ассортимент
-CREATE TABLE `Stock` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`ContainerId`    INT NULL
-  ,`PartId`         INT NULL
-  ,`Qty`            INT NOT NULL DEFAULT 1
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`)
-  ,FOREIGN KEY (`PartId`)          REFERENCES `Part`(`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE containers (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,type ENUM('Box','Pallet') NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Placement - Расположение Контейнера
-CREATE TABLE `ContainerPlacement` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`LocationId`     INT NOT NULL
-  ,`ContainerId`    INT NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`)
-  ,FOREIGN KEY (`ContainerId`)     REFERENCES `Container`(`Id`)
-  ,UNIQUE (`ContainerId`)
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE items (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
 
--- Placement - Расположение Элемента
-CREATE TABLE `ItemPlacement` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`LocationId`     INT NOT NULL
-  ,`ItemId`         INT NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`)
-  ,FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`)
-  ,UNIQUE (`ItemId`)
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+    ,physical_tag_id BIGINT
+    ,container_id BIGINT NULL
+    
+    ,part_id BIGINT NOT NULL
+    ,vehicle_id BIGINT NULL
+    ,owner_id BIGINT NOT NULL
+    
+    ,status ENUM('Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Active'
+    ,condition_level ENUM('New','Good','Fair','Poor') NOT NULL DEFAULT 'Good'
+    ,condition_note TEXT NULL
 
--- Placement - Расположение Асортимента
-CREATE TABLE `StockPlacement` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`LocationId`     INT NOT NULL
-  ,`StockId`        INT NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,FOREIGN KEY (`LocationId`)      REFERENCES `Location`(`Id`)
-  ,FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`)
-  ,UNIQUE (`StockId`)
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (physical_tag_id) REFERENCES physical_tags(id)
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+    ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+    ,FOREIGN KEY (owner_id) REFERENCES owners(id)
 
--- SalesArchive - Архив продаж
-CREATE TABLE `SalesArchive` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`ItemId`         INT NULL
-  ,`StockId`        INT NULL
-  ,`Qty`            INT NULL
-  ,`OwnerId`        INT NOT NULL
-  ,`CreatedAt`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ,FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`)
-  ,FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`)
-  ,FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`)
-  ,PRIMARY KEY (`Id`)
-) ENGINE = InnoDB;
+    ,INDEX idx_item_owner (owner_id)
+    ,INDEX idx_item_container (container_id)
+    ,INDEX idx_item_vehicle (vehicle_id)
+);
 
--- ItemPhoto - Фото Элемента
-CREATE TABLE `ItemPhoto` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`ItemId`         INT NOT NULL
-  ,`OwnerId`        INT NOT NULL
-  ,`File`           TEXT NOT NULL
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`ItemId`)          REFERENCES `Item`(`Id`)
-  ,FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE stock (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    
+    ,container_id BIGINT NULL
+    ,part_id BIGINT NOT NULL
+    ,qty INT NOT NULL DEFAULT 0
+    
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+    ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    
+    ,INDEX idx_stock_container (container_id)
+    ,INDEX idx_stock_part (part_id)
+);
 
--- StockPhoto - Фото Ассортимента
-CREATE TABLE `StockPhoto` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`StockId`        INT NOT NULL
-  ,`OwnerId`        INT NOT NULL
-  ,`File`           TEXT NOT NULL
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`StockId`)         REFERENCES `Stock`(`Id`)
-  ,FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`)
-) ENGINE = InnoDB;
+-- =========================
+-- TOPOLOGY (PLACEMENT LAYER)
+-- =========================
 
--- CarPhoto - Фото авто
-CREATE TABLE `CarPhoto` (
-  `Id`              INT NOT NULL AUTO_INCREMENT
-  ,`CarId`          INT NOT NULL
-  ,`OwnerId`        INT NOT NULL
-  ,`File`           TEXT NOT NULL
-  ,PRIMARY KEY (`Id`)
-  ,FOREIGN KEY (`CarId`)           REFERENCES `Car`(`Id`)
-  ,FOREIGN KEY (`OwnerId`)         REFERENCES `Owner`(`Id`)
-) ENGINE = InnoDB;
+CREATE TABLE locations (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,address VARCHAR(255) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE container_placements (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,location_id BIGINT NOT NULL
+    ,container_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (location_id) REFERENCES locations(id)
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+
+    ,UNIQUE KEY uq_container_location (container_id)
+);
+
+CREATE TABLE item_placements (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,location_id BIGINT NOT NULL
+    ,item_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (location_id) REFERENCES locations(id)
+    ,FOREIGN KEY (item_id) REFERENCES items(id)
+
+    ,UNIQUE KEY uq_item_location (item_id)
+);
+
+CREATE TABLE stock_placements (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,location_id BIGINT NOT NULL
+    ,stock_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (location_id) REFERENCES locations(id)
+    ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+
+    ,UNIQUE KEY uq_stock_location (stock_id)
+);
+
+-- =========================
+-- MEDIA
+-- =========================
+
+CREATE TABLE item_photos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,item_id BIGINT NOT NULL
+    ,file VARCHAR(512) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (item_id) REFERENCES items(id)
+);
+
+CREATE TABLE stock_photos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,stock_id BIGINT NOT NULL
+    ,file VARCHAR(512) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+);
+
+CREATE TABLE vehicle_photos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,vehicle_id BIGINT NOT NULL
+    ,file VARCHAR(512) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+);
+
+-- =========================
+-- AUDIT
+-- =========================
+
+CREATE TABLE events (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,entity_type VARCHAR(64) NOT NULL
+    ,entity_id BIGINT NOT NULL
+    ,action VARCHAR(64) NOT NULL
+    ,payload JSON NULL
+    ,owner_id BIGINT NULL
+    ,user_id BIGINT NULL
+
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,INDEX idx_entity (entity_type, entity_id)
+    ,INDEX idx_user (user_id)
+);
+
+CREATE TABLE item_sales_archive (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,item_id BIGINT NOT NULL
+    ,user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (item_id) REFERENCES items(id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    
+    ,INDEX idx_item_sales_item (item_id)
+);
+
+CREATE TABLE stock_sales_archive (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,stock_id BIGINT NOT NULL
+    ,qty INT NOT NULL
+    ,user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    
+    ,INDEX idx_stock_sales_stock (stock_id)
+);
