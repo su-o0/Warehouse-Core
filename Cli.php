@@ -1,12 +1,13 @@
 <?php
-use WarehouseCore\WarehouseCore;
 require 'vendor/autoload.php';
-$config = require 'config.php';
-$storage = new WarehouseCore($config);
+use WarehouseCore\Facade\CliFacade;
+$warehouse = CliFacade::create();
 
 if (!isset($argv[1])) 
 die(
     "Storage API:\n"
+    ."Igentity:\n"
+    ."\tAuthentication <user_id>:\n"
     ."Setup:\n"
     ."\taddLocation <Address> \n"
     ."\taddContainer <Id> <Box|Pallet> \n"
@@ -53,7 +54,7 @@ die(
 
 try{
     $call = $argv[1]??null;
-    $storage->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
+    $warehouse->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
 }catch(\RuntimeException $e) {
     echo $e->getMessage()."\n";
 }
