@@ -65,8 +65,9 @@ final class UserRepository {
     }
 
     public function add(
+        int $telegram_id, 
         string $name, 
-        int $user_id, 
+        int $role_id
     ): int {
         if($this->findByName($name) !== null)
             throw StorageException::OWNER_NAME_ALREADY_EXISTS();
@@ -74,12 +75,13 @@ final class UserRepository {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name}
-                (name, user_id) 
-                VALUES (:name, :user_id)"
+                (telegram_id, name, role_id) 
+                VALUES (:telegram_id, :name, :role_id)"
             );
             $stmt->execute([
+                ':telegram_id' => $telegram_id,
                 ':name' => $name,
-                ':user_id' => $user_id
+                ':role_id' => $role_id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {

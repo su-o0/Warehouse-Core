@@ -1,7 +1,7 @@
 <?php
 namespace WarehouseCore\Service\Setup;
 
-use WarehouseCore\Payload\AddUserResult;
+use WarehouseCore\Payload\Result\AddUserResult;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Exception\StorageException;
 
@@ -11,11 +11,12 @@ final class AddUserService {
     ) { }
 
     public function execute(
+        string $telegram_id,
         string $name, 
         int $roleId
     ): AddUserResult {
         try {
-            $id = $this->user->add($name, $roleId);
+            $id = $this->user->add($telegram_id, $name, $roleId);
         }
         catch (StorageException $e) {
             return new AddUserResult(
