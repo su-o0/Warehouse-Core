@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Bootstrap;
+namespace WarehouseCore\Registry;
 
 use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
@@ -20,7 +20,7 @@ use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 
-class RepositoryRegistry {
+final class RepositoryRegistry {
     public LocationRepository $location;
     public ContainerPlacementRepository $container_placement;
     public ItemPlacementRepository $item_placement;
@@ -40,23 +40,24 @@ class RepositoryRegistry {
     public OwnerRepository $owner;
     public PhysicalTagRepository $physical_tag;
 
-    public function __construct(private \PDO $db, array $config) {
-        $this->location             = new LocationRepository($this->db, $config['Location']);
-        $this->container_placement  = new ContainerPlacementRepository($this->db, $config['ContainerPlacement']);
-        $this->item_placement       = new ItemPlacementRepository($this->db, $config['ItemPlacement']);
-        $this->stock_placement      = new StockPlacementRepository($this->db, $config['StockPlacement']);
-        $this->container            = new ContainerRepository($this->db, $config['Container']);
-        $this->item                 = new ItemRepository($this->db, $config['Item']);
-        $this->stock                = new StockRepository($this->db, $config['Stock']);
-        $this->part                 = new PartRepository($this->db, $config['Part']);
-        $this->vehicle              = new vehicleRepository($this->db, $config['vehicle']);
-        $this->item_photo           = new ItemPhotoRepository($this->db, $config['ItemPhoto']);
-        $this->stock_photo          = new StockPhotoRepository($this->db, $config['StockPhoto']);
-        $this->vehicle_photo        = new VehiclePhotoRepository($this->db, $config['VehiclePhoto']);
-        $this->item_sales_arhive    = new ItemSalesArhiveRepository($this->db, $config['ItemSalesArhive']);
-        $this->stock_sales_arhive   = new StockSalesArhiveRepository($this->db, $config['StockSalesArhive']);
-        $this->user                 = new UserRepository($this->db, $config['User']);
-        $this->owner                = new OwnerRepository($this->db, $config['Owner']);
-        $this->physical_tag         = new PhysicalTagRepository($this->db, $config['PhysicalTag']);
+    public function __construct(private \PDO $db, mixed $config) {
+        $this->location             = new LocationRepository($this->db, $config->location);
+        $this->container_placement  = new ContainerPlacementRepository($this->db, $config->container_placement);
+        $this->item_placement       = new ItemPlacementRepository($this->db, $config->item_placement);
+        $this->stock_placement      = new StockPlacementRepository($this->db, $config->stock_placement);
+        $this->container            = new ContainerRepository($this->db, $config->container);
+        $this->item                 = new ItemRepository($this->db, $config->item);
+        $this->stock                = new StockRepository($this->db, $config->stock);
+        $this->part                 = new PartRepository($this->db, $config->part);
+        $this->vehicle              = new vehicleRepository($this->db, $config->vehicle);
+        $this->item_photo           = new ItemPhotoRepository($this->db, $config->item_photo);
+        $this->stock_photo          = new StockPhotoRepository($this->db, $config->stock_photo);
+        $this->vehicle_photo        = new VehiclePhotoRepository($this->db, $config->vehicle_photo);
+        $this->event                = new EventRepository($this->db, $config->event);
+        $this->item_sales_arhive    = new ItemSalesArhiveRepository($this->db, $config->item_sales_archive);
+        $this->stock_sales_arhive   = new StockSalesArhiveRepository($this->db, $config->stock_sales_archive);
+        $this->user                 = new UserRepository($this->db, $config->user);
+        $this->owner                = new OwnerRepository($this->db, $config->owner);
+        $this->physical_tag         = new PhysicalTagRepository($this->db, $config->physical_tag);
     }
 }
