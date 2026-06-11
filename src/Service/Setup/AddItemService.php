@@ -3,10 +3,10 @@ namespace WarehouseCore\Service\Setup;
 
 use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
-use WarehouseCore\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
-use WarehouseCore\Repository\Catalog\CarRepository;
+use WarehouseCore\Repository\Catalog\VehicleRepository;
 
 class AddItemService {
     public function __Construct(
@@ -15,7 +15,7 @@ class AddItemService {
         private PhysicalTagRepository $PhysicalTag,
         private ItemRepository $Item,
         private PartRepository $Part,
-        private CarRepository $Car,
+        private VehicleRepository $Car
     ) {
 
     }

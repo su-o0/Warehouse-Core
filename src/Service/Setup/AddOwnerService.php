@@ -1,9 +1,11 @@
 <?php
 namespace WarehouseCore\Service\Setup;
-use WarehouseCore\Repository\Audit\OwnerRepository;
+use WarehouseCore\Repository\Identity\UserRepository;
+use WarehouseCore\Repository\Identity\OwnerRepository;
 
 class AddOwnerService {
     public function __construct(
+        private UserRepository $user,
         private OwnerRepository $Owner
     ) {}
 
