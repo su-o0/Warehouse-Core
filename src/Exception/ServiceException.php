@@ -1,7 +1,9 @@
-<?php 
+<?php
+
 namespace WarehouseCore\Exception;
 
-class ServiceException extends \RuntimeException {
+class ServiceException extends \RuntimeException
+{
 
     public function __construct(
         public readonly string $errorCode,
@@ -10,7 +12,8 @@ class ServiceException extends \RuntimeException {
         parent::__construct($message);
     }
 
-    public static function SERVICE_NOT_FOUND(string $name): self {
+    public static function SERVICE_NOT_FOUND(string $name): self
+    {
         return new self(
             ErrorCode::SERVICE_NOT_FOUND,
             "Service $name not found"

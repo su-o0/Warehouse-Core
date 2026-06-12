@@ -1,4 +1,5 @@
 <?php
+
 namespace WarehouseCore\Exception;
 
 use RuntimeException;

@@ -1,7 +1,9 @@
 <?php
+
 namespace WarehouseCore\Exception;
 
-final class ErrorCode {
+final class ErrorCode
+{
 
     // 001 - already exists
     // 002 - not found
@@ -38,8 +40,8 @@ final class ErrorCode {
 
     public const ITEM_PLACEMENT_ALREADY_EXISTS  = 'ITEM_PLACEMENT_001';
     public const ITEM_PLACEMENT_NOT_FOUND       = 'ITEM_PLACEMENT_002';
-    
-    
+
+
     public const PHYSICAL_TAG_ALREADY_EXISTS    = 'PHYSICAL_TAG_001';
     public const PHYSICAL_TAG_NOT_FOUND         = 'PHYSICAL_TAG_002';
     public const PHYSICAL_TAG_INVALID_STATUS    = 'PHYSICAL_TAG_007';
