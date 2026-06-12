@@ -71,8 +71,8 @@ final class ErrorCode {
     public const PART_NOT_FOUND         = 'PART_002';
 
 
-    public const CAR_ALREADY_EXISTS     = 'CAR_001';
-    public const CAR_NOT_FOUND          = 'CAR_002';
+    public const VEHICLE_ALREADY_EXISTS     = 'VEHICLE_001';
+    public const VEHICLE_NOT_FOUND          = 'VEHICLE_002';
 
 
     public const ITEM_PHOTO_ALREADY_EXISTS      = 'ITEM_PHOTO_001';
@@ -83,8 +83,8 @@ final class ErrorCode {
     public const STOCK_PHOTO_NOT_FOUND          = 'STOCK_PHOTO_002';
 
 
-    public const CAR_PHOTO_ALREADY_EXISTS       = 'CAR_PHOTO_001';
-    public const CAR_PHOTO_NOT_FOUND            = 'CAR_PHOTO_002';
+    public const VEHICLE_PHOTO_ALREADY_EXISTS       = 'VEHICLE_PHOTO_001';
+    public const VEHICLE_PHOTO_NOT_FOUND            = 'VEHICLE_PHOTO_002';
 
     public const SALES_ARCHIVE_PHOTO_NOT_FOUND  = 'SALES_ARCHIVE_PHOTO_002';
 

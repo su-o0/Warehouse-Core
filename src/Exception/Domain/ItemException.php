@@ -12,20 +12,6 @@ class ItemException extends \RuntimeException {
         parent::__construct($message);
     }
 
-    public static function ITEM_PLACEMENT_ALREADY_EXISTS(): self {
-        return new self(
-            ErrorCode::ITEM_PLACEMENT_ALREADY_EXISTS,
-            'Item placement already exists'
-        );
-    }
-
-    public static function ITEM_PLACEMENT_NOT_FOUND(): self {
-        return new self(
-            ErrorCode::ITEM_PLACEMENT_NOT_FOUND,
-            'Item placement not found'
-        );
-    }
-
     public static function ITEM_ALREADY_EXISTS(): self {
         return new self(
             ErrorCode::ITEM_ALREADY_EXISTS,

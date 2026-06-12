@@ -12,7 +12,6 @@ class VehicleException extends \RuntimeException {
         parent::__construct($message);
     }
     
-    
     public static function VEHICLE_ALREADY_EXISTS(): self {
         return new self(
             ErrorCode::VEHICLE_ALREADY_EXISTS,
