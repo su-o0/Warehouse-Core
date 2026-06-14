@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Audit;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class ItemSalesArhiveRepository {
     public function __construct(
@@ -32,8 +32,7 @@ final class ItemSalesArhiveRepository {
         $stmt->execute([
             ":item_id" => $item_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByUserId(
@@ -46,8 +45,7 @@ final class ItemSalesArhiveRepository {
         $stmt->execute([
             ":user_id" => $user_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
@@ -68,11 +66,7 @@ final class ItemSalesArhiveRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }   
 }
