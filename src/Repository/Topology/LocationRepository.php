@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Topology;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class LocationRepository {
     public function __construct(
@@ -50,30 +50,24 @@ final class LocationRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            
-            if ($code === 1062)
-                throw StorageException::LOCATION_ALREADY_EXISTS();
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
         int $id
-    ): int {
+    ): bool {
         try {
             $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE (:id)"
+                "DELETE FROM {$this->table_name}
+                WHERE id = :id"
             );
             $stmt->execute([
                 ':id' => $id
             ]);
-            return (int) $this->db->lastInsertId();
+            return true;
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
