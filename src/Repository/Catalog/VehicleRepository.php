@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Catalog;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class VehicleRepository {
     public function __construct(
@@ -50,12 +50,7 @@ final class VehicleRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1062)
-                throw StorageException::CAR_ALREADY_EXISTS();
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 

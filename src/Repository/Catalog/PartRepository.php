@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Catalog;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class PartRepository {
     public function __construct(
@@ -66,14 +66,7 @@ final class PartRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1062)
-                throw StorageException::PART_ALREADY_EXISTS();
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -81,10 +74,6 @@ final class PartRepository {
         int $id, 
         string $name
     ): bool {
-        $container = $this->findByid($id);
-        if($container === null) 
-            throw StorageException::PART_NOT_FOUND();
-
         try{
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -96,7 +85,7 @@ final class PartRepository {
                 ':name' => $name,
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 

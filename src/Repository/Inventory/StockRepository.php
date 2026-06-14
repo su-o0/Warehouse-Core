@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Inventory;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class StockRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class StockRepository {
 
     public function findByPartId(
         int $part_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name}
             WHERE part_id = :part_id"
@@ -32,13 +32,12 @@ final class StockRepository {
         $stmt->execute([
             ":part_id" => $part_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByContainerId(
         int $container_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name}
             WHERE container_id = :container_id"
@@ -46,8 +45,7 @@ final class StockRepository {
         $stmt->execute([
             ":container_id" => $container_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
@@ -66,11 +64,7 @@ final class StockRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -78,9 +72,6 @@ final class StockRepository {
         int $id, 
         string $part_id
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -92,11 +83,7 @@ final class StockRepository {
                 ':part_id' => $part_id
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -104,9 +91,6 @@ final class StockRepository {
         int $id, 
         ?int $container_id = null
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -118,11 +102,7 @@ final class StockRepository {
                 ':container_id' => $container_id
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -130,9 +110,6 @@ final class StockRepository {
         int $id, 
         int $qty
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -144,7 +121,7 @@ final class StockRepository {
                 ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -152,9 +129,6 @@ final class StockRepository {
         int $id, 
         int $qty = 1
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-
         try {
            $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -166,7 +140,7 @@ final class StockRepository {
                 ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -174,9 +148,6 @@ final class StockRepository {
         int $id, 
         int $qty = 1
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-        
         try {
            $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -188,16 +159,13 @@ final class StockRepository {
                 ':qty' => $qty
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
     
     public function delete(
         int $id
     ): bool{
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_NOT_FOUND();
-        
         try {
             $stmt = $this->db->prepare(
                 "DELETE FROM {$this->table_name} 
@@ -207,7 +175,7 @@ final class StockRepository {
                 ':id' => $id
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Identity;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class OwnerRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class OwnerRepository {
 
     public function findByUserId(
         int $user_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE user_id = :user_id"
@@ -32,7 +32,7 @@ final class OwnerRepository {
         $stmt->execute([
             ":user_id" => $user_id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -46,7 +46,7 @@ final class OwnerRepository {
         $stmt->execute([
             ":name" => $name
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -54,12 +54,6 @@ final class OwnerRepository {
         string $name, 
         int $user_id, 
     ): int {
-        if($this->findByName($name) !== null)
-            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
-
-        if($this->findByUserId($user_id) !== null)
-            throw StorageException::OWNER_USERID_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name}
@@ -72,12 +66,7 @@ final class OwnerRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -85,12 +74,6 @@ final class OwnerRepository {
         int $id, 
         string $name
     ):bool {
-        if($this->findById($id) === null) 
-            throw StorageException::OWNER_NOT_FOUND();
-        
-        if($this->findByName($name) !== null)
-            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -102,7 +85,7 @@ final class OwnerRepository {
                 ':name' => $name
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 

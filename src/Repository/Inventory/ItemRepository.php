@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Inventory;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class ItemRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class ItemRepository {
 
     public function findByPhysicalTagId(
         int $physical_tag_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE physical_tag_id = :physical_tag_id"
@@ -32,13 +32,12 @@ final class ItemRepository {
         $stmt->execute([
             ":physical_tag_id" => $physical_tag_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result) ? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByContainerId(
         int $container_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE container_id = :container_id"
@@ -46,13 +45,12 @@ final class ItemRepository {
         $stmt->execute([
             ":container_id" => $container_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByPartId(
         int $part_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE part_id = :part_id"
@@ -60,13 +58,12 @@ final class ItemRepository {
         $stmt->execute([
             ":part_id" => $part_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByVehicleId(
         string $vehicle_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE vehicle_id = :vehicle_id"
@@ -74,16 +71,12 @@ final class ItemRepository {
         $stmt->execute([
             ":vehicle_id" => $vehicle_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByStatus(
         string $status
-    ): null|array {
-        if(!$this->isValidStatus($status))
-            throw StorageException::ITEM_INVALID_STATUS();
-
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE status = :status"
@@ -91,16 +84,12 @@ final class ItemRepository {
         $stmt->execute([
             ":status" => $status
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByCondition(
         string $condition_level
     ): null|array {
-        if(!$this->isValidCondition($condition_level))
-            throw StorageException::ITEM_INVALID_CONDITION();
-    
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE condition_level = :condition_level"
@@ -108,17 +97,13 @@ final class ItemRepository {
         $stmt->execute([
             ":condition_level" => $condition_level
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByPhysicalTagIdStatus(
         int $physical_tag_id, 
         string $status
-    ): null|array {
-        if(!$this->isValidStatus($status))
-            throw StorageException::ITEM_INVALID_STATUS();
-    
+    ): array {
         $stmt = $this->db->prepare(
             "SELECT * FROM {$this->table_name} 
             WHERE physical_tag_id = :physical_tag_id AND status = :status"
@@ -127,8 +112,7 @@ final class ItemRepository {
             ":physical_tag_id" => $physical_tag_id,
             ":status" => $status
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result) ? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
@@ -137,9 +121,6 @@ final class ItemRepository {
         ?int $part_id = null, 
         ?int $vehicle_id = null,
     ): int {
-        if ($this->findByPhysicalTagIdStatus($physical_tag_id, "Active") !== null)
-            throw StorageException::ITEM_PHYSICAL_TAG_ALREADY_USED();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
@@ -153,11 +134,7 @@ final class ItemRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -165,9 +142,6 @@ final class ItemRepository {
         int $id, 
         int $physical_tag_id
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare( 
                 "UPDATE {$this->table_name} 
@@ -179,11 +153,7 @@ final class ItemRepository {
                 ":physical_tag_id" => $physical_tag_id
             ]);
         }catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -191,9 +161,6 @@ final class ItemRepository {
         int $id, 
         ?int $container_id = null
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare( 
                 "UPDATE {$this->table_name} 
@@ -205,11 +172,7 @@ final class ItemRepository {
                 ":container_id" => $container_id
             ]);
         }catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -217,9 +180,6 @@ final class ItemRepository {
         int $id, 
         int $part_id
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -231,11 +191,7 @@ final class ItemRepository {
                 ':id' => $id,
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -243,9 +199,6 @@ final class ItemRepository {
         int $id, 
         int $vehicle_id
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -257,11 +210,7 @@ final class ItemRepository {
                 ':id' => $id,
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -269,12 +218,6 @@ final class ItemRepository {
         int $id, 
         string $status
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
-        if(!$this->isValidStatus($status))
-            throw StorageException::ITEM_INVALID_STATUS();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -286,8 +229,7 @@ final class ItemRepository {
                 ':id' => $id,
             ]);
         } catch (\PDOException $e) {
-            
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -296,12 +238,6 @@ final class ItemRepository {
         string $condition_level, 
         ?string $ConditionNote = null
     ): bool {
-        if($this->findById($id) === null) 
-            throw StorageException::ITEM_NOT_FOUND();
-
-        if(!$this->isValidCondition($condition_level))
-            throw StorageException::ITEM_INVALID_CONDITION();
-
         try {
             
             $stmt = $this->db->prepare(
@@ -315,41 +251,7 @@ final class ItemRepository {
                 ':id' => $id,
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
-
-    private function isValidStatus(
-        string $status
-    ): bool {
-        switch($status) {
-            case "Active": 
-                return true;
-            case "Sold": 
-                return true;
-            case "Archived": 
-                return true;
-            case "Lost": 
-                return true;
-            default:
-                return false;
-        }
-    }
-    
-    private function isValidCondition(
-        string $condition_level
-    ): bool {
-        switch($condition_level) {
-            case "New": 
-                return true;
-            case "Good": 
-                return true;
-            case "Fair": 
-                return true;
-            case "Poor": 
-                return true;
-            default:
-                return false;
-        }
-    } 
 }

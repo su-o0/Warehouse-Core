@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Topology;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class ContainerPlacementRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class ContainerPlacementRepository {
 
     public function findByLocationId(
         int $location_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name}
             WHERE location_id = :location_id"
@@ -32,8 +32,7 @@ final class ContainerPlacementRepository {
         $stmt->execute([
             ":location_id" => $location_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByContainerId(
@@ -65,10 +64,7 @@ final class ContainerPlacementRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -76,9 +72,6 @@ final class ContainerPlacementRepository {
         int $id, 
         int $location_id
     ): bool{
-        if($this->findById($id) === null)
-            throw StorageException::CONTAINER_PLACEMENT_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name}
@@ -90,19 +83,13 @@ final class ContainerPlacementRepository {
                 ':id' => $id
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
         int $id
     ): bool{
-        if($this->findById($id) === null)
-            throw StorageException::CONTAINER_PLACEMENT_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "DELETE FROM $this->table_name 
@@ -112,7 +99,7 @@ final class ContainerPlacementRepository {
                 ':id' => $id
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

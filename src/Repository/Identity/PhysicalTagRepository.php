@@ -1,7 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Identity;
-
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class PhysicalTagRepository {
     public function __construct(
@@ -41,9 +40,6 @@ final class PhysicalTagRepository {
         int $id, 
         string $status
     ): int {
-        if(!$this->isValidStatus($status))
-            throw StorageException::PHYSICAL_TAG_INVALID_STATUS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
@@ -56,12 +52,7 @@ final class PhysicalTagRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            
-            if ($code === 1062)
-                throw StorageException::PHYSICAL_TAG_ALREADY_EXISTS();            
-            
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -69,12 +60,6 @@ final class PhysicalTagRepository {
         int $id, 
         string $status
     ):bool {
-        if ($this->findById($id) === null) 
-            throw new \RuntimeException("Бирка $id не найдена");
-
-        if(!$this->isValidStatus($status))
-            throw StorageException::PHYSICAL_TAG_INVALID_STATUS();
-        
         try {
             $stmt = $this->db->prepare(
                  "UPDATE {$this->table_name} 
@@ -86,29 +71,7 @@ final class PhysicalTagRepository {
                 ':status' => $status,
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-            
-            if ($code === 1062)
-                throw StorageException::PHYSICAL_TAG_ALREADY_EXISTS();
-            
-            throw $e;
-        }
-    }
-
-    public function isValidStatus(
-        string $status
-    ): bool {
-        switch($status){
-            case "Free": 
-                return true;
-            case "Assigned": 
-                return true;
-            case "Lotable_namst": 
-                return true;
-            case "Broken": 
-                return true;
-            default: 
-                return false;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

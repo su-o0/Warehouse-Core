@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Audit;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class EventRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class EventRepository {
 
     public function findByEntityType(
         string $entity_type
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE entity_type = :entity_type"
@@ -32,13 +32,27 @@ final class EventRepository {
         $stmt->execute([
             ":entity_type" => $entity_type
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
+    }
+
+    public function findByEntity(
+        string $entity_type,
+        int $entity_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE entity_type = :entity_type AND entity_id = :entity_id"
+        );
+        $stmt->execute([
+            ":entity_type" => $entity_type,
+            ":entity_id" => $entity_id,
+        ]);
+        return $stmt->fetchAll();
     }
 
     public function findByAction(
         string $action
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE action = :action"
@@ -46,8 +60,7 @@ final class EventRepository {
         $stmt->execute([
             ":action" => $action
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
@@ -74,11 +87,7 @@ final class EventRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }   
 }

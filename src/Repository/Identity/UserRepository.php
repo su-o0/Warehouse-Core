@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Identity;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class UserRepository {
     public function __construct(
@@ -32,7 +32,7 @@ final class UserRepository {
         $stmt->execute([
             ":telegram_id" => $telegram_id
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
@@ -46,13 +46,13 @@ final class UserRepository {
         $stmt->execute([
             ":name" => $name
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         return empty($result)? null : $result;
     }
 
     public function findByRole(
         int $role_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE role_id = :role_id"
@@ -60,8 +60,7 @@ final class UserRepository {
         $stmt->execute([
             ":role_id" => $role_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
@@ -69,9 +68,6 @@ final class UserRepository {
         string $name, 
         int $role_id
     ): int {
-        if($this->findByName($name) !== null)
-            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name}
@@ -85,12 +81,7 @@ final class UserRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -98,12 +89,6 @@ final class UserRepository {
         int $id, 
         string $name
     ):bool {
-        if($this->findById($id) === null) 
-            throw StorageException::OWNER_NOT_FOUND();
-        
-        if($this->findByName($name) !== null)
-            throw StorageException::OWNER_NAME_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -115,7 +100,7 @@ final class UserRepository {
                 ':name' => $name
             ]);
         } catch (\PDOException $e) {
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 

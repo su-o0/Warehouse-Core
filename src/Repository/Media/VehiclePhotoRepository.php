@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Media;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class VehiclePhotoRepository {
     public function __construct(
@@ -24,7 +24,7 @@ final class VehiclePhotoRepository {
 
     public function findByVehicleId(
         int $vehicle_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE vehicle_id = :vehicle_id"
@@ -32,8 +32,7 @@ final class VehiclePhotoRepository {
         $stmt->execute([
             ":vehicle_id" => $vehicle_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByFile(
@@ -54,9 +53,6 @@ final class VehiclePhotoRepository {
         int $vehicle_id, 
         string $file
     ): int {
-        if(!$this->findByFile($file))
-            throw StorageException::ITEM_PHOTO_ALREADY_EXISTS();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
@@ -69,12 +65,7 @@ final class VehiclePhotoRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

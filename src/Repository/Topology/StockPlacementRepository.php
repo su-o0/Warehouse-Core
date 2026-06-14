@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Topology;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class StockPlacementRepository {
     public function __construct(
@@ -19,12 +19,12 @@ final class StockPlacementRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return ($result)? null : $result;
     }
 
     public function findByLocationId(
         int $location_id
-    ): null|array {
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE location_id = :location_id"
@@ -32,8 +32,7 @@ final class StockPlacementRepository {
         $stmt->execute([
             ":location_id" => $location_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function findByStockId(
@@ -66,11 +65,7 @@ final class StockPlacementRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
@@ -78,9 +73,6 @@ final class StockPlacementRepository {
         int $id, 
         int $location_id
     ): int {
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_PLACEMENT_NOT_FOUND();
-
         try {
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -92,28 +84,24 @@ final class StockPlacementRepository {
                 ':id' => $id
             ]);
         } catch (\PDOException $e) {
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
         int $id
-    ): int{
-        if($this->findById($id) === null)
-            throw StorageException::STOCK_PLACEMENT_NOT_FOUND();
-        
+    ): bool {
         try {
             $stmt = $this->db->prepare(
                 "DELETE FROM {$this->table_name} 
                 WHERE id = :id"
             );
-            return $stmt->execute([
+            $stmt->execute([
                 ':id' => $id
             ]);
+            return true;
         } catch (\PDOException $e) {
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

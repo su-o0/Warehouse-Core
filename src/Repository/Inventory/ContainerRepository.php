@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Inventory;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class ContainerRepository {
     public function __construct(
@@ -24,10 +24,7 @@ final class ContainerRepository {
 
     public function findByType(
         int $type
-    ): null|array {
-        if(!$this->isValidType($type))
-            throw StorageException::CONTAINER_INVALID_TYPE();
-
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE type = :type"
@@ -35,17 +32,13 @@ final class ContainerRepository {
         $stmt->execute([
             ":type" => $type
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return $stmt->fetchAll();
     }
 
     public function add(
         int $id, 
         string $type
     ): int {
-        if(!$this->isValidType($type))
-            throw StorageException::CONTAINER_INVALID_TYPE();
-
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
@@ -58,12 +51,7 @@ final class ContainerRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1062)
-                throw StorageException::CONTAINER_ALREADY_EXISTS();
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
     
@@ -71,9 +59,6 @@ final class ContainerRepository {
         int $id, 
         string $type
     ): bool {
-        if(!$this->isValidType($type))
-            throw StorageException::CONTAINER_INVALID_TYPE();
-
         try{
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
@@ -85,21 +70,13 @@ final class ContainerRepository {
                 ':id' => $id,
             ]);
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::CONTAINER_NOT_FOUND();
-
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
         int $id
     ): bool {
-        if($this->findById($id) === null)
-            throw StorageException::CONTAINER_NOT_FOUND();
-        
         try {
             $stmt = $this->db->prepare(
                 "DELETE FROM {$this->table_name} 
@@ -109,21 +86,7 @@ final class ContainerRepository {
                 ':id' => $id
             ]);
         } catch (\PDOException $e) {
-
-            throw $e;
-        }
-    }
-
-    private function isValidType(
-        string $type
-    ): bool {
-        switch($type) {
-            case "Box": 
-                return true;
-            case "Pallet": 
-                return true;
-            default: 
-                return false;
+            throw PdoExceptionMapper::map($e);
         }
     }
 }

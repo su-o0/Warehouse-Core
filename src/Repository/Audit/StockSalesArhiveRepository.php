@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Audit;
-use WarehouseCore\Exception\StorageException;
+use WarehouseCore\Exception\PdoExceptionMapper;
 
 final class StockSalesArhiveRepository {
     public function __construct(
@@ -68,11 +68,7 @@ final class StockSalesArhiveRepository {
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
-            $code = $e->errorInfo[1];
-
-            if ($code === 1452)
-                throw StorageException::DB_RELATION_ERROR();
-            throw $e;
+            throw PdoExceptionMapper::map($e);
         }
     }   
 }
