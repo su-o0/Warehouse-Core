@@ -100,21 +100,6 @@ final class ItemRepository {
         return $stmt->fetchAll();
     }
 
-    public function findByPhysicalTagIdStatus(
-        int $physical_tag_id, 
-        string $status
-    ): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name} 
-            WHERE physical_tag_id = :physical_tag_id AND status = :status"
-        );
-        $stmt->execute([
-            ":physical_tag_id" => $physical_tag_id,
-            ":status" => $status
-        ]);
-        return $stmt->fetchAll();
-    }
-
     public function add(
         int $physical_tag_id, 
         int $owner_id,

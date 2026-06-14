@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Payload;
+namespace WarehouseCore\Payload\DTO;
 
 final class HistoryAction
 {

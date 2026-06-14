@@ -1,23 +1,59 @@
 <?php
 namespace WarehouseCore\Service\Setup;
 
+use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\DTO\ContainerEntity;
+use WarehouseCore\Payload\DTO\ContainerTypeValue;
+use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 
 class AddContainerService {
     public function __construct(
-        private ContainerRepository $Container
+        private ContainerRepository $container_repository
         ) {
     }
 
-    public function execute(string $ContainerId, string $Type): void {
-        echo "Добавление контейнера $ContainerId типа $Type\n"; 
-        $Container = $this->Container->findById($ContainerId);
-        if($Container !== null)
-            throw new \RuntimeException("Контейнер $ContainerId уже существует");
-        
-        if(!$this->Container->isValidType($Type))
-            throw new \RuntimeException("Тип $Type не существует");
-        
-        $this->Container->add($ContainerId, $Type);
+    public function execute(
+        string $container_id, 
+        string $type
+    ): SetupResult {
+
+        $container_entity = $this->container_repository->findById(
+            $container_id
+        );
+        if($container_entity !== null)
+            return new SetupResult(
+                success: false,
+                message: DomainException::CONTAINER_ALREADY_EXISTS()->getMessage()
+            );
+
+        try {
+            ContainerTypeValue::fromRaw(
+                $type
+            );
+        }catch(DomainException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+
+        try {
+            $this->container_repository->add(
+                $container_id, 
+                $type
+            );
+        }
+        catch(RepositoryException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+
+        return new SetupResult(
+            success: true
+        );
 }
 }

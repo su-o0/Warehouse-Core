@@ -19,4 +19,14 @@ trait ConfigHelper {
         }
         return $v;
     }
+
+    protected static function requiredInt(
+        array $raw, 
+        string $field
+    ): int {
+        $v = self::required($raw, $field);
+        if (!is_numeric($v))
+            throw new \InvalidArgumentException("Field '{$field}' must be int");
+        return (int) $v;
+    }
 }

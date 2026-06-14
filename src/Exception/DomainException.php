@@ -283,7 +283,32 @@ public static function PART_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::VEHICLE_NOT_FOUND,
-            'Car not found'
+            'Vehicle not found'
         );
     }
+
+    public static function USER_ALREADY_EXISTS(): self
+    {
+        return new self(
+            ErrorCode::USER_ALREADY_EXISTS,
+            'User already exists'
+        );
+    }
+
+    public static function USER_NOT_FOUND(): self
+    {
+        return new self(
+            ErrorCode::USER_NOT_FOUND,
+            'User not found'
+        );
+    }
+
+    public static function PHYSICAL_TAG_NOT_AVAILABLE(): self
+    {
+        return new self(
+            ErrorCode::PHYSICAL_TAG_NOT_AVAILABLE,
+            'Physical tag is not available for assignment. Choose another tag.'
+        );
+    }
+
 }

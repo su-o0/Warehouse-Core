@@ -45,6 +45,7 @@ final class ErrorCode
     public const PHYSICAL_TAG_ALREADY_EXISTS    = 'PHYSICAL_TAG_001';
     public const PHYSICAL_TAG_NOT_FOUND         = 'PHYSICAL_TAG_002';
     public const PHYSICAL_TAG_INVALID_STATUS    = 'PHYSICAL_TAG_007';
+    public const PHYSICAL_TAG_NOT_AVAILABLE     = 'PHYSICAL_TAG_008';
 
 
     public const CONTAINER_ALREADY_EXISTS   = 'CONTAINER_001';
@@ -68,6 +69,9 @@ final class ErrorCode
     public const OWNER_INVALID_PERMISSION       = 'OWNER_003';
     public const OWNER_USERID_ALREADY_EXISTS    = 'OWNER_004';
     public const OWNER_NAME_ALREADY_EXISTS      = 'OWNER_005';
+
+    public const USER_ALREADY_EXISTS    = 'USER_001';
+    public const USER_NOT_FOUND         = 'USER_002';
 
     public const PART_ALREADY_EXISTS    = 'PART_001';
     public const PART_NOT_FOUND         = 'PART_002';

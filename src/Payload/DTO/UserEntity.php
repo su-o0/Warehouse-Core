@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Payload;
+namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
 class UserEntity {
@@ -14,11 +14,12 @@ class UserEntity {
     {   }
 
     public static function fromRaw(array $raw): self {
+        error_log(var_export($raw, true));
         return new self(
-            self::requiredString($raw, 'id'),
+            self::required($raw, 'id'),
             self::requiredString($raw, 'telegram_id'),
             self::requiredString($raw, 'name'),
-            self::requiredString($raw, 'role_id')
+            self::required($raw, 'role_id')
         );
     }
 }

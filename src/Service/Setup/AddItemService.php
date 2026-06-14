@@ -1,46 +1,85 @@
 <?php 
 namespace WarehouseCore\Service\Setup;
 
-use WarehouseCore\Repository\Topology\LocationRepository;
-use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\DTO\PartEntity;
+use WarehouseCore\Payload\DTO\PhysicalTagEntity;
+use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Catalog\VehicleRepository;
+use WarehouseCore\Type\PhysicalTagType;
 
 class AddItemService {
     public function __Construct(
-        private LocationRepository $Location,
-        private ItemPlacementRepository $ItemPlacement,
-        private PhysicalTagRepository $PhysicalTag,
-        private ItemRepository $Item,
-        private PartRepository $Part,
-        private VehicleRepository $Car
-    ) {
+        private PhysicalTagRepository $physical_tag_repository,
+        private ItemRepository $item_repository,
+        private PartRepository $part_repository,
+        private VehicleRepository $vehicle_repository
+    ) { }
 
-    }
+    public function execute(
+        int $tag_id, 
+        string $article, 
+        ?int $vehicle_id = null
+    ): SetupResult {
+        $physical_tag_entity = $this->physical_tag_repository->findById($tag_id);
+        if($physical_tag_entity === null) 
+            return new SetupResult(
+                success: false,
+                message: DomainException::PHYSICAL_TAG_NOT_FOUND()->getMessage()
+            );
 
-    public function execute(string $Address, int $IdPhysicalTag, string $Article, ?int $Car = null):void {
-        $Location = $this->Location->findByAddress($Address);
-        if(!$Location)
-            throw new \RuntimeException("Адрес не найден");
+        try{
+            $physical_tag_entity = PhysicalTagEntity::fromRaw(
+                $physical_tag_entity
+            );  
+        }catch(DomainException $e){
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
 
-        $PhysicalTag = $this->PhysicalTag->findById($IdPhysicalTag);
-        if(!$PhysicalTag) 
-            throw new \RuntimeException("Физический идентификатор не найден");
+        if($physical_tag_entity->status != PhysicalTagType::Free)
+            return new SetupResult(
+                success: false,
+                message: DomainException::PHYSICAL_TAG_NOT_AVAILABLE()->getMessage()
+            );
 
-        if($PhysicalTag['Status'] != "Free")
-            throw new \RuntimeException("Виберете другой физический идентификатор");
-
-        $Part = $this->Part->findOrCreate($Article);
-        // $Car = $this->Car->findOrCreate($Article);
+        try {
+            $part_entity = PartEntity::fromRaw(
+                $this->part_repository->findOrCreate($article)
+            );
+            // $vehicle_entity = empty($vehicle_id)?null:$this->vehicle_repository->findById($vehicle_id);
+        } catch(RepositoryException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
         
-        if($this->Item->findByPhysicalTagIdStatus($IdPhysicalTag, "Active") !== null)
-            throw new \RuntimeException("Физический идентификатор уже занят");
+        try {
+            $this->item_repository->add(
+                $physical_tag_entity->id,
+                $part_entity->id,
+                // empty($vehicle_id)?null:$vehicle_entity->id
+            );
+            $this->physical_tag_repository->updateStatus(
+                $physical_tag_entity->id, 
+                'Assigned'
+            );
+        }catch(RepositoryException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
 
-        $ItemId = $this->Item->add($IdPhysicalTag, $Part['Id'], $Car);
-        $this->ItemPlacement->add($Location['Id'], $ItemId);
-        $this->PhysicalTag->updateStatus($IdPhysicalTag, 'Assigned');
-        echo "Предмет с физической меткой $IdPhysicalTag и артикулом $Article добавлен по адресу $Address\n";
+        return new SetupResult(
+            success: true
+        );
     }
 }

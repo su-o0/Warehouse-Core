@@ -1,33 +1,45 @@
 <?php
 namespace WarehouseCore\Service\Setup;
 
-use WarehouseCore\Payload\Result\AddUserResult;
 use WarehouseCore\Repository\Identity\UserRepository;
-use WarehouseCore\Exception\StorageException;
+
+use WarehouseCore\Payload\Result\AddUserResult;
+use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\DTO\UserEntity;
+use WarehouseCore\Payload\Result\SetupResult;
 
 final class AddUserService {
     public function __construct(
-        private UserRepository $user,
+        private UserRepository $user_repository,
     ) { }
 
     public function execute(
-        string $telegram_id,
-        string $name, 
-        int $roleId
-    ): AddUserResult {
+        UserEntity $user_entity
+       ): SetupResult {
+        
+        $user = $this->user_repository->findByTelegramId($user_entity->telegram_id);
+        if($user !== null) 
+            return new SetupResult(
+                success: false,
+                message: DomainException::USER_ALREADY_EXISTS()->getMessage()
+            );
+            
         try {
-            $id = $this->user->add($telegram_id, $name, $roleId);
-        }
-        catch (StorageException $e) {
-            return new AddUserResult(
+            $this->user_repository->add(
+                $user_entity->telegram_id, 
+                $user_entity->name, 
+                $user_entity->role_id
+            );
+        }catch(RepositoryException $e) {
+            return new SetupResult(
                 success: false,
                 message: $e->getMessage()
             );
         }
-        
-        return new AddUserResult(
-            success: true,
-            userId: $id
+
+        return new SetupResult(
+            success: true
         );
     }
 } 

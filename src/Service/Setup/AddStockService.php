@@ -1,35 +1,37 @@
 <?php 
 namespace WarehouseCore\Service\Setup;
-use WarehouseCore\Repository\Topology\LocationRepository;
-use WarehouseCore\Repository\Topology\StockPlacementRepository;
+
 use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 
-class AddStockService {
-    public function __Construct(
-        private LocationRepository $Location,
-        private StockPlacementRepository $StockPlacement,
-        private StockRepository $Stock,
-        private PartRepository $Part    
+use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\DTO\PartEntity;
+
+final class AddStockService {
+    function __construct(
+        private StockRepository $stock_repository,
+        private PartRepository $part_repository    
     ) { }
 
-    public function execute(string $Address, int $Qcy, ?string $Article = null):void {
-        echo "Добавление стока по адресу $Address\n";
+    public function execute(
+        string $article,
+        int $qcy,
+    ): SetupResult {
+        try {
+            $part_entity = PartEntity::fromRaw(
+                $this->part_repository->findOrCreate($article)
+            );
+            $this->stock_repository->add($qcy, $part_entity->id);
+        } catch(RepositoryException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
 
-        $Location = $this->Location->findByAddress($Address);
-        if($Location === null)
-            throw new \RuntimeException("Адресс $Address не существует");
-
-        $Part = ($Article === null) ? null : $this->Part->findOrCreate($Article);
-
-        // $Stock = $this->Stock->findByPartId($Part['Id']);
-        // if($Stock !== null)
-        //     throw new \RuntimeException("Асортимент с артикулом $Article уже существует");    
-        
-        $StockId = $this->Stock->add($Qcy, $Part['Id'] ?? null);
-
-        $this->StockPlacement->add($Location['Id'], $StockId);
-
-        echo "Сток $StockId добавлен по адресу $Address\n";
+        return new SetupResult(
+            success: true
+        );
     }
 }
