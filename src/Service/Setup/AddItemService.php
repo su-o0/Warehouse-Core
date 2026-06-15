@@ -3,6 +3,7 @@ namespace WarehouseCore\Service\Setup;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\DTO\ItemEntity;
 use WarehouseCore\Payload\DTO\PartEntity;
 use WarehouseCore\Payload\DTO\PhysicalTagEntity;
 use WarehouseCore\Payload\DTO\VehicleEntity;
@@ -66,7 +67,7 @@ class AddItemService {
         }
         
         try {
-            $this->item_repository->add(
+            $item_id = $this->item_repository->add(
                 $physical_tag_entity->id,
                 $part_entity->id,
                 empty($vehicle_entity)?null:$vehicle_entity->id
@@ -83,7 +84,8 @@ class AddItemService {
         }
 
         return new SetupResult(
-            success: true
+            success: true,
+            entity: ItemEntity::
         );
     }
 }

@@ -7,6 +7,7 @@ use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\DTO\PartEntity;
+use WarehouseCore\Payload\DTO\StockEntity;
 
 final class AddStockService {
     function __construct(
@@ -22,7 +23,7 @@ final class AddStockService {
             $part_entity = PartEntity::fromRaw(
                 $this->part_repository->findOrCreate($article)
             );
-            $this->stock_repository->add($qcy, $part_entity->id);
+            $stock_id = $this->stock_repository->add($qcy, $part_entity->id);
         } catch(RepositoryException $e) {
             return new SetupResult(
                 success: false,
@@ -31,7 +32,10 @@ final class AddStockService {
         }
 
         return new SetupResult(
-            success: true
+            success: true,
+            entity: StockEntity::fromRaw(
+                $this->stock_repository->findbyId($stock_id)
+            )
         );
     }
 }
