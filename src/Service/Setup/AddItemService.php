@@ -5,15 +5,16 @@ use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\DTO\PartEntity;
 use WarehouseCore\Payload\DTO\PhysicalTagEntity;
+use WarehouseCore\Payload\DTO\VehicleEntity;
 use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Catalog\VehicleRepository;
-use WarehouseCore\Type\PhysicalTagType;
+use WarehouseCore\Type\PhysicalTagStatus;
 
 class AddItemService {
-    public function __Construct(
+    public function __construct(
         private PhysicalTagRepository $physical_tag_repository,
         private ItemRepository $item_repository,
         private PartRepository $part_repository,
@@ -43,7 +44,7 @@ class AddItemService {
             );
         }
 
-        if($physical_tag_entity->status != PhysicalTagType::Free)
+        if($physical_tag_entity->status != PhysicalTagStatus::Free)
             return new SetupResult(
                 success: false,
                 message: DomainException::PHYSICAL_TAG_NOT_AVAILABLE()->getMessage()
@@ -53,7 +54,10 @@ class AddItemService {
             $part_entity = PartEntity::fromRaw(
                 $this->part_repository->findOrCreate($article)
             );
-            // $vehicle_entity = empty($vehicle_id)?null:$this->vehicle_repository->findById($vehicle_id);
+            $vehicle_entity = empty($vehicle_id)? null :
+                VehicleEntity::fromRaw(
+                    $this->vehicle_repository->findById($vehicle_id)
+            );
         } catch(RepositoryException $e) {
             return new SetupResult(
                 success: false,
@@ -65,7 +69,7 @@ class AddItemService {
             $this->item_repository->add(
                 $physical_tag_entity->id,
                 $part_entity->id,
-                // empty($vehicle_id)?null:$vehicle_entity->id
+                empty($vehicle_entity)?null:$vehicle_entity->id
             );
             $this->physical_tag_repository->updateStatus(
                 $physical_tag_entity->id, 

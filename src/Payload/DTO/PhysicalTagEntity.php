@@ -2,13 +2,14 @@
 namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
-use WarehouseCore\Type\PhysicalTagType;
+use WarehouseCore\Type\PhysicalTagStatus;
+use WarehouseCore\Payload\DTO\PhysicalTagStatusValue;
 
 final class PhysicalTagEntity {
     use ConfigHelper;
     public function __construct(
         public readonly int $id,
-        public readonly PhysicalTagType $status,
+        public readonly PhysicalTagStatus $status,
         public readonly string $created_at
     ) { }
 

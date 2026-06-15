@@ -13,7 +13,9 @@ class AddLocationService {
         public LocationRepository $location_repository
     ) {  }
 
-    public function execute(AddressValue $address_value): SetupResult {
+    public function execute(
+        AddressValue $address_value
+    ): SetupResult {
         $location = $this->location_repository->findByAddress($address_value->getValue());
         if($location !== null)
             return new SetupResult(
@@ -21,7 +23,7 @@ class AddLocationService {
                 message: DomainException::LOCATION_ALREADY_EXISTS()->getMessage()
             );
 
-        try {
+        try {   
             $this->location_repository->add(
                 $address_value->getValue()
             );
