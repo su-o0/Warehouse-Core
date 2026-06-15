@@ -42,130 +42,17 @@ use WarehouseCore\Service\Audit\GetOwnerService;
 use WarehouseCore\Service\Audit\DeleteOwnerService;
 use WarehouseCore\Service\Audit\GetHistoryService;
 use WarehouseCore\Service\Audit\GetSalesService;
-
+use WarehouseCore\Service\Setup\AddPartService;
+use WarehouseCore\Service\Setup\AddVehicleService;
 
 final class ServiceRegistry {
-    private AuthenticationService $authentication; 
-    private AddLocationService $AddLocation;
-    private AddContainerService $AddContainer;
-    private AddPhysicalTagService $AddPhysicalTag;
-    private AddUserService $AddUser;
-    private AddOwnerService $AddOwner;
-    private AddCarService $AddCar;
-    private AddItemService $AddItem;
-    private AddStockService $AddStock;
-    private SetPlacementService $SetPlacement;
-    private MoveService $Move;
-    private MoveContainerService $MoveContainer;
-    private PutIntoContainerService $PutIntoContainer;
-    private RemoveFromContainerService $RemoveFromContainer;
-    private IncrementStockQtyService $IncrementStockQty;
-    private DecrementStockQtyService $DecrementStockQty;
-    private DeleteStockService $DeleteStock;
-    private SetItemConditionService $SetItemCondition;
-    private MarkItemSoldService $MarkItemSold;
-    private ArchiveItemService $ArchiveItem;
-    private ReturnItemService $ReturnItem;
-    private GetAllCarService $GetAllCar;
-    private GetAllLocationService $GetAllLocation;
-    private GetLocationContentService $GetLocationContent;
-    private GetContainerContentService $GetContainerContent;
-    private FindPhysicalTagService $FindPhysicalTag;
-    private FindStockService $FindStock;
-    private FindByTagService $FindByTag;
-    private AddPhotoService $AddPhoto;
-    private DeletePhotoService $DeletePhoto;
-    private SetOwnerPermisitionService $SetOwnerPermisition;
-    private GetAllOwnerService $GetAllOwner;
-    private GetOwnerService $GetOwner;
-    private DeleteOwnerService $DeleteOwner;
-    private GetHistoryService $GetHistory;
-    private GetSalesService $GetSales;
-
     public function __construct(
         private RepositoryRegistry $repository, 
-    ) {
-    //     $this->SetPlacement = new SetPlacementService(
-    //         $repo->Location, 
-    //         $repo->ContainerPlacement, 
-    //         $repo->ItemPlacement, 
-    //         $repo->StockPlacement, 
-    //         $repo->PhysicalTag,
-    //         $repo->Container, 
-    //         $repo->Item, 
-    //         $repo->Stock
-    //     );
-    //     $this->Move = new MoveService(
-    //         $repo->Location, 
-    //         $repo->ItemPlacement, 
-    //         $repo->StockPlacement, 
-    //         $repo->Item, 
-    //         $repo->Stock
-    //     );
-    //     $this->MoveContainer = new MoveContainerService(
-    //         $repo->Location, 
-    //         $repo->ContainerPlacement, 
-    //         $repo->Container
-    //     );
-    //     $this->PutIntoContainer = new PutIntoContainerService(
-    //         $SetPlacement
-    //     );
-    //     $this->RemoveFromContainer = new RemoveFromContainerService(
-    //         $repo->ContainerPlacement, 
-    //         $repo->ItemPlacement, 
-    //         $repo->StockPlacement, 
-    //         $repo->Item, 
-    //         $repo->Stock
-    //     );
-    //     $this->IncrementStockQty = new IncrementStockQtyService(
-    //         $repo->Stock
-    //     );
-    //     $this->DecrementStockQty = new DecrementStockQtyService(
-    //         $repo->Stock
-    //         );
-    //     $this->DeleteStock = new DeleteStockService(
-    //         $this->repo->Stock
-    //     );
-    //     $this->SetItemCondition = new SetItemConditionService(
-    //         $this->repo->Item
-    //     );
-    //     $this->MarkItemSold = new MarkItemSoldService();
-    //     $this->ArchiveItem          = new ArchiveItemService();
-    //     $this->ReturnItem           = new ReturnItemService();
-    //     $this->GetAllCar            = new GetAllCarService();
-    //     $this->GetAllLocation       = new GetAllLocationService($this->repo->Location);
-    //     $this->GetLocationContent   = new GetLocationContentService($this->repo->Location, $this->repo->ContainerPlacement, $this->repo->ItemPlacement, $this->repo->StockPlacement, $this->repo->Item, $this->repo->Stock, $this->repo->Part);
-    //     $this->FindPhysicalTag      = new FindPhysicalTagService();
-    //     $this->FindStock            = new FindStockService();
-    //     $this->FindByTag            = new FindByTagService();
-
-    //     $this->AddPhoto = new AddPhotoService();
-    //     $this->DeletePhoto = new DeletePhotoService();
-    //     $this->SetOwnerPermisition = new SetOwnerPermisitionService();
-    //     $this->GetAllOwner = new GetAllOwnerService($this->repo->Owner);
-    //     $this->GetOwner             = new GetOwnerService($this->repo->Owner);
-    //     $this->DeleteOwner = new DeleteOwnerService();
-    //     $this->GetHistory = new GetHistoryService();
-    //     $this->GetSales = new GetSalesService();
-    }
+    ) { }
 
     public function authentication(): AuthenticationService {
         return new AuthenticationService(
             $this->repository->user
-        );
-    }
-
-
-    public function addUser(): AddUserService {
-       return new AddUserService(
-            $this->repository->user
-        );
-    }
-
-    public function addOwner(): AddOwnerService {
-       return new AddOwnerService(
-            $this->repository->user,
-            $this->repository->owner
         );
     }
 
@@ -187,10 +74,23 @@ final class ServiceRegistry {
         );
     }
 
+
+    public function addUser(): AddUserService {
+       return new AddUserService(
+            $this->repository->user
+        );
+    }
+
+    public function addOwner(): AddOwnerService {
+       return new AddOwnerService(
+            $this->repository->user,
+            $this->repository->owner
+        );
+    }
+
+
     public function addItem(): AddItemService {
         return new AddItemService(
-            $this->repository->location,
-            $this->repository->item_placement,
             $this->repository->physical_tag,
             $this->repository->item,
             $this->repository->part,
@@ -200,11 +100,23 @@ final class ServiceRegistry {
 
     public function addStock(): AddStockService {
         return new AddStockService(
-            $this->repository->location,
-            $this->repository->stock_placement,
             $this->repository->stock,
             $this->repository->part,
         );
     }
+
+    public function addPart(): AddPartService {
+        return new AddPartService(
+            $this->repository->part
+        );
+    }
+
+    public function addVehicle():  AddVehicleService {
+        return new AddVehicleService(
+            $this->repository->vehicle
+        );
+    }
+
+
 
 }
