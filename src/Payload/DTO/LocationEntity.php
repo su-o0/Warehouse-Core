@@ -2,6 +2,7 @@
 namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
+use WarehouseCore\Payload\Value\AddressValue;
 
 final class LocationEntity {
     use ConfigHelper;

@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Type;
+namespace WarehouseCore\Payload\Type;
 
 enum ContainerType: string {
     case Box    = 'Box';

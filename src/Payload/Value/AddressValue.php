@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Payload\DTO;
+namespace WarehouseCore\Payload\Value;
 
 use WarehouseCore\Config\ConfigHelper;
 

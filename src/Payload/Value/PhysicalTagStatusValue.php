@@ -1,13 +1,16 @@
 <?php 
-namespace WarehouseCore\Payload\DTO;
+namespace WarehouseCore\Payload\Value;
 
 use WarehouseCore\Exception\DomainException;
-use WarehouseCore\Type\PhysicalTagStatus;
+use WarehouseCore\Payload\Type\PhysicalTagStatus;
 
 final class PhysicalTagStatusValue {
 
-    public static function fromRaw(string $raw): PhysicalTagStatus {
-        return match($raw){
+    public static function fromRaw(
+        array $raw, 
+        string $field
+    ): PhysicalTagStatus {
+        return match($raw[$field]){
             'Free'      => PhysicalTagStatus::Free,
             'Assigned'  => PhysicalTagStatus::Assigned,
             'Lost'      => PhysicalTagStatus::Lost,

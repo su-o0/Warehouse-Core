@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Type; 
+namespace WarehouseCore\Payload\Type; 
 
 enum ItemCondition: string {
     case New    = 'New';

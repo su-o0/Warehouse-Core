@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Type;
+namespace WarehouseCore\Payload\Type;
 
 enum ItemStatus : string {
     case Active     = 'Active';
