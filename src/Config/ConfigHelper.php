@@ -29,4 +29,19 @@ trait ConfigHelper {
             throw new \InvalidArgumentException("Field '{$field}' must be int");
         return (int) $v;
     }
+
+    protected static function nullableInt(
+        array $raw,
+        string $field
+    ): ?int {
+        if (!isset($raw[$field])) {
+            return null;
+        }
+
+        if ($raw[$field] === null) {
+            return null;
+        }
+
+        return (int)$raw[$field];
+    }
 }
