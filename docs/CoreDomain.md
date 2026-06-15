@@ -11,12 +11,18 @@ Enitity
 ├── Stock
 ├── Container
 ├── Location
-└── PhysicalTag
+├── PhysicalTag
+├── User
+├── Owner
+├── Part
+└── Vehicle
 
 Value Objects
 ├── Address
 ├── Status
-└── Condition
+├── Condition
+├── Container Type
+└── PhysicalTag Status
 
 
 Domain Service
