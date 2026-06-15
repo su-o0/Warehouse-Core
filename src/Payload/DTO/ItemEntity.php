@@ -16,8 +16,8 @@ final class ItemEntity {
         public readonly int $part_id,
         public readonly ?int $vehicle_id,
         public readonly ?int $owner_id,
-        public readonly ?ItemStatus $status,
-        public readonly ?ItemCondition $condition,
+        public readonly ItemStatus $status,
+        public readonly ItemCondition $condition,
         public readonly ?string $condition_note,
         public readonly string $created_at,
     ) { }

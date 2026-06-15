@@ -9,13 +9,7 @@ final class ItemStatusValue {
     public static function fromRaw(
         array $raw, 
         string $field
-    ): null|ItemStatus {
-        $value = $raw[$field] ?? null;
-
-        if ($value === null) {
-            return null;
-        }
-
+    ): ItemStatus {
         return match($raw[$field]){
             'Active'    => ItemStatus::Active,
             'Sold'      => ItemStatus::Sold,

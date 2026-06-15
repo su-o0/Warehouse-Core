@@ -10,19 +10,13 @@ final class ItemConditionValue {
     public static function fromRaw(
         array $raw, 
         string $field
-    ): null|ItemCondition {
-        $value = $raw[$field] ?? null;
-
-        if ($value === null) {
-            return null;
-        }
-        
+    ): ItemCondition {
         return match ($raw[$field]) {
             'New'       => ItemCondition::New,
             'Good'      => ItemCondition::Good,
             'Fair'      => ItemCondition::Fair,
             'Poor'      => ItemCondition::Poor,
-            default     => DomainException::ITEM_INVALID_CONDITION()
+            default     => throw DomainException::ITEM_INVALID_CONDITION()
         };
     }
 }

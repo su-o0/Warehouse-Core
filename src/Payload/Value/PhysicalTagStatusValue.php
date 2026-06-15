@@ -15,7 +15,7 @@ final class PhysicalTagStatusValue {
             'Assigned'  => PhysicalTagStatus::Assigned,
             'Lost'      => PhysicalTagStatus::Lost,
             'Broken'    => PhysicalTagStatus::Broken,
-            default     => DomainException::PHYSICAL_TAG_INVALID_STATUS()
+            default     => throw DomainException::PHYSICAL_TAG_INVALID_STATUS()
         };
     }
 }
