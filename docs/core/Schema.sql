@@ -61,7 +61,7 @@ CREATE TABLE items (
     ,vehicle_id BIGINT NULL
     ,owner_id BIGINT NOT NULL
     
-    ,status ENUM('Created','Active','Sold','Archived', 'Lost') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Created','Tagged','Placed','Active','Sold','Archived', 'Lost') NOT NULL DEFAULT 'Created'
     ,condition_level ENUM('New','Good','Fair','Poor') NOT NULL DEFAULT 'Good'
     ,condition_note TEXT NULL
 

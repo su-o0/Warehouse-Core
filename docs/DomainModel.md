@@ -97,7 +97,7 @@ Item
 ├── PartId
 ├── VehicleId
 ├── OwnerId
-├── Status > (Created, Active, Sold, Archived, Lost)
+├── Status > (Created, Tagged, Placed, Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
 └── CreatedAt
@@ -106,7 +106,7 @@ Stock
 ├── Id
 ├── PartId
 ├── Qty
-├── Status > (Created, Active, Crowded, Archived, Lost)
+├── Status > (Created, Active, Crowded, Archived)
 └── CreatedAt
 ```
 

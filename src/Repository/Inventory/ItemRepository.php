@@ -88,21 +88,24 @@ final class ItemRepository {
     }
 
     public function add(
-        int $physical_tag_id, 
         int $owner_id,
-        ?int $part_id = null, 
+        int $part_id, 
+        string $condition_level,
         ?int $vehicle_id = null,
+        ?string $condition_note = null
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (physical_tag_id, part_id, vehicle_id, owner_id) 
-                VALUES (:physical_tag_id, :part_id, :vehicle_id, owner_id)"    
+                (owner_id, part_id, condition_level, vehicle_id, condition_note) 
+                VALUES (:owner_id, :part_id, :condition_level, :vehicle_id, :condition_note)"    
             );
             $stmt->execute([
-                ':physical_tag_id' => $physical_tag_id,
+                ':owner_id' => $owner_id,
                 ':part_id' => $part_id,
+                ':condition_level' => $condition_level,
                 ':vehicle_id' => $vehicle_id,
+                ':condition_note' => $condition_note,
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
