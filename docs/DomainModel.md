@@ -70,12 +70,14 @@ ContainerPlacement
 ItemPlacement
 ├── Id
 ├── LocationId
+├── ContainerId
 ├── ItemId
 └── CreatedAt
 
 StockPlacement
 ├── Id
 ├── LocationId
+├── ContainerId
 ├── StockId
 └── CreatedAt
 ```
@@ -86,25 +88,25 @@ StockPlacement
 Container 
 ├── Id
 ├── Type > (Box, Pallet)
+├── Status > (Created, Active, Crowded, Archived, Lost)
 └── CreatedAt
 
 Item
 ├── Id
 ├── PhysicalTagId
-├── ContainerId
 ├── PartId
 ├── VehicleId
 ├── OwnerId
-├── Status > (Active, Sold, Archived, Lost)
+├── Status > (Created, Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
 └── CreatedAt
 
 Stock
 ├── Id
-├── ContainerId
 ├── PartId
 ├── Qty
+├── Status > (Created, Active, Crowded, Archived, Lost)
 └── CreatedAt
 ```
 
