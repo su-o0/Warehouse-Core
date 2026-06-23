@@ -23,14 +23,27 @@ final class ItemPlacementRepository {
     }
 
     public function findByLocationId(
-        int $LocationId
+        int $location_id
     ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE LocationId = :LocationId"
+            WHERE location_id = :location_id"
         );
         $stmt->execute([
-            ":LocationId" => $LocationId
+            ":location_id" => $location_id
+        ]);
+        return $stmt->fetchAll();
+    }
+
+    public function findByContainerId(
+        int $container_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
+        );
+        $stmt->execute([
+            ":container_id" => $container_id
         ]);
         return $stmt->fetchAll();
     }
@@ -49,7 +62,7 @@ final class ItemPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(
+    public function addByLocationId(
         int $location_id, 
         int $item_id
     ): int {
@@ -61,6 +74,26 @@ final class ItemPlacementRepository {
             );
             $stmt->execute([
                 ':location_id' => $location_id,
+                ':item_id' => $item_id
+            ]);
+            return (int) $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function addByContainerId(
+        int $container_id, 
+        int $item_id
+    ): int {
+        try {
+            $stmt = $this->db->prepare(
+                "INSERT INTO {$this->table_name}
+                (container_id, item_id) 
+                VALUES (:container_id, :item_id)"
+            );
+            $stmt->execute([
+                ':container_id' => $container_id,
                 ':item_id' => $item_id
             ]);
             return (int) $this->db->lastInsertId();
@@ -82,6 +115,25 @@ final class ItemPlacementRepository {
             return $stmt->execute([
                 ':id' => $id,
                 ':location_id' => $location_id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+        public function updateContainerId(
+        int $id, 
+        int $container_id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET container_id = :container_id
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id,
+                ':container_id' => $container_id
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

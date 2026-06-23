@@ -35,6 +35,20 @@ final class StockPlacementRepository {
         return $stmt->fetchAll();
     }
 
+    public function findByContainerId(
+        int $container_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
+        );
+        $stmt->execute([
+            ":container_id" => $container_id
+        ]);
+        return $stmt->fetchAll();
+    }
+
+
     public function findByStockId(
         string $stock_id
     ): null|array {
@@ -49,7 +63,7 @@ final class StockPlacementRepository {
         return empty($result)? null : $result;
     }
 
-    public function add(
+    public function addByLocationId(
         int $location_id, 
         string $stock_id
     ): int {
@@ -61,6 +75,26 @@ final class StockPlacementRepository {
             );
             $stmt->execute([
                 ':location_id' => $location_id,
+                ':stock_id' => $stock_id
+            ]);
+            return (int) $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function addByContainerId(
+        int $container_id, 
+        string $stock_id
+    ): int {
+        try {
+            $stmt = $this->db->prepare(
+                "INSERT INTO {$this->table_name} 
+                (container_id, stock_id) 
+                VALUES (:container_id, :stock_id)"
+            );
+            $stmt->execute([
+                ':container_id' => $container_id,
                 ':stock_id' => $stock_id
             ]);
             return (int) $this->db->lastInsertId();
@@ -87,6 +121,27 @@ final class StockPlacementRepository {
             throw PdoExceptionMapper::map($e);
         }
     }
+
+    public function updateContainerId(
+        int $id, 
+        int $container_id
+    ): int {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET container_id = :container_id 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':container_id' => $container_id,
+                ':id' => $id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    
 
     public function delete(
         int $id

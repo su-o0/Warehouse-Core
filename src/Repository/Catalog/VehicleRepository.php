@@ -63,4 +63,11 @@ final class VehicleRepository {
         return $this->findById($this->add($vin));
     }
 
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM $this->table_name"
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

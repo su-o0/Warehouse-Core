@@ -35,19 +35,6 @@ final class ItemRepository {
         return $stmt->fetchAll();
     }
 
-    public function findByContainerId(
-        int $container_id
-    ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE container_id = :container_id"
-        );
-        $stmt->execute([
-            ":container_id" => $container_id
-        ]);
-        return $stmt->fetchAll();
-    }
-
     public function findByPartId(
         int $part_id
     ): array {
@@ -136,25 +123,6 @@ final class ItemRepository {
             return $stmt->execute([
                 ":id" => $id,
                 ":physical_tag_id" => $physical_tag_id
-            ]);
-        }catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateContainerId(
-        int $id, 
-        ?int $container_id = null
-    ): bool {
-        try {
-            $stmt = $this->db->prepare( 
-                "UPDATE {$this->table_name} 
-                SET container_id = :container_id 
-                WHERE id = :id"
-            );
-            return $stmt->execute([
-                ":id" => $id,
-                ":container_id" => $container_id
             ]);
         }catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

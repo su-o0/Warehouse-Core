@@ -35,26 +35,13 @@ final class StockRepository {
         return $stmt->fetchAll();
     }
 
-    public function findByContainerId(
-        int $container_id
-    ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name}
-            WHERE container_id = :container_id"
-        );
-        $stmt->execute([
-            ":container_id" => $container_id
-        ]);
-        return $stmt->fetchAll();
-    }
-
     public function add(
         int $qty, 
         ?int $part_id = null
     ): int {
         try {
             $stmt = $this->db->prepare(
-                "INSERT INTO 1this->table_name
+                "INSERT INTO {$this->table_name}
                 (part_id, qty) 
                 VALUES (:part_id, :qty)"
             );
