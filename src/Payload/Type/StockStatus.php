@@ -1,10 +1,10 @@
 <?php
 namespace WarehouseCore\Payload\Type;
 
-enum ItemStatus : string {
+enum StockStatus : string {
     case Created    = 'Created';
     case Active     = 'Active';
-    case Sold       = 'Sold';
+    case Sold       = 'Crowded';
     case Archived   = 'Archived';
     case Lost       = 'Lost';
 }
