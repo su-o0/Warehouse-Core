@@ -48,6 +48,7 @@ CREATE TABLE vehicles (
 CREATE TABLE containers (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,type ENUM('Box','Pallet') NOT NULL
+    ,status ENUM('Created','Active','Crowded','Archived', 'Lost') NOT NULL DEFAULT 'Created'
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -55,42 +56,36 @@ CREATE TABLE items (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
 
     ,physical_tag_id BIGINT
-    ,container_id BIGINT NULL
     
     ,part_id BIGINT NOT NULL
     ,vehicle_id BIGINT NULL
     ,owner_id BIGINT NOT NULL
     
-    ,status ENUM('Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Active'
+    ,status ENUM('Created','Active','Sold','Archived', 'Lost') NOT NULL DEFAULT 'Created'
     ,condition_level ENUM('New','Good','Fair','Poor') NOT NULL DEFAULT 'Good'
     ,condition_note TEXT NULL
 
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (physical_tag_id) REFERENCES physical_tags(id)
-    ,FOREIGN KEY (container_id) REFERENCES containers(id)
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
     ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
     ,FOREIGN KEY (owner_id) REFERENCES owners(id)
 
     ,INDEX idx_item_owner (owner_id)
-    ,INDEX idx_item_container (container_id)
     ,INDEX idx_item_vehicle (vehicle_id)
 );
 
 CREATE TABLE stock (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     
-    ,container_id BIGINT NULL
     ,part_id BIGINT NOT NULL
     ,qty INT NOT NULL DEFAULT 0
-    
+    ,status ENUM('Created','Active','Crowded','Archived', 'Lost') NOT NULL DEFAULT 'Created'
+
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
-    ,FOREIGN KEY (container_id) REFERENCES containers(id)
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
-    
-    ,INDEX idx_stock_container (container_id)
     ,INDEX idx_stock_part (part_id)
 );
 
@@ -118,24 +113,29 @@ CREATE TABLE container_placements (
 
 CREATE TABLE item_placements (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,location_id BIGINT NOT NULL
+    ,location_id BIGINT NULL
+    ,container_id BIGINT NULL
     ,item_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (location_id) REFERENCES locations(id)
     ,FOREIGN KEY (item_id) REFERENCES items(id)
+    ,FOREIGN KEY (container_id) REFERENCES locations(id)
 
     ,UNIQUE KEY uq_item_location (item_id)
 );
 
 CREATE TABLE stock_placements (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,location_id BIGINT NOT NULL
+    ,location_id BIGINT NULL
+    ,container_id BIGINT NULL
     ,stock_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (location_id) REFERENCES locations(id)
     ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+    ,FOREIGN KEY (container_id) REFERENCES locations(id)
+
 
     ,UNIQUE KEY uq_stock_location (stock_id)
 );
