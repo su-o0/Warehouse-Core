@@ -7,6 +7,7 @@ use WarehouseCore\Repository\Topology\StockPlacementRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
+use WarehouseCore\Payload\Result\ServiceResult;
 
 
 class GetLocationContentService {
@@ -21,57 +22,76 @@ class GetLocationContentService {
         ) {
     }
 
-    public function execute(string $Address): void {
-        echo "Получение содержимого адреса $Address\n";
-        $Location = $this->Location->findByAddress($Address);
-        if($Location === null)
-            throw new \RuntimeException("Адрес $Address не найден");
+    public function execute(string $Address): ServiceResult {
+        try {
+            $Location = $this->Location->findByAddress($Address);
+            if($Location === null)
+                return new ServiceResult(false, null, "Адрес $Address не найден");
 
-        $ContainerPlacements = $this->ContainerPlacement->findByLocationId($Location['Id']);
-        $ItemPlacements = $this->ItemPlacement->findByLocationId($Location['Id']);
-        $StockPlacements = $this->StockPlacement->findByLocationId($Location['Id']);
+            $result = [
+                'address' => $Address,
+                'containers' => [],
+                'items' => [],
+                'stocks' => []
+            ];
 
-        if($ContainerPlacements !== null) {
-            echo "Контейнеры на адресе:\n";
-            foreach($ContainerPlacements as $ContainerPlacement) {
-                echo "\t- Контейнер " . $ContainerPlacement['ContainerId'] . "\n";
-                $StocksInContainer = $this->Stock->findByContainerId($ContainerPlacement['ContainerId']);
-                if($StocksInContainer !== null) {
-                    foreach($StocksInContainer as $Stock) {
-                        $Stock = $this->Stock->findById($Stock['Id']);    
-                        echo "\t\t".(($Stock['PartId'] == null)? "Без артикула" : $this->Part->findById($Stock['PartId'])['Article']) . " - Количество: " . $Stock['Qty'] . "\n";
+            $ContainerPlacements = $this->ContainerPlacement->findByLocationId($Location['Id']);
+            $ItemPlacements = $this->ItemPlacement->findByLocationId($Location['Id']);
+            $StockPlacements = $this->StockPlacement->findByLocationId($Location['Id']);
+
+            if($ContainerPlacements !== null) {
+                foreach($ContainerPlacements as $ContainerPlacement) {
+                    $container = ['containerId' => $ContainerPlacement['ContainerId'], 'items' => [], 'stocks' => []];
+                    $StocksInContainer = $this->Stock->findByContainerId($ContainerPlacement['ContainerId']);
+                    if($StocksInContainer !== null) {
+                        foreach($StocksInContainer as $Stock) {
+                            $Stock = $this->Stock->findById($Stock['Id']);
+                            $container['stocks'][] = [
+                                'id' => $Stock['Id'],
+                                'article' => ($Stock['PartId'] == null)? null : $this->Part->findById($Stock['PartId'])['Article'],
+                                'qty' => $Stock['Qty']
+                            ];
+                        }
                     }
-                }
-                
-                $ItemPlacementsInContainer = $this->Item->findByContainerId($ContainerPlacement['ContainerId']);
-                if($ItemPlacementsInContainer !== null) {
-                    foreach($ItemPlacementsInContainer as $ItemPlacement) {
-                        echo "\t\t Бирка " . $ItemPlacement['PhysicalTagId'] 
-                        . " - Предмет " . ($ItemPlacement['PartId'] ? $this->Part->findById($ItemPlacement['PartId'])['Article'] : "Без артикула") 
-                        . "\n";
-                    }
-                }
-            }
-        }
-        if($ItemPlacements !== null) {
-            echo "Предметы на адресе:\n";
-            foreach($ItemPlacements as $ItemPlacement) {
-                $Item = $this->Item->findById($ItemPlacement['ItemId']);
-                echo "\t Бирка " . $Item['PhysicalTagId'] 
-                    . " - Предмет " . ($Item['PartId'] ? $this->Part->findById($Item['PartId'])['Article'] : "Без артикула") 
-                    . "\n";
-            }
-        }
-        if($StockPlacements !== null) {
-            echo "Стоки на адресе:\n";
-            foreach($StockPlacements as $StockPlacement) {
-                $Stock = $this->Stock->findById($StockPlacement['StockId']);    
-                echo "\t - Сток ".$Stock['Id']." - " . 
-                (($Stock['PartId'] == null)? "Без артикула" : $this->Part->findById($Stock['PartId'])['Article']) . " - Количество: " . $Stock['Qty'] . "\n";
-            }
-        }
-        
 
+                    $ItemPlacementsInContainer = $this->Item->findByContainerId($ContainerPlacement['ContainerId']);
+                    if($ItemPlacementsInContainer !== null) {
+                        foreach($ItemPlacementsInContainer as $ItemPlacement) {
+                            $container['items'][] = [
+                                'physical_tag_id' => $ItemPlacement['PhysicalTagId'],
+                                'article' => ($ItemPlacement['PartId'] ? $this->Part->findById($ItemPlacement['PartId'])['Article'] : null)
+                            ];
+                        }
+                    }
+                    $result['containers'][] = $container;
+                }
+            }
+
+            if($ItemPlacements !== null) {
+                foreach($ItemPlacements as $ItemPlacement) {
+                    $Item = $this->Item->findById($ItemPlacement['ItemId']);
+                    $result['items'][] = [
+                        'physical_tag_id' => $Item['PhysicalTagId'],
+                        'article' => ($Item['PartId'] ? $this->Part->findById($Item['PartId'])['Article'] : null)
+                    ];
+                }
+            }
+
+            if($StockPlacements !== null) {
+                foreach($StockPlacements as $StockPlacement) {
+                    $Stock = $this->Stock->findById($StockPlacement['StockId']);
+                    $result['stocks'][] = [
+                        'id' => $Stock['Id'],
+                        'article' => ($Stock['PartId'] == null)? null : $this->Part->findById($Stock['PartId'])['Article'],
+                        'qty' => $Stock['Qty']
+                    ];
+                }
+            }
+
+            return new ServiceResult(true, $result, null);
+        } catch(\RuntimeException $e) {
+            return new ServiceResult(false, null, $e->getMessage());
+        }
     }
 
 }

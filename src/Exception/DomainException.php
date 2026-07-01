@@ -65,7 +65,7 @@ public static function CONTAINER_PLACEMENT_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::ITEM_INVALID_STATUS,
-            'Item status must be Active|Sold|Archived|Lost'
+            'Item status must be Created|Tagged|Placed|Active|Sold|Archived|Lost'
         );
     }
 
@@ -230,6 +230,14 @@ public static function PART_ALREADY_EXISTS(): self
         return new self(
             ErrorCode::STOCK_NOT_FOUND,
             'Stock not found'
+        );
+    }
+
+    public static function STOCK_INVALID_STATUS(): self
+    {
+        return new self(
+            ErrorCode::ITEM_INVALID_STATUS,
+            'Stock status must be Created|Placed|Active|Adjusted|Crowded|Archived'
         );
     }
     public static function LOCATION_ALREADY_EXISTS(): self

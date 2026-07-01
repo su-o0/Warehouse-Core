@@ -1,17 +1,19 @@
 <?php
 namespace WarehouseCore\Service\Audit;
-use WarehouseCore\Repository\Audit\OwnerRepository;
+use WarehouseCore\Repository\Identity\OwnerRepository;
+use WarehouseCore\Payload\Result\ServiceResult;
 
 class GetAllOwnerService {
     public function __construct(
         private OwnerRepository $Owner
     ) {}
 
-    public function execute(): void {
-        echo "Owners:\n";
-        $owners = $this->Owner->getAll();
-        foreach ($owners as $owner) {
-            echo "- {$owner['Name']}\n";
+    public function execute(): ServiceResult {
+        try {
+            $owners = $this->Owner->getAll();
+            return new ServiceResult(true, $owners, null);
+        } catch (\RuntimeException $e) {
+            return new ServiceResult(false, null, $e->getMessage());
         }
     }
 }

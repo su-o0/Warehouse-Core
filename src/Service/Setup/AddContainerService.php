@@ -3,8 +3,7 @@ namespace WarehouseCore\Service\Setup;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
-use WarehouseCore\Payload\DTO\ContainerEntity;
-use WarehouseCore\Payload\DTO\ContainerTypeValue;
+use WarehouseCore\Payload\Value\ContainerTypeValue;
 use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 
@@ -29,7 +28,7 @@ class AddContainerService {
             );
 
         try {
-            ContainerTypeValue::fromRaw(
+            ContainerTypeValue::fromString(
                 $type
             );
         }catch(DomainException $e) {

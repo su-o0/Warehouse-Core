@@ -12,7 +12,7 @@ use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Catalog\VehicleRepository;
-use WarehouseCore\Type\PhysicalTagStatus;
+use WarehouseCore\Payload\Type\PhysicalTagStatus;
 
 class AddItemService {
     public function __construct(
@@ -70,7 +70,7 @@ class AddItemService {
             $item_id = $this->item_repository->add(
                 $physical_tag_entity->id,
                 $part_entity->id,
-                empty($vehicle_entity)?null:$vehicle_entity->id
+                ($vehicle_entity === null)?null:$vehicle_entity->id
             );
             $this->physical_tag_repository->updateStatus(
                 $physical_tag_entity->id, 
@@ -85,7 +85,9 @@ class AddItemService {
 
         return new SetupResult(
             success: true,
-            entity: ItemEntity::
+            entity: ItemEntity::fromRaw(
+                $this->item_repository->findById($item_id)
+            )
         );
     }
 }

@@ -5,7 +5,8 @@ use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
-use WarehouseCore\Repository\Inventory\StockRepository;   
+use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Payload\Result\ServiceResult;
 
 class MoveService {
     public function __construct(
@@ -16,43 +17,46 @@ class MoveService {
         private StockRepository $Stock
     ) {}
 
-    public function execute(string $EntityType, int $EntityId, string $Address): void {
+    public function execute(string $EntityType, int $EntityId, string $Address): ServiceResult {
+        try {
+            switch($EntityType) {
+                case 'Item':
+                    $ItemEntity = $this->Item->findById($EntityId);
+                    if($ItemEntity === null)
+                        return new ServiceResult(false, null, "Предмет $EntityId не найден");
 
-        switch($EntityType) {
-            case 'Item':
-                $ItemEntity = $this->Item->findById($EntityId);
-                if($ItemEntity === null)
-                    throw new \RuntimeException("Предмет $EntityId не найден"); 
+                    $ItemPlacementEntity = $this->ItemPlacement->findByItemId($EntityId);
+                    if($ItemPlacementEntity === null)
+                        return new ServiceResult(false, null, "Предмет $EntityId не размещен");
 
-                $ItemPlacementEntity = $this->ItemPlacement->findByItemId($EntityId);
-                if($ItemPlacementEntity === null)
-                    throw new \RuntimeException("Предмет $EntityId не размещен");
+                    $LocationEntity = $this->Location->findByAddress($Address);
+                    if($LocationEntity === null)
+                        return new ServiceResult(false, null, "Локация $Address не существует");
 
-                $LocationEntity = $this->Location->findByAddress($Address);
-                if($LocationEntity === null)
-                    throw new \RuntimeException("Локация $Address не существует");
+                    $this->ItemPlacement->updateLocationId($ItemPlacementEntity['Id'], $LocationEntity['Id']);
+                    return new ServiceResult(true, ['type'=>'Item','id'=>$EntityId,'address'=>$Address], null);
 
-                $this->ItemPlacement->updateLocationId($ItemPlacementEntity['Id'], $LocationEntity['Id']);
-                echo "Элемент c биркой ". $ItemEntity['PhysicalTagId'] ." успешно перемещен в локацию $Address\n";
-                break;
-            case 'Stock':
-                $StockEntity = $this->Stock->findById($EntityId);
-                if($StockEntity === null)
-                    throw new \RuntimeException("Сток $EntityId не найден");
+                case 'Stock':
+                    $StockEntity = $this->Stock->findById($EntityId);
+                    if($StockEntity === null)
+                        return new ServiceResult(false, null, "Сток $EntityId не найден");
 
-                $StockPlacementEntity = $this->StockPlacement->findByStockId($EntityId);
-                if($StockPlacementEntity === null)
-                    throw new \RuntimeException("Сток $EntityId не размещен");
+                    $StockPlacementEntity = $this->StockPlacement->findByStockId($EntityId);
+                    if($StockPlacementEntity === null)
+                        return new ServiceResult(false, null, "Сток $EntityId не размещен");
 
-                $LocationEntity = $this->Location->findByAddress($Address);
-                if($LocationEntity === null)
-                    throw new \RuntimeException("Локация $Address не существует");
+                    $LocationEntity = $this->Location->findByAddress($Address);
+                    if($LocationEntity === null)
+                        return new ServiceResult(false, null, "Локация $Address не существует");
 
-                $this->StockPlacement->updateLocationId($StockPlacementEntity['Id'], $LocationEntity['Id']);
-                echo "Сток $EntityId успешно перемещен в локацию $Address\n";
-                break;
-            default:
-                throw new \RuntimeException("Невозможно переместить сущность типа $EntityType");
+                    $this->StockPlacement->updateLocationId($StockPlacementEntity['Id'], $LocationEntity['Id']);
+                    return new ServiceResult(true, ['type'=>'Stock','id'=>$EntityId,'address'=>$Address], null);
+
+                default:
+                    return new ServiceResult(false, null, "Невозможно переместить сущность типа $EntityType");
+            }
+        } catch(\RuntimeException $e) {
+            return new ServiceResult(false, null, $e->getMessage());
         }
     }
 }

@@ -5,10 +5,11 @@ use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
-use WarehouseCore\Repository\Topology\PhysicalTagRepository;
+use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Payload\Result\ServiceResult;
 
 class SetPlacementService {
     public function __construct(
@@ -22,88 +23,91 @@ class SetPlacementService {
         private StockRepository $Stock
     ) {}
 
-    public function execute(string $EntityType, int $EntityId, int $LocationId): void {
-        switch($EntityType) {
-            case 'Item':
-                if($LocationId === null)
-                    throw new \RuntimeException("Для размещения предмета необходимо указать Id контейнера");    
-                $ContainerId = $LocationId;
-                $PhysicalTagId = $EntityId;
+    public function execute(string $EntityType, int $EntityId, int $LocationId): ServiceResult {
+        try {
+            switch($EntityType) {
+                case 'Item':
+                    if($LocationId === null)
+                        return new ServiceResult(false, null, "Для размещения предмета необходимо указать Id контейнера");
+                    $ContainerId = $LocationId;
+                    $PhysicalTagId = $EntityId;
 
-                $PhysicalTagEntity = $this->PhysicalTag->findById($PhysicalTagId);
-                if($PhysicalTagEntity === null)
-                    throw new \RuntimeException("Физическая метка $PhysicalTagId не существует");
+                    $PhysicalTagEntity = $this->PhysicalTag->findById($PhysicalTagId);
+                    if($PhysicalTagEntity === null)
+                        return new ServiceResult(false, null, "Физическая метка $PhysicalTagId не существует");
 
-                $ItemEntity = $this->Item->findByPhysicalTagIdStatus($PhysicalTagId, 'Active');
-                if($ItemEntity === null)
-                    throw new \RuntimeException("Предмет $PhysicalTagId не существует");
-                
-                $ItemPlacementEntity = $this->ItemPlacement->findByItemId($ItemEntity[0]['Id']);
-                if($ItemPlacementEntity === null) 
-                    throw new \RuntimeException("Предмет $PhysicalTagId уже размещен");
+                    $ItemEntities = $this->Item->findByPhysicalTagId($PhysicalTagId);
+                    if(empty($ItemEntities))
+                        return new ServiceResult(false, null, "Предмет $PhysicalTagId не существует");
 
-                $ContainerEntity = $this->Container->findById($ContainerId);
-                if($ContainerEntity === null)
-                    throw new \RuntimeException("Контейнер $ContainerId не существует");
+                    $ItemEntity = $ItemEntities[0];
+                    $ItemPlacementEntity = $this->ItemPlacement->findByItemId($ItemEntity['Id']);
 
-                $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
-                if($ContainerPlacementEntity === null)
-                    throw new \RuntimeException("Контейнер $ContainerId не размещен");
+                    $ContainerEntity = $this->Container->findById($ContainerId);
+                    if($ContainerEntity === null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId не существует");
 
-                $this->ItemPlacement->delete($ItemPlacementEntity['Id']);
-                $this->Item->updateContainerId($ItemEntity[0]['Id'], $ContainerId);
-                echo "Товар $EntityId успешно размещен в контейнер $ContainerId\n";
-                break;
-            case 'Stock':
-                if($LocationId === null)
-                    throw new \RuntimeException("Для размещения стока необходимо указать Id контейнера");   
+                    $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
+                    if($ContainerPlacementEntity === null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId не размещен");
 
-                $ContainerId = $LocationId;
-                $StockId = $EntityId;
-                $StockEntity = $this->Stock->findById($StockId);
-                if($StockEntity === null)
-                    throw new \RuntimeException("Сток $StockId не найден");
+                    if($ItemPlacementEntity !== null) {
+                        $this->ItemPlacement->delete($ItemPlacementEntity['Id']);
+                    }
+                    $this->Item->updateContainerId($ItemEntity['Id'], $ContainerId);
+                    return new ServiceResult(true, ['type'=>'Item','id'=>$EntityId,'containerId'=>$ContainerId], null);
 
-                $StockPlacementEntity = $this->StockPlacement->findByStockId($StockId);
-                if($StockPlacementEntity === null)
-                    throw new \RuntimeException("Сток $StockId не размещен");
-                
-                $ContainerEntity = $this->Container->findById($ContainerId);
-                if($ContainerEntity === null)
-                    throw new \RuntimeException("Контейнер $ContainerId не найден");
+                case 'Stock':
+                    if($LocationId === null)
+                        return new ServiceResult(false, null, "Для размещения стока необходимо указать Id контейнера");
 
-                $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
-                if($ContainerPlacementEntity === null)
-                    throw new \RuntimeException("Контейнер $ContainerId не размещен");
+                    $ContainerId = $LocationId;
+                    $StockId = $EntityId;
+                    $StockEntity = $this->Stock->findById($StockId);
+                    if($StockEntity === null)
+                        return new ServiceResult(false, null, "Сток $StockId не найден");
 
-                
-                $this->StockPlacement->delete($StockPlacementEntity['Id']);
-                $this->Stock->updateContainerId($StockEntity['Id'], $ContainerId);
-                echo "Сток $EntityId успешно размещен в контейнер $ContainerId\n";
-                break;
-            case 'Container':
-                if($LocationId === null)
-                    throw new \RuntimeException("Для размещения стока необходимо указать Id контейнера");   
+                    $StockPlacementEntity = $this->StockPlacement->findByStockId($StockId);
+                    if($StockPlacementEntity === null)
+                        return new ServiceResult(false, null, "Сток $StockId не размещен");
+                    
+                    $ContainerEntity = $this->Container->findById($ContainerId);
+                    if($ContainerEntity === null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId не найден");
 
-                $ContainerId = $EntityId;
+                    $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
+                    if($ContainerPlacementEntity === null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId не размещен");
 
-                $LocationEntity = $this->Location->findById($LocationId);
-                if($LocationEntity === null)
-                    throw new \RuntimeException("Локации не существует");
+                    $this->StockPlacement->delete($StockPlacementEntity['Id']);
+                    $this->Stock->updateContainerId($StockEntity['Id'], $ContainerId);
+                    return new ServiceResult(true, ['type'=>'Stock','id'=>$EntityId,'containerId'=>$ContainerId], null);
 
-                $ContainerEntity = $this->Container->findById($ContainerId);
-                if($ContainerEntity === null)
-                    throw new \RuntimeException("Контейнер $ContainerId не существует");
-                $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
-                if($ContainerPlacementEntity !== null)
-                    throw new \RuntimeException("Контейнер $ContainerId уже размещен");
+                case 'Container':
+                    if($LocationId === null)
+                        return new ServiceResult(false, null, "Для размещения стока необходимо указать Id контейнера");
 
-                $this->ContainerPlacement->add($LocationEntity['Id'], $ContainerId);  
-                echo "Контейнер $ContainerId успешно размещен в локацию ".$LocationEntity['Address']."\n";
+                    $ContainerId = $EntityId;
+
+                    $LocationEntity = $this->Location->findById($LocationId);
+                    if($LocationEntity === null)
+                        return new ServiceResult(false, null, "Локации не существует");
+
+                    $ContainerEntity = $this->Container->findById($ContainerId);
+                    if($ContainerEntity === null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId не существует");
+                    $ContainerPlacementEntity = $this->ContainerPlacement->findByContainerId($ContainerId);
+                    if($ContainerPlacementEntity !== null)
+                        return new ServiceResult(false, null, "Контейнер $ContainerId уже размещен");
+
+                    $this->ContainerPlacement->add($LocationEntity['Id'], $ContainerId);  
+                    return new ServiceResult(true, ['type'=>'Container','id'=>$ContainerId,'address'=>$LocationEntity['Address']], null);
         
-                break;
-            default:
-                throw new \RuntimeException("Неподдерживаемый тип сущности: $EntityType");
+                default:
+                    return new ServiceResult(false, null, "Неподдерживаемый тип сущности: $EntityType");
+            }
+        } catch(\RuntimeException $e) {
+            return new ServiceResult(false, null, $e->getMessage());
         }
     }
 }

@@ -3,7 +3,6 @@ namespace WarehouseCore\Service\Query;
 
 
 class FindByTagService {
-
     public function __construct(
         ) {
     }

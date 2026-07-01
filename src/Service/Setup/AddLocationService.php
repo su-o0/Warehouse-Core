@@ -3,7 +3,7 @@ namespace WarehouseCore\Service\Setup;
 
 use WarehouseCore\Repository\Topology\LocationRepository;
 
-use WarehouseCore\Payload\DTO\AddressValue;
+use WarehouseCore\Payload\Value\AddressValue;
 use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;

@@ -4,17 +4,18 @@ namespace WarehouseCore\Facade;
 use WarehouseCore\Config\Config;
 use WarehouseCore\Bootstrap\Setup;
 use WarehouseCore\Registry\ServiceRegistry;
-use WarehouseCore\Registry\OutputRegistry;
+use WarehouseCore\Output\Output;
+use WarehouseCore\Payload\DTO\AddressValue;
 
 final class CliFacade {
     private ServiceRegistry $service;
-    private OutputRegistry $output;
+    private Output $output;
 
     public function __construct (
         Config $config
     ){
         $this->service = Setup::Service($config);
-        $this->output = Setup::Output();
+        $this->output = Setup::Output('cli');
     }
 
     public function run() {
@@ -29,17 +30,24 @@ final class CliFacade {
     }
 
     public function Authentication(string $user_id): void {
-       
         $user = $this->service->Authentication()->Validate($user_id);
         var_export($user);
     }
 
-    public function AddUser(string $name, string $role_id) {
-         $result = $this->service
-            ->addUser()
-            ->execute($name, (int)$role_id);
+    public function AddLocation(
+        string $zone, 
+        string $rack,
+        string $shelf
+    ): void {
+        $result = $this->service->AddLocation()->execute(
+            new AddressValue(
+                $zone,
+                $rack,
+                $shelf
+            )
+        );
 
-        // $this->output->
-        
+        echo $this->output->render($result);
     }
+    
 }
