@@ -12,7 +12,6 @@ final class ItemEntity {
     public function __construct(
         public readonly int $id,
         public readonly int $physical_tag_id,
-        public readonly ?int $container_id,
         public readonly int $part_id,
         public readonly ?int $vehicle_id,
         public readonly ?int $owner_id,
@@ -26,7 +25,6 @@ final class ItemEntity {
         return new self(
             self::requiredInt($raw, 'id'),
             self::requiredInt($raw, 'physical_tag_id'),
-            self::nullableInt($raw, 'container_id'),
             self::requiredInt($raw, 'part_id'),
             self::nullableInt($raw, 'vehicle_id'),
             self::nullableInt($raw, 'owner_id'),

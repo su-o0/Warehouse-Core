@@ -24,9 +24,10 @@ use WarehouseCore\Service\Inventory\SetItemConditionService;
 use WarehouseCore\Service\Inventory\MarkItemSoldService;
 use WarehouseCore\Service\Inventory\ArchiveItemService;
 use WarehouseCore\Service\Inventory\ReturnItemService;
+use WarehouseCore\Service\Inventory\CreateItemService;
 
 use WarehouseCore\Service\Query\GetAllLocationService;
-use WarehouseCore\Service\Query\GetAllCarService;
+use WarehouseCore\Service\Query\GetAllVehicleService;
 use WarehouseCore\Service\Query\GetLocationContentService;
 use WarehouseCore\Service\Query\GetContainerContentService;
 use WarehouseCore\Service\Query\FindPhysicalTagService;
@@ -117,6 +118,175 @@ final class ServiceRegistry {
         );
     }
 
+    public function getAllLocation(): GetAllLocationService {
+        return new GetAllLocationService(
+            $this->repository->location
+        );
+    }
 
+    public function getAllVehicle(): GetAllVehicleService {
+        return new GetAllVehicleService(
+            $this->repository->vehicle
+        );
+    }
 
+    public function getLocationContent(): GetLocationContentService {
+        return new GetLocationContentService(
+            $this->repository->location,
+            $this->repository->container_placement,
+            $this->repository->item_placement,
+            $this->repository->stock_placement,
+            $this->repository->item,
+            $this->repository->stock,
+            $this->repository->part
+        );
+    }
+
+    public function getContainerContent(): GetContainerContentService {
+        return new GetContainerContentService(
+            $this->repository->container,
+            $this->repository->item,
+            $this->repository->stock,
+            $this->repository->part
+        );
+    }
+
+    public function findPhysicalTag(): FindPhysicalTagService {
+        return new FindPhysicalTagService();
+    }
+
+    public function findStock(): FindStockService {
+        return new FindStockService();
+    }
+
+    public function findByTag(): FindByTagService {
+        return new FindByTagService();
+    }
+
+    public function setPlacement(): SetPlacementService {
+        return new SetPlacementService(
+            $this->repository->location,
+            $this->repository->container_placement,
+            $this->repository->item_placement,
+            $this->repository->stock_placement,
+            $this->repository->physical_tag,
+            $this->repository->container,
+            $this->repository->item,
+            $this->repository->stock
+        );
+    }
+
+    public function move(): MoveService {
+        return new MoveService(
+            $this->repository->location,
+            $this->repository->item_placement,
+            $this->repository->stock_placement,
+            $this->repository->item,
+            $this->repository->stock
+        );
+    }
+
+    public function moveContainer(): MoveContainerService {
+        return new MoveContainerService(
+            $this->repository->location,
+            $this->repository->container_placement,
+            $this->repository->container
+        );
+    }
+
+    public function putIntoContainer(): PutIntoContainerService {
+        return new PutIntoContainerService(
+            $this->setPlacement()
+        );
+    }
+
+    public function removeFromContainer(): RemoveFromContainerService {
+        return new RemoveFromContainerService(
+            $this->repository->container_placement,
+            $this->repository->item_placement,
+            $this->repository->stock_placement,
+            $this->repository->item,
+            $this->repository->stock
+        );
+    }
+
+    public function incrementStockQty(): IncrementStockQtyService {
+        return new IncrementStockQtyService(
+            $this->repository->stock
+        );
+    }
+
+    public function decrementStockQty(): DecrementStockQtyService {
+        return new DecrementStockQtyService(
+            $this->repository->stock
+        );
+    }
+
+    public function deleteStock(): DeleteStockService {
+        return new DeleteStockService(
+            $this->repository->stock
+        );
+    }
+
+    public function setItemCondition(): SetItemConditionService {
+        return new SetItemConditionService(
+            $this->repository->item
+        );
+    }
+
+    public function markItemSold(): MarkItemSoldService {
+        return new MarkItemSoldService();
+    }
+
+    public function archiveItem(): ArchiveItemService {
+        return new ArchiveItemService();
+    }
+
+    public function returnItem(): ReturnItemService {
+        return new ReturnItemService();
+    }
+
+    public function addPhoto(): AddPhotoService {
+        return new AddPhotoService();
+    }
+
+    public function deletePhoto(): DeletePhotoService {
+        return new DeletePhotoService();
+    }
+
+    public function setOwnerPermisition(): SetOwnerPermisitionService {
+        return new SetOwnerPermisitionService();
+    }
+
+    public function getAllOwner(): GetAllOwnerService {
+        return new GetAllOwnerService(
+            $this->repository->owner
+        );
+    }
+
+    public function getOwner(): GetOwnerService {
+        return new GetOwnerService(
+            $this->repository->owner
+        );
+    }
+
+    public function deleteOwner(): DeleteOwnerService {
+        return new DeleteOwnerService();
+    }
+
+    public function getHistory(): GetHistoryService {
+        return new GetHistoryService();
+    }
+
+    public function getSales(): GetSalesService {
+        return new GetSalesService();
+    }
+
+    public function createItem(): CreateItemService {
+        return new CreateItemService(
+            $this->repository->part,
+            $this->repository->vehicle,
+            $this->repository->item
+        );
+    }
 }
