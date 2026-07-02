@@ -4,11 +4,21 @@
 
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,telegram_id VARCHAR(64) UNIQUE
     ,name VARCHAR(255) NOT NULL
     ,role_id TINYINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE user_identities (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,user_id BIGINT NOT NULL
+    ,provider ENUM('Cli', 'Telegram', 'Web') NOT NULL
+    ,external_id VARCHAR(255) NOT NULL
+    ,status ENUM('Created','Active','Archived') NOT NULL DEFAULT 'Created'
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ,UNIQUE KEY uq_provider_external (provider, external_id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+);      
 
 CREATE TABLE owners (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
@@ -214,3 +224,9 @@ CREATE TABLE stock_sales_archive (
     
     ,INDEX idx_stock_sales_stock (stock_id)
 );
+
+INSERT INTO users (id, name, role_id, status)
+VALUES (1, 'Admin', 1, 'Active');
+
+INSERT INTO user_identities (user_id, provider, external_id)
+VALUES (1, 'Cli', 'admin');

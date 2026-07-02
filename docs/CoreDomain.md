@@ -13,6 +13,7 @@ Enitity
 ├── Location
 ├── PhysicalTag
 ├── User
+├── UserIdentity
 ├── Owner
 ├── Part
 └── Vehicle

@@ -176,9 +176,16 @@ StockSalesArchive
 ```
 User
 ├── Id
-├── TelegramId
 ├── Name
 ├── RoleId
+├── Status > (Created, Active, Archive)
+└── CreatedAt
+
+UserIdentity
+├── Id
+├── UserId
+├── Provider > (Cli, Telegram, Web)
+├── ExternalId
 └── CreatedAt
 
 Owner

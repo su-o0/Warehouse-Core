@@ -17,6 +17,7 @@ return [
     'ItemSalesArhive'       => 'item_sales_archive',
     'StockSalesArhive'      => 'stock_sales_archive',
     'User'                  => 'users',
+    'UserIdentity'          => 'user_identities',
     'Owner'                 => 'owners',
     'PhysicalTag'           => 'physical_tags',
 ];

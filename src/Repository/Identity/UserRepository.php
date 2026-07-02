@@ -22,20 +22,6 @@ final class UserRepository {
         return empty($result)? null : $result;
     }
 
-    public function findByTelegramId(
-        int $telegram_id
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE telegram_id = :telegram_id"
-        );
-        $stmt->execute([
-            ":telegram_id" => $telegram_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
-    }
-
     public function findByName(
         string $name
     ): null|array {
@@ -98,6 +84,25 @@ final class UserRepository {
             return $stmt->execute([
                 ':id' => $id,
                 ':name' => $name
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateStatus(
+        int $id, 
+        string $status
+    ):bool {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET name = :name 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id,
+                ':name' => $status
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

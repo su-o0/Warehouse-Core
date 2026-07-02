@@ -53,7 +53,8 @@ final class ServiceRegistry {
 
     public function authentication(): AuthenticationService {
         return new AuthenticationService(
-            $this->repository->user
+            $this->repository->user,
+            $this->repository->user_identity
         );
     }
 

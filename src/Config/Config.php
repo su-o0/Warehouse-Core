@@ -10,8 +10,8 @@ class Config {
 
     public static function prepare(array $raw): self {
         return new self(
-            DatabaseConfig::fromRaw(self::required($raw, 'database')),
-            TableConfig::fromRaw(self::required($raw, 'tables')),
+            db: DatabaseConfig::fromRaw(self::required($raw, 'database')),
+            tables: TableConfig::fromRaw(self::required($raw, 'tables')),
         );
     }
 }

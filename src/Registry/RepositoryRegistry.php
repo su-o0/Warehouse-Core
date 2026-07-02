@@ -17,6 +17,7 @@ use WarehouseCore\Repository\Audit\EventRepository;
 use WarehouseCore\Repository\Audit\ItemSalesArhiveRepository;
 use WarehouseCore\Repository\Audit\StockSalesArhiveRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
+use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 
@@ -37,6 +38,7 @@ final class RepositoryRegistry {
     public ItemSalesArhiveRepository $item_sales_arhive;
     public StockSalesArhiveRepository $stock_sales_arhive;
     public UserRepository $user;
+    public UserIdentityRepository $user_identity;
     public OwnerRepository $owner;
     public PhysicalTagRepository $physical_tag;
 
@@ -57,6 +59,7 @@ final class RepositoryRegistry {
         $this->item_sales_arhive    = new ItemSalesArhiveRepository($this->db, $config->item_sales_archive);
         $this->stock_sales_arhive   = new StockSalesArhiveRepository($this->db, $config->stock_sales_archive);
         $this->user                 = new UserRepository($this->db, $config->user);
+        $this->user_identity        = new UserIdentityRepository($this->db, $config->user_identity);
         $this->owner                = new OwnerRepository($this->db, $config->owner);
         $this->physical_tag         = new PhysicalTagRepository($this->db, $config->physical_tag);
     }
