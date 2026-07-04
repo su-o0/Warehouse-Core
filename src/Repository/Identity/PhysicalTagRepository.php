@@ -16,7 +16,7 @@ final class PhysicalTagRepository {
             WHERE id = :id"
         );
         $stmt->execute([
-            ":Id" => $id
+            ":id" => $id
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : $result;

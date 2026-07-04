@@ -23,15 +23,15 @@ final class ItemEntity {
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            self::requiredInt($raw, 'physical_tag_id'),
-            self::requiredInt($raw, 'part_id'),
-            self::nullableInt($raw, 'vehicle_id'),
-            self::nullableInt($raw, 'owner_id'),
-            ItemStatusValue::fromRaw($raw, 'status'),
-            ItemConditionValue::fromRaw($raw, 'condition'),
-            self::nullableInt($raw, 'condition_note'),
-            self::requiredString($raw, 'created_at'),
+            id: self::requiredInt($raw, 'id'),
+            physical_tag_id: self::requiredInt($raw, 'physical_tag_id'),
+            part_id: self::requiredInt($raw, 'part_id'),
+            vehicle_id: self::nullableInt($raw, 'vehicle_id'),
+            owner_id: self::nullableInt($raw, 'owner_id'),
+            status: ItemStatusValue::fromRaw($raw, 'status'),
+            condition: ItemConditionValue::fromRaw($raw, 'condition'),
+            condition_note: $raw['condition_note'] ?? null,
+            created_at: self::requiredString($raw, 'created_at'),
         );
     }
 }

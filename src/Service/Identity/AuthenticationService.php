@@ -1,8 +1,9 @@
-<?php
+<?php 
 namespace WarehouseCore\Service\Identity;
 
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
+
 use WarehouseCore\Payload\DTO\UserEntity;
 use WarehouseCore\Payload\DTO\UserIdentityEntity;
 
@@ -12,7 +13,8 @@ final class AuthenticationService {
         private UserIdentityRepository $user_identity
     ) { }
 
-    public function Validate(
+
+    public function validate(
         string $provider,
         string $external_id
     ): UserEntity|null {

@@ -1,28 +1,31 @@
-<?php 
-namespace WarehouseCore\Service\Setup;
+<?php
+namespace WarehouseCore\Service\Inventory;
+
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Identity\PhysicalTagRepository;
+use WarehouseCore\Repository\Catalog\PartRepository;
+use WarehouseCore\Repository\Catalog\VehicleRepository;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
+
 use WarehouseCore\Payload\DTO\ItemEntity;
 use WarehouseCore\Payload\DTO\PartEntity;
 use WarehouseCore\Payload\DTO\PhysicalTagEntity;
 use WarehouseCore\Payload\DTO\VehicleEntity;
-use WarehouseCore\Payload\Result\SetupResult;
-use WarehouseCore\Repository\Identity\PhysicalTagRepository;
-use WarehouseCore\Repository\Inventory\ItemRepository;
-use WarehouseCore\Repository\Catalog\PartRepository;
-use WarehouseCore\Repository\Catalog\VehicleRepository;
 use WarehouseCore\Payload\Type\PhysicalTagStatus;
 
-class AddItemService {
+use WarehouseCore\Payload\Result\SetupResult;
+
+final class ItemService {
     public function __construct(
-        private PhysicalTagRepository $physical_tag_repository,
         private ItemRepository $item_repository,
+        private PhysicalTagRepository $physical_tag_repository,
         private PartRepository $part_repository,
         private VehicleRepository $vehicle_repository
     ) { }
 
-    public function execute(
+    public function create(
         int $tag_id, 
         string $article, 
         ?int $vehicle_id = null

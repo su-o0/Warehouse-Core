@@ -14,10 +14,10 @@ final class PartEntity {
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            self::requiredString($raw, 'article'),
-            self::requiredString($raw, 'name'),
-            self::requiredString($raw, 'created_at'),
+            id: self::requiredInt($raw, 'id'),
+            article: self::requiredString($raw, 'article'),
+            name: self::requiredString($raw, 'name'),
+            created_at: self::requiredString($raw, 'created_at'),
         );
     } 
 }

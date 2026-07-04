@@ -3,6 +3,7 @@ namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Payload\Type\StockStatus;
+use WarehouseCore\Payload\Value\StockStatusValue;
 
 final class StockEntity {
     use ConfigHelper;
@@ -12,16 +13,15 @@ final class StockEntity {
         public readonly ?int $qty,
         public readonly StockStatus $status,
         public readonly ?string $created_at
-    )
-    { }
+    ) { }
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            self::requiredInt($raw, 'part_id'),
-            self::requiredInt($raw, 'qty'),
-            StockStatusValue::fromRaw($raw, 'status'),
-            self::requiredString($raw, 'created_at')
+            id: self::requiredInt($raw, 'id'),
+            part_id: self::requiredInt($raw, 'part_id'),
+            qty: self::requiredInt($raw, 'qty'),
+            status: StockStatusValue::fromRaw($raw, 'status'),
+            created_at: self::requiredString($raw, 'created_at')
         );
     } 
 }

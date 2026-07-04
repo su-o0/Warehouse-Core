@@ -1,19 +1,20 @@
-<?php
+<?php 
+namespace WarehouseCore\Service\Catalog;
 
-namespace WarehouseCore\Service\Setup;
-
-use WarehouseCore\Exception\RepositoryException;
-use WarehouseCore\Payload\DTO\PartEntity;
-use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Repository\Catalog\PartRepository;
 
-final class AddPartService
-{
+use WarehouseCore\Exception\RepositoryException;
+
+use WarehouseCore\Payload\DTO\PartEntity;
+
+use WarehouseCore\Payload\Result\SetupResult;
+
+final class PartService {
     public function __construct(
         private PartRepository $part_repository
-    ) {}
+    ) { }
 
-    public function execute(
+    public function create(
         string $article,
         ?string $name
     ): SetupResult {

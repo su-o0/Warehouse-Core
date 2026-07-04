@@ -66,14 +66,14 @@ final class RequireFacade {
         );
     }
 
-    public function CreateItem(
-        string $article
-    ): object {
-        return $this->service->createItem()->execute(
-            ''
-            $article,
+    // public function CreateItem(
+    //     string $article
+    // ): object {
+    //     return $this->service->createItem()->execute(
+    //         ''
+    //         $article,
 
 
-        );
-    }
+    //     );
+    // }
 }

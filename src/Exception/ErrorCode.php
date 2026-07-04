@@ -28,6 +28,7 @@ final class ErrorCode
     // Location
     public const LOCATION_ALREADY_EXISTS    = 'LOCATION_ADDRESS_001';
     public const LOCATION_NOT_FOUND         = 'LOCATION_002';
+    public const LOCATION_ADDRESS_INVALID   = 'LOCATION_ADDRESS_003';
 
 
     public const CONTAINER_PLACEMENT_ALREADY_EXISTS = 'CONTAINER_PLACEMENT_001';
@@ -99,7 +100,7 @@ final class ErrorCode
 
     public const PERMISSION_DENIED            = 'PERMISSION_006';
 
-
-
     public const TAG_ALREADY_ASSIGNED  = 'TAG_001';
+
+    public const PROVIDER_INVALID_TYPE = 'PROVIDER_001';
 }

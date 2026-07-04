@@ -6,6 +6,14 @@ use WarehouseCore\Exception\Contract\DomainException as DomainExceptionContract;
 
 final class DomainException extends DomainExceptionContract 
 {
+    public static function LOCATION_ADDRESS_INVALID(): self
+    {
+        return new self(
+            ErrorCode::LOCATION_ADDRESS_INVALID,
+            'Location address is invalid'
+        );
+    }
+    
     public static function CONTAINER_INVALID_TYPE(): self
     {
         return new self(
@@ -319,4 +327,11 @@ public static function PART_ALREADY_EXISTS(): self
         );
     }
 
+    public static function PROVIDER_INVALID_TYPE(): self
+    {
+        return new self(
+            ErrorCode::PROVIDER_INVALID_TYPE,
+            'Provider type must be Cli, Web or Telegram'
+        );
+    }
 }

@@ -2,8 +2,8 @@
 namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
-use WarehouseCore\Type\PhysicalTagStatus;
-use WarehouseCore\Payload\DTO\PhysicalTagStatusValue;
+use WarehouseCore\Payload\Type\PhysicalTagStatus;
+use WarehouseCore\Payload\Value\PhysicalTagStatusValue;
 
 final class PhysicalTagEntity {
     use ConfigHelper;
@@ -15,11 +15,12 @@ final class PhysicalTagEntity {
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            PhysicalTagStatusValue::fromRaw(
-                self::requiredString($raw, 'status')
+            id: self::requiredInt($raw, 'id'),
+            status: PhysicalTagStatusValue::fromRaw(
+                raw: $raw,
+                field: 'status'
             ),
-            self::requiredString($raw, 'created_at')
+            created_at: self::requiredString($raw, 'created_at')
         );
     }
 }

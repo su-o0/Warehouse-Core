@@ -13,9 +13,9 @@ final class VehicleEntity {
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            self::requiredString($raw, 'vin'),
-            self::requiredString($raw, 'created_at'),
+            id: self::requiredInt($raw, 'id'),
+            vin: self::requiredString($raw, 'vin'),
+            created_at: self::requiredString($raw, 'created_at'),
         );
     } 
 }

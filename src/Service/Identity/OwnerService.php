@@ -1,0 +1,84 @@
+<?php 
+namespace WarehouseCore\Service\Identity;
+
+use WarehouseCore\Repository\Identity\OwnerRepository;
+use WarehouseCore\Repository\Identity\UserRepository;
+
+use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\RepositoryException;
+
+use WarehouseCore\Payload\DTO\UserEntity;
+use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\Result\SetupResult;
+
+final class OwnerService {
+    public function __construct(
+        private OwnerRepository $owner_repository,
+        private UserRepository $user_repository
+    ) { }
+
+    public function create(
+        string $name, 
+        string $user_id, 
+    ): SetupResult {   
+        $user_entity = $this->user_repository->findByName($name);
+        if($user_entity !== null)
+            return new SetupResult(
+                success: false,
+                message: DomainException::USER_NOT_FOUND()->getMessage()
+            );
+
+        try {
+            $this->owner_repository->add(
+                $name, 
+                $user_id
+            );
+        }catch(RepositoryException $e) {
+            return new SetupResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+
+        return new SetupResult(
+            success: true
+        );
+    }
+    
+    public function getAll(
+    ): ServiceResult {
+        try {
+            $owners = $this->owner_repository->getAll();
+            return new ServiceResult(
+                true, 
+                $owners, 
+                null
+            );
+        } catch (\RuntimeException $e) {
+            return new ServiceResult(
+                false, 
+                null, 
+                $e->getMessage()
+            );
+        }
+    }
+
+    public function getById(
+        int $id
+    ): ServiceResult {
+        try {
+            $owner = $this->owner_repository->findById($id);
+            return new ServiceResult(
+                true, 
+                $owner, 
+                null
+            );
+        } catch (\RuntimeException $e) {
+            return new ServiceResult(
+                false, 
+                null, 
+                $e->getMessage()
+            );
+        }
+    }
+}

@@ -5,7 +5,6 @@ use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\PhysicalTagStatus;
 
 final class PhysicalTagStatusValue {
-
     public static function fromRaw(
         array $raw, 
         string $field

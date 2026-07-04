@@ -15,9 +15,9 @@ final class ContainerEntity {
 
     public static function fromRaw(array $raw): self {
         return new self(
-            self::requiredInt($raw, 'id'),
-            ContainerTypeValue::fromRaw($raw, 'type'),
-            self::requiredString($raw, 'created_at')
+            id: self::requiredInt($raw, 'id'),
+            type: ContainerTypeValue::fromRaw($raw, 'type'),
+            created_at: self::requiredString($raw, 'created_at')
         );
     }
 }

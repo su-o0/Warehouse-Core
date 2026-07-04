@@ -1,21 +1,38 @@
-<?php
-namespace WarehouseCore\Service\Setup;
+<?php 
+namespace WarehouseCore\Service\Topology;
 
 use WarehouseCore\Repository\Topology\LocationRepository;
 
-use WarehouseCore\Payload\Value\AddressValue;
-use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
 
-class AddLocationService {
-    public function __construct(
-        public LocationRepository $location_repository
-    ) {  }
+use WarehouseCore\Payload\Value\AddressValue;
 
-    public function execute(
-        AddressValue $address_value
+use WarehouseCore\Payload\Result\SetupResult;
+
+final class LocationService {
+    public function __construct(
+        private LocationRepository $location_repository
+    ) { }
+
+    public function add(
+        string $zone,
+        string $rack,
+        string $shelf
     ): SetupResult {
+        try {
+                $address_value = new AddressValue(
+                $zone,
+                $rack,
+                $shelf
+            );
+        }catch(\Throwable $e) {
+            return new SetupResult(
+                success: false,
+                message: DomainException::LOCATION_ADDRESS_INVALID()->getMessage()
+            );
+        }
+
         $location = $this->location_repository->findByAddress($address_value->getValue());
         if($location !== null)
             return new SetupResult(
@@ -38,4 +55,5 @@ class AddLocationService {
             success: true
         );
     }
+
 }

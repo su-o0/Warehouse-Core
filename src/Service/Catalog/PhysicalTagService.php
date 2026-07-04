@@ -1,29 +1,30 @@
-<?  
-namespace WarehouseCore\Service\Setup;
+<?php
+namespace WarehouseCore\Service\Identity;
+
+use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
+
 use WarehouseCore\Payload\Result\SetupResult;
-use WarehouseCore\Repository\Catalog\VehicleRepository;
 
-class AddVehicleService {
+final class PhysicalTagService {
     public function __construct(
-        private VehicleRepository $vehicle_repository
-    ) {}
+        private PhysicalTagRepository $physical_tag_repository
+    ) { }
 
-    public function execute(
-        string $vin
+    public function create(
+        int $tag_id
     ): SetupResult {
-
-        $vehicle_entity = $this->vehicle_repository->findByVin($vin);
-        if($vehicle_entity !== null)
+        $Tag = $this->physical_tag_repository->findById($tag_id);
+        if($Tag !== null)   
             return new SetupResult(
                 success: false,
-                message: DomainException::VEHICLE_ALREADY_EXISTS()->getMessage()
+                message: DomainException::PHYSICAL_TAG_ALREADY_EXISTS()->getMessage()
             );
 
         try {
-            $this->vehicle_repository->add($vin);
+            $this->physical_tag_repository->add($tag_id, "Free");
         }catch(RepositoryException $e) {
             return new SetupResult(
                 success: false,

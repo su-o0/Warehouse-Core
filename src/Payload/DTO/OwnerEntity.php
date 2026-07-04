@@ -16,10 +16,10 @@ class OwnerEntity {
     public static function fromRaw(array $raw): self {
         error_log(var_export($raw, true));
         return new self(
-            self::required($raw, 'id'),
-            self::requiredString($raw, 'name'),
-            self::requiredString($raw, 'user_id'),
-            self::required($raw, 'created_at')
+            id: self::required($raw, 'id'),
+            name: self::requiredString($raw, 'name'),
+            user_id: self::requiredString($raw, 'user_id'),
+            created_at: self::requiredString($raw, 'created_at')
         );
     }
 }

@@ -1,21 +1,23 @@
-<?php 
-namespace WarehouseCore\Service\Setup;
+<?php
+namespace WarehouseCore\Service\Inventory;
 
 use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 
-use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Exception\RepositoryException;
+
 use WarehouseCore\Payload\DTO\PartEntity;
 use WarehouseCore\Payload\DTO\StockEntity;
 
-final class AddStockService {
-    function __construct(
+use WarehouseCore\Payload\Result\SetupResult;
+
+final class StockService {
+    public function __construct(
         private StockRepository $stock_repository,
-        private PartRepository $part_repository    
+        private PartRepository $part_repository
     ) { }
 
-    public function execute(
+    public function create(
         string $article,
         int $qcy,
     ): SetupResult {
