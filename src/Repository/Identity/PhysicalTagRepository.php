@@ -2,6 +2,8 @@
 namespace WarehouseCore\Repository\Identity;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\PhysicalTagEntity;
+
 final class PhysicalTagRepository {
     public function __construct(
         private \PDO $db, 
@@ -10,7 +12,7 @@ final class PhysicalTagRepository {
 
     public function findById(
         int $id
-    ): null|array {
+    ): null|PhysicalTagEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,12 +21,12 @@ final class PhysicalTagRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : PhysicalTagEntity::fromRaw($result);
     }
 
     public function findByStatus(
         string $status
-    ): null|array{
+    ): array{
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE status = :status"
@@ -32,8 +34,8 @@ final class PhysicalTagRepository {
         $stmt->execute([
             ":status" => $status
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+
+        return array_map(fn($row) => PhysicalTagEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(
@@ -69,6 +71,22 @@ final class PhysicalTagRepository {
             return $stmt->execute([
                 'id' => $id,
                 ':status' => $status,
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

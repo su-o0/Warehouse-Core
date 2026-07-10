@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Inventory;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\ItemEntity;
+
 final class ItemRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name) {
     }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|ItemEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,7 +21,7 @@ final class ItemRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : ItemEntity::fromRaw($result);
     }
 
     public function findByPhysicalTagId(
@@ -32,7 +34,7 @@ final class ItemRepository {
         $stmt->execute([
             ":physical_tag_id" => $physical_tag_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByPartId(
@@ -45,11 +47,11 @@ final class ItemRepository {
         $stmt->execute([
             ":part_id" => $part_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByVehicleId(
-        string $vehicle_id
+        int $vehicle_id
     ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
@@ -58,7 +60,20 @@ final class ItemRepository {
         $stmt->execute([
             ":vehicle_id" => $vehicle_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByOwnerId(
+        int $owner_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE owner_id = :owner_id"
+        );
+        $stmt->execute([
+            ":owner_id" => $owner_id
+        ]);
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByStatus(
@@ -71,41 +86,52 @@ final class ItemRepository {
         $stmt->execute([
             ":status" => $status
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByCondition(
-        string $condition_level
-    ): null|array {
+        string $condition
+    ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE condition_level = :condition_level"
+            WHERE condition = :condition"
         );
         $stmt->execute([
-            ":condition_level" => $condition_level
+            ":condition" => $condition
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByCreatedByUserId(
+        int $user_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE created_by_user_id = :user_id"
+        );
+        $stmt->execute([
+            ":user_id" => $user_id
+        ]);
+        return array_map(fn($row) => ItemEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(
-        int $owner_id,
+        int $user_id,
         int $part_id, 
-        string $condition_level,
+        int $owner_id,
         ?int $vehicle_id = null,
-        ?string $condition_note = null
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (owner_id, part_id, condition_level, vehicle_id, condition_note) 
-                VALUES (:owner_id, :part_id, :condition_level, :vehicle_id, :condition_note)"    
+                (part_id, vehicle_id, owner_id, created_by_user_id) 
+                VALUES (:part_id, :vehicle_id, :owner_id, :user_id)"    
             );
             $stmt->execute([
-                ':owner_id' => $owner_id,
                 ':part_id' => $part_id,
-                ':condition_level' => $condition_level,
                 ':vehicle_id' => $vehicle_id,
-                ':condition_note' => $condition_note,
+                ':owner_id' => $owner_id,
+                ':user_id' => $user_id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -191,20 +217,52 @@ final class ItemRepository {
 
     public function updateCondition(
         int $id, 
-        string $condition_level, 
-        ?string $ConditionNote = null
+        string $condition
     ): bool {
         try {
-            
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
-                SET condition_level = :condition_level, ConditionNote = :ConditionNote
+                SET condition = :condition
                 WHERE id = :id"
             );
             return $stmt->execute([
-                'condition_level' => $condition_level,
-                ':ConditionNote' => $ConditionNote,
+                ':condition' => $condition,
                 ':id' => $id,
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateConditionNote(
+        int $id, 
+        string $condition_note
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET condition_note = :condition_note
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':condition_note' => $condition_note,
+                ':id' => $id,
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

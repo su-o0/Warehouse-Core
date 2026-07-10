@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Identity;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\OwnerEntity;
+
 final class OwnerRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|OwnerEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,12 +21,20 @@ final class OwnerRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : OwnerEntity::fromRaw($result);
     }
 
-    public function findByUserId(
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM {$this->table_name}"
+        );
+        $stmt->execute();
+        return array_map(fn($row) => OwnerEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function getByUserId(
         int $user_id
-    ): array {
+    ): null|OwnerEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE user_id = :user_id"
@@ -33,21 +43,7 @@ final class OwnerRepository {
             ":user_id" => $user_id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
-    }
-
-    public function findByName(
-        string $name
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE name = :name"
-        );
-        $stmt->execute([
-            ":name" => $name
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : OwnerEntity::fromRaw($result);
     }
 
     public function add(
@@ -70,30 +66,19 @@ final class OwnerRepository {
         }
     }
 
-    public function updateName(
-        int $id, 
-        string $name
-    ):bool {
+    public function delete(
+        int $id
+    ): bool {
         try {
             $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET name = :name 
+                "DELETE FROM {$this->table_name} 
                 WHERE id = :id"
             );
             return $stmt->execute([
-                ':id' => $id,
-                ':name' => $name
+                ':id' => $id
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
-    }
-
-    public function getAll(): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name}"
-        );
-        $stmt->execute();
-        return $stmt->fetchAll();
     }
 }

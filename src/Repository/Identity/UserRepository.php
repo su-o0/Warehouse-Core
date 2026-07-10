@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Identity;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\UserEntity;
+
 final class UserRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|UserEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -18,13 +20,20 @@ final class UserRepository {
         $stmt->execute([
             ":id" => $id
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : UserEntity::fromRaw($stmt->fetch());
     }
 
-    public function findByName(
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM {$this->table_name}"
+        );
+        $stmt->execute();
+        return array_map(fn($row) => UserEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function getByName(
         string $name
-    ): null|array {
+    ): null|UserEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE name = :name"
@@ -32,11 +41,10 @@ final class UserRepository {
         $stmt->execute([
             ":name" => $name
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : UserEntity::fromRaw($stmt->fetch());
     }
 
-    public function findByRole(
+    public function findByRoleId(
         int $role_id
     ): array {
         $stmt = $this->db->prepare( 
@@ -46,22 +54,20 @@ final class UserRepository {
         $stmt->execute([
             ":role_id" => $role_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => UserEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(
-        int $telegram_id, 
-        string $name, 
+        string $name,
         int $role_id
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name}
-                (telegram_id, name, role_id) 
-                VALUES (:telegram_id, :name, :role_id)"
+                (name, role_id) 
+                VALUES (:name, :role_id)"
             );
             $stmt->execute([
-                ':telegram_id' => $telegram_id,
                 ':name' => $name,
                 ':role_id' => $role_id
             ]);
@@ -109,11 +115,38 @@ final class UserRepository {
         }
     }
 
-    public function getAll(): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name}"
-        );
-        $stmt->execute();
-        return $stmt->fetchAll();
+    public function updateRoleId(
+        int $id, 
+        int $role_id
+    ):bool {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET role_id = :role_id 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id,
+                ':role_id' => $role_id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
     }
 }

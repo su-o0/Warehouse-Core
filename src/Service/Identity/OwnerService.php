@@ -44,41 +44,4 @@ final class OwnerService {
             success: true
         );
     }
-    
-    public function getAll(
-    ): ServiceResult {
-        try {
-            $owners = $this->owner_repository->getAll();
-            return new ServiceResult(
-                true, 
-                $owners, 
-                null
-            );
-        } catch (\RuntimeException $e) {
-            return new ServiceResult(
-                false, 
-                null, 
-                $e->getMessage()
-            );
-        }
-    }
-
-    public function getById(
-        int $id
-    ): ServiceResult {
-        try {
-            $owner = $this->owner_repository->findById($id);
-            return new ServiceResult(
-                true, 
-                $owner, 
-                null
-            );
-        } catch (\RuntimeException $e) {
-            return new ServiceResult(
-                false, 
-                null, 
-                $e->getMessage()
-            );
-        }
-    }
 }

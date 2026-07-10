@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\VehicleEntity;
+
 final class VehicleRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|VehicleEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,12 +21,20 @@ final class VehicleRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : VehicleEntity::fromRaw($result);
+    }
+
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM $this->table_name"
+        );
+        $stmt->execute();
+        return array_map(fn($row) => VehicleEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByVin(
         string $vin
-    ): null|array {
+    ): null|VehicleEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE vin = :vin"
@@ -33,7 +43,7 @@ final class VehicleRepository {
             ":vin" => $vin
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : VehicleEntity::fromRaw($result);
     }
 
     public function add(
@@ -54,20 +64,19 @@ final class VehicleRepository {
         }
     }
 
-    public function findOrCreate(
-        string $vin
-    ): array {
-        $id = $this->findByVin($vin);
-        if ($id !== null)
-            return $id;
-        return $this->findById($this->add($vin));
-    }
-
-    public function getAll(): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM $this->table_name"
-        );
-        $stmt->execute();
-        return $stmt->fetchAll();
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
     }
 }

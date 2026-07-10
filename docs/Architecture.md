@@ -1,5 +1,21 @@
 # Architecture
 
+# Decomposition 
+
+```text
+DomainModel 
+\/
+Schema
+\/
+Repository > Repository Api 
+\/
+Service > Service Api
+\/
+Facade > Warehouse Api
+\/
+Cli/Web/Telegram/Mobile
+```
+
 Warehouse Core follows a two-layer architecture:
 Warehouse Core = Hybrid Inventory System, Dual inventory system:
 - Serialized tracking > Item

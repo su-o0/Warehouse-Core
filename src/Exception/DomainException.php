@@ -6,6 +6,22 @@ use WarehouseCore\Exception\Contract\DomainException as DomainExceptionContract;
 
 final class DomainException extends DomainExceptionContract 
 {
+    public static function TELEMETRY_INVALID_TYPE(): self 
+    {
+        return new self(
+            ErrorCode::LOCATION_ADDRESS_INVALID,
+            'Telemetry type must be ...'
+        );
+    }
+
+    public static function ACTION_INVALID_TYPE(): self 
+    {
+        return new self(
+            ErrorCode::LOCATION_ADDRESS_INVALID,
+            'Action type must be ...'
+        );
+    }
+
     public static function LOCATION_ADDRESS_INVALID(): self
     {
         return new self(
@@ -18,7 +34,7 @@ final class DomainException extends DomainExceptionContract
     {
         return new self(
             ErrorCode::CONTAINER_INVALID_TYPE,
-            'Container type must be Box or Pallet'
+            'Container type invalid'
         );
     }
 
@@ -38,7 +54,7 @@ final class DomainException extends DomainExceptionContract
         );
     }
     
-public static function CONTAINER_PLACEMENT_ALREADY_EXISTS(): self
+    public static function CONTAINER_PLACEMENT_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::CONTAINER_PLACEMENT_ALREADY_EXISTS,
@@ -109,7 +125,7 @@ public static function CONTAINER_PLACEMENT_ALREADY_EXISTS(): self
         );
     }
 
- public static function ITEM_PLACEMENT_ALREADY_EXISTS(): self
+    public static function ITEM_PLACEMENT_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::ITEM_PLACEMENT_ALREADY_EXISTS,
@@ -131,7 +147,7 @@ public static function CONTAINER_PLACEMENT_ALREADY_EXISTS(): self
             'Location not found'
         );
     }
-public static function OWNER_ALREADY_EXISTS(): self
+    public static function OWNER_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::OWNER_ALREADY_EXISTS,
@@ -170,7 +186,7 @@ public static function OWNER_ALREADY_EXISTS(): self
             'Owner with the same Name already exists'
         );
     }
-public static function PART_ALREADY_EXISTS(): self
+    public static function PART_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::PART_ALREADY_EXISTS,
@@ -186,7 +202,7 @@ public static function PART_ALREADY_EXISTS(): self
         );
     }
 
- public static function PHYSICAL_TAG_ALREADY_EXISTS(): self
+    public static function PHYSICAL_TAG_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::PHYSICAL_TAG_ALREADY_EXISTS,
@@ -209,7 +225,7 @@ public static function PART_ALREADY_EXISTS(): self
             'PhysicalTag Status must be Free, Assigned, Lost or Broken'
         );
     }
- public static function STOCK_PLACEMENT_ALREADY_EXISTS(): self
+    public static function STOCK_PLACEMENT_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::STOCK_PLACEMENT_ALREADY_EXISTS,

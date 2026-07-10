@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\Value\StockPlacementValue;
+
 final class StockPlacementRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|StockPlacementValue {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,38 +21,11 @@ final class StockPlacementRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return ($result)? null : $result;
+        return ($result)? null : StockPlacementValue::fromRaw($result);
     }
-
-    public function findByLocationId(
-        int $location_id
-    ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE location_id = :location_id"
-        );
-        $stmt->execute([
-            ":location_id" => $location_id
-        ]);
-        return $stmt->fetchAll();
-    }
-
-    public function findByContainerId(
-        int $container_id
-    ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE container_id = :container_id"
-        );
-        $stmt->execute([
-            ":container_id" => $container_id
-        ]);
-        return $stmt->fetchAll();
-    }
-
 
     public function findByStockId(
-        string $stock_id
+        int $stock_id
     ): null|array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
@@ -63,9 +38,35 @@ final class StockPlacementRepository {
         return empty($result)? null : $result;
     }
 
+    public function findByLocationId(
+        int $location_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE location_id = :location_id"
+        );
+        $stmt->execute([
+            ":location_id" => $location_id
+        ]);
+        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByContainerId(
+        int $container_id
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
+        );
+        $stmt->execute([
+            ":container_id" => $container_id
+        ]);
+        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
+    }
+
     public function addByLocationId(
         int $location_id, 
-        string $stock_id
+        int $stock_id
     ): int {
         try {
             $stmt = $this->db->prepare(
@@ -85,7 +86,7 @@ final class StockPlacementRepository {
 
     public function addByContainerId(
         int $container_id, 
-        string $stock_id
+        int $stock_id
     ): int {
         try {
             $stmt = $this->db->prepare(
@@ -140,8 +141,6 @@ final class StockPlacementRepository {
             throw PdoExceptionMapper::map($e);
         }
     }
-
-    
 
     public function delete(
         int $id

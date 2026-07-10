@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\Value\ContainerPlacementValue;
+
 final class ContainerPlacementRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|ContainerPlacementValue {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -18,8 +20,21 @@ final class ContainerPlacementRepository {
         $stmt->execute([
             "id" => $id
         ]);
+        return empty($result)? null : ContainerPlacementValue::fromRaw($stmt->fetch());
+    }
+
+    public function getByContainerId(
+        int $container_id
+    ): null|ContainerPlacementValue {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE container_id = :container_id"
+        );
+        $stmt->execute([
+            ":container_id" => $container_id
+        ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : ContainerPlacementValue::fromRaw($result);
     }
 
     public function findByLocationId(
@@ -32,21 +47,8 @@ final class ContainerPlacementRepository {
         $stmt->execute([
             ":location_id" => $location_id
         ]);
-        return $stmt->fetchAll();
-    }
-
-    public function findByContainerId(
-        int $container_id
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE container_id = :container_id"
-        );
-        $stmt->execute([
-            ":container_id" => $container_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        
+        return array_map(fn($row) => ContainerPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(

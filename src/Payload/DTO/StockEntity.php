@@ -12,6 +12,7 @@ final class StockEntity {
         public readonly ?int $part_id,
         public readonly ?int $qty,
         public readonly StockStatus $status,
+        public readonly int $created_by_user_id,
         public readonly ?string $created_at
     ) { }
 
@@ -21,6 +22,7 @@ final class StockEntity {
             part_id: self::requiredInt($raw, 'part_id'),
             qty: self::requiredInt($raw, 'qty'),
             status: StockStatusValue::fromRaw($raw, 'status'),
+            created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')
         );
     } 

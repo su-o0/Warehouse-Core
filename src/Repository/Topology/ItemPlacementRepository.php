@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\Value\ItemPlacementValue;
+
 final class ItemPlacementRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array {
+    ): null|ItemPlacementValue {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,7 +21,21 @@ final class ItemPlacementRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : ItemPlacementValue::fromRaw($result);
+    }
+
+    public function findByItemId(
+        int $item_id
+    ): null|ItemPlacementValue {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE item_id = :item_id"
+        );
+        $stmt->execute([
+            ":item_id" => $item_id
+        ]);
+        $result = $stmt->fetch();
+        return empty($result)? null : ItemPlacementValue::fromRaw($result);
     }
 
     public function findByLocationId(
@@ -32,7 +48,7 @@ final class ItemPlacementRepository {
         $stmt->execute([
             ":location_id" => $location_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => ItemPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByContainerId(
@@ -45,21 +61,7 @@ final class ItemPlacementRepository {
         $stmt->execute([
             ":container_id" => $container_id
         ]);
-        return $stmt->fetchAll();
-    }
-
-    public function findByItemId(
-        int $item_id
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE item_id = :item_id"
-        );
-        $stmt->execute([
-            ":item_id" => $item_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return array_map(fn($row) => ItemPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
     public function addByLocationId(
@@ -121,7 +123,7 @@ final class ItemPlacementRepository {
         }
     }
 
-        public function updateContainerId(
+    public function updateContainerId(
         int $id, 
         int $container_id
     ): bool {

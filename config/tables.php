@@ -13,7 +13,7 @@ return [
     'ItemPhoto'             => 'item_photos',
     'StockPhoto'            => 'stock_photos',
     'VehiclePhoto'          => 'vehicle_photos',
-    'Event'                 => 'events',
+    'Telemetry'             => 'telemetry',
     'ItemSalesArhive'       => 'item_sales_archive',
     'StockSalesArhive'      => 'stock_sales_archive',
     'User'                  => 'users',

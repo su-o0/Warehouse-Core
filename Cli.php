@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 use WarehouseCore\Facade\CliFacade;
 $warehouse = CliFacade::create();
 
-if (!isset($argv[1])) 
+if (!isset($argv[1]))  
 die(
     "Storage API:\n"
     ."Igentity:\n"
@@ -53,8 +53,9 @@ die(
 );
 
 try{
+    $warehouse->run();
     $call = $argv[1]??null;
-    $warehouse->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
+    echo $warehouse->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
 }catch(\RuntimeException $e) {
     echo $e->getMessage()."\n";
 }

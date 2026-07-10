@@ -1,12 +1,19 @@
 -- =========================
 -- IDENTITY
 -- =========================
+CREATE TABLE roles (
+    id TINYINT PRIMARY KEY AUTO_INCREMENT
+    ,name VARCHAR(64) NOT NULL UNIQUE
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,name VARCHAR(255) NOT NULL
     ,role_id TINYINT NOT NULL
+    ,status ENUM('Created','Active','Archived') NOT NULL DEFAULT 'Created'
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ,FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
 CREATE TABLE user_identities (
@@ -14,7 +21,6 @@ CREATE TABLE user_identities (
     ,user_id BIGINT NOT NULL
     ,provider ENUM('Cli', 'Telegram', 'Web') NOT NULL
     ,external_id VARCHAR(255) NOT NULL
-    ,status ENUM('Created','Active','Archived') NOT NULL DEFAULT 'Created'
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ,UNIQUE KEY uq_provider_external (provider, external_id)
     ,FOREIGN KEY (user_id) REFERENCES users(id)
@@ -22,14 +28,13 @@ CREATE TABLE user_identities (
 
 CREATE TABLE owners (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,name VARCHAR(255) NOT NULL
     ,user_id BIGINT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ,FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE physical_tags (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    id BIGINT PRIMARY KEY
     ,status ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free'
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -56,31 +61,36 @@ CREATE TABLE vehicles (
 -- =========================
 
 CREATE TABLE containers (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    id BIGINT PRIMARY KEY
     ,type ENUM('Box','Pallet') NOT NULL
     ,status ENUM('Created','Active','Crowded','Archived', 'Lost') NOT NULL DEFAULT 'Created'
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE items (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
 
-    ,physical_tag_id BIGINT
+    ,physical_tag_id BIGINT NULL
     
     ,part_id BIGINT NOT NULL
     ,vehicle_id BIGINT NULL
     ,owner_id BIGINT NOT NULL
     
     ,status ENUM('Created','Tagged','Placed','Active','Sold','Archived', 'Lost') NOT NULL DEFAULT 'Created'
-    ,condition_level ENUM('New','Good','Fair','Poor') NOT NULL DEFAULT 'Good'
+    ,condition ENUM('New','Good','Fair','Poor') NULL
     ,condition_note TEXT NULL
 
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (physical_tag_id) REFERENCES physical_tags(id)
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
     ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
     ,FOREIGN KEY (owner_id) REFERENCES owners(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
     ,INDEX idx_item_owner (owner_id)
     ,INDEX idx_item_vehicle (vehicle_id)
@@ -93,9 +103,12 @@ CREATE TABLE stock (
     ,qty INT NOT NULL DEFAULT 0
     ,status ENUM('Created','Active','Crowded','Archived', 'Lost') NOT NULL DEFAULT 'Created'
 
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+
     ,INDEX idx_stock_part (part_id)
 );
 
@@ -106,7 +119,9 @@ CREATE TABLE stock (
 CREATE TABLE locations (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,address VARCHAR(255) NOT NULL
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE container_placements (
@@ -130,7 +145,7 @@ CREATE TABLE item_placements (
 
     ,FOREIGN KEY (location_id) REFERENCES locations(id)
     ,FOREIGN KEY (item_id) REFERENCES items(id)
-    ,FOREIGN KEY (container_id) REFERENCES locations(id)
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
 
     ,UNIQUE KEY uq_item_location (item_id)
 );
@@ -144,8 +159,7 @@ CREATE TABLE stock_placements (
     
     ,FOREIGN KEY (location_id) REFERENCES locations(id)
     ,FOREIGN KEY (stock_id) REFERENCES stock(id)
-    ,FOREIGN KEY (container_id) REFERENCES locations(id)
-
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
 
     ,UNIQUE KEY uq_stock_location (stock_id)
 );
@@ -158,27 +172,33 @@ CREATE TABLE item_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,item_id BIGINT NOT NULL
     ,file VARCHAR(512) NOT NULL
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    
+
     ,FOREIGN KEY (item_id) REFERENCES items(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE stock_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,stock_id BIGINT NOT NULL
     ,file VARCHAR(512) NOT NULL
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE vehicle_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,vehicle_id BIGINT NOT NULL
     ,file VARCHAR(512) NOT NULL
+    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 -- =========================
@@ -225,8 +245,11 @@ CREATE TABLE stock_sales_archive (
     ,INDEX idx_stock_sales_stock (stock_id)
 );
 
-INSERT INTO users (id, name, role_id, status)
-VALUES (1, 'Admin', 1, 'Active');
+INSERT INTO roles (name)
+VALUES ('root'), ('admin'), ('worker'), ('salesman'), ('viewer');
+
+INSERT INTO users (name, role_id, status)
+VALUES ('root', 1, 'Active');
 
 INSERT INTO user_identities (user_id, provider, external_id)
 VALUES (1, 'Cli', 'admin');

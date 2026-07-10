@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\PartEntity;
+
 final class PartRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         string $id
-    ): null|array{
+    ): null|PartEntity{
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,12 +21,12 @@ final class PartRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : PartEntity::fromRaw($result);
     }
 
     public function findByArticle(
         string $article
-    ): null|array{
+    ): null|PartEntity{
         $stmt = $this->db->prepare(
             "SELECT * FROM {$this->table_name} 
             WHERE article = :article"
@@ -33,12 +35,12 @@ final class PartRepository {
             ":article" => $article
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : PartEntity::fromRaw($result);
     }
 
     public function findByName(
         string $name
-    ): null|array {
+    ): null|PartEntity{
         $stmt = $this->db->prepare( 
             "SELECT * FROM $this->table_name 
             WHERE name = :name"
@@ -46,8 +48,8 @@ final class PartRepository {
         $stmt->execute([
             ":name" => $name
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        $result = $stmt->fetch();
+        return empty($result)? null : PartEntity::fromRaw($result);
     }
 
     public function add(
@@ -89,13 +91,19 @@ final class PartRepository {
         }
     }
 
-    public function findOrCreate(
-        string $article, 
-        ?string $name = null
-    ): array {
-        $id = $this->findByArticle($article);
-        if ($id !== null)
-            return $id;
-        return $this->findById($this->add($article, $name));
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
     }
 }

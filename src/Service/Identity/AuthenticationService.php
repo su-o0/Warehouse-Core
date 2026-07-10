@@ -19,7 +19,8 @@ final class AuthenticationService {
         string $external_id
     ): UserEntity|null {
         $user_identity = $this->user_identity->findByIdentity($provider, $external_id);
-        if (empty($user)) {
+        
+        if (empty($user_identity)) {
             return null;
         }
         $user_identity_entity = UserIdentityEntity::fromRaw($user_identity);

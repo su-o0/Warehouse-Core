@@ -13,7 +13,7 @@ use WarehouseCore\Repository\Catalog\VehicleRepository;
 use WarehouseCore\Repository\Media\ItemPhotoRepository;
 use WarehouseCore\Repository\Media\StockPhotoRepository;
 use WarehouseCore\Repository\Media\VehiclePhotoRepository;
-use WarehouseCore\Repository\Audit\EventRepository;
+use WarehouseCore\Repository\Audit\TelemetryRepository;
 use WarehouseCore\Repository\Audit\ItemSalesArhiveRepository;
 use WarehouseCore\Repository\Audit\StockSalesArhiveRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
@@ -34,7 +34,7 @@ final class RepositoryRegistry {
     public ItemPhotoRepository $item_photo;
     public StockPhotoRepository $stock_photo;
     public VehiclePhotoRepository $vehicle_photo;
-    public EventRepository $event;
+    public TelemetryRepository $telemetry;
     public ItemSalesArhiveRepository $item_sales_arhive;
     public StockSalesArhiveRepository $stock_sales_arhive;
     public UserRepository $user;
@@ -55,7 +55,7 @@ final class RepositoryRegistry {
         $this->item_photo           = new ItemPhotoRepository($this->db, $config->item_photo);
         $this->stock_photo          = new StockPhotoRepository($this->db, $config->stock_photo);
         $this->vehicle_photo        = new VehiclePhotoRepository($this->db, $config->vehicle_photo);
-        $this->event                = new EventRepository($this->db, $config->event);
+        $this->telemetry            = new TelemetryRepository($this->db, $config->telemetry);
         $this->item_sales_arhive    = new ItemSalesArhiveRepository($this->db, $config->item_sales_archive);
         $this->stock_sales_arhive   = new StockSalesArhiveRepository($this->db, $config->stock_sales_archive);
         $this->user                 = new UserRepository($this->db, $config->user);

@@ -2,13 +2,15 @@
 namespace WarehouseCore\Repository\Identity;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\DTO\UserIdentityEntity;
+
 final class UserIdentityRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-     public function findById(
+    public function getById(
         int $id
     ): null|array {
         $stmt = $this->db->prepare( 
@@ -19,7 +21,15 @@ final class UserIdentityRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : UserIdentityEntity::fromRaw($stmt->fetch());
+    }
+
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM {$this->table_name}"
+        );
+        $stmt->execute();
+        return array_map(fn($row) => UserIdentityEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByUserId(
@@ -32,7 +42,7 @@ final class UserIdentityRepository {
         $stmt->execute([
             ":user_id" => $user_id
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => UserIdentityEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByProvider(
@@ -45,10 +55,10 @@ final class UserIdentityRepository {
         $stmt->execute([
             ":provider" => $provider
         ]);
-        return $stmt->fetchAll();
+        return array_map(fn($row) => UserIdentityEntity::fromRaw($row), $stmt->fetchAll());
     }
 
-    public function findByIdentity(
+    public function findByProviderAndId(
         string $provider,
         string $external_id
     ): null|array{
@@ -60,8 +70,7 @@ final class UserIdentityRepository {
             ":provider" => $provider,
             ":external_id" => $external_id
         ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : UserIdentityEntity::fromRaw($stmt->fetch());
     }
 
     public function add(

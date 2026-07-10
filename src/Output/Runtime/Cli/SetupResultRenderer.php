@@ -11,7 +11,7 @@ final class SetupResultRenderer implements OutputRenderer {
 
     public function render(object $result): string {
         return $result->success
-            ? "Created"
-            : "Error: {$result->message}";
+            ? "Created\n"
+            : "Error: {$result->message}\n";
     }
 }

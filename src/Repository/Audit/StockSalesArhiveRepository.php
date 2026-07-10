@@ -2,15 +2,17 @@
 namespace WarehouseCore\Repository\Audit;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
+use WarehouseCore\Payload\Value\StockPlacementValue;
+
 final class StockSalesArhiveRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
-    ): null|array  {
+    ): null|StockPlacementValue {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -19,7 +21,7 @@ final class StockSalesArhiveRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : $result;
+        return empty($result)? null : StockPlacementValue::fromRaw($result);
     }
 
     public function findByStockId(
@@ -32,8 +34,7 @@ final class StockSalesArhiveRepository {
         $stmt->execute([
             ":item_id" => $item_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByUserId(
@@ -46,8 +47,7 @@ final class StockSalesArhiveRepository {
         $stmt->execute([
             ":user_id" => $user_id
         ]);
-        $result = $stmt->fetchAll();
-        return empty($result)? null : $result;
+        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(
@@ -71,4 +71,20 @@ final class StockSalesArhiveRepository {
             throw PdoExceptionMapper::map($e);
         }
     }   
+
+    public function delete(
+        int $id
+    ): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM {$this->table_name} 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':id' => $id
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
 }

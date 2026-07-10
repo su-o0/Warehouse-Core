@@ -13,13 +13,16 @@ Vehicle
 ItemPhoto
 StockPhoto
 VehiclePhoto
-Event
+Telemetry
 ItemSalesArhive
 StockSalesArhive
+Role
 User
+UserIdentity
 Owner
 PhysicalTag
 ```
+---
 ```md
 Topology
 ├── Location
@@ -42,12 +45,14 @@ Media
 └── VehiclePhoto
 
 Audit
-├── Event
+├── Telemetry
 ├── ItemSalesArhive
 └── StockSalesArhive
 
 Identity
+├── Role
 ├── User
+├── UserIdentity
 ├── Owner
 └── PhysicalTag
 ```
@@ -59,7 +64,8 @@ Identity
 Location
 ├── Id
 ├── Address
-└── CreatedAt
+├── CreatedByUserId
+└── CreatedAt   
 
 ContainerPlacement
 ├── Id
@@ -89,6 +95,7 @@ Container
 ├── Id
 ├── Type > (Box, Pallet)
 ├── Status > (Created, Active, Crowded, Archived, Lost)
+├── CreatedByUserId
 └── CreatedAt
 
 Item
@@ -100,6 +107,7 @@ Item
 ├── Status > (Created, Tagged, Placed, Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
+├── CreatedByUserId
 └── CreatedAt
 
 Stock
@@ -107,6 +115,7 @@ Stock
 ├── PartId
 ├── Qty
 ├── Status > (Created, Active, Crowded, Archived)
+├── CreatedByUserId
 └── CreatedAt
 ```
 
@@ -131,29 +140,34 @@ Vehicle
 ItemPhoto
 ├── Id
 ├── ItemId
-└── File
+├── File
+├── CreatedByUserId
+└── CreatedAt
 
 StockPhoto
 ├── Id
 ├── StockId
-└── File
+├── File
+├── CreatedByUserId
+└── CreatedAt
 
 VehiclePhoto
 ├── Id
 ├── VehicleId
 └── File    
+├── CreatedByUserId
+└── CreatedAt
 ```
 
 ## Audit
 *domain events + sales ledger*
 ```text
-Event
+Telemetry
 ├── Id
-├── EntityType
+├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, ItemPhoto, StockPhoto, VehiclePhoto, Part, Vehicle)
 ├── EntityId
-├── Action
+├── Action > (Create, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
 ├── Payload
-├── OwnerId
 ├── UserId
 └── CreatedAt
 
@@ -174,6 +188,11 @@ StockSalesArchive
 ### Identity
 *actors + ownership*
 ```
+Role
+├── Id
+├── Name
+└── CreatedAt
+
 User
 ├── Id
 ├── Name
@@ -190,7 +209,6 @@ UserIdentity
 
 Owner
 ├── Id
-├── Name
 ├── UserId
 └── CreatedAt
 

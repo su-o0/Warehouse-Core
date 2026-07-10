@@ -18,6 +18,7 @@ final class ItemEntity {
         public readonly ItemStatus $status,
         public readonly ItemCondition $condition,
         public readonly ?string $condition_note,
+        public readonly int $created_by_user_id,
         public readonly string $created_at,
     ) { }
 
@@ -31,6 +32,7 @@ final class ItemEntity {
             status: ItemStatusValue::fromRaw($raw, 'status'),
             condition: ItemConditionValue::fromRaw($raw, 'condition'),
             condition_note: $raw['condition_note'] ?? null,
+            created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at'),
         );
     }

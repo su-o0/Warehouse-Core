@@ -10,6 +10,7 @@ final class ContainerEntity {
     public function __construct(
         public readonly int $id,
         public readonly ContainerType $type,
+        public readonly int $created_by_user_id,
         public readonly string $created_at
     ) { }
 
@@ -17,6 +18,7 @@ final class ContainerEntity {
         return new self(
             id: self::requiredInt($raw, 'id'),
             type: ContainerTypeValue::fromRaw($raw, 'type'),
+            created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')
         );
     }

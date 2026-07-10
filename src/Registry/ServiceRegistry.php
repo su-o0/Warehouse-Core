@@ -1,7 +1,7 @@
 <?php
 namespace WarehouseCore\Registry;
 
-use WarehouseCore\Service\Audit\EventService;
+use WarehouseCore\Service\Audit\TelemetryService;
 use WarehouseCore\Service\Audit\SalesService;
 use WarehouseCore\Service\Catalog\PartService;
 use WarehouseCore\Service\Catalog\VehicleService;
@@ -37,9 +37,9 @@ final class ServiceRegistry {
         );
     }
 
-    public function event(): EventService {
-        return new EventService(
-            $this->repository->event
+    public function telemetry(): TelemetryService {
+        return new TelemetryService(
+            $this->repository->telemetry
         );
     }
 
@@ -84,6 +84,7 @@ final class ServiceRegistry {
 
     public function userIdentity(): UserIdentityService {
         return new UserIdentityService(
+            $this->repository->user,
             $this->repository->user_identity
         );
     }

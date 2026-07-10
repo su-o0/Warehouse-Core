@@ -9,27 +9,36 @@
 
 ## ENTRY POINTS
 ```
-Location.Id адрес полки (бирка на стеллаже)
+Location.Address адрес (бирки на стеллаже)
 Container.Id: номер контейнера (бирка на коробке)
 PhysicalTag.Id: номер бирки (бирка на запчасти)
 ```
-Всё остальное — внутренние Id системы
+Всё остальное - внутренние Id системы
+
 ## CONTRACTS 
 [What system can do]
+
+System Of Records
+
 #### Setup 
-```
-*addAdress* - Добавить адресс 
-*addConteiner* - Добавить Контейнер
-*addTag* - Добавить Бирку
-```
+*createAdress* - Добавить адресс 
+*createTag* - Добавить Бирку
+*createUser* - Добавить Пользователя
+
 #### Fill
-```
-*addItem* - Добавить Элемент
-*addBulk* - Добавить Кучу из Частей
+
+*createItem* - Добавить Элемент
+*createStock* - Добавить Кучу
+*createConteiner* - Добавить Контейнер
+
+*placeItem* - Поместить Элемент
+*placeStock* - Поместить Кучу
+*placeContainer* - Поместить Контейнер
+
 *moveItem* - Переместить Элемент 
 *moveStock* - Переместить Кучу 
 *moveContainer* - Переместить Контейнер
-```
+
 #### Sell
 ```
 *sellItem* - Продать Элемент 
@@ -43,8 +52,6 @@ PhysicalTag.Id: номер бирки (бирка на запчасти)
 ```
 #### Audit
 ```
-*addUser* - Добавить Пользователя
-*getActions* - История операций 
 *getSells* - История продаж
 ```
 ## STATE
@@ -107,3 +114,12 @@ WarehouseCore -> entry point
 Repository -> SQL abstraction
 Scenario -> business logic (contracts implementation)
 ```
+
+
+## Telemetry — Delete guard
+
+`Action::Delete` разрешён к выполнению только для роли `root`.
+Это должно быть явной проверкой на уровне Service-слоя
+(`$user->roleId === Role::Root`), а не молчаливой договорённостью —
+иначе через время кто-то откроет доступ к физическому удалению
+обычному admin, потому что нигде в коде это не запрещено явно.
