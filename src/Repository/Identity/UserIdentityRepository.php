@@ -12,7 +12,7 @@ final class UserIdentityRepository {
 
     public function getById(
         int $id
-    ): null|array {
+    ): null|UserIdentityEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -61,7 +61,7 @@ final class UserIdentityRepository {
     public function findByProviderAndId(
         string $provider,
         string $external_id
-    ): null|array{
+    ): null|UserIdentityEntity{
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE provider = :provider AND external_id = :external_id"
@@ -70,7 +70,8 @@ final class UserIdentityRepository {
             ":provider" => $provider,
             ":external_id" => $external_id
         ]);
-        return empty($result)? null : UserIdentityEntity::fromRaw($stmt->fetch());
+        $result = $stmt->fetch();
+        return empty($result)? null : UserIdentityEntity::fromRaw($result);
     }
 
     public function add(

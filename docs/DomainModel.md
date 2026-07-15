@@ -8,8 +8,12 @@ StockPlacement
 Container
 Item
 Stock
+ItemProcessingStep
 Part
+PartAlias
 Vehicle
+StoredFile
+PartPhoto
 ItemPhoto
 StockPhoto
 VehiclePhoto
@@ -35,11 +39,17 @@ Inventory
 ├── Item
 └── Stock
 
+Processing
+└── ItemProcessingStep
+
 Catalog
 ├── Part
+├── PartAlias
 └── Vehicle
 
 Media
+├── StoredFile
+├── PartPhoto
 ├── ItemPhoto
 ├── StockPhoto
 └── VehiclePhoto
@@ -104,7 +114,7 @@ Item
 ├── PartId
 ├── VehicleId
 ├── OwnerId
-├── Status > (Created, Tagged, Placed, Active, Sold, Archived, Lost)
+├── Status > (Created, Tagged, Prepared, Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
 ├── CreatedByUserId
@@ -119,13 +129,31 @@ Stock
 └── CreatedAt
 ```
 
+## Processing
+*What else needs to be done*
+```text
+ItemProcessingStep
+├── Id
+├── ItemId
+├── Stage > (Photo, Condition, Vision, Placement)
+├── Metadata
+├── CreatedByUserId
+└── CreatedAt
+```
+
 ## Catalog 
-*definitions*
+*Product definitions*
 ```text
 Part
 ├── Id
 ├── Article
 ├── Name
+└── CreatedAt
+
+PartAlias
+├── Id
+├── PartId
+├── Article
 └── CreatedAt
 
 Vehicle
@@ -135,36 +163,48 @@ Vehicle
 ```
 
 # Media
-*normalized* 
+*Digital assets* 
 ```
+StoredFile
+├── Id
+├── Path
+├── Hash
+├── MimeType
+├── Size
+├── CreatedByUserId
+└── CreatedAt
+
+PartPhoto
+├── Id
+├── PartId
+├── FileId
+└── CreatedAt
+
 ItemPhoto
 ├── Id
 ├── ItemId
-├── File
-├── CreatedByUserId
+├── FileId
 └── CreatedAt
 
 StockPhoto
 ├── Id
 ├── StockId
-├── File
-├── CreatedByUserId
+├── FileId
 └── CreatedAt
 
 VehiclePhoto
 ├── Id
 ├── VehicleId
-└── File    
-├── CreatedByUserId
+├── FileId  
 └── CreatedAt
 ```
 
 ## Audit
-*domain events + sales ledger*
+*History and telemetry*
 ```text
 Telemetry
 ├── Id
-├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, ItemPhoto, StockPhoto, VehiclePhoto, Part, Vehicle)
+├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, StoredFile, PartPhoto, ItemPhoto, StockPhoto, VehiclePhoto, Part, PartAlias, Vehicle)
 ├── EntityId
 ├── Action > (Create, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
 ├── Payload
@@ -186,7 +226,7 @@ StockSalesArchive
 
 ```
 ### Identity
-*actors + ownership*
+*Actors and ownership*
 ```
 Role
 ├── Id

@@ -1,11 +1,41 @@
 <?php
-
 namespace WarehouseCore\Exception;
 
-use WarehouseCore\Exception\Contract\DomainException as DomainExceptionContract;
+use WarehouseCore\Contract\Exception as ExceptionContract;
 
-final class DomainException extends DomainExceptionContract 
-{
+final class DomainException extends ExceptionContract {
+    public static function ITEM_PROCESSING_STAGE_INVALID_TYPE(): self
+    {
+        return new self(
+            ErrorCode::ITEM_PROCESSING_STAGE_INVALID_TYPE,
+            'Item Processing stage invalid'
+        );
+    }
+
+    public static function USER_IDENTITY_EXISTS(): self 
+    {
+        return new self(
+            ErrorCode::USER_IDENTITY_EXISTS,
+            'User identity alredy exists'
+        );
+    }
+
+    public static function ROLE_NOT_FOUND(): self
+    {
+        return new self(
+            ErrorCode::ROLE_NOT_FOUND,
+            ErrorMessage::ROLE_NOT_FOUND
+        );
+    }
+    
+    public static function ROLE_NAME_INVALID(): self 
+    {
+        return new self(
+            ErrorCode::ROLE_NAME_INVALID,
+            'Role name invalid'
+        );
+    }
+
     public static function TELEMETRY_INVALID_TYPE(): self 
     {
         return new self(

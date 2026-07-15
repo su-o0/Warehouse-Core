@@ -1,7 +1,7 @@
 <?php
 namespace WarehouseCore\Config;
 
-class TableConfig {
+final class RepositoryConfig {
     use ConfigHelper;
     public function __construct(
         public readonly string $location,
@@ -11,14 +11,19 @@ class TableConfig {
         public readonly string $container,
         public readonly string $item,
         public readonly string $stock,
+        public readonly string $item_processing_step,
         public readonly string $part,
+        public readonly string $part_alias,
         public readonly string $vehicle,
+        public readonly string $stored_file,
+        public readonly string $part_photo,
         public readonly string $item_photo,
         public readonly string $stock_photo,
         public readonly string $vehicle_photo,
         public readonly string $telemetry,
         public readonly string $item_sales_archive,
         public readonly string $stock_sales_archive,
+        public readonly string $role,
         public readonly string $user,
         public readonly string $user_identity,
         public readonly string $owner,
@@ -36,14 +41,19 @@ class TableConfig {
             container: self::requiredString($raw, 'Container'),
             item: self::requiredString($raw, 'Item'),
             stock: self::requiredString($raw, 'Stock'),
+            item_processing_step: self::requiredString($raw, 'ItemProcessingStep'),
             part: self::requiredString($raw, 'Part'),
+            part_alias: self::requiredString($raw, 'PartAlias'),
             vehicle: self::requiredString($raw, 'Vehicle'),
+            stored_file: self::requiredString($raw, 'StoredFile'),
+            part_photo: self::requiredString($raw, 'PartPhoto'),
             item_photo: self::requiredString($raw, 'ItemPhoto'),
             stock_photo: self::requiredString($raw, 'StockPhoto'),
             vehicle_photo: self::requiredString($raw, 'VehiclePhoto'),
             telemetry: self::requiredString($raw, 'Telemetry'),
             item_sales_archive: self::requiredString($raw, 'ItemSalesArhive'),
             stock_sales_archive: self::requiredString($raw, 'StockSalesArhive'),
+            role: self::requiredString($raw, 'Role'),
             user: self::requiredString($raw, 'User'),
             user_identity: self::requiredString($raw, 'UserIdentity'),
             owner: self::requiredString($raw, 'Owner'),

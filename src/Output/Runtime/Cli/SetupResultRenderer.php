@@ -2,11 +2,11 @@
 namespace WarehouseCore\Output\Runtime\Cli;
 
 use WarehouseCore\Output\Contracts\OutputRenderer;
-use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Payload\Result\ServiceResult;
 
 final class SetupResultRenderer implements OutputRenderer {
     public function supports(object $result): bool {
-        return $result instanceof SetupResult;
+        return $result instanceof ServiceResult;
     }
 
     public function render(object $result): string {

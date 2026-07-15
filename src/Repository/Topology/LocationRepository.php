@@ -23,6 +23,13 @@ final class LocationRepository {
         return empty($result)? null : AddressValue::fromRaw($result);
     }
     
+    public function getAll(): array {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM $this->table_name"
+        );
+        $stmt->execute();
+        return array_map(fn($row) => AddressValue::fromRaw($row), $stmt->fetchAll());
+    }
 
     public function findByAddress(
         string $address

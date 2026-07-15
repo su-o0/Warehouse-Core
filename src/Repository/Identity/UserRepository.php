@@ -20,7 +20,8 @@ final class UserRepository {
         $stmt->execute([
             ":id" => $id
         ]);
-        return empty($result)? null : UserEntity::fromRaw($stmt->fetch());
+        $result = $stmt->fetch();
+        return empty($result)? null : UserEntity::fromRaw($result);
     }
 
     public function getAll(): array {
@@ -31,7 +32,7 @@ final class UserRepository {
         return array_map(fn($row) => UserEntity::fromRaw($row), $stmt->fetchAll());
     }
 
-    public function getByName(
+    public function findByName(
         string $name
     ): null|UserEntity {
         $stmt = $this->db->prepare( 
@@ -41,7 +42,8 @@ final class UserRepository {
         $stmt->execute([
             ":name" => $name
         ]);
-        return empty($result)? null : UserEntity::fromRaw($stmt->fetch());
+        $result = $stmt->fetch();
+        return empty($result)? null : UserEntity::fromRaw($result);
     }
 
     public function findByRoleId(

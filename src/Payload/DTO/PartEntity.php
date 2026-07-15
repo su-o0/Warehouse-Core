@@ -12,7 +12,9 @@ final class PartEntity {
         public readonly string $created_at
     ) { }
 
-    public static function fromRaw(array $raw): self {
+    public static function fromRaw(
+        array $raw
+    ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
             article: self::requiredString($raw, 'article'),

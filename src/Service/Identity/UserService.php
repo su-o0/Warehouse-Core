@@ -2,39 +2,48 @@
 namespace WarehouseCore\Service\Identity;
 
 use WarehouseCore\Repository\Identity\UserRepository;
-
 use WarehouseCore\Exception\DomainException;
-
-use WarehouseCore\Payload\DTO\UserEntity;
-
-use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\DTO\Session;
+use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Repository\Catalog\RoleRepository;
+use WarehouseCore\Security\Authorization;
 
 final class UserService {
     public function __construct(
+        public string $service_name,
+        private Authorization $authorization,
         private UserRepository $user_repository,
     ) { }
     
     public function create(
         string $name,
-        string $role
-       ): SetupResult {
-        $user = $this->user_repository->findByName($name);
-        
-        if($user !== null) {
-            return new SetupResult(
+        int $role_id
+    ): ServiceResult {
+    
+        if(!$this->authorization->canCreateUser()){
+            return new ServiceResult(
                 success: false,
-                message: DomainException::USER_ALREADY_EXISTS()->getMessage()
+                message: ServiceException::Forbidden()->getMessage()
             );
         }
-        
 
-        $this->user_repository->add(
-            $name,
-            $role
-        );
+        try {
+            $id = $this->user_repository->add(
+                $name,
+                $role_id
+            );
+        } catch(RepositoryException $e){
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
 
-        return new SetupResult(
-            success: true
+        return new ServiceResult(
+            success: true,
+            entity: $id
         );
     }
 }

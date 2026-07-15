@@ -1,10 +1,10 @@
 <?php 
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\PhysicalTagStatus;
 
-final class PhysicalTagStatusValue {
+final class PhysicalTagStatusMapper {
     public static function fromRaw(
         array $raw, 
         string $field

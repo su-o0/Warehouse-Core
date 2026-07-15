@@ -1,11 +1,10 @@
 <?php
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\StockStatus;
 
-final class StockStatusValue {
-
+final class StockStatusMapper {
     public static function fromRaw(
         array $raw, 
         string $field

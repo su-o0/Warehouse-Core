@@ -1,14 +1,14 @@
 <?php 
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Config\ConfigHelper;
 
-final class ItemPlacementValue {
+final class ItemPlacementMapper {
     use ConfigHelper;
     public function __construct(
         public readonly int $id,
-        public readonly int $location_id,
-        public readonly int $container_id,
+        public readonly ?int $location_id,
+        public readonly ?int $container_id,
         public readonly int $item_id,
         public readonly int $created_at,
     ) { }
@@ -16,8 +16,8 @@ final class ItemPlacementValue {
     public static function fromRaw(array $raw): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
-            location_id: self::requiredInt($raw, 'location_id'),
-            container_id: self::requiredInt($raw, 'container_id'),
+            location_id: self::nullableInt($raw, 'location_id'),
+            container_id: self::nullableInt($raw, 'container_id'),
             item_id: self::requiredInt($raw, 'item_id'),
             created_at: self::requiredInt($raw, 'created_at')
         );

@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Config\ConfigHelper;
 

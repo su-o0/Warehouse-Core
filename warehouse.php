@@ -52,10 +52,20 @@ die(
     ."\tgetSales \n"
 );
 
-try{
-    $warehouse->run();
-    $call = $argv[1]??null;
-    echo $warehouse->$call($argv[2], $argv[3]??null, $argv[4]??null, $argv[5]??null);
-}catch(\RuntimeException $e) {
-    echo $e->getMessage()."\n";
+try {
+    $auth = $warehouse->authenticate();
+
+    if (!$warehouse->isAuthenticated()) {
+        echo $auth . "\n";
+        exit(1);
+    }
+    $call = $argv[1] ?? null;
+
+    if ($call === null || !method_exists($warehouse, $call)) {
+        throw new \RuntimeException("Unknown command: {$call}");
+    }
+
+    echo $warehouse->$call($argv[2] ?? null, $argv[3] ?? null, $argv[4] ?? null, $argv[5] ?? null);
+} catch (\Throwable $e) {
+    echo $e->getMessage() . "\n";
 }

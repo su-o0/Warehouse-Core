@@ -2,43 +2,48 @@
 namespace WarehouseCore\Service\Identity;
 
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
-use WarehouseCore\Repository\Identity\UserRepository;
 
-use WarehouseCore\Exception\DomainException;
-
-use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\Type\ProviderType;
+use WarehouseCore\Security\Authorization;
 
 final class UserIdentityService {
     public function __construct(
-        private UserRepository $user_repository,
+        public string $service_name,
+        private Authorization $authorization,
         private UserIdentityRepository $user_identity_repository
     ) { }
 
     public function create(
         int $user_id,
-        string $provider,
+        ProviderType $provider,
         string $external_id
-    ): SetupResult {
-
-        $user = $this->user_repository->findById($user_id);
-        if (!$user) {
-            return new SetupResult(
+    ): ServiceResult {
+        if(!$this->authorization->canCreateUserIdentity()) {
+             return new ServiceResult(
                 success: false,
-                message: DomainException::USER_NOT_FOUND()->getMessage()
+                message: ServiceException::FORBIDDEN()->getMessage()
+            );
+        }
+       
+        try {
+            $id = $this->user_identity_repository->add(
+                $user_id,
+                (string)$provider,
+                $external_id
+            );
+        }catch(RepositoryException $e){
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
             );
         }
 
-        $identity = $this->user_identity_repository->add(
-            $user_id,
-            $provider,
-            $external_id
+        return new ServiceResult(
+            success: true,
+            entity: $id
         );
-
-
-        return new SetupResult(
-            success: true
-        );
-
     }
-
 }

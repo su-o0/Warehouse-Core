@@ -1,6 +1,7 @@
 <?php 
 namespace WarehouseCore\Config;
 
+//TODO: Replace with RawReader
 trait ConfigHelper {
     private static function required(
         array $raw, 
@@ -43,5 +44,20 @@ trait ConfigHelper {
         }
 
         return (int)$raw[$field];
+    }
+
+    protected static function nullableString(
+        array $raw,
+        string $field
+    ): ?string {
+        if (!isset($raw[$field])) {
+            return null;
+        }
+
+        if ($raw[$field] === null) {
+            return null;
+        }
+
+        return (string)$raw[$field];
     }
 }

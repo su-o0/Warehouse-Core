@@ -15,7 +15,19 @@ final class ErrorCode
     // 008 - authentication error
     // 009 - rate limit exceeded
     // 010 - unknown error
-    public const SERVICE_NOT_FOUND = 'SERVICE_001';
+    public const SERVICE_NOT_FOUND = 'SERVICE_002';
+    public const AUTHENTICATION_FAILED = 'SERVICE_007';
+    public const FORBIDDEN = 'SERVICE_006';
+
+    public const VALIDATION_FIELD_MISSING = 'VALIDATION_002';
+    public const VALIDATION_INVALID_TYPE = 'VALIDATION_003';
+
+    public const ROLE_NOT_FOUND = 'ROLE_002';
+
+    public const USER_IDENTITY_EXISTS = 'USER_IDENTITY_001';
+    public const USER_IDENTITY_NOT_FOUND = 'USER_IDENTITY_002';
+
+    public const ROLE_NAME_INVALID = 'ROLE_006';
 
     public const DB_CONNECTION_ERROR = 'DB_CONNECTION_004';
     public const DB_QUERY_ERROR      = 'DB_QUERY_004';
@@ -23,8 +35,8 @@ final class ErrorCode
     public const DB_DUPLICATE_ERROR  = 'DB_DUPLICATE_004';
     public const DB_UNKNOWN_ERROR    = 'DB_UNKNOWN_004';
 
-    //--REPOSITORY-- 
 
+    public const ITEM_PROCESSING_STAGE_INVALID_TYPE = "ITEM_PROCESSING_STAGE_003";
     // Location
     public const LOCATION_ALREADY_EXISTS    = 'LOCATION_ADDRESS_001';
     public const LOCATION_NOT_FOUND         = 'LOCATION_002';

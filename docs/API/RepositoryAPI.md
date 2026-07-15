@@ -1,5 +1,7 @@
 # Repository API methods
 
+ 
+
 ## Topology
 - [Location](#location)
 - [ContainerPlacement](#containerplacement)
@@ -13,9 +15,12 @@
 
 ## Catalog
 - [Part](#part)
+- [PartAlias](#partalias)
 - [Vehicle](#мehicle)
 
 ## Media
+- [StoredFile](#storedfile)
+- [PartPhoto](#partphoto)
 - [ItemPhoto](#itemphoto)
 - [StockPhoto](#stockphoto)
 - [VehiclePhoto](#vehiclephoto)
@@ -26,6 +31,7 @@
 - [StockSalesArhive](#stocksalesarhive)
 
 ## Identity
+- [Role](#role)
 - [User](#user)
 - [UserIdentity](#useridentity)
 - [Owner](#owner)
@@ -608,6 +614,10 @@
 
 ------
 
+
+
+------
+
 # _Part_
 #### [Source File](../../src/Repository/Catalog/PartRepository.php)
 ---
@@ -677,6 +687,12 @@
 #### Return 
 - `null` — not found
 - `VehicleEntity` — vehicle data
+
+---
+
+### `getAll()`
+#### Return 
+- `array of VehicleEntity` — array of vehicle data
 
 ---
 
@@ -1015,6 +1031,33 @@
 
 ------
 
+# _Role_
+#### [Source File](../../src/Repository/Catalog/PartRepository.php)
+---
+- getById()
+- getAll()
+- findByName()
+
+### `getById(string $id)`
+#### Return 
+- `null` — not found
+- `RoleEntity` — part data
+
+---
+
+### `getAll()`
+#### Return 
+- `array of RoleEntity` — array of role data
+
+---
+
+### `findByName(string $name)`
+#### Return 
+- `RoleEntity` — array of role data
+
+
+------
+
 # _User_
 #### [Source File](../../src/Repository/Identity/UserRepository.php)
 ---
@@ -1031,17 +1074,17 @@
 ### `getById(int $id)`
 #### Return 
 - `null` — not found
-- `UserEntity` — user data data
+- `UserEntity` — user data
 
 ---
 
 ### `getAll()`
 #### Return 
-- `array of UserEntity` — array of user data data
+- `array of UserEntity` — array of user data
 
 ---
 
-### `getByName(string $name)`
+### `findByName(string $name)`
 #### Return 
 - `null` — not found
 - `UserEntity` — user data

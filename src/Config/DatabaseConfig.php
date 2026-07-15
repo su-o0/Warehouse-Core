@@ -1,7 +1,7 @@
 <?php
 namespace WarehouseCore\Config;
 
-class DatabaseConfig {
+final class DatabaseConfig {
     use ConfigHelper;
     public function __construct(
         public readonly string $host,

@@ -1,10 +1,10 @@
 <?php
 namespace WarehouseCore\Payload\Result;
 
-class ServiceResult {
+final class ServiceResult {
     public function __construct(
         public bool $success,
-        public mixed $data = null,
+        public mixed $entity = null,
         public ?string $message = null,
     ) {}
 }

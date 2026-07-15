@@ -10,9 +10,12 @@ use WarehouseCore\Payload\DTO\PartEntity;
 use WarehouseCore\Payload\DTO\StockEntity;
 
 use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Security\Authorization;
 
 final class StockService {
     public function __construct(
+        public string $service_name,
+        private Authorization $authorization,
         private StockRepository $stock_repository,
         private PartRepository $part_repository
     ) { }

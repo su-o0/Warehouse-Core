@@ -9,9 +9,12 @@ use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Value\AddressValue;
 
 use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Security\Authorization;
 
 final class LocationService {
     public function __construct(
+        public string $service_name,
+        private Authorization $authorization,
         private LocationRepository $location_repository
     ) { }
 

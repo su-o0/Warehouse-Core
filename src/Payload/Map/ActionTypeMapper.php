@@ -1,12 +1,10 @@
 <?php
-
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\ActionType;
 
-final class ActionTypeValue
-{
+final class ActionTypeMapper {
     public static function fromRaw(
         array $raw,
         string $field

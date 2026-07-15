@@ -13,7 +13,9 @@ final class LocationEntity {
         public readonly string $created_at,
     ) {}
 
-    public static function fromRaw(array $raw): self {
+    public static function fromRaw(
+        array $raw
+    ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
             address: AddressValue::fromRaw($raw),

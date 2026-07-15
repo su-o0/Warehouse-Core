@@ -1,12 +1,10 @@
 <?php
-
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\ItemCondition;
 
-final class ItemConditionValue {
-
+final class ItemConditionMapper {
     public static function fromRaw(
         array $raw, 
         string $field

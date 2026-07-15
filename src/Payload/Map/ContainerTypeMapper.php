@@ -1,12 +1,10 @@
 <?php
-
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\Map;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\ContainerType;
 
-final class ContainerTypeValue
-{
+final class ContainerTypeMapper {
     public static function fromString(
         string $raw,
     ): ContainerType {

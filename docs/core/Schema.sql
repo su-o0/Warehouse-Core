@@ -28,9 +28,10 @@ CREATE TABLE user_identities (
 
 CREATE TABLE owners (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,user_id BIGINT NULL
+    ,user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ,FOREIGN KEY (user_id) REFERENCES users(id)
+    ,UNIQUE KEY uq_user_id (user_id)
 );
 
 CREATE TABLE physical_tags (
@@ -48,6 +49,15 @@ CREATE TABLE parts (
     ,article VARCHAR(128) NOT NULL UNIQUE
     ,name VARCHAR(255) NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE part_aliases (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,part_id BIGINT NOT NULL
+    ,article VARCHAR(128) NOT NULL UNIQUE
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (part_id) REFERENCES parts(id)
 );
 
 CREATE TABLE vehicles (
@@ -77,10 +87,10 @@ CREATE TABLE items (
     
     ,part_id BIGINT NOT NULL
     ,vehicle_id BIGINT NULL
-    ,owner_id BIGINT NOT NULL
+    ,owner_id BIGINT NULL
     
-    ,status ENUM('Created','Tagged','Placed','Active','Sold','Archived', 'Lost') NOT NULL DEFAULT 'Created'
-    ,condition ENUM('New','Good','Fair','Poor') NULL
+    ,status ENUM('Created','Tagged','Prepared','Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Created'
+    ,condition_level ENUM('New','Good','Fair','Poor') NULL
     ,condition_note TEXT NULL
 
     ,created_by_user_id BIGINT NOT NULL
@@ -110,6 +120,23 @@ CREATE TABLE stock (
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
     ,INDEX idx_stock_part (part_id)
+);
+
+-- =========================
+-- PROCESSING 
+-- =========================
+
+CREATE TABLE item_processing_steps (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    
+    ,item_id BIGINT NOT NULL
+    ,stage ENUM('Photo','Condition','Vision','Placement') NOT NULL 
+    ,meta_data JSON NULL
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    ,FOREIGN KEY (item_id) REFERENCES items(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 -- =========================
@@ -168,50 +195,68 @@ CREATE TABLE stock_placements (
 -- MEDIA
 -- =========================
 
+CREATE TABLE stored_files (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,path VARCHAR(512) NOT NULL
+    ,hash CHAR(64) NOT NULL
+    ,mime_type VARCHAR(127) NOT NULL
+    ,size BIGINT UNSIGNED NOT NULL
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   
+    ,UNIQUE KEY uq_hash (hash)
+);
+
+CREATE TABLE part_photos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,part_id BIGINT NOT NULL
+    ,file_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    ,FOREIGN KEY (file_id) REFERENCES stored_files(id)
+);
+
 CREATE TABLE item_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,item_id BIGINT NOT NULL
-    ,file VARCHAR(512) NOT NULL
-    ,created_by_user_id BIGINT NOT NULL
+    ,file_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (item_id) REFERENCES items(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    ,FOREIGN KEY (file_id) REFERENCES stored_files(id)
 );
 
 CREATE TABLE stock_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,stock_id BIGINT NOT NULL
-    ,file VARCHAR(512) NOT NULL
-    ,created_by_user_id BIGINT NOT NULL
+    ,file_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (stock_id) REFERENCES stock(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    ,FOREIGN KEY (file_id) REFERENCES stored_files(id)
 );
 
 CREATE TABLE vehicle_photos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,vehicle_id BIGINT NOT NULL
-    ,file VARCHAR(512) NOT NULL
-    ,created_by_user_id BIGINT NOT NULL
+    ,file_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
     ,FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    ,FOREIGN KEY (file_id) REFERENCES stored_files(id)
 );
 
 -- =========================
 -- AUDIT
 -- =========================
 
-CREATE TABLE events (
+CREATE TABLE telemetry (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,entity_type VARCHAR(64) NOT NULL
     ,entity_id BIGINT NOT NULL
     ,action VARCHAR(64) NOT NULL
     ,payload JSON NULL
-    ,owner_id BIGINT NULL
     ,user_id BIGINT NULL
 
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -246,10 +291,10 @@ CREATE TABLE stock_sales_archive (
 );
 
 INSERT INTO roles (name)
-VALUES ('root'), ('admin'), ('worker'), ('salesman'), ('viewer');
+VALUES ('Root'), ('Admin'), ('Worker'), ('Salesman'), ('Viewer');
 
 INSERT INTO users (name, role_id, status)
-VALUES ('root', 1, 'Active');
+VALUES ('Root', 1, 'Active');
 
 INSERT INTO user_identities (user_id, provider, external_id)
-VALUES (1, 'Cli', 'admin');
+VALUES (1, 'Cli', 'root');

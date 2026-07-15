@@ -8,9 +8,12 @@ use WarehouseCore\Repository\Topology\StockPlacementRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Security\Authorization;
 
 final class MovementService {
     public function __construct(
+        public string $service_name,
+        private Authorization $authorization,
         private LocationRepository $location_repository,
         private ContainerRepository $container_repository,
         private ContainerPlacementRepository $container_placement_repository,
