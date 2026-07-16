@@ -2,7 +2,7 @@
     "name": "su-o0/warehouse-core",
     "description": "Warehouse Core. Common library for warehouse management system.",
     "type": "library",
-    "license": "MIT",
+    "license": "AGPL-3.0-or-later",
     "autoload": {
         "psr-4": {
             "WarehouseCore\\": "src/"
@@ -10,7 +10,7 @@
     },
     "authors": [
         {
-            "name": "Yurri Plitman",
+            "name": "Yurii Plitman",
             "email": "plitikyura@gmail.com"
         }
     ],

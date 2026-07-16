@@ -6,6 +6,7 @@ Physical inventory and storage tracking system.
 ![Status](./img/status-in%20development-yellow.svg)
 ![PHP](./img/PHP-8.5-blue.svg)
 ![MySQL](./img/MySQL-8.0-orange.svg)
+[![License: AGPL v3](./img/License-AGPL%20v3-blue.svg)](LICENSE)
 
 Placement-centric warehouse system with strict relational integrity.
 
@@ -54,3 +55,9 @@ Built with:
 - MySQL
 
 Designed for auto salvage yards and small warehouses.
+
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0.
+See the [LICENSE](./../LICENSE) file for details.
