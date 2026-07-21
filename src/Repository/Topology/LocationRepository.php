@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Topology;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\Value\AddressValue;
+use WarehouseCore\Payload\DTO\LocationEntity;
 final class LocationRepository {
     public function __construct(
         private \PDO $db, 
@@ -11,7 +11,7 @@ final class LocationRepository {
 
     public function getById(
         int $id
-    ): null|AddressValue{
+    ): null|LocationEntity{
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -20,7 +20,7 @@ final class LocationRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : AddressValue::fromRaw($result);
+        return empty($result)? null : LocationEntity::fromRaw($result);
     }
     
     public function getAll(): array {
@@ -28,12 +28,12 @@ final class LocationRepository {
             "SELECT * FROM $this->table_name"
         );
         $stmt->execute();
-        return array_map(fn($row) => AddressValue::fromRaw($row), $stmt->fetchAll());
+        return array_map(fn($row) => LocationEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByAddress(
         string $address
-    ): null|AddressValue {
+    ): null|LocationEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE address = :address"
@@ -42,7 +42,7 @@ final class LocationRepository {
             ":address" => $address
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : AddressValue::fromRaw($result);
+        return empty($result)? null : LocationEntity::fromRaw($result);
     }
 
     public function findByCreatedByUserId(
@@ -55,7 +55,7 @@ final class LocationRepository {
         $stmt->execute([
             ":user_id" => $user_id
         ]);
-        return array_map(fn($row) => AddressValue::fromRaw($row), $stmt->fetchAll());
+        return array_map(fn($row) => LocationEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function add(

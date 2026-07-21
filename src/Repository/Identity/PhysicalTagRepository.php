@@ -10,7 +10,7 @@ final class PhysicalTagRepository {
         private string $table_name
     ) { }
 
-    public function findById(
+    public function getById(
         int $id
     ): null|PhysicalTagEntity {
         $stmt = $this->db->prepare( 
@@ -39,18 +39,16 @@ final class PhysicalTagRepository {
     }
 
     public function add(
-        int $id, 
-        string $status
+        int $id
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (id, status) 
-                VALUES (:id, :status)"
+                (id) 
+                VALUES (:id)"
             );
             $stmt->execute([
-                ':id' => $id,
-                ':status' => $status,
+                ':id' => $id
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {

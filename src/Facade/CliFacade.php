@@ -70,79 +70,54 @@ final class CliFacade {
 
         return $this->output->render($result);
     }
-    
-    /*
-    public function createUserIdentity(
-        int $user_id, 
-        string $provider,
-        string $external_id
+
+    public function createLocation(
+        string $zone,
+        string $rack,
+        string $shelf
     ): string {
-        try {
-            $provider_value = ProviderTypeMapper::fromString($provider);
-        }catch(DomainException $e) {
-            return $this->output->render(new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
-                )
-            );
-        }
+        $result = $this->api->createLocation([
+            'zone' => $zone,
+            'rack' => $rack,
+            'shelf' => $shelf
+        ]);
 
-        $result = $this->service->find()->findUserById(
-            $this->authorization_service,
-            $user_id
-        );
-
-        if (!$result->success) {
-            return $this->output->render($result);
-        }
-
-        $result = $this->service->find()->findUserIdentity(
-            $this->authorization_service,
-            $provider_value,
-            $external_id
-        );
-
-        if($result->success){
-            return $this->output->render( 
-                new ServiceResult(
-                    success: false,
-                    message: DomainException::USER_IDENTITY_EXISTS()->getMessage()
-                )
-            );
-        }
-
-        $identity = $this->service->userIdentity()->create(
-            $this->authorization_service,
-            $user_id,
-            $provider,
-            $external_id
-        );
-
-        return $this->output->render($identity);
+        return $this->output->render($result);
     }
 
-    public function createItem(
-        string $article,
-        ?int $venicle_id = null
+    public function createContainer(
+        int $id,
+        string $type
     ): string {
-        $result = $this->service->find()->findPartIdByArticle(
-            $this->authorization_service,
-            $article
-        );
+        $result = $this->api->createContainer([
+            'id' => $id,
+            'type' => $type
+        ]);
 
-        if(!$result->success) {
-            return $this->output->render($result);
-        }
-
-        if($result->entity === null) {
-            $result = $this->service->part()->create($article);
-        }
-
-
-
-
-
-
+        return $this->output->render($result);
     }
-        */
+
+    public function createPhysicalTag(
+        int $id,
+    ): string {
+        $result = $this->api->createPhysicalTag([
+            'id' => $id,
+        ]);
+
+        return $this->output->render($result);
+    }
+
+    public function assignPhysicalTag(
+        int $physical_tag_id,
+        ?int $owner_id,
+        ?int $vehicle_id
+    ) : string {
+        $result = $this->api->assignPhysicalTag([
+            'physical_tag_id' => $physical_tag_id,
+            'owner_id' => $owner_id,
+            'vehicle_id' => $vehicle_id
+        ]);
+
+        return $this->output->render($result);
+    }
 }

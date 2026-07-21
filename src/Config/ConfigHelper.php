@@ -1,13 +1,15 @@
 <?php 
 namespace WarehouseCore\Config;
 
+use WarehouseCore\Exception\ValidationException;
+
 //TODO: Replace with RawReader
 trait ConfigHelper {
     private static function required(
         array $raw, 
         string $field
     ): mixed {
-        return $raw[$field] ?? throw new \InvalidArgumentException("Missing field: {$field}");
+        return $raw[$field] ?? throw ValidationException::FIELD_MISSING($field);
     }
 
     protected static function requiredString(
@@ -16,7 +18,7 @@ trait ConfigHelper {
     ): string {
         $v = self::required($raw, $field);
         if (!is_string($v)) {
-            throw new \InvalidArgumentException("Field '{$field}' must be string");
+            throw ValidationException::INVALID_TYPE($field, 'string');
         }
         return $v;
     }
@@ -26,8 +28,9 @@ trait ConfigHelper {
         string $field
     ): int {
         $v = self::required($raw, $field);
-        if (!is_numeric($v))
-            throw new \InvalidArgumentException("Field '{$field}' must be int");
+        if (!is_numeric($v)) {
+            throw ValidationException::INVALID_TYPE($field, 'int');
+        }
         return (int) $v;
     }
 

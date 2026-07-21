@@ -59,6 +59,7 @@ final class ErrorCode
     public const PHYSICAL_TAG_NOT_FOUND         = 'PHYSICAL_TAG_002';
     public const PHYSICAL_TAG_INVALID_STATUS    = 'PHYSICAL_TAG_007';
     public const PHYSICAL_TAG_NOT_AVAILABLE     = 'PHYSICAL_TAG_008';
+    public const PHYSICAL_TAG_MUST_BE_FREE      = 'PHYSICAL_TAG_009';
 
 
     public const CONTAINER_ALREADY_EXISTS   = 'CONTAINER_001';

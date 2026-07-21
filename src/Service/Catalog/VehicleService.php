@@ -19,16 +19,8 @@ final class VehicleService {
     public function create(
         string $vin
     ): ServiceResult {
-
-        $vehicle_entity = $this->vehicle_repository->findByVin($vin);
-        if($vehicle_entity !== null)
-            return new ServiceResult(
-                success: false,
-                message: DomainException::VEHICLE_ALREADY_EXISTS()->getMessage()
-            );
-
         try {
-            $this->vehicle_repository->add($vin);
+            $vehicle_id = $this->vehicle_repository->add($vin);
         }catch(RepositoryException $e) {
             return new ServiceResult(
                 success: false,
@@ -37,7 +29,8 @@ final class VehicleService {
         }
 
         return new ServiceResult(
-            success: true
+            success: true,
+            entity: $vehicle_id
         );
     }
 }

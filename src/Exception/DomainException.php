@@ -1,6 +1,7 @@
 <?php
 namespace WarehouseCore\Exception;
 
+use Error;
 use WarehouseCore\Contract\Exception as ExceptionContract;
 
 final class DomainException extends ExceptionContract {
@@ -8,7 +9,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::ITEM_PROCESSING_STAGE_INVALID_TYPE,
-            'Item Processing stage invalid'
+            'Item Processing stage invalid',
         );
     }
 
@@ -72,7 +73,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::CONTAINER_ALREADY_EXISTS,
-            'Container already exists'
+            ErrorMessage::CONTAINER_ALREADY_EXISTS
         );
     }
 
@@ -174,7 +175,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::LOCATION_NOT_FOUND,
-            'Location not found'
+            ErrorMessage::LOCATION_NOT_FOUND
         );
     }
     public static function OWNER_ALREADY_EXISTS(): self
@@ -236,7 +237,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::PHYSICAL_TAG_ALREADY_EXISTS,
-            'Physical tag already exists'
+            ErrorMessage::PHYSICAL_TAG_ALREADY_EXISTS
         );
     }
 
@@ -244,7 +245,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::PHYSICAL_TAG_NOT_FOUND,
-            'Physical tag not found'
+            ErrorMessage::PHYSICAL_TAG_NOT_FOUND
         );
     }
 
@@ -253,6 +254,14 @@ final class DomainException extends ExceptionContract {
         return new self(
             ErrorCode::PHYSICAL_TAG_INVALID_STATUS,
             'PhysicalTag Status must be Free, Assigned, Lost or Broken'
+        );
+    }
+
+    public static function PHYSICAL_TAG_MUST_BE_FREE(): self 
+    {
+        return new self(
+            ErrorCode::PHYSICAL_TAG_MUST_BE_FREE,
+            ErrorMessage::PHYSICAL_TAG_MUST_BE_FREE
         );
     }
     public static function STOCK_PLACEMENT_ALREADY_EXISTS(): self
@@ -298,7 +307,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::LOCATION_ALREADY_EXISTS,
-            'Location with the same address already exists'
+            ErrorMessage::LOCATION_ALREADY_EXISTS
         );
     }
 

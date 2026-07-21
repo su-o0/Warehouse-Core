@@ -3,5 +3,9 @@
 return [
     'CreateUser' => 'create_user',
     'CreateUserIdentity' => 'create_user_identity',
-    'CreateItem' => 'create_item',
+    'CreatePhysicalTag' => 'create_physical_tag',
+    'CreateLocation' => 'create_location',
+    'CreateContainer' => 'create_container',
+    'AssignPhysicalTag' => 'assign_physical_tag',
+    'CreateStock' => 'create_stock'
 ];

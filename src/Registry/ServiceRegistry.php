@@ -29,8 +29,13 @@ final class ServiceRegistry {
 
     public function get() : GetService {
         return new GetService(
-            $this->config->get,
-            $this->repository->role,
+            $this->config->get, 
+            $this->repository->physical_tag,
+            $this->repository->container,
+            $this->repository->user,        
+            $this->repository->owner,
+            $this->repository->vehicle,
+            $this->repository->role,    
             $this->repository->location
         );
     }
@@ -149,9 +154,6 @@ final class ServiceRegistry {
             $this->repository->item_placement,
             $this->repository->item_processing_step,
             $this->repository->physical_tag,
-            $this->repository->part,
-            $this->repository->part_alias,
-            $this->repository->vehicle
         );
     }
 

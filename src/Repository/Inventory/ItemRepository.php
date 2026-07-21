@@ -94,7 +94,7 @@ final class ItemRepository {
     ): array {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
-            WHERE condition = :condition"
+            WHERE condition_level = :condition"
         );
         $stmt->execute([
             ":condition" => $condition
@@ -117,18 +117,18 @@ final class ItemRepository {
 
     public function add(
         int $user_id,
-        int $part_id, 
-        int $owner_id,
+        int $physical_tag_id, 
+        ?int $owner_id = null,
         ?int $vehicle_id = null,
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (part_id, vehicle_id, owner_id, created_by_user_id) 
-                VALUES (:part_id, :vehicle_id, :owner_id, :user_id)"    
+                (physical_tag_id, vehicle_id, owner_id, created_by_user_id) 
+                VALUES (:physical_tag_id, :vehicle_id, :owner_id, :user_id)"    
             );
             $stmt->execute([
-                ':part_id' => $part_id,
+                ':physical_tag_id' => $physical_tag_id,
                 ':vehicle_id' => $vehicle_id,
                 ':owner_id' => $owner_id,
                 ':user_id' => $user_id

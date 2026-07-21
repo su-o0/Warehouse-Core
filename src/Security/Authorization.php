@@ -2,18 +2,28 @@
 namespace WarehouseCore\Security;
 
 use WarehouseCore\Payload\DTO\Session;
+use WarehouseCore\Payload\DTO\UserEntity;
 use WarehouseCore\Payload\Type\RoleName;
 
 final class Authorization {
     public function __construct(
-        private RoleName $role
+        private readonly RoleName $role,
+        public readonly UserEntity $user
     ) { }
 
     public static function fromSession(
         Session $session
     ) : self {
         return new self(
-            $session->role->name
+            $session->role->name,
+            $session->user
+        );
+    }
+
+    public function canCreatePhysicalTag(): bool {
+         return in_array(
+            $this->role,
+            [RoleName::Root, RoleName::Admin]
         );
     }
 
@@ -42,6 +52,20 @@ final class Authorization {
         return in_array(
             $this->role,
             [RoleName::Root, RoleName::Admin]
+        );
+    }
+    
+    public function canCreateLocation():bool {
+        return in_array(
+            $this->role,
+            [RoleName::Root, RoleName::Admin]
+        );
+    }
+
+    public function canCreateContainer():bool {
+        return in_array(
+            $this->role,
+            [RoleName::Root, RoleName::Admin, RoleName::Worker]
         );
     }
 

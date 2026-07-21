@@ -6,6 +6,7 @@ use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\Type\ProviderType;
+use WarehouseCore\Payload\Value\AddressValue;
 use WarehouseCore\Repository\Catalog\PartAliasRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Identity\RoleRepository;
@@ -13,7 +14,6 @@ use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Security\Authorization;
-use WarehouseCore\Service\Identity\AuthorizationService;
 
 final class FindService {
     public function __construct(
@@ -27,6 +27,26 @@ final class FindService {
         private PartAliasRepository $part_alias_repository,
     ) { }
 
+    public function findLocationByAddress(
+        AddressValue $address
+    ): ServiceResult {
+        $result = $this->location_repository->findByAddress(
+            $address->getValue()
+        );
+
+        if($result === null) {
+            return new ServiceResult(
+                success: true, 
+                entity: null,
+                message: ErrorMessage::LOCATION_NOT_FOUND
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: $result
+        );
+    }
     public function findRoleByName(
         string $role
     ): ServiceResult {
@@ -34,7 +54,8 @@ final class FindService {
 
         if($result === null) {
             return new ServiceResult(
-                success: false, 
+                success: true, 
+                entity: null,
                 message: ErrorMessage::ROLE_NOT_FOUND
             );
         }
@@ -48,36 +69,35 @@ final class FindService {
     public function findPartIdByArticle(
         string $article
     ): ServiceResult {
-        if(!$this->authorization->canFindArticle()){
+         if (!$this->authorization->canFindArticle()) {
             return new ServiceResult(
                 success: false,
                 message: ServiceException::FORBIDDEN()->getMessage()
             );
         }
 
-        $result = $this->part_repository->findByArticle($article);
+        $part = $this->part_repository->findByArticle($article);
 
-        if($result === null) {
-            $result = $this->part_alias_repository->findByArticle($article);
-            if($result === null) {
-                return new ServiceResult(
-                    success: true,
-                    entity: null
-                );
-            }
-            else {
-                return new ServiceResult(
-                    success: true,
-                    entity: $result->part_id
-                );
-            }
-        }
-        else {
+        if ($part !== null) {
             return new ServiceResult(
                 success: true,
-                entity: $result->id
+                entity: $part->id
             );
         }
+        
+        $alias = $this->part_alias_repository->findByArticle($article);
+
+        if ($alias !== null) {
+            return new ServiceResult(
+                success: true,
+                entity: $alias->part_id
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: null
+        );
     }
 
     public function findUserIdentity(
@@ -99,7 +119,7 @@ final class FindService {
         if($result === null) {
             return new ServiceResult(
                 success: false,
-                message: ServiceException::USER_IDENTITY_NOT_FOUND()->getMessage()
+                entity: null
             );
         }
 
@@ -114,32 +134,6 @@ final class FindService {
         return $this->location_repository->getAll();
     }
 
-    public function findUserById(
-        int $user_id
-    ): ServiceResult {
-        if(!$this->authorization->canFindUser()){
-            return new ServiceResult(
-                success: false,
-                message: ServiceException::FORBIDDEN()->getMessage()
-            );
-        }
-
-        $result = $this->user_repository->getById(
-            $user_id
-        );
-        
-        if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: DomainException::USER_NOT_FOUND()->getMessage()
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
     public function findUserByName(
         string $name,
     ): ServiceResult {

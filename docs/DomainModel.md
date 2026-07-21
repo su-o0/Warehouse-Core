@@ -114,7 +114,7 @@ Item
 ├── PartId
 ├── VehicleId
 ├── OwnerId
-├── Status > (Created, Tagged, Prepared, Active, Sold, Archived, Lost)
+├── Status > (Created, Processing, Active, Sold, Archived, Lost)
 ├── Condition > (New, Good, Fair, Poor)
 ├── ConditionNote
 ├── CreatedByUserId
@@ -135,7 +135,7 @@ Stock
 ItemProcessingStep
 ├── Id
 ├── ItemId
-├── Stage > (Photo, Condition, Vision, Placement)
+├── Stage > (Identify, Photo, Inspection, Placement)
 ├── Metadata
 ├── CreatedByUserId
 └── CreatedAt

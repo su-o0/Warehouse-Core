@@ -18,4 +18,17 @@ final class RoleNameMapper {
             default => throw DomainException::ROLE_NAME_INVALID()
         };
     }
+
+    public static function fromString(
+        string $field
+    ): RoleName {
+        return match($field){
+            'Root' => RoleName::Root,
+            'Admin' => RoleName::Admin,
+            'Worker' => RoleName::Worker,
+            'Salesman' => RoleName::Salesman,
+            'Viewer' => RoleName::Viewer,
+            default => throw DomainException::ROLE_NAME_INVALID()
+        };
+    }
 }

@@ -47,7 +47,7 @@ CREATE TABLE physical_tags (
 CREATE TABLE parts (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,article VARCHAR(128) NOT NULL UNIQUE
-    ,name VARCHAR(255) NOT NULL
+    ,name VARCHAR(255) NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -83,13 +83,13 @@ CREATE TABLE containers (
 CREATE TABLE items (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
 
-    ,physical_tag_id BIGINT NULL
+    ,physical_tag_id BIGINT NOT NULL
     
-    ,part_id BIGINT NOT NULL
+    ,part_id BIGINT NULL
     ,vehicle_id BIGINT NULL
     ,owner_id BIGINT NULL
     
-    ,status ENUM('Created','Tagged','Prepared','Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Created','Processing','Active','Sold','Archived','Lost') NOT NULL DEFAULT 'Created'
     ,condition_level ENUM('New','Good','Fair','Poor') NULL
     ,condition_note TEXT NULL
 
@@ -130,7 +130,7 @@ CREATE TABLE item_processing_steps (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     
     ,item_id BIGINT NOT NULL
-    ,stage ENUM('Photo','Condition','Vision','Placement') NOT NULL 
+    ,stage ENUM('Identify','Photo','Inspection','Placement') NOT NULL 
     ,meta_data JSON NULL
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

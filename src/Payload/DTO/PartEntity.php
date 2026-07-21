@@ -8,7 +8,7 @@ final class PartEntity {
     public function __construct(
         public readonly int $id,
         public readonly string $article,
-        public readonly string $name,
+        public readonly ?string $name,
         public readonly string $created_at
     ) { }
 
@@ -18,7 +18,7 @@ final class PartEntity {
         return new self(
             id: self::requiredInt($raw, 'id'),
             article: self::requiredString($raw, 'article'),
-            name: self::requiredString($raw, 'name'),
+            name: self::nullableString($raw, 'name'),
             created_at: self::requiredString($raw, 'created_at'),
         );
     } 

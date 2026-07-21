@@ -1,6 +1,6 @@
 # System Model 
 *sync docs<>code*
-
+Entity Domain + Action API
 **[System Decompositon]** 
 
 *CONTRACTS* → *FLOW* → *STATE* → *RULES* → *DOMAIN MODEL* → *BOUNDARIES*

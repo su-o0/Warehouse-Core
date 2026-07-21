@@ -1,14 +1,11 @@
 <?php 
 namespace WarehouseCore\Service\Topology;
 
+use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Repository\Topology\LocationRepository;
-
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
-
+use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\Value\AddressValue;
-
-use WarehouseCore\Payload\Result\SetupResult;
 use WarehouseCore\Security\Authorization;
 
 final class LocationService {
@@ -18,45 +15,31 @@ final class LocationService {
         private LocationRepository $location_repository
     ) { }
 
-    public function add(
-        string $zone,
-        string $rack,
-        string $shelf
-    ): SetupResult {
-        try {
-                $address_value = new AddressValue(
-                $zone,
-                $rack,
-                $shelf
-            );
-        }catch(\Throwable $e) {
-            return new SetupResult(
+    public function create(
+        AddressValue $address
+    ): ServiceResult {
+        if(!$this->authorization->canCreateLocation()) {
+            return new ServiceResult( 
                 success: false,
-                message: DomainException::LOCATION_ADDRESS_INVALID()->getMessage()
+                message: ErrorMessage::AUTHENTICATION_FAILED 
             );
         }
 
-        $location = $this->location_repository->findByAddress($address_value->getValue());
-        if($location !== null)
-            return new SetupResult(
-                success: false,
-                message: DomainException::LOCATION_ALREADY_EXISTS()->getMessage()
+        try {   
+            $location_id = $this->location_repository->add(
+                $this->authorization->user->id,
+                $address->getValue()
             );
 
-        try {   
-            $this->location_repository->add(
-                $address_value->getValue()
+            return new ServiceResult(
+                success: true,
+                message: $location_id
             );
         }catch(RepositoryException $e) {
-            return new SetupResult(
+            return new ServiceResult(
                 success: false,
                 message: $e->getMessage()
             );
         }
-
-        return new SetupResult(
-            success: true
-        );
     }
-
 }

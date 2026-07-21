@@ -37,7 +37,7 @@ final class ItemEntity {
             ),
             condition: ItemConditionMapper::fromRaw(
                 raw: $raw, 
-                field: 'condition'
+                field: 'condition_level'
             ),
             condition_note: self::nullableString($raw, 'condition_note'),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),

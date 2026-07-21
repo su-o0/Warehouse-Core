@@ -2,11 +2,12 @@
 namespace WarehouseCore\Api\Identity;
 
 use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Payload\Request\CreateUserRequest;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Service\Identity\UserService;
 use WarehouseCore\Service\Query\FindService;
 
-final class CreateUser {
+final class CreateUserApi {
     public function __construct(
         public string $api_name,
         private FindService $find,
@@ -14,17 +15,20 @@ final class CreateUser {
     ) { }
 
     public function handle(
-        string $name,
-        string $role
+        CreateUserRequest $request
     ): ServiceResult {
-        $result = $this->find->findRoleByName($role);
+        $result = $this->find->findRoleByName($request->role->value);
 
-        if (!$result->success) {
+        if(!$result->success) {
+            return $result;
+        }
+
+        if($result->entity === null) {
             return $result;
         }
 
         $role_id = $result->entity->id;
-        $result = $this->find->findUserByName($name);
+        $result = $this->find->findUserByName($request->name);
         
         if ($result->success) {
             return new ServiceResult(
@@ -34,7 +38,7 @@ final class CreateUser {
         }
 
         $user = $this->user->create(
-            $name,
+            $request->name,
             $role_id
         );
 

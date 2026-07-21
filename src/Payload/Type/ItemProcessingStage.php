@@ -2,8 +2,8 @@
 namespace WarehouseCore\Payload\Type;
 
 enum ItemProcessingStage: string {
+    case Identify   = "Identify";
     case Photo      = "Photo";
-    case Condition  = "Condition";
-    case Vision     = "Vision";
+    case Inspection = "Inspection";
     case Placement  = "Placement";
 }
