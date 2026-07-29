@@ -1,7 +1,7 @@
 <?php
 namespace WarehouseCore\Context;
 
-use WarehouseCore\Payload\DTO\Session;
+use WarehouseCore\Payload\Value\SessionValue;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Registry\ServiceRegistry;
 
@@ -25,13 +25,15 @@ use WarehouseCore\Service\Topology\PlacementService;
 
 final class ServiceContext {
     public function __construct(
-        public readonly Session $session,
+        public readonly SessionValue $session,
         private readonly Authorization $authorization,
         private readonly ServiceRegistry $service
     ) { }
 
     public function get(): GetService {
-        return $this->service->get();
+        return $this->service->get(
+            $this->authorization
+        );
     }
 
     public function telemetry(): TelemetryService {

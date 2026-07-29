@@ -7,5 +7,10 @@ return [
     'CreateLocation' => 'create_location',
     'CreateContainer' => 'create_container',
     'AssignPhysicalTag' => 'assign_physical_tag',
-    'CreateStock' => 'create_stock'
+    'CreateStock' => 'create_stock',
+    'ActiveteLocation' => 'activate_location',
+    'ArchiveLocation' => 'archive_location',
+    'GetLocation' => 'get_location',
+    'ListLocations' => 'list_locations',
+    
 ];

@@ -1,29 +1,19 @@
 <?php
 namespace WarehouseCore\Payload\Map;
+
+use WarehouseCore\Contract\Mapper;
 use WarehouseCore\Payload\Type\ProviderType;
 use WarehouseCore\Exception\DomainException;
 
-final class ProviderTypeMapper {
-    public static function fromRaw(
-        array $raw, 
+final class ProviderTypeMapper implements Mapper{
+    public static function match(
         string $field
     ): ProviderType {
-        return match($raw[$field]){
+        return match($field){
             'Cli'       => ProviderType::Cli,
             'Web'       => ProviderType::Web,
             'Telegram'  => ProviderType::Telegram,
-            default     => throw DomainException::PROVIDER_INVALID_TYPE()
-        };
-    }
-
-    public static function fromString(
-        string $value
-    ): ProviderType {
-        return match($value){
-            'Cli'       => ProviderType::Cli,
-            'Web'       => ProviderType::Web,
-            'Telegram'  => ProviderType::Telegram,
-            default     => throw DomainException::PROVIDER_INVALID_TYPE()
+            default     => throw DomainException::PROVIDER_TYPE_INVALID_TYPE()
         };
     }
 }

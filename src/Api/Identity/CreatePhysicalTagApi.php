@@ -35,7 +35,5 @@ final class CreatePhysicalTagApi {
                 $request->id,
             );
         }
-
-
     }
 }

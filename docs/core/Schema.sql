@@ -146,6 +146,7 @@ CREATE TABLE item_processing_steps (
 CREATE TABLE locations (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,address VARCHAR(255) NOT NULL
+    ,status ENUM('Created','Active','Archived') NOT NULL DEFAULT 'Created'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)

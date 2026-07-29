@@ -28,18 +28,18 @@ final class AddressValue {
         $shelf = self::nullableString($raw, 'shelf');
 
         if ($zone[0] != 'Z') {
-            throw DomainException::LOCATION_ADDRESS_INVALID();
+            throw DomainException::LOCATION_ADDRESS_INVALID_TYPE();
         }
 
         if($rack !== null) {
             if ($rack[0] != 'A') {
-                throw DomainException::LOCATION_ADDRESS_INVALID();
+                throw DomainException::LOCATION_ADDRESS_INVALID_TYPE();
             }
         }
 
         if($shelf !== null) {
             if ($shelf[0] != 'B') {
-                throw DomainException::LOCATION_ADDRESS_INVALID();
+                throw DomainException::LOCATION_ADDRESS_INVALID_TYPE();
             }
         }
 

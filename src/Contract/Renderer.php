@@ -1,7 +1,7 @@
 <?php
-namespace WarehouseCore\Output\Contracts;
+namespace WarehouseCore\Contract;
 
-interface OutputRenderer
+interface Renderer 
 {
     public function supports(object $result): bool;
 

@@ -1,5 +1,6 @@
-# Domain
-Warehouse Core architecture model
+# Warehouse Core architecture domain model
+---
+    
 ```
 Location
 ContainerPlacement
@@ -27,6 +28,7 @@ Owner
 PhysicalTag
 ```
 ---
+
 ```md
 Topology
 ├── Location
@@ -66,7 +68,7 @@ Identity
 ├── Owner
 └── PhysicalTag
 ```
-----------------
+---
 
 # Topology 
 *where things are*
@@ -74,6 +76,7 @@ Identity
 Location
 ├── Id
 ├── Address
+├── Status > (Created, Active, Archived)
 ├── CreatedByUserId
 └── CreatedAt   
 
@@ -204,9 +207,9 @@ VehiclePhoto
 ```text
 Telemetry
 ├── Id
-├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, StoredFile, PartPhoto, ItemPhoto, StockPhoto, VehiclePhoto, Part, PartAlias, Vehicle)
+├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, StoredFile, PartPhCreateoto, ItemPhoto, StockPhoto, VehiclePhoto, Part, PartAlias, Vehicle)
 ├── EntityId
-├── Action > (Create, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
+├── Action > (, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
 ├── Payload
 ├── UserId
 └── CreatedAt

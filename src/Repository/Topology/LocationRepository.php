@@ -30,6 +30,7 @@ final class LocationRepository {
         $stmt->execute();
         return array_map(fn($row) => LocationEntity::fromRaw($row), $stmt->fetchAll());
     }
+    
 
     public function findByAddress(
         string $address
@@ -43,6 +44,19 @@ final class LocationRepository {
         ]);
         $result = $stmt->fetch();
         return empty($result)? null : LocationEntity::fromRaw($result);
+    }
+
+    public function findByStatus(
+        string $status
+    ): array {
+        $stmt = $this->db->prepare( 
+            "SELECT * FROM {$this->table_name} 
+            WHERE status = :status"
+        );
+        $stmt->execute([
+            ":status" => $status
+        ]);
+         return array_map(fn($row) => LocationEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByCreatedByUserId(
@@ -91,6 +105,25 @@ final class LocationRepository {
             return $stmt->execute([
                 ':id' => $id,
                 ':address' => $address
+            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateStatus(
+        int $id, 
+        string $status
+    ):bool {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE {$this->table_name} 
+                SET status = :status 
+                WHERE id = :id"
+            );
+            return $stmt->execute([
+                'id' => $id,
+                ':status' => $status,
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

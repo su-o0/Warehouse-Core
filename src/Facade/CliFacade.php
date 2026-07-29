@@ -107,16 +107,38 @@ final class CliFacade {
         return $this->output->render($result);
     }
 
-    public function assignPhysicalTag(
-        int $physical_tag_id,
-        ?int $owner_id,
-        ?int $vehicle_id
-    ) : string {
-        $result = $this->api->assignPhysicalTag([
-            'physical_tag_id' => $physical_tag_id,
-            'owner_id' => $owner_id,
-            'vehicle_id' => $vehicle_id
+    public function activateLocation(
+        int $id,
+    ): string {
+        $result = $this->api->activateLocation([
+            'id' => $id,
         ]);
+
+        return $this->output->render($result);
+    }
+
+    public function archiveLocation(
+        int $id,
+    ) : string {
+        $result = $this->api->archiveLocation([
+            'id' => $id,
+        ]);
+
+        return $this->output->render($result);
+    }
+
+    public function getLocation(
+        int $id,
+    ) : string {
+        $result = $this->api->getLocation([
+            'id' => $id,
+        ]);
+
+        return $this->output->render($result);
+    }
+
+    public function listLocations(): string {
+        $result = $this->api->listLocations();
 
         return $this->output->render($result);
     }

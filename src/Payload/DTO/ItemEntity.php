@@ -31,13 +31,11 @@ final class ItemEntity {
             part_id: self::requiredInt($raw, 'part_id'),
             vehicle_id: self::nullableInt($raw, 'vehicle_id'),
             owner_id: self::nullableInt($raw, 'owner_id'),
-            status: ItemStatusMapper::fromRaw(
-                raw: $raw, 
-                field: 'status'
+            status: ItemStatusMapper::match(
+                self::requiredString($raw, 'status')
             ),
-            condition: ItemConditionMapper::fromRaw(
-                raw: $raw, 
-                field: 'condition_level'
+            condition: ItemConditionMapper::match(
+                self::requiredString($raw, 'condition_level')
             ),
             condition_note: self::nullableString($raw, 'condition_note'),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),

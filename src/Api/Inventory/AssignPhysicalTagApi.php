@@ -51,7 +51,7 @@ final class AssignPhysicalTagApi {
             }
         }
 
-        $this->physical_tag->SetAssigned(
+        $this->physical_tag->setAssigned(
             $request->physical_tag_id
         );
 

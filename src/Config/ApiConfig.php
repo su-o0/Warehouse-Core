@@ -10,6 +10,10 @@ final readonly class ApiConfig {
         public string $create_location,
         public string $assign_physical_tag,
         public string $create_container,
+        public string $activate_location,
+        public string $archive_location,
+        public string $get_location,
+        public string $list_locations,
     ) { }
 
     public static function fromRaw(
@@ -22,6 +26,10 @@ final readonly class ApiConfig {
             create_location: self::requiredString($raw, 'CreateLocation'),
             assign_physical_tag: self::requiredString($raw, 'AssignPhysicalTag'),
             create_container: self::requiredString($raw, 'CreateContainer'),
+            activate_location: self::requiredString($raw, 'ActiveteLocation'),
+            archive_location: self::requiredString($raw, 'ArchiveLocation'),
+            get_location: self::requiredString($raw, 'GetLocation'),
+            list_locations: self::requiredString($raw, 'ListLocations'),
         );
     }
 }

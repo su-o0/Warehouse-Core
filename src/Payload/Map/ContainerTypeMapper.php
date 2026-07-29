@@ -1,27 +1,18 @@
 <?php
 namespace WarehouseCore\Payload\Map;
 
+use WarehouseCore\Contract\Mapper;
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\ContainerType;
 
-final class ContainerTypeMapper {
-    public static function fromString(
-        string $raw,
-    ): ContainerType {
-        return match ($raw) {
-            'Box' => ContainerType::Box,
-            'Pallet' => ContainerType::Pallet,
-            default => throw DomainException::CONTAINER_INVALID_TYPE()
-        };
-    }
-    public static function fromRaw(
-        array $raw,
+final class ContainerTypeMapper implements Mapper{
+    public static function match(
         string $field
     ): ContainerType {
-        return match ($raw[$field]) {
+        return match ($field) {
             'Box' => ContainerType::Box,
             'Pallet' => ContainerType::Pallet,
-            default => throw DomainException::CONTAINER_INVALID_TYPE()
+            default => throw DomainException::CONTAINER_TYPE_INVALID_TYPE()
         };
     }
 }

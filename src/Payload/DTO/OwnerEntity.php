@@ -14,7 +14,6 @@ class OwnerEntity {
     public static function fromRaw(
         array $raw
     ): self {
-        error_log(var_export($raw, true));
         return new self(
             id: self::required($raw, 'id'),
             user_id: self::requiredString($raw, 'user_id'),

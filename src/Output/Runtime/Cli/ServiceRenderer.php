@@ -1,17 +1,17 @@
 <?php 
 namespace WarehouseCore\Output\Runtime\Cli;
 
-use WarehouseCore\Output\Contracts\OutputRenderer;
+use WarehouseCore\Contract\OutputRenderer;
 use WarehouseCore\Payload\Result\ServiceResult;
 
-final class SetupResultRenderer implements OutputRenderer {
+final class ServiceRenderer implements OutputRenderer {
     public function supports(object $result): bool {
         return $result instanceof ServiceResult;
     }
 
     public function render(object $result): string {
         return $result->success
-            ? "Created\n"
+            ? "Success\n"
             : "Error: {$result->message}\n";
     }
 }

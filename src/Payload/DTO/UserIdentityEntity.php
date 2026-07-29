@@ -2,7 +2,7 @@
 namespace WarehouseCore\Payload\DTO;
 
 use WarehouseCore\Config\ConfigHelper;
-
+use WarehouseCore\Payload\Map\ProviderTypeMapper;
 use WarehouseCore\Payload\Type\ProviderType;
 
 final class UserIdentityEntity {
@@ -19,7 +19,9 @@ final class UserIdentityEntity {
     ): self {
         return new self(
             user_id: self::requiredInt($raw, 'user_id'),
-            provider: ProviderType::from(self::requiredString($raw, 'provider')),
+            provider: ProviderTypeMapper::match(
+                self::requiredString($raw, 'provider')
+            ),
             external_id: self::requiredString($raw, 'external_id'),
             created_at: self::requiredString($raw, 'created_at')
         );

@@ -1,9 +1,9 @@
 <?php 
-namespace WarehouseCore\Payload\Map;
+namespace WarehouseCore\Payload\Value;
 
 use WarehouseCore\Config\ConfigHelper;
 
-final class ItemPlacementMapper {
+final class ItemPlacementValue {
     use ConfigHelper;
     public function __construct(
         public readonly int $id,

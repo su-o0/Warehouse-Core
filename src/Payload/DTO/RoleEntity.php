@@ -18,9 +18,8 @@ final class RoleEntity {
     ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
-            name: RoleNameMapper::fromRaw(
-                raw: $raw, 
-                field: 'name'
+            name: RoleNameMapper::match(
+                self::requiredString($raw, 'name')
             ),
             created_at: self::requiredString($raw, 'created_at'),
         );

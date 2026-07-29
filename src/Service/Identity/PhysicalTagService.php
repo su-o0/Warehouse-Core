@@ -2,15 +2,11 @@
 namespace WarehouseCore\Service\Identity;
 
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
-
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
-
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\Type\PhysicalTagStatus;
 use WarehouseCore\Security\Authorization;
-use WarehouseCore\Service\Query\GetService;
 
 final class PhysicalTagService {
     public function __construct(
@@ -67,7 +63,7 @@ final class PhysicalTagService {
         );
     }
 
-    public function SetFree(
+    public function setFree(
         int $physical_tag_id
     ): ServiceResult {
         return $this->changeStatus(
@@ -76,7 +72,7 @@ final class PhysicalTagService {
         );
     }
 
-    public function SetAssigned(
+    public function setAssigned(
         int $physical_tag_id
     ): ServiceResult {
         return $this->changeStatus(
@@ -85,7 +81,7 @@ final class PhysicalTagService {
         );
     }
 
-    public function SetLost(
+    public function setLost(
         int $physical_tag_id
     ): ServiceResult {
         return $this->changeStatus(
@@ -94,7 +90,7 @@ final class PhysicalTagService {
         );
     }
 
-    public function SetBroken(
+    public function setBroken(
         int $physical_tag_id
     ): ServiceResult {
         return $this->changeStatus(

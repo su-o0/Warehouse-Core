@@ -1,26 +1,90 @@
 <?
 namespace WarehouseCore\Service\Topology;
 
-use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\Type\PlacementTarget;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
-use WarehouseCore\Repository\Inventory\ContainerRepository;
-use WarehouseCore\Repository\Inventory\ItemRepository;
-use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Security\Authorization;
 
 final class PlacementService {
     public function __construct(
         public string $service_name,
         private Authorization $authorization,
-        private LocationRepository $location_repository,
-        private ContainerRepository $container_repository,
         private ContainerPlacementRepository $container_placement_repository,
-        private ItemRepository $item_repository,
         private ItemPlacementRepository $item_placement_repository,
-        private StockRepository $stock_repository,
         private StockPlacementRepository $stock_placement_repository
     ) { }
 
+    public function placeContainer(
+        int $location_id,
+        int $container_id
+    ): ServiceResult {
+        try{
+            $result = $this->container_placement_repository->add(
+                $location_id,
+                $container_id
+            );
+            return new ServiceResult(success: true, entity: $result);
+        } catch (RepositoryException $e) {
+            return new ServiceResult(success: false, message: $e->getMessage());
+        }
+    }
+
+    public function placeItemToContainer(
+        int $container_id,
+        int $item_id
+    ): ServiceResult {
+        try{
+            $result = $this->item_placement_repository->addByContainerId(
+                $container_id,
+                $item_id
+            );
+            return new ServiceResult(success: true, entity: $result);
+        } catch (RepositoryException $e) {
+            return new ServiceResult(success: false, message: $e->getMessage());
+        }
+    }
+
+    public function placeItemToLocation(
+        int $location_id,
+        int $item_id
+    ): ServiceResult {
+        try{
+            $result = $this->item_placement_repository->addByLocationId(
+                $location_id,
+                $item_id
+            );
+            return new ServiceResult(success: true, entity: $result);
+        } catch (RepositoryException $e) {
+            return new ServiceResult(success: false, message: $e->getMessage());
+        }
+    }
+
+    public function placeStock(
+        int $stock_id,
+        int $location_id
+    ): ServiceResult {
+
+    }
+
+    public function removeContainer(
+        int $container_id
+    ): ServiceResult  {
+
+    }
+
+    public function removeItem(
+        int $item_id
+    ): ServiceResult  {
+
+    }
+
+    public function removeStock(
+        int $stock_id
+    ): ServiceResult  {
+
+    }
 }

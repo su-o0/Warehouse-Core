@@ -18,9 +18,8 @@ final class PhysicalTagEntity {
     ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
-            status: PhysicalTagStatusMapper::fromRaw(
-                raw: $raw,
-                field: 'status'
+            status: PhysicalTagStatusMapper::match(
+                self::requiredString($raw, 'status')
             ),
             created_at: self::requiredString($raw, 'created_at')
         );

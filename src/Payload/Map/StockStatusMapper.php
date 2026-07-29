@@ -1,22 +1,28 @@
 <?php
 namespace WarehouseCore\Payload\Map;
 
+use WarehouseCore\Contract\Mapper;
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\Type\StockStatus;
 
-final class StockStatusMapper {
-    public static function fromRaw(
-        array $raw, 
+final class StockStatusMapper implements Mapper{
+    public static function match(
         string $field
     ): StockStatus {
-        return match($raw[$field]){
+        return match($field){
             'Created'   => StockStatus::Created,
             'Placed'    => StockStatus::Placed,
             'Active'    => StockStatus::Active,
             'Adjusted'  => StockStatus::Adjusted,
             'Crowded'   => StockStatus::Crowded,
             'Archived'  => StockStatus::Archived,
-            default     => throw DomainException::STOCK_INVALID_STATUS()
+            default     => throw DomainException::STOCK_STATUS_INVALID_TYPE()
         };
+    }
+    public static function fromRaw(
+        array $raw, 
+        string $field
+    ): StockStatus {
+        return self::match($raw[$field]);
     }
 }

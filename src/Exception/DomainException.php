@@ -5,19 +5,43 @@ use Error;
 use WarehouseCore\Contract\Exception as ExceptionContract;
 
 final class DomainException extends ExceptionContract {
+
+    public static function CONTAINER_TYPE_INVALID_TYPE(): self 
+    {
+        return new self(
+            ErrorCode::CONTAINER_TYPE_INVALID_TYPE,
+            ErrorMessage::CONTAINER_TYPE_INVALID_TYPE
+        );
+    }
+    public static function PLACEMENT_TARGET_INVALID_TYPE(): self
+    {
+        return new self(
+            ErrorCode::PLACEMENT_TARGET_INVALID_TYPE,
+            ErrorMessage::PLACEMENT_TARGET_INVALID_TYPE
+        );
+    }
+
+    public static function PLACEMENT_ENTITY_INVALID_TYPE(): self
+    {
+        return new self(
+            ErrorCode::PLACEMENT_ENTITY_INVALID_TYPE,
+            ErrorMessage::PLACEMENT_ENTITY_INVALID_TYPE
+        );
+    }
+
+    public static function LOCATION_INVALID_STATUS(): self
+    {
+        return new self(
+            ErrorCode::LOCATION_INVALID_STATUS,
+            ErrorMessage::LOCATION_INVALID_STATUS
+        );
+    }
+
     public static function ITEM_PROCESSING_STAGE_INVALID_TYPE(): self
     {
         return new self(
             ErrorCode::ITEM_PROCESSING_STAGE_INVALID_TYPE,
-            'Item Processing stage invalid',
-        );
-    }
-
-    public static function USER_IDENTITY_EXISTS(): self 
-    {
-        return new self(
-            ErrorCode::USER_IDENTITY_EXISTS,
-            'User identity alredy exists'
+            ErrorMessage::ITEM_PROCESSING_STAGE_INVALID_TYPE
         );
     }
 
@@ -29,46 +53,38 @@ final class DomainException extends ExceptionContract {
         );
     }
     
-    public static function ROLE_NAME_INVALID(): self 
+    public static function ROLE_NAME_INVALID_TYPE(): self 
     {
         return new self(
-            ErrorCode::ROLE_NAME_INVALID,
-            'Role name invalid'
+            ErrorCode::ROLE_NAME_INVALID_TYPE,
+            ErrorMessage::ROLE_NAME_INVALID_TYPE
         );
     }
 
     public static function TELEMETRY_INVALID_TYPE(): self 
     {
         return new self(
-            ErrorCode::LOCATION_ADDRESS_INVALID,
-            'Telemetry type must be ...'
+            ErrorCode::TELEMETRY_INVALID_TYPE,
+            ErrorMessage::TELEMETRY_INVALID_TYPE
         );
     }
 
-    public static function ACTION_INVALID_TYPE(): self 
+    public static function TELEMETRY_ACTION_INVALID_TYPE(): self 
     {
         return new self(
-            ErrorCode::LOCATION_ADDRESS_INVALID,
-            'Action type must be ...'
+            ErrorCode::TELEMETRY_ACTION_INVALID_TYPE,
+            ErrorMessage::TELEMETRY_ACTION_INVALID_TYPE
         );
     }
 
-    public static function LOCATION_ADDRESS_INVALID(): self
+    public static function LOCATION_ADDRESS_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::LOCATION_ADDRESS_INVALID,
-            'Location address is invalid'
+            ErrorCode::LOCATION_ADDRESS_INVALID_TYPE,
+            ErrorMessage::LOCATION_ADDRESS_INVALID_TYPE
         );
     }
     
-    public static function CONTAINER_INVALID_TYPE(): self
-    {
-        return new self(
-            ErrorCode::CONTAINER_INVALID_TYPE,
-            'Container type invalid'
-        );
-    }
-
     public static function CONTAINER_ALREADY_EXISTS(): self
     {
         return new self(
@@ -81,7 +97,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::CONTAINER_NOT_FOUND,
-            'Container not found'
+            ErrorMessage::CONTAINER_NOT_FOUND
         );
     }
     
@@ -89,7 +105,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::CONTAINER_PLACEMENT_ALREADY_EXISTS,
-            'Container placement already exists'
+            ErrorMessage::CONTAINER_PLACEMENT_ALREADY_EXISTS
         );
     }
 
@@ -97,14 +113,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::CONTAINER_PLACEMENT_NOT_FOUND,
-            'Container placement not found'
-        );
-    }
-     public static function ITEM_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::ITEM_ALREADY_EXISTS,
-            'Item already exists'
+            ErrorMessage::CONTAINER_PLACEMENT_NOT_FOUND
         );
     }
 
@@ -112,39 +121,31 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::ITEM_NOT_FOUND,
-            'Item not found'
+            ErrorMessage::ITEM_NOT_FOUND
         );
     }
 
-    public static function ITEM_INVALID_STATUS(): self
+    public static function ITEM_STATUS_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::ITEM_INVALID_STATUS,
-            'Item status must be Created|Tagged|Placed|Active|Sold|Archived|Lost'
+            ErrorCode::ITEM_STATUS_INVALID_TYPE,
+            ErrorMessage::ITEM_STATUS_INVALID_TYPE
         );
     }
 
-    public static function ITEM_INVALID_CONDITION(): self
+    public static function ITEM_CONDITION_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::ITEM_INVALID_CONDITION,
-            'Item condition must be New|Good|Fair|Poor'
+            ErrorCode::ITEM_CONDITION_INVALID_TYPE,
+            ErrorMessage::ITEM_CONDITION_INVALID_TYPE
         );
     }
 
-    public static function ITEM_PHYSICAL_TAG_ALREADY_USED(): self
-    {
-        return new self(
-            ErrorCode::ITEM_PHYSICAL_TAG_ALREADY_USED,
-            'Physical tag is already assigned to another active item'
-        );
-    }
-
-     public static function ITEM_PHOTO_ALREADY_EXISTS(): self
+    public static function ITEM_PHOTO_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::ITEM_PHOTO_ALREADY_EXISTS,
-            'Item photo already exists'
+            ErrorMessage::ITEM_PHOTO_ALREADY_EXISTS,
         );
     }
 
@@ -152,15 +153,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::ITEM_PHOTO_NOT_FOUND,
-            'Item photo not found'
-        );
-    }
-
-    public static function ITEM_PLACEMENT_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::ITEM_PLACEMENT_ALREADY_EXISTS,
-            'Item placement already exists'
+            ErrorMessage::ITEM_PHOTO_NOT_FOUND,
         );
     }
 
@@ -168,9 +161,18 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::ITEM_PLACEMENT_NOT_FOUND,
-            'Item placement not found'
+            ErrorMessage::ITEM_PLACEMENT_NOT_FOUND,
         );
     }
+    
+    public static function STOCK_PLACEMENT_NOT_FOUND(): self
+    {
+        return new self(
+            ErrorCode::STOCK_PLACEMENT_NOT_FOUND,
+            ErrorMessage::STOCK_PLACEMENT_NOT_FOUND,
+        );
+    }
+
     public static function LOCATION_NOT_FOUND(): self
     {
         return new self(
@@ -182,7 +184,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::OWNER_ALREADY_EXISTS,
-            'Owner already exists'
+            ErrorMessage::OWNER_ALREADY_EXISTS
         );
     }
 
@@ -190,38 +192,15 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::OWNER_NOT_FOUND,
-            'Owner not found'
+            ErrorMessage::OWNER_NOT_FOUND
         );
     }
 
-    public static function OWNER_INVALID_PERMISSION(): self
-    {
-        return new self(
-            ErrorCode::OWNER_INVALID_PERMISSION,
-            'Permission must be Admin|Worker|Salesman'
-        );
-    }
-
-    public static function OWNER_USERID_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::OWNER_USERID_ALREADY_EXISTS,
-            'Owner with the same UserId already exists'
-        );
-    }
-
-    public static function OWNER_NAME_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::OWNER_NAME_ALREADY_EXISTS,
-            'Owner with the same Name already exists'
-        );
-    }
     public static function PART_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::PART_ALREADY_EXISTS,
-            'Part already exists'
+            ErrorMessage::PART_ALREADY_EXISTS
         );
     }
 
@@ -229,7 +208,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::PART_NOT_FOUND,
-            'Part not found'
+            ErrorMessage::PART_NOT_FOUND
         );
     }
 
@@ -249,34 +228,11 @@ final class DomainException extends ExceptionContract {
         );
     }
 
-    public static function PHYSICAL_TAG_INVALID_STATUS(): self
+    public static function PHYSICAL_TAG_STATUS_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::PHYSICAL_TAG_INVALID_STATUS,
-            'PhysicalTag Status must be Free, Assigned, Lost or Broken'
-        );
-    }
-
-    public static function PHYSICAL_TAG_MUST_BE_FREE(): self 
-    {
-        return new self(
-            ErrorCode::PHYSICAL_TAG_MUST_BE_FREE,
-            ErrorMessage::PHYSICAL_TAG_MUST_BE_FREE
-        );
-    }
-    public static function STOCK_PLACEMENT_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::STOCK_PLACEMENT_ALREADY_EXISTS,
-            'Stock placement already exists'
-        );
-    }
-
-    public static function STOCK_PLACEMENT_NOT_FOUND(): self
-    {
-        return new self(
-            ErrorCode::STOCK_PLACEMENT_NOT_FOUND,
-            'Stock placement not found'
+            ErrorCode::PHYSICAL_TAG_STATUS_INVALID_TYPE,
+            ErrorMessage::PHYSICAL_TAG_STATUS_INVALID_TYPE,
         );
     }
 
@@ -284,7 +240,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::STOCK_ALREADY_EXISTS,
-            'Stock already exists'
+            ErrorMessage::STOCK_ALREADY_EXISTS
         );
     }
 
@@ -292,15 +248,15 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::STOCK_NOT_FOUND,
-            'Stock not found'
+            ErrorMessage::STOCK_NOT_FOUND
         );
     }
 
-    public static function STOCK_INVALID_STATUS(): self
+    public static function STOCK_STATUS_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::ITEM_INVALID_STATUS,
-            'Stock status must be Created|Placed|Active|Adjusted|Crowded|Archived'
+            ErrorCode::STOCK_STATUS_INVALID_TYPE,
+            ErrorMessage::STOCK_STATUS_INVALID_TYPE
         );
     }
     public static function LOCATION_ALREADY_EXISTS(): self
@@ -311,19 +267,11 @@ final class DomainException extends ExceptionContract {
         );
     }
 
-     public static function STOCK_PHOTO_ALREADY_EXISTS(): self
-    {
-        return new self(
-            ErrorCode::STOCK_PHOTO_ALREADY_EXISTS,
-            'Stock photo already exists'
-        );
-    }
-
     public static function STOCK_PHOTO_NOT_FOUND(): self
     {
         return new self(
             ErrorCode::STOCK_PHOTO_NOT_FOUND,
-            'Stock photo not found'
+            ErrorMessage::STOCK_PHOTO_NOT_FOUND
         );
     }
 
@@ -331,7 +279,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::VEHICLE_PHOTO_ALREADY_EXISTS,
-            'Car photo already exists'
+            ErrorMessage::VEHICLE_PHOTO_ALREADY_EXISTS
         );
     }
 
@@ -339,14 +287,14 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::VEHICLE_PHOTO_NOT_FOUND,
-            'Car photo not found'
+            ErrorMessage::VEHICLE_PHOTO_NOT_FOUND,
         );
     }
      public static function VEHICLE_ALREADY_EXISTS(): self
     {
         return new self(
             ErrorCode::VEHICLE_ALREADY_EXISTS,
-            'Car already exists'
+            ErrorMessage::VEHICLE_ALREADY_EXISTS
         );
     }
 
@@ -354,7 +302,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::VEHICLE_NOT_FOUND,
-            'Vehicle not found'
+            ErrorMessage::VEHICLE_NOT_FOUND
         );
     }
 
@@ -362,7 +310,7 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::USER_ALREADY_EXISTS,
-            'User already exists'
+            ErrorMessage::USER_ALREADY_EXISTS,
         );
     }
 
@@ -370,23 +318,15 @@ final class DomainException extends ExceptionContract {
     {
         return new self(
             ErrorCode::USER_NOT_FOUND,
-            'User not found'
+            ErrorMessage::USER_NOT_FOUND,
         );
     }
 
-    public static function PHYSICAL_TAG_NOT_AVAILABLE(): self
+    public static function PROVIDER_TYPE_INVALID_TYPE(): self
     {
         return new self(
-            ErrorCode::PHYSICAL_TAG_NOT_AVAILABLE,
-            'Physical tag is not available for assignment. Choose another tag.'
-        );
-    }
-
-    public static function PROVIDER_INVALID_TYPE(): self
-    {
-        return new self(
-            ErrorCode::PROVIDER_INVALID_TYPE,
-            'Provider type must be Cli, Web or Telegram'
+            ErrorCode::PROVIDER_TYPE_INVALID_TYPE,
+            ErrorMessage::PROVIDER_TYPE_INVALID_TYPE
         );
     }
 }

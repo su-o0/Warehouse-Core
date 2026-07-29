@@ -9,6 +9,10 @@ use WarehouseCore\Api\Identity\CreateUserApi;
 use WarehouseCore\Api\Identity\CreateUserIdentityApi;
 use WarehouseCore\Api\Inventory\CreateContainerApi;
 use WarehouseCore\Api\Inventory\AssignPhysicalTagApi;
+use WarehouseCore\Api\Query\Location\GetLocationApi;
+use WarehouseCore\Api\Query\Location\ListLocationsApi;
+use WarehouseCore\Api\Topology\ActivateLocationApi;
+use WarehouseCore\Api\Topology\ArchiveLocationApi;
 use WarehouseCore\Api\Topology\CreateLocationApi;
 
 final class ApiRegistry {
@@ -62,6 +66,36 @@ final class ApiRegistry {
             $this->config->assign_physical_tag,
             $this->context->physicalTag(),
             $this->context->item(),
+            $this->context->get()
+        );
+    }
+
+    public function activateLocation(): ActivateLocationApi {
+        return new ActivateLocationApi(
+            $this->config->activate_location,
+            $this->context->location(),
+            $this->context->get()
+        );
+    }
+
+    public function archiveLocation(): ArchiveLocationApi {
+        return new ArchiveLocationApi(
+            $this->config->archive_location,
+            $this->context->location(),
+            $this->context->get()
+        );
+    }
+
+    public function getLocation(): GetLocationApi {
+        return new GetLocationApi(
+            $this->config->get_location,
+            $this->context->get()
+        );
+    }
+
+    public function listLocations(): ListLocationsApi {
+        return new ListLocationsApi (
+            $this->config->list_locations,
             $this->context->get()
         );
     }

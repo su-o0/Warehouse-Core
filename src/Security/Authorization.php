@@ -1,9 +1,9 @@
 <?php 
 namespace WarehouseCore\Security;
 
-use WarehouseCore\Payload\DTO\Session;
 use WarehouseCore\Payload\DTO\UserEntity;
 use WarehouseCore\Payload\Type\RoleName;
+use WarehouseCore\Payload\Value\SessionValue;
 
 final class Authorization {
     public function __construct(
@@ -12,7 +12,7 @@ final class Authorization {
     ) { }
 
     public static function fromSession(
-        Session $session
+        SessionValue $session
     ) : self {
         return new self(
             $session->role->name,

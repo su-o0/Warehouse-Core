@@ -14,7 +14,7 @@ final readonly class CreateLocationRequest {
         array $raw
     ): self {
         return new self(
-            AddressValue::fromRawRequest($raw)
+            address: AddressValue::fromRawRequest($raw)
         );
     }
 }

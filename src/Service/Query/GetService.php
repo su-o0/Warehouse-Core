@@ -3,35 +3,101 @@ namespace WarehouseCore\Service\Query;
 
 use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Payload\DTO\ContainerEntity;
+use WarehouseCore\Payload\DTO\LocationEntity;
 use WarehouseCore\Payload\DTO\OwnerEntity;
 use WarehouseCore\Payload\DTO\PhysicalTagEntity;
 use WarehouseCore\Payload\DTO\RoleEntity;
 use WarehouseCore\Payload\DTO\UserEntity;
 use WarehouseCore\Payload\DTO\VehicleEntity;
+use WarehouseCore\Payload\Value\ContainerPlacementValue;
+use WarehouseCore\Payload\Value\ItemPlacementValue;
+use WarehouseCore\Payload\Value\StockPlacementValue;
 use WarehouseCore\Repository\Catalog\VehicleRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\PhysicalTagRepository;
 use WarehouseCore\Repository\Identity\RoleRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
+use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\LocationRepository;
+use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Security\Authorization;
 
 final class GetService {
     public function __construct(
         public string $service_name,
-        private PhysicalTagRepository $physical_tag_repository,
-        private ContainerRepository $container_repository,
-        private UserRepository $user_repository,
-        private OwnerRepository $owner_repository,
-        private VehicleRepository $vehicle_repository,
-        private RoleRepository $role_repository,
-        private LocationRepository $location_repository
+        private Authorization $authorization,
+        private ContainerPlacementRepository $container_placement,
+        private ItemPlacementRepository $item_placement,
+        private StockPlacementRepository $stock_placement,
+        private PhysicalTagRepository $physical_tag,
+        private ContainerRepository $container,
+        private UserRepository $user,
+        private OwnerRepository $owner,
+        private VehicleRepository $vehicle,
+        private RoleRepository $role,
+        private LocationRepository $location
     ) { }
+    public function getContainerPlacement(
+        int $id
+    ): ContainerPlacementValue {
+        $container_placement = $this->container_placement->getById($id);
+        
+        if($container_placement === null) {
+            throw DomainException::CONTAINER_PLACEMENT_NOT_FOUND();
+        }
+
+        return $container_placement;
+    }
+
+    public function getItemPlacement(
+        int $id
+    ): ItemPlacementValue {
+        $item_placement = $this->item_placement->getById($id);
+        
+        if($item_placement === null) {
+            throw DomainException::ITEM_PLACEMENT_NOT_FOUND();
+        }
+
+        return $item_placement;
+    }
+
+    public function getStockPlacement(
+        int $id
+    ): StockPlacementValue {
+        $stock_placement = $this->stock_placement->getById($id);
+        
+        if($stock_placement === null) {
+            throw DomainException::STOCK_PLACEMENT_NOT_FOUND();
+        }
+
+        return $stock_placement;
+    }
+
+    public function getLocation(
+        int $id
+    ): LocationEntity {
+        $location = $this->location->getById($id);
+        
+        if($location === null) {
+            throw DomainException::LOCATION_NOT_FOUND();
+        }
+
+        return $location;
+    }
+
+    public function getAllLocation(): array {
+        $location = $this->location->getAll();
+
+        return $location;
+    }
+
 
     public function getPhysicalTag(
         int $physical_tag
     ): PhysicalTagEntity {
-        $physical_tag = $this->physical_tag_repository->getById($physical_tag);
+        $physical_tag = $this->physical_tag->getById($physical_tag);
         
         if($physical_tag === null) {
             throw DomainException::PHYSICAL_TAG_NOT_FOUND();
@@ -43,7 +109,7 @@ final class GetService {
     public function getContainer(
         int $container_id
     ): ContainerEntity {
-        $container = $this->container_repository->getById($container_id);
+        $container = $this->container->getById($container_id);
         
         if($container === null) {
             throw DomainException::CONTAINER_NOT_FOUND();
@@ -55,7 +121,7 @@ final class GetService {
     public function getUser(
         int $user_id
     ): UserEntity {
-        $user = $this->user_repository->getById($user_id);
+        $user = $this->user->getById($user_id);
         
         if($user === null) {
             throw DomainException::USER_NOT_FOUND();
@@ -67,7 +133,7 @@ final class GetService {
     public function getOwner(
         int $id
     ): OwnerEntity {
-        $owner = $this->owner_repository->getById($id);
+        $owner = $this->owner->getById($id);
 
         if ($owner === null) {
             throw DomainException::OWNER_NOT_FOUND();
@@ -78,7 +144,7 @@ final class GetService {
     public function getVehicle(
         int $id
     ): VehicleEntity {
-        $vehicle = $this->vehicle_repository->getById($id);
+        $vehicle = $this->vehicle->getById($id);
 
         if ($vehicle === null) {
             throw DomainException::VEHICLE_NOT_FOUND();
@@ -89,7 +155,7 @@ final class GetService {
     public function getRole(
         int $id
     ): RoleEntity {
-        $role = $this->role_repository->getById($id);
+        $role = $this->role->getById($id);
 
         if ($role === null) {
             throw DomainException::ROLE_NOT_FOUND();

@@ -19,9 +19,8 @@ final class ContainerEntity {
     ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
-            type: ContainerTypeMapper::fromRaw(
-                raw: $raw, 
-                field: 'type'
+            type: ContainerTypeMapper::match(
+               self::requiredString($raw, 'type')
             ),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')

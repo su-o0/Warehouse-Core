@@ -27,9 +27,15 @@ final class ServiceRegistry {
         private ServiceConfig $config,
     ) { }
 
-    public function get() : GetService {
+    public function get(
+        Authorization $authorization
+    ) : GetService {
         return new GetService(
             $this->config->get, 
+            $authorization,
+            $this->repository->container_placement,
+            $this->repository->item_placement,
+            $this->repository->stock_placement,
             $this->repository->physical_tag,
             $this->repository->container,
             $this->repository->user,        
@@ -190,12 +196,8 @@ final class ServiceRegistry {
         return new PlacementService(
             $this->config->placement,
             $authorization,
-            $this->repository->location,
-            $this->repository->container,
             $this->repository->container_placement,
-            $this->repository->item,
             $this->repository->item_placement,
-            $this->repository->stock,
             $this->repository->stock_placement
         );
     }

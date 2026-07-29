@@ -2,9 +2,7 @@
 
 namespace WarehouseCore\Exception;
 
-final class ErrorCode
-{
-
+final class ErrorCode {
     // 001 - already exists
     // 002 - not found
     // 003 - invalid input
@@ -15,19 +13,68 @@ final class ErrorCode
     // 008 - authentication error
     // 009 - rate limit exceeded
     // 010 - unknown error
-    public const SERVICE_NOT_FOUND = 'SERVICE_002';
     public const AUTHENTICATION_FAILED = 'SERVICE_007';
     public const FORBIDDEN = 'SERVICE_006';
 
     public const VALIDATION_FIELD_MISSING = 'VALIDATION_002';
     public const VALIDATION_INVALID_TYPE = 'VALIDATION_003';
 
-    public const ROLE_NOT_FOUND = 'ROLE_002';
 
-    public const USER_IDENTITY_EXISTS = 'USER_IDENTITY_001';
-    public const USER_IDENTITY_NOT_FOUND = 'USER_IDENTITY_002';
+    // Location
 
-    public const ROLE_NAME_INVALID = 'ROLE_006';
+    public const CONTAINER_PLACEMENT_ALREADY_EXISTS     = 'CONTAINER_PLACEMENT_001';
+    public const LOCATION_ALREADY_EXISTS                = 'LOCATION_ADDRESS_001';
+    public const VEHICLE_ALREADY_EXISTS                 = 'VEHICLE_001';
+    public const TAG_ALREADY_ASSIGNED                   = 'TAG_001';
+    public const ITEM_PHOTO_ALREADY_EXISTS              = 'ITEM_PHOTO_001';
+    public const VEHICLE_PHOTO_ALREADY_EXISTS           = 'VEHICLE_PHOTO_001';
+    public const PHYSICAL_TAG_ALREADY_EXISTS            = 'PHYSICAL_TAG_001';
+    public const CONTAINER_ALREADY_EXISTS               = 'CONTAINER_001';
+    public const STOCK_ALREADY_EXISTS                   = 'STOCK_001';
+    public const OWNER_ALREADY_EXISTS                   = 'OWNER_001';
+    public const USER_ALREADY_EXISTS                    = 'USER_001';
+    public const PART_ALREADY_EXISTS                    = 'PART_001';
+
+
+    public const SERVICE_NOT_FOUND                  = 'SERVICE_002';
+    public const PHYSICAL_TAG_NOT_FOUND             = 'PHYSICAL_TAG_002';
+    public const LOCATION_NOT_FOUND                 = 'LOCATION_002';
+    public const CONTAINER_NOT_FOUND                = 'CONTAINER_002';
+    public const USER_IDENTITY_NOT_FOUND            = 'USER_IDENTITY_002';
+    public const ROLE_NOT_FOUND                     = 'ROLE_002';
+    public const ITEM_PLACEMENT_NOT_FOUND           = 'ITEM_PLACEMENT_002';
+    public const STOCK_PLACEMENT_NOT_FOUND           = 'STOCK_PLACEMENT_002';
+    public const CONTAINER_PLACEMENT_NOT_FOUND      = 'CONTAINER_PLACEMENT_002';
+    public const ITEM_NOT_FOUND                     = 'ITEM_002';
+    public const STOCK_NOT_FOUND                    = 'STOCK_002';
+    public const OWNER_NOT_FOUND                    = 'OWNER_002';
+    public const HISTORY_NOT_FOUND                  = 'HISTORY_002';
+    public const VEHICLE_NOT_FOUND                  = 'VEHICLE_002';
+    public const VEHICLE_PHOTO_NOT_FOUND            = 'VEHICLE_PHOTO_002';
+    public const ITEM_PHOTO_NOT_FOUND               = 'ITEM_PHOTO_002';
+    public const SALES_ARCHIVE_PHOTO_NOT_FOUND      = 'SALES_ARCHIVE_PHOTO_002';
+    public const STOCK_PHOTO_NOT_FOUND              = 'STOCK_PHOTO_002';
+    public const USER_NOT_FOUND                     = 'USER_002';
+    public const PART_NOT_FOUND                     = 'PART_002';
+
+
+    public const PROVIDER_TYPE_INVALID_TYPE             = 'PROVIDER_003';
+    public const TELEMETRY_ACTION_INVALID_TYPE          = 'TELEMETRY_ACTION_003';
+    public const TELEMETRY_INVALID_TYPE                 = 'TELEMETRY_003';
+    public const STOCK_STATUS_INVALID_TYPE              = 'STOCK_STATUS_003';
+    public const ITEM_PROCESSING_STAGE_INVALID_TYPE     = 'ITEM_PROCESSING_STAGE_003';
+    public const CONTAINER_TYPE_INVALID_TYPE            = 'CONTAINER_TYPE_003';
+    public const LOCATION_ADDRESS_INVALID_TYPE          = 'LOCATION_ADDRESS_003';
+    public const LOCATION_INVALID_STATUS                = 'LOCATION_STATUS_003';
+    public const PLACEMENT_TARGET_INVALID_TYPE          = 'PLACEMENT_TARGET_003';
+    public const PLACEMENT_ENTITY_INVALID_TYPE          = 'PLACEMENT_ENTITY_003';
+    public const PHYSICAL_TAG_STATUS_INVALID_TYPE       = 'PHYSICAL_TAG_003';
+    public const ROLE_NAME_INVALID_TYPE                 = 'ROLE_003';
+ 
+    public const ITEM_STATUS_INVALID_TYPE               = "ITEM_STATUS_003";
+    public const ITEM_CONDITION_INVALID_TYPE            = 'ITEM_CONDITION_008';
+
+
 
     public const DB_CONNECTION_ERROR = 'DB_CONNECTION_004';
     public const DB_QUERY_ERROR      = 'DB_QUERY_004';
@@ -36,84 +83,6 @@ final class ErrorCode
     public const DB_UNKNOWN_ERROR    = 'DB_UNKNOWN_004';
 
 
-    public const ITEM_PROCESSING_STAGE_INVALID_TYPE = "ITEM_PROCESSING_STAGE_003";
-    // Location
-    public const LOCATION_ALREADY_EXISTS    = 'LOCATION_ADDRESS_001';
-    public const LOCATION_NOT_FOUND         = 'LOCATION_002';
-    public const LOCATION_ADDRESS_INVALID   = 'LOCATION_ADDRESS_003';
-
-
-    public const CONTAINER_PLACEMENT_ALREADY_EXISTS = 'CONTAINER_PLACEMENT_001';
-    public const CONTAINER_PLACEMENT_NOT_FOUND      = 'CONTAINER_PLACEMENT_002';
-
-
-    public const STOCK_PLACEMENT_ALREADY_EXISTS = 'STOCK_PLACEMENT_001';
-    public const STOCK_PLACEMENT_NOT_FOUND      = 'STOCK_PLACEMENT_002';
-
-
-    public const ITEM_PLACEMENT_ALREADY_EXISTS  = 'ITEM_PLACEMENT_001';
-    public const ITEM_PLACEMENT_NOT_FOUND       = 'ITEM_PLACEMENT_002';
-
-
-    public const PHYSICAL_TAG_ALREADY_EXISTS    = 'PHYSICAL_TAG_001';
-    public const PHYSICAL_TAG_NOT_FOUND         = 'PHYSICAL_TAG_002';
-    public const PHYSICAL_TAG_INVALID_STATUS    = 'PHYSICAL_TAG_007';
-    public const PHYSICAL_TAG_NOT_AVAILABLE     = 'PHYSICAL_TAG_008';
-    public const PHYSICAL_TAG_MUST_BE_FREE      = 'PHYSICAL_TAG_009';
-
-
-    public const CONTAINER_ALREADY_EXISTS   = 'CONTAINER_001';
-    public const CONTAINER_NOT_FOUND        = 'CONTAINER_002';
-    public const CONTAINER_INVALID_TYPE     = 'CONTAINER_007';
-
-
-    public const ITEM_ALREADY_EXISTS            = 'ITEM_001';
-    public const ITEM_NOT_FOUND                 = 'ITEM_002';
-    public const ITEM_INVALID_STATUS            = 'ITEM_007';
-    public const ITEM_INVALID_CONDITION         = 'ITEM_008';
-    public const ITEM_PHYSICAL_TAG_ALREADY_USED = 'ITEM_009';
-
-
-    public const STOCK_ALREADY_EXISTS   = 'STOCK_001';
-    public const STOCK_NOT_FOUND        = 'STOCK_002';
-
-
-    public const OWNER_ALREADY_EXISTS           = 'OWNER_001';
-    public const OWNER_NOT_FOUND                = 'OWNER_002';
-    public const OWNER_INVALID_PERMISSION       = 'OWNER_003';
-    public const OWNER_USERID_ALREADY_EXISTS    = 'OWNER_004';
-    public const OWNER_NAME_ALREADY_EXISTS      = 'OWNER_005';
-
-    public const USER_ALREADY_EXISTS    = 'USER_001';
-    public const USER_NOT_FOUND         = 'USER_002';
-
-    public const PART_ALREADY_EXISTS    = 'PART_001';
-    public const PART_NOT_FOUND         = 'PART_002';
-
-
-    public const VEHICLE_ALREADY_EXISTS     = 'VEHICLE_001';
-    public const VEHICLE_NOT_FOUND          = 'VEHICLE_002';
-
-
-    public const ITEM_PHOTO_ALREADY_EXISTS      = 'ITEM_PHOTO_001';
-    public const ITEM_PHOTO_NOT_FOUND           = 'ITEM_PHOTO_002';
-
-
-    public const STOCK_PHOTO_ALREADY_EXISTS     = 'STOCK_PHOTO_001';
-    public const STOCK_PHOTO_NOT_FOUND          = 'STOCK_PHOTO_002';
-
-
-    public const VEHICLE_PHOTO_ALREADY_EXISTS       = 'VEHICLE_PHOTO_001';
-    public const VEHICLE_PHOTO_NOT_FOUND            = 'VEHICLE_PHOTO_002';
-
-    public const SALES_ARCHIVE_PHOTO_NOT_FOUND  = 'SALES_ARCHIVE_PHOTO_002';
-
-
-    public const HISTORY_NOT_FOUND              = 'HISTORY_002';
-
     public const PERMISSION_DENIED            = 'PERMISSION_006';
 
-    public const TAG_ALREADY_ASSIGNED  = 'TAG_001';
-
-    public const PROVIDER_INVALID_TYPE = 'PROVIDER_001';
 }
