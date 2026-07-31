@@ -12,6 +12,7 @@ Stock
 ItemProcessingStep
 Part
 PartAlias
+PartName
 Vehicle
 StoredFile
 PartPhoto
@@ -21,6 +22,9 @@ VehiclePhoto
 Telemetry
 ItemSalesArhive
 StockSalesArhive
+ItemMovement
+ContainerMovement
+StockMovement
 Role
 User
 UserIdentity
@@ -59,7 +63,10 @@ Media
 Audit
 ├── Telemetry
 ├── ItemSalesArhive
-└── StockSalesArhive
+├── StockSalesArhive
+├── ItemMovement
+├── ContainerMovement
+└── StockMovement
 
 Identity
 ├── Role
@@ -149,14 +156,20 @@ ItemProcessingStep
 ```text
 Part
 ├── Id
-├── Article
-├── Name
 └── CreatedAt
 
-PartAlias
+PartNumber
 ├── Id
 ├── PartId
-├── Article
+├── Value
+├── IsPrimary
+└── CreatedAt
+
+PartName
+├── Id
+├── PartId
+├── Value
+├── IsPrimary
 └── CreatedAt
 
 Vehicle
@@ -219,6 +232,29 @@ ItemSalesArchive
 ├── ItemId
 ├── UserId
 └── CreatedAt
+
+ContainerMovement
+├── Id
+├── ContainerId
+├── Metadata
+├── CreatedByUserId
+└── CreatedAt
+
+ItemMovement
+├── Id
+├── ItemId
+├── Metadata
+├── CreatedByUserId
+└── CreatedAt
+
+
+StockMovement
+├── Id
+├── StockId
+├── Metadata
+├── CreatedByUserId
+└── CreatedAt
+
 
 StockSalesArchive
 ├── Id
