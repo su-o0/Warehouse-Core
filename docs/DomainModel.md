@@ -11,7 +11,7 @@ Item
 Stock
 ItemProcessingStep
 Part
-PartAlias
+PartNumber
 PartName
 Vehicle
 StoredFile
@@ -20,11 +20,11 @@ ItemPhoto
 StockPhoto
 VehiclePhoto
 Telemetry
-ItemSalesArhive
-StockSalesArhive
-ItemMovement
-ContainerMovement
-StockMovement
+ItemSalesArchive
+StockSalesArchive
+ContainerMovementArchive
+ItemMovementArchive
+StockMovementArchive
 Role
 User
 UserIdentity
@@ -64,9 +64,9 @@ Audit
 ├── Telemetry
 ├── ItemSalesArhive
 ├── StockSalesArhive
-├── ItemMovement
-├── ContainerMovement
-└── StockMovement
+├── ItemMovementArhive
+├── ContainerMovementArhive
+└── StockMovementArhive
 
 Identity
 ├── Role
@@ -109,7 +109,7 @@ StockPlacement
 ```
 
 # Inventory
-*what exists*
+*what exists* 
 ```text
 Container 
 ├── Id
@@ -170,7 +170,7 @@ PartName
 ├── PartId
 ├── Value
 ├── IsPrimary
-└── CreatedAt
+└── CreatedAt   
 
 Vehicle
 ├── Id
@@ -220,9 +220,9 @@ VehiclePhoto
 ```text
 Telemetry
 ├── Id
-├── EntityType > (Location, Container, Item, Stock, User, UserIdentity, Owner, PhysicalTag, StoredFile, PartPhCreateoto, ItemPhoto, StockPhoto, VehiclePhoto, Part, PartAlias, Vehicle)
+├── EntityType > (Location, ContainerPlacement, ItemPlacement, StockPlacement, Container, Item, Stock, ItemProcessingStep, Part, PartNumber, PartName, Vehicle, StoredFile, PartPhoto, ItemPhoto, StockPhoto, VehiclePhoto, ItemSalesArchive, StockSalesArchive, ItemMovementArchive, ContainerMovementArchive, StockMovementArchive, Role, User, UserIdentity, Owner, PhysicalTag) 
 ├── EntityId
-├── Action > (, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
+├── Action > (Create, Update, Delete, Place, Replace, Move, Remove, ChangeType, ChangeCondition, ChangeStatus)
 ├── Payload
 ├── UserId
 └── CreatedAt
@@ -233,34 +233,35 @@ ItemSalesArchive
 ├── UserId
 └── CreatedAt
 
-ContainerMovement
-├── Id
-├── ContainerId
-├── Metadata
-├── CreatedByUserId
-└── CreatedAt
-
-ItemMovement
-├── Id
-├── ItemId
-├── Metadata
-├── CreatedByUserId
-└── CreatedAt
-
-
-StockMovement
-├── Id
-├── StockId
-├── Metadata
-├── CreatedByUserId
-└── CreatedAt
-
-
 StockSalesArchive
 ├── Id
 ├── StockId
 ├── Qty
 ├── UserId
+└── CreatedAt
+
+ContainerMovementArchive
+├── Id
+├── ContainerId
+├── From
+├── To
+├── CreatedByUserId
+└── CreatedAt
+
+ItemMovementArchive
+├── Id
+├── ItemId
+├── From
+├── To
+├── CreatedByUserId
+└── CreatedAt
+
+StockMovementArchive
+├── Id
+├── StockId
+├── From
+├── To
+├── CreatedByUserId
 └── CreatedAt
 
 ```

@@ -56,7 +56,49 @@ Service layer orchestrates repositories and provides readable operational access
 
 # Ownership
 
-Service API enforces operational permissions.
+Service API enfo
+CREATE TABLE container_movement_archive (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,container_id BIGINT NOT NULL
+    ,from VARCHAR(255) NOT NULL
+    ,to VARCHAR(255) NOT NULL
+    ,user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    
+    ,INDEX idx_container_movement_container (container_id)
+);
+
+CREATE TABLE item_movement_archive (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,item_id BIGINT NOT NULL
+    ,from VARCHAR(255) NOT NULL
+    ,to VARCHAR(255) NOT NULL
+    ,user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (item_id) REFERENCES items(id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    
+    ,INDEX idx_item_movement_item (item_id)
+);
+
+CREATE TABLE stock_movement_archive (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,stock_id BIGINT NOT NULL
+    ,from VARCHAR(255) NOT NULL
+    ,to VARCHAR(255) NOT NULL
+    ,user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (stock_id) REFERENCES stock(id)
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    
+    ,INDEX idx_stock_movement_stock (stock_id)
+);
+rces operational permissions.
 
 Roles:
 
