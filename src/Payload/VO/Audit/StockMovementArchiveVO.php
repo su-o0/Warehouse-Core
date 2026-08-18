@@ -5,7 +5,7 @@ use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Exception\ErrorCode;
 use WarehouseCore\Exception\ValidationException;
 
-final class StockMovementArchiveValue {
+final class StockMovementArchiveVO {
     use ConfigHelper;
     public function __construct(
         public readonly int $stock_id,
