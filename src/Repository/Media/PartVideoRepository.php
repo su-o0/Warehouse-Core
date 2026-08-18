@@ -4,13 +4,13 @@ namespace WarehouseCore\Repository\Media;
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\VO\PhotoVO;
+use WarehouseCore\Payload\VO\VideoVO;
 
-final class PartPhotoRepository extends Repository {
+final class PartVideoRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PhotoVO {
-        return PhotoVO::fromPartRaw($raw);
+    ): VideoVO {
+        return VideoVO::fromPartRaw($raw);
     }
 
     public function getByPartId(
@@ -27,7 +27,7 @@ final class PartPhotoRepository extends Repository {
 
     public function getByStoredFileId(
         int $stored_file_id
-    ): ?PhotoVO {
+    ): ?VideoVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE stored_file_id = :stored_file_id",

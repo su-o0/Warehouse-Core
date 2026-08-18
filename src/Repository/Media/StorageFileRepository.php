@@ -1,76 +1,175 @@
 <?php
 namespace WarehouseCore\Repository\Media;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\StorageFileEntity;
+use WarehouseCore\Payload\Entity\StoredFileEntity;
 
-final class StorageFileRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
+final class StoredFileRepository extends Repository {
+    public function hydrate(
+        array $raw
+    ): StoredFileEntity {
+        return StoredFileEntity::fromRaw($raw);
+    }
 
     public function getById(
         int $id
-    ): null|StorageFileEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
+    ): ?StoredFileEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE id = :id",
+            [
+                ':id' => $id
+            ]
         );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : StorageFileEntity::fromRaw($result);
     }
 
     public function findByHash(
         string $hash
-    ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE hash = :hash"
+    ): ?StoredFileEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE hash = :hash",
+            [
+                ':hash' => $hash
+            ]
         );
-        $stmt->execute([
-            "hash" => $hash
-        ]);
-        return array_map(fn($row) => StorageFileEntity::fromRaw($row), $stmt->fetchAll());
     }
 
-    public function findByUserId(
+    public function findByCreatedUserId(
         int $user_id
     ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE user_id = :user_id"
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE created_by_user_id = :user_id",
+            [
+                ':user_id' => $user_id
+            ]
         );
-        $stmt->execute([
-            ":user_id" => $user_id
-        ]);
-        return array_map(fn($row) => StorageFileEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByMimeType(
+        string $mime_type
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE mime_type = :mime_type",
+            [
+                ':mime_type' => $mime_type
+            ]
+        );
     }
 
     public function add(
-        string $path, 
+        string $path,
         string $hash,
         string $mime_type,
-        string $size,
+        int $size,
         int $user_id
     ): int {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (path, hash, mime_type, size, created_by_user_id) 
-                VALUES (:path, :hash, :mime_type, :size, :user_id)"
+            return $this->insert(
+                "INSERT INTO {$this->table}
+                (
+                    path,
+                    hash,
+                    mime_type,
+                    size,
+                    created_by_user_id
+                )
+                VALUES
+                (
+                    :path,
+                    :hash,
+                    :mime_type,
+                    :size,
+                    :user_id
+                )",
+                [
+                    ':path' => $path,
+                    ':hash' => $hash,
+                    ':mime_type' => $mime_type,
+                    ':size' => $size,
+                    ':user_id' => $user_id
+                ]
             );
-            $stmt->execute([
-               ':path' => $path,
-               ':hash' => $hash,
-               ':mime_type' => $mime_type,
-               ':size' => $size,
-               ':user_id' => $user_id,
-            ]);
-            return (int) $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updatePath(
+        int $id,
+        string $path
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET path = :path
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':path' => $path
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateHash(
+        int $id,
+        string $hash
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET hash = :hash
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':hash' => $hash
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateMimeType(
+        int $id,
+        string $mime_type
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET mime_type = :mime_type
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':mime_type' => $mime_type
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateSize(
+        int $id,
+        int $size
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET size = :size
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':size' => $size
+                ]
+            );
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
@@ -78,15 +177,15 @@ final class StorageFileRepository {
 
     public function delete(
         int $id
-    ): bool{
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE id = :id",
+                [
+                    ':id' => $id
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }

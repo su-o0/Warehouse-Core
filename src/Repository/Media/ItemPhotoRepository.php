@@ -1,87 +1,82 @@
 <?php
 namespace WarehouseCore\Repository\Media;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\PhotoEntity;
+use WarehouseCore\Payload\VO\PhotoVO;
 
-final class ItemPhotoRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
-
-    public function getById(
-        int $id
-    ): null|PhotoEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
-        );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : PhotoEntity::fromRaw($result);
+final class ItemPhotoRepository extends Repository {
+    public function hydrate(
+        array $raw
+    ): PhotoVO {
+        return PhotoVO::fromItemRaw($raw);
     }
 
-    public function findByItemId(
+    public function getByItemId(
         int $item_id
     ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE item_id = :item_id"
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE item_id = :item_id",
+            [
+                ':item_id' => $item_id
+            ]
         );
-        $stmt->execute([
-            ":item_id" => $item_id
-        ]);
-        return array_map(fn($row) => PhotoEntity::fromRaw($row), $stmt->fetchAll());
     }
 
-    public function findByFileId(
-        int $file_id
-    ): null|PhotoEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE file_id = :file_id"
+    public function getByStoredFileId(
+        int $stored_file_id
+    ): ?PhotoVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE stored_file_id = :stored_file_id",
+            [
+                ':stored_file_id' => $stored_file_id
+            ]
         );
-        $stmt->execute([
-            ":file_id" => $file_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : PhotoEntity::fromRaw($result);
     }
 
     public function add(
-        int $item_id, 
-        int $file_id
-    ): int {
+        int $item_id,
+        int $stored_file_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (item_id, file_id) 
-                VALUES (:item_id, :file_id,)"
+            $this->insert(
+                "INSERT INTO {$this->table}
+                (
+                    item_id,
+                    stored_file_id
+                )
+                VALUES
+                (
+                    :item_id,
+                    :stored_file_id
+                )",
+                [
+                    ':item_id' => $item_id,
+                    ':stored_file_id' => $stored_file_id
+                ]
             );
-            $stmt->execute([
-               ':item_id' => $item_id,
-               ':file_id' => $file_id,
-            ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
-        int $id
-    ): bool{
+        int $item_id,
+        int $stored_file_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE item_id = :item_id
+                AND stored_file_id = :stored_file_id",
+                [
+                    ':item_id' => $item_id,
+                    ':stored_file_id' => $stored_file_id
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }

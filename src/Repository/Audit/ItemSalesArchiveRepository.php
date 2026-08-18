@@ -1,43 +1,43 @@
 <?php
-namespace WarehouseCore\Repository\Catalog;
+namespace WarehouseCore\Repository\Audit;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
-use WarehouseCore\Payload\Entity\VehicleEntity;
 
-final class VehicleRepository extends Repository
-{
+use WarehouseCore\Payload\VO\Audit\ItemSalesArchiveVO;
+
+final class ItemSalesArchiveRepository extends Repository {
     public function hydrate(
         array $raw
-    ): VehicleEntity {
-        return VehicleEntity::fromRaw($raw);
+    ): ItemSalesArchiveVO {
+        return ItemSalesArchiveVO::fromRaw($raw);
     }
 
-    public function getById(
-        int $id
-    ): ?VehicleEntity {
-        return $this->entity(
+    public function findByItemId(
+        int $item_id
+    ): array {
+        return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE id = :id",
+            WHERE item_id = :item_id",
             [
-                ':id' => $id
+                ':item_id' => $item_id
             ]
         );
     }
 
-    public function findByVin(
-        string $vin
-    ): ?VehicleEntity {
-        return $this->entity(
+    public function findByUserId(
+        int $user_id
+    ): array {
+        return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE vin = :vin",
+            WHERE user_id = :user_id",
             [
-                ':vin' => $vin
+                ':user_id' => $user_id
             ]
         );
     }
 
-    public function findByCreatedByUserId(
+    public function findByCreatedUserId(
         int $user_id
     ): array {
         return $this->entities(
@@ -50,43 +50,28 @@ final class VehicleRepository extends Repository
     }
 
     public function add(
+        int $item_id,
         int $user_id,
-        string $vin
+        int $created_by_user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    vin,
+                    item_id,
+                    user_id,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :vin,
-                    :user_id
+                    :item_id,
+                    :user_id,
+                    :created_by_user_id
                 )",
                 [
-                    ':vin' => $vin,
-                    ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateVin(
-        int $id,
-        string $vin
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET vin = :vin
-                WHERE id = :id",
-                [
-                    ':id' => $id,
-                    ':vin' => $vin
+                    ':item_id' => $item_id,
+                    ':user_id' => $user_id,
+                    ':created_by_user_id' => $created_by_user_id
                 ]
             );
         } catch (\PDOException $e) {
@@ -95,14 +80,14 @@ final class VehicleRepository extends Repository
     }
 
     public function delete(
-        int $id
+        int $item_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE id = :id",
+                WHERE item_id = :item_id",
                 [
-                    ':id' => $id
+                    ':item_id' => $item_id
                 ]
             );
         } catch (\PDOException $e) {

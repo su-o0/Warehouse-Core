@@ -1,21 +1,20 @@
 <?php
-namespace WarehouseCore\Repository\Catalog;
+namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
-use WarehouseCore\Payload\Entity\VehicleEntity;
+use WarehouseCore\Payload\Entity\ZoneEntity;
 
-final class VehicleRepository extends Repository
-{
+final class ZoneRepository extends Repository {
     public function hydrate(
         array $raw
-    ): VehicleEntity {
-        return VehicleEntity::fromRaw($raw);
+    ): ZoneEntity {
+        return ZoneEntity::fromRaw($raw);
     }
 
     public function getById(
         int $id
-    ): ?VehicleEntity {
+    ): ?ZoneEntity {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE id = :id",
@@ -25,14 +24,26 @@ final class VehicleRepository extends Repository
         );
     }
 
-    public function findByVin(
-        string $vin
-    ): ?VehicleEntity {
-        return $this->entity(
+    public function findByAreaId(
+        int $area_id
+    ): array {
+        return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE vin = :vin",
+            WHERE area_id = :area_id",
             [
-                ':vin' => $vin
+                ':area_id' => $area_id
+            ]
+        );
+    }
+
+    public function findByStatus(
+        string $status
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE status = :status",
+            [
+                ':status' => $status
             ]
         );
     }
@@ -50,23 +61,23 @@ final class VehicleRepository extends Repository
     }
 
     public function add(
-        int $user_id,
-        string $vin
+        int $area_id,
+        int $user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    vin,
+                    area_id,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :vin,
+                    :area_id,
                     :user_id
                 )",
                 [
-                    ':vin' => $vin,
+                    ':area_id' => $area_id,
                     ':user_id' => $user_id
                 ]
             );
@@ -75,18 +86,37 @@ final class VehicleRepository extends Repository
         }
     }
 
-    public function updateVin(
+    public function updateAreaId(
         int $id,
-        string $vin
+        int $area_id
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET vin = :vin
+                SET area_id = :area_id
                 WHERE id = :id",
                 [
-                    ':id' => $id,
-                    ':vin' => $vin
+                    ':area_id' => $area_id,
+                    ':id' => $id
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateStatus(
+        int $id,
+        string $status
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET status = :status
+                WHERE id = :id",
+                [
+                    ':status' => $status,
+                    ':id' => $id
                 ]
             );
         } catch (\PDOException $e) {

@@ -3,23 +3,24 @@ namespace WarehouseCore\Repository\Processing;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
-use WarehouseCore\Payload\VO\ItemProcessingStepVO;
 
-final class ItemProcessingStepRepository extends Repository {
+use WarehouseCore\Payload\VO\PartProcessingStepVO;
+
+final class PartProcessingStepRepository extends Repository {
     public function hydrate(
         array $raw
-    ): ItemProcessingStepVO {
-        return ItemProcessingStepVO::fromRaw($raw);
+    ): PartProcessingStepVO {
+        return PartProcessingStepVO::fromRaw($raw);
     }
 
-    public function getByItemId(
-        int $item_id
+    public function getByPartId(
+        int $part_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE item_id = :item_id",
+            WHERE part_id = :part_id",
             [
-                ':item_id' => $item_id
+                ':part_id' => $part_id
             ]
         );
     }
@@ -36,16 +37,16 @@ final class ItemProcessingStepRepository extends Repository {
         );
     }
 
-    public function findByItemIdAndStage(
-        int $item_id,
+    public function findByPartIdAndStage(
+        int $part_id,
         string $stage
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE item_id = :item_id
+            WHERE part_id = :part_id
             AND stage = :stage",
             [
-                ':item_id' => $item_id,
+                ':part_id' => $part_id,
                 ':stage' => $stage
             ]
         );
@@ -64,7 +65,7 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function add(
-        int $item_id,
+        int $part_id,
         string $stage,
         ?string $metadata,
         int $user_id
@@ -73,20 +74,20 @@ final class ItemProcessingStepRepository extends Repository {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    item_id,
+                    part_id,
                     stage,
                     metadata,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :item_id,
+                    :part_id,
                     :stage,
                     :metadata,
                     :user_id
                 )",
                 [
-                    ':item_id' => $item_id,
+                    ':part_id' => $part_id,
                     ':stage' => $stage,
                     ':metadata' => $metadata,
                     ':user_id' => $user_id
@@ -98,7 +99,7 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function updateStage(
-        int $item_id,
+        int $part_id,
         string $stage,
         string $new_stage
     ): void {
@@ -106,10 +107,10 @@ final class ItemProcessingStepRepository extends Repository {
             $this->execute(
                 "UPDATE {$this->table}
                 SET stage = :new_stage
-                WHERE item_id = :item_id
+                WHERE part_id = :part_id
                 AND stage = :stage",
                 [
-                    ':item_id' => $item_id,
+                    ':part_id' => $part_id,
                     ':stage' => $stage,
                     ':new_stage' => $new_stage
                 ]
@@ -120,7 +121,7 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function updateMetadata(
-        int $item_id,
+        int $part_id,
         string $stage,
         ?string $metadata
     ): void {
@@ -128,10 +129,10 @@ final class ItemProcessingStepRepository extends Repository {
             $this->execute(
                 "UPDATE {$this->table}
                 SET metadata = :metadata
-                WHERE item_id = :item_id
+                WHERE part_id = :part_id
                 AND stage = :stage",
                 [
-                    ':item_id' => $item_id,
+                    ':part_id' => $part_id,
                     ':stage' => $stage,
                     ':metadata' => $metadata
                 ]
@@ -142,16 +143,16 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function delete(
-        int $item_id,
+        int $part_id,
         string $stage
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE item_id = :item_id
+                WHERE part_id = :part_id
                 AND stage = :stage",
                 [
-                    ':item_id' => $item_id,
+                    ':part_id' => $part_id,
                     ':stage' => $stage
                 ]
             );

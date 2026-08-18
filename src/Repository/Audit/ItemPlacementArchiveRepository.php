@@ -1,43 +1,31 @@
 <?php
-namespace WarehouseCore\Repository\Catalog;
+namespace WarehouseCore\Repository\Audit;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\Entity\PartEntity;
+use WarehouseCore\Payload\VO\Audit\ItemPlacementArchiveVO;
 
-final class PartRepository extends Repository {
+final class ItemPlacementArchiveRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PartEntity {
-        return PartEntity::fromRaw($raw);
+    ): ItemPlacementArchiveVO {
+        return ItemPlacementArchiveVO::fromRaw($raw);
     }
 
-    public function getById(
-        int $id
-    ): ?PartEntity {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE id = :id",
-            [
-                ':id' => $id
-            ]
-        );
-    }
-
-    public function findByStatus(
-        string $status
+    public function findByItemId(
+        int $item_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE status = :status",
+            WHERE item_id = :item_id",
             [
-                ':status' => $status
+                ':item_id' => $item_id
             ]
         );
     }
 
-    public function findByCreaterUserId(
+    public function findByCreatedUserId(
         int $user_id
     ): array {
         return $this->entities(
@@ -50,19 +38,35 @@ final class PartRepository extends Repository {
     }
 
     public function add(
+        int $item_id,
+        ?int $to_zone_id,
+        ?int $to_shelf_id,
+        ?int $to_container_id,
         int $user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
+                    item_id,
+                    to_zone_id,
+                    to_shelf_id,
+                    to_container_id,
                     created_by_user_id
                 )
                 VALUES
                 (
+                    :item_id,
+                    :to_zone_id,
+                    :to_shelf_id,
+                    :to_container_id,
                     :user_id
                 )",
                 [
+                    ':item_id' => $item_id,
+                    ':to_zone_id' => $to_zone_id,
+                    ':to_shelf_id' => $to_shelf_id,
+                    ':to_container_id' => $to_container_id,
                     ':user_id' => $user_id
                 ]
             );
@@ -71,34 +75,15 @@ final class PartRepository extends Repository {
         }
     }
 
-    public function updateStatus(
-        int $id,
-        string $status
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET status = :status
-                WHERE id = :id",
-                [
-                    ':status' => $status,
-                    ':id' => $id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
     public function delete(
-        int $id
+        int $item_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE id = :id",
+                WHERE item_id = :item_id",
                 [
-                    ':id' => $id
+                    ':item_id' => $item_id
                 ]
             );
         } catch (\PDOException $e) {

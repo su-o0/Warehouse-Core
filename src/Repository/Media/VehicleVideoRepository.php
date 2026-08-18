@@ -4,31 +4,31 @@ namespace WarehouseCore\Repository\Media;
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\VO\PhotoVO;
+use WarehouseCore\Payload\VO\VideoVO;
 
-final class PartPhotoRepository extends Repository {
+final class VehicleVideoRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PhotoVO {
-        return PhotoVO::fromPartRaw($raw);
+    ): VideoVO {
+        return VideoVO::fromVehicleRaw($raw);
     }
 
-    public function getByPartId(
-        int $part_id
+    public function findByVehicleId(
+        int $vehicle_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE part_id = :part_id",
+            WHERE vehicle_id = :vehicle_id",
             [
-                ':part_id' => $part_id
+                ':vehicle_id' => $vehicle_id
             ]
         );
     }
 
-    public function getByStoredFileId(
+    public function findByStoredFileId(
         int $stored_file_id
-    ): ?PhotoVO {
-        return $this->entity(
+    ): array {
+        return $this->entities(
             "SELECT * FROM {$this->table}
             WHERE stored_file_id = :stored_file_id",
             [
@@ -38,23 +38,23 @@ final class PartPhotoRepository extends Repository {
     }
 
     public function add(
-        int $part_id,
+        int $vehicle_id,
         int $stored_file_id
-    ): void {
+    ): int {
         try {
-            $this->insert(
+            return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    part_id,
+                    vehicle_id,
                     stored_file_id
                 )
                 VALUES
                 (
-                    :part_id,
+                    :vehicle_id,
                     :stored_file_id
                 )",
                 [
-                    ':part_id' => $part_id,
+                    ':vehicle_id' => $vehicle_id,
                     ':stored_file_id' => $stored_file_id
                 ]
             );
@@ -64,16 +64,16 @@ final class PartPhotoRepository extends Repository {
     }
 
     public function delete(
-        int $part_id,
+        int $vehicle_id,
         int $stored_file_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE part_id = :part_id
+                WHERE vehicle_id = :vehicle_id
                 AND stored_file_id = :stored_file_id",
                 [
-                    ':part_id' => $part_id,
+                    ':vehicle_id' => $vehicle_id,
                     ':stored_file_id' => $stored_file_id
                 ]
             );

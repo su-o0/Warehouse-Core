@@ -1,22 +1,20 @@
 <?php
-namespace WarehouseCore\Repository\Identity;
+namespace WarehouseCore\Repository\Inventory;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Entity\ShelfEntity;
 
-use WarehouseCore\Payload\Entity\UserIdentityEntity;
-
-final class UserIdentityRepository extends Repository
-{
+final class ShelfRepository extends Repository {
     public function hydrate(
         array $raw
-    ): UserIdentityEntity {
-        return UserIdentityEntity::fromRaw($raw);
+    ): ShelfEntity {
+        return ShelfEntity::fromRaw($raw);
     }
 
     public function getById(
         int $id
-    ): ?UserIdentityEntity {
+    ): ?ShelfEntity {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE id = :id",
@@ -26,98 +24,60 @@ final class UserIdentityRepository extends Repository
         );
     }
 
-    public function findByUserId(
+    public function findByRackId(
+        int $rack_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id",
+            [
+                ':rack_id' => $rack_id
+            ]
+        );
+    }
+
+    public function findByStatus(
+        string $status
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE status = :status",
+            [
+                ':status' => $status
+            ]
+        );
+    }
+
+    public function findByCreatedUserId(
         int $user_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE user_id = :user_id",
+            WHERE created_by_user_id = :user_id",
             [
                 ':user_id' => $user_id
             ]
         );
     }
 
-    public function findByProviderAndExternalId(
-        string $provider,
-        string $external_id
-    ): ?UserIdentityEntity {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE provider = :provider
-            AND external_id = :external_id",
-            [
-                ':provider' => $provider,
-                ':external_id' => $external_id
-            ]
-        );
-    }
-
-    public function findByProvider(
-        string $provider
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE provider = :provider",
-            [
-                ':provider' => $provider
-            ]
-        );
-    }
-
-    public function findByExternalId(
-        string $external_id
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE external_id = :external_id",
-            [
-                ':external_id' => $external_id
-            ]
-        );
-    }
-
     public function add(
         int $user_id,
-        string $provider,
-        string $external_id
+        int $rack_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    user_id,
-                    provider,
-                    external_id
+                    rack_id,
+                    created_by_user_id
                 )
                 VALUES
                 (
-                    :user_id,
-                    :provider,
-                    :external_id
+                    :rack_id,
+                    :user_id
                 )",
                 [
-                    ':user_id' => $user_id,
-                    ':provider' => $provider,
-                    ':external_id' => $external_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateUserId(
-        int $id,
-        int $user_id
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET user_id = :user_id
-                WHERE id = :id",
-                [
-                    ':id' => $id,
+                    ':rack_id' => $rack_id,
                     ':user_id' => $user_id
                 ]
             );
@@ -126,18 +86,18 @@ final class UserIdentityRepository extends Repository
         }
     }
 
-    public function updateProvider(
+    public function updateRackId(
         int $id,
-        string $provider
+        int $rack_id
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET provider = :provider
+                SET rack_id = :rack_id
                 WHERE id = :id",
                 [
                     ':id' => $id,
-                    ':provider' => $provider
+                    ':rack_id' => $rack_id
                 ]
             );
         } catch (\PDOException $e) {
@@ -145,18 +105,18 @@ final class UserIdentityRepository extends Repository
         }
     }
 
-    public function updateExternalId(
+    public function updateStatus(
         int $id,
-        string $external_id
+        string $status
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET external_id = :external_id
+                SET status = :status
                 WHERE id = :id",
                 [
                     ':id' => $id,
-                    ':external_id' => $external_id
+                    ':status' => $status
                 ]
             );
         } catch (\PDOException $e) {

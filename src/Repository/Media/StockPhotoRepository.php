@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Media;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\PhotoEntity;
+use WarehouseCore\Payload\Entity\PhotoEntity;
 
 final class StockPhotoRepository {
     public function __construct(

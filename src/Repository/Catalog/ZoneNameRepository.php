@@ -1,52 +1,51 @@
 <?php
-namespace WarehouseCore\Repository\Processing;
+namespace WarehouseCore\Repository\Catalog;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
-use WarehouseCore\Payload\VO\ItemProcessingStepVO;
 
-final class ItemProcessingStepRepository extends Repository {
+use WarehouseCore\Payload\VO\ZoneNameVO;
+
+final class ZoneNameRepository extends Repository {
     public function hydrate(
         array $raw
-    ): ItemProcessingStepVO {
-        return ItemProcessingStepVO::fromRaw($raw);
+    ): ZoneNameVO {
+        return ZoneNameVO::fromRaw($raw);
     }
 
-    public function getByItemId(
-        int $item_id
+    public function getByZoneId(
+        int $zone_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE item_id = :item_id",
+            WHERE zone_id = :zone_id",
             [
-                ':item_id' => $item_id
+                ':zone_id' => $zone_id
             ]
         );
     }
 
-    public function findByStage(
-        string $stage
-    ): array {
-        return $this->entities(
+    public function getPrimaryByZoneId(
+        int $zone_id
+    ): ?ZoneNameVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
-            WHERE stage = :stage",
+            WHERE zone_id = :zone_id
+            AND is_primary = TRUE",
             [
-                ':stage' => $stage
+                ':zone_id' => $zone_id
             ]
         );
     }
 
-    public function findByItemIdAndStage(
-        int $item_id,
-        string $stage
+    public function findByValue(
+        string $value
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE item_id = :item_id
-            AND stage = :stage",
+            WHERE value = :value",
             [
-                ':item_id' => $item_id,
-                ':stage' => $stage
+                ':value' => $value
             ]
         );
     }
@@ -64,31 +63,31 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function add(
-        int $item_id,
-        string $stage,
-        ?string $metadata,
+        int $zone_id,
+        string $value,
+        bool $is_primary,
         int $user_id
     ): void {
         try {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    item_id,
-                    stage,
-                    metadata,
+                    zone_id,
+                    value,
+                    is_primary,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :item_id,
-                    :stage,
-                    :metadata,
+                    :zone_id,
+                    :value,
+                    :is_primary,
                     :user_id
                 )",
                 [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':metadata' => $metadata,
+                    ':zone_id' => $zone_id,
+                    ':value' => $value,
+                    ':is_primary' => $is_primary,
                     ':user_id' => $user_id
                 ]
             );
@@ -97,21 +96,21 @@ final class ItemProcessingStepRepository extends Repository {
         }
     }
 
-    public function updateStage(
-        int $item_id,
-        string $stage,
-        string $new_stage
+    public function updateValue(
+        int $zone_id,
+        string $value,
+        string $new_value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET stage = :new_stage
-                WHERE item_id = :item_id
-                AND stage = :stage",
+                SET value = :new_value
+                WHERE zone_id = :zone_id
+                AND value = :value",
                 [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':new_stage' => $new_stage
+                    ':zone_id' => $zone_id,
+                    ':value' => $value,
+                    ':new_value' => $new_value
                 ]
             );
         } catch (\PDOException $e) {
@@ -119,21 +118,21 @@ final class ItemProcessingStepRepository extends Repository {
         }
     }
 
-    public function updateMetadata(
-        int $item_id,
-        string $stage,
-        ?string $metadata
+    public function updatePrimary(
+        int $zone_id,
+        string $value,
+        bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET metadata = :metadata
-                WHERE item_id = :item_id
-                AND stage = :stage",
+                SET is_primary = :is_primary
+                WHERE zone_id = :zone_id
+                AND value = :value",
                 [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':metadata' => $metadata
+                    ':zone_id' => $zone_id,
+                    ':value' => $value,
+                    ':is_primary' => $is_primary
                 ]
             );
         } catch (\PDOException $e) {
@@ -142,17 +141,17 @@ final class ItemProcessingStepRepository extends Repository {
     }
 
     public function delete(
-        int $item_id,
-        string $stage
+        int $zone_id,
+        string $value
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE item_id = :item_id
-                AND stage = :stage",
+                WHERE zone_id = :zone_id
+                AND value = :value",
                 [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage
+                    ':zone_id' => $zone_id,
+                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {

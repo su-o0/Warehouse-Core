@@ -2,19 +2,19 @@
 namespace WarehouseCore\Repository\Identity;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Payload\Reference\RoleReference;
+use WarehouseCore\Payload\Reference\ProviderReference;
 
-final class RoleRepository extends Repository
+final class ProviderRepository extends Repository
 {
     public function hydrate(
         array $raw
-    ): RoleReference {
-        return RoleReference::fromRaw($raw);
+    ): ProviderReference {
+        return ProviderReference::fromRaw($raw);
     }
 
     public function getByName(
         string $name
-    ): ?RoleReference {
+    ): ?ProviderReference {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE name = :name",

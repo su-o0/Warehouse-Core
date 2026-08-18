@@ -1,159 +1,173 @@
 <?php
 namespace WarehouseCore\Repository\Topology;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\VO\Relationship\StockPlacementVO;
 
-use WarehouseCore\Payload\Value\StockPlacementValue;
-
-final class StockPlacementRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
-
-    public function getById(
-        int $id
-    ): null|StockPlacementValue {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
-        );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return ($result)? null : StockPlacementValue::fromRaw($result);
+final class StockPlacementRepository extends Repository {
+    public function hydrate(
+        array $raw
+    ): StockPlacementVO {
+        return StockPlacementVO::fromRaw($raw);
     }
 
-    public function findByStockId(
+    public function getByStockId(
         int $stock_id
-    ): null|array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE stock_id = :stock_id"
+    ): ?StockPlacementVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE stock_id = :stock_id",
+            [
+                ':stock_id' => $stock_id
+            ]
         );
-        $stmt->execute([
-            ":stock_id" => $stock_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : $result;
     }
 
-    public function findByLocationId(
-        int $location_id
+    public function findByZoneId(
+        int $zone_id
     ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE location_id = :location_id"
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE zone_id = :zone_id",
+            [
+                ':zone_id' => $zone_id
+            ]
         );
-        $stmt->execute([
-            ":location_id" => $location_id
-        ]);
-        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByShelfId(
+        int $shelf_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE shelf_id = :shelf_id",
+            [
+                ':shelf_id' => $shelf_id
+            ]
+        );
     }
 
     public function findByContainerId(
         int $container_id
     ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE container_id = :container_id"
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE container_id = :container_id",
+            [
+                ':container_id' => $container_id
+            ]
         );
-        $stmt->execute([
-            ":container_id" => $container_id
-        ]);
-        return array_map(fn($row) => StockPlacementValue::fromRaw($row), $stmt->fetchAll());
     }
 
-    public function addByLocationId(
-        int $location_id, 
-        int $stock_id
-    ): int {
+    public function add(
+        int $stock_id,
+        ?int $zone_id = null,
+        ?int $shelf_id = null,
+        ?int $container_id = null
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (location_id, stock_id) 
-                VALUES (:location_id, :stock_id)"
+            $this->execute(
+                "INSERT INTO {$this->table}
+                (
+                    zone_id,
+                    shelf_id,
+                    container_id,
+                    stock_id
+                )
+                VALUES
+                (
+                    :zone_id,
+                    :shelf_id,
+                    :container_id,
+                    :stock_id
+                )",
+                [
+                    ':zone_id' => $zone_id,
+                    ':shelf_id' => $shelf_id,
+                    ':container_id' => $container_id,
+                    ':stock_id' => $stock_id
+                ]
             );
-            $stmt->execute([
-                ':location_id' => $location_id,
-                ':stock_id' => $stock_id
-            ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
-    public function addByContainerId(
-        int $container_id, 
-        int $stock_id
-    ): int {
+    public function updateZoneId(
+        int $stock_id,
+        ?int $zone_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (container_id, stock_id) 
-                VALUES (:container_id, :stock_id)"
+            $this->execute(
+                "UPDATE {$this->table}
+                SET zone_id = :zone_id,
+                    shelf_id = NULL,
+                    container_id = NULL
+                WHERE stock_id = :stock_id",
+                [
+                    ':zone_id' => $zone_id,
+                    ':stock_id' => $stock_id
+                ]
             );
-            $stmt->execute([
-                ':container_id' => $container_id,
-                ':stock_id' => $stock_id
-            ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
-        }
+        }   
     }
 
-    public function updateLocationId(
-        int $id, 
-        int $location_id
-    ): int {
+    public function updateShelfId(
+        int $stock_id,
+        ?int $shelf_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET location_id = :location_id 
-                WHERE id = :id"
+            $this->execute(
+                "UPDATE {$this->table}
+                SET shelf_id = :shelf_id,
+                    zone_id = NULL,
+                    container_id = NULL
+                WHERE stock_id = :stock_id",
+                [
+                    ':shelf_id' => $shelf_id,
+                    ':stock_id' => $stock_id
+                ]
             );
-            return $stmt->execute([
-                ':location_id' => $location_id,
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function updateContainerId(
-        int $id, 
-        int $container_id
-    ): int {
+        int $stock_id,
+        ?int $container_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET container_id = :container_id 
-                WHERE id = :id"
+            $this->execute(
+                "UPDATE {$this->table}
+                SET container_id = :container_id,
+                    zone_id = NULL,
+                    shelf_id = NULL
+                WHERE stock_id = :stock_id",
+                [
+                    ':container_id' => $container_id,
+                    ':stock_id' => $stock_id
+                ]
             );
-            return $stmt->execute([
-                ':container_id' => $container_id,
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
-        int $id
-    ): bool {
+        int $stock_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE stock_id = :stock_id",
+                [
+                    ':stock_id' => $stock_id
+                ]
             );
-            $stmt->execute([
-                ':id' => $id
-            ]);
-            return true;
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }

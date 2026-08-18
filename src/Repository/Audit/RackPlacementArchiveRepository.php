@@ -1,43 +1,31 @@
 <?php
-namespace WarehouseCore\Repository\Catalog;
+namespace WarehouseCore\Repository\Audit;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\Entity\PartEntity;
+use WarehouseCore\Payload\VO\Audit\RackPlacementArchiveVO;
 
-final class PartRepository extends Repository {
+final class RackPlacementArchiveRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PartEntity {
-        return PartEntity::fromRaw($raw);
+    ): RackPlacementArchiveVO {
+        return RackPlacementArchiveVO::fromRaw($raw);
     }
 
-    public function getById(
-        int $id
-    ): ?PartEntity {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE id = :id",
-            [
-                ':id' => $id
-            ]
-        );
-    }
-
-    public function findByStatus(
-        string $status
+    public function findByRackId(
+        int $rack_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE status = :status",
+            WHERE rack_id = :rack_id",
             [
-                ':status' => $status
+                ':rack_id' => $rack_id
             ]
         );
     }
 
-    public function findByCreaterUserId(
+    public function findByCreatedUserId(
         int $user_id
     ): array {
         return $this->entities(
@@ -50,19 +38,31 @@ final class PartRepository extends Repository {
     }
 
     public function add(
+        int $rack_id,
+        ?int $to_area_id,
+        ?int $to_zone_id,
         int $user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
+                    rack_id,
+                    to_area_id,
+                    to_zone_id,
                     created_by_user_id
                 )
                 VALUES
                 (
+                    :rack_id,
+                    :to_area_id,
+                    :to_zone_id,
                     :user_id
                 )",
                 [
+                    ':rack_id' => $rack_id,
+                    ':to_area_id' => $to_area_id,
+                    ':to_zone_id' => $to_zone_id,
                     ':user_id' => $user_id
                 ]
             );
@@ -71,34 +71,15 @@ final class PartRepository extends Repository {
         }
     }
 
-    public function updateStatus(
-        int $id,
-        string $status
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET status = :status
-                WHERE id = :id",
-                [
-                    ':status' => $status,
-                    ':id' => $id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
     public function delete(
-        int $id
+        int $rack_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE id = :id",
+                WHERE rack_id = :rack_id",
                 [
-                    ':id' => $id
+                    ':rack_id' => $rack_id
                 ]
             );
         } catch (\PDOException $e) {

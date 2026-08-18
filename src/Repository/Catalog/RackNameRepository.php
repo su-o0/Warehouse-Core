@@ -1,31 +1,19 @@
 <?php
-namespace WarehouseCore\Repository\Inventory;
+namespace WarehouseCore\Repository\Catalog;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\Entity\StockEntity;
+use WarehouseCore\Payload\VO\PartNameVO;
 
-final class StockRepository extends Repository {
+final class PartNameRepository extends Repository {
     public function hydrate(
         array $raw
-    ): StockEntity {
-        return StockEntity::fromRaw($raw);
+    ): PartNameVO {
+        return PartNameVO::fromRaw($raw);
     }
 
-    public function getById(
-        int $id
-    ): ?StockEntity {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE id = :id",
-            [
-                ':id' => $id
-            ]
-        );
-    }
-
-    public function findByPartId(
+    public function getByPartId(
         int $part_id
     ): array {
         return $this->entities(
@@ -37,14 +25,27 @@ final class StockRepository extends Repository {
         );
     }
 
-    public function findByStatus(
-        string $status
-    ): array {
-        return $this->entities(
+    public function getPrimaryByPartId(
+        int $part_id
+    ): ?PartNameVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
-            WHERE status = :status",
+            WHERE part_id = :part_id
+            AND is_primary = TRUE",
             [
-                ':status' => $status
+                ':part_id' => $part_id
+            ]
+        );
+    }
+
+    public function getByValue(
+        string $value
+    ): ?PartNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE value = :value",
+            [
+                ':value' => $value
             ]
         );
     }
@@ -62,27 +63,31 @@ final class StockRepository extends Repository {
     }
 
     public function add(
-        int $user_id,
-        ?int $part_id = null,
-        int $qty = 0
-    ): int {
+        int $part_id,
+        string $value,
+        bool $is_primary,
+        int $user_id
+    ): void {
         try {
-            return $this->insert(
+            $this->insert(
                 "INSERT INTO {$this->table}
                 (
                     part_id,
-                    qty,
+                    value,
+                    is_primary,
                     created_by_user_id
                 )
                 VALUES
                 (
                     :part_id,
-                    :qty,
+                    :value,
+                    :is_primary,
                     :user_id
                 )",
                 [
                     ':part_id' => $part_id,
-                    ':qty' => $qty,
+                    ':value' => $value,
+                    ':is_primary' => $is_primary,
                     ':user_id' => $user_id
                 ]
             );
@@ -91,18 +96,21 @@ final class StockRepository extends Repository {
         }
     }
 
-    public function updatePartId(
-        int $id,
-        int $part_id
+    public function updateValue(
+        int $part_id,
+        string $value,
+        string $new_value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET part_id = :part_id
-                WHERE id = :id",
+                SET value = :new_value
+                WHERE part_id = :part_id
+                AND value = :value",
                 [
                     ':part_id' => $part_id,
-                    ':id' => $id
+                    ':value' => $value,
+                    ':new_value' => $new_value
                 ]
             );
         } catch (\PDOException $e) {
@@ -110,37 +118,21 @@ final class StockRepository extends Repository {
         }
     }
 
-    public function updateQty(
-        int $id,
-        int $qty
+    public function updatePrimary(
+        int $part_id,
+        string $value,
+        bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET qty = :qty
-                WHERE id = :id",
+                SET is_primary = :is_primary
+                WHERE part_id = :part_id
+                AND value = :value",
                 [
-                    ':qty' => $qty,
-                    ':id' => $id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateStatus(
-        int $id,
-        string $status
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET status = :status
-                WHERE id = :id",
-                [
-                    ':status' => $status,
-                    ':id' => $id
+                    ':part_id' => $part_id,
+                    ':value' => $value,
+                    ':is_primary' => $is_primary
                 ]
             );
         } catch (\PDOException $e) {
@@ -149,14 +141,17 @@ final class StockRepository extends Repository {
     }
 
     public function delete(
-        int $id
+        int $part_id,
+        string $value
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE id = :id",
+                WHERE part_id = :part_id
+                AND value = :value",
                 [
-                    ':id' => $id
+                    ':part_id' => $part_id,
+                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {

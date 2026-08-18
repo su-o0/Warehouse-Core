@@ -2,9 +2,9 @@
 namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\PartAliasEntity;
+use WarehouseCore\Payload\Entity\PartNameEntity;
 
-final class PartAliasRepository {
+final class PartNameRepository {
     public function __construct(
         private \PDO $db, 
         private string $table_name
@@ -12,7 +12,7 @@ final class PartAliasRepository {
 
     public function getById(
         string $id
-    ): null|PartAliasEntity {
+    ): null|PartNameEntity {
         $stmt = $this->db->prepare( 
             "SELECT * FROM {$this->table_name} 
             WHERE id = :id"
@@ -21,49 +21,38 @@ final class PartAliasRepository {
             ":id" => $id
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : PartAliasEntity::fromRaw($result);
+        return empty($result)? null : PartNameEntity::fromRaw($result);
     }
 
-    public function findByPartId(
-        int $part_id
-    ): array{ 
-        $stmt = $this->db->prepare(
-            "SELECT * FROM $this->table_name 
-            WHERE part_id = :part_id"
-        );
-        $stmt->execute([
-            ":part_id" => $part_id
-        ]);
-        return array_map(fn($row) => PartAliasEntity::fromRaw($row), $stmt->fetchAll());
-    }
-
-    public function findByArticle(
-        string $article
-    ): null|PartAliasEntity{
+    public function findByValue(
+        string $value
+    ): null|PartNameEntity{
         $stmt = $this->db->prepare(
             "SELECT * FROM {$this->table_name} 
-            WHERE article = :article"
+            WHERE value = :value"
         );
         $stmt->execute([
-            ":article" => $article
+            ":value" => $value
         ]);
         $result = $stmt->fetch();
-        return empty($result)? null : PartAliasEntity::fromRaw($result);
+        return empty($result)? null : PartNameEntity::fromRaw($result);
     }
 
     public function add(
         int $part_id,
-        string $article
+        string $value,
+        bool $is_primary = false
     ): int {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO {$this->table_name} 
-                (part_id, article) 
-                VALUES (:part_id, :article)"
+                (part_id, value, is_primary) 
+                VALUES (:part_id, :value, :is_primary)"
             );
             $stmt->execute([
                 ':part_id' => $part_id,
-                ':article' => $article
+                ':value' => $value,
+                ':is_primary' => $is_primary
             ]);
             return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -71,38 +60,38 @@ final class PartAliasRepository {
         }
     }
 
-    public function updatePartId(
+    public function updateValue(
         int $id, 
-        int $part_id
+        string $value
     ): bool {
         try{
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
-                SET part_id = :part_id 
+                SET value = :value 
                 WHERE id = :id"
             );
             return $stmt->execute([
                 ':id' => $id,
-                ':part_id' => $part_id,
+                ':value' => $value,
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
-
-    public function updateArticle(
+    
+    public function updateIsPrimary(
         int $id, 
-        string $article
+        bool $is_primary
     ): bool {
         try{
             $stmt = $this->db->prepare(
                 "UPDATE {$this->table_name} 
-                SET article = :article 
+                SET is_primary = :is_primary 
                 WHERE id = :id"
             );
             return $stmt->execute([
                 ':id' => $id,
-                ':article' => $article,
+                ':is_primary' => $is_primary,
             ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);

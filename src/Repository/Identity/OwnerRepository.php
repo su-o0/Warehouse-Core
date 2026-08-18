@@ -1,66 +1,144 @@
 <?php
 namespace WarehouseCore\Repository\Identity;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\OwnerEntity;
+use WarehouseCore\Payload\Entity\OwnerEntity;
 
-final class OwnerRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
+final class OwnerRepository extends Repository {
+    public function hydrate(
+        array $raw
+    ): OwnerEntity {
+        return OwnerEntity::fromRaw($raw);
+    }
 
     public function getById(
         int $id
-    ): null|OwnerEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
+    ): ?OwnerEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE id = :id",
+            [
+                ':id' => $id
+            ]
         );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : OwnerEntity::fromRaw($result);
     }
 
-    public function getAll(): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name}"
-        );
-        $stmt->execute();
-        return array_map(fn($row) => OwnerEntity::fromRaw($row), $stmt->fetchAll());
-    }
-
-    public function getByUserId(
+    public function findByUserId(
         int $user_id
-    ): null|OwnerEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE user_id = :user_id"
+    ): ?OwnerEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE user_id = :user_id",
+            [
+                ':user_id' => $user_id
+            ]
         );
-        $stmt->execute([
-            ":user_id" => $user_id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : OwnerEntity::fromRaw($result);
+    }
+
+    public function findByStatus(
+        string $status
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE status = :status",
+            [
+                ':status' => $status
+            ]
+        );
+    }
+
+    public function findByCreatedUserId(
+        int $user_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE created_by_user_id = :user_id",
+            [
+                ':user_id' => $user_id
+            ]
+        );
     }
 
     public function add(
-        string $name, 
-        int $user_id, 
+        int $user_id,
+        int $created_by_user_id
     ): int {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name}
-                (name, user_id) 
-                VALUES (:name, :user_id)"
+            return $this->insert(
+                "INSERT INTO {$this->table}
+                (
+                    user_id,
+                    created_by_user_id
+                )
+                VALUES
+                (
+                    :user_id,
+                    :created_by_user_id
+                )",
+                [
+                    ':user_id' => $user_id,
+                    ':created_by_user_id' => $created_by_user_id
+                ]
             );
-            $stmt->execute([
-                ':name' => $name,
-                ':user_id' => $user_id
-            ]);
-            return (int) $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateUserId(
+        int $id,
+        int $user_id
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET user_id = :user_id
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':user_id' => $user_id
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateStatus(
+        int $id,
+        string $status
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET status = :status
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':status' => $status
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateCreatedByUserId(
+        int $id,
+        int $user_id
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET created_by_user_id = :user_id
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':user_id' => $user_id
+                ]
+            );
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
@@ -68,15 +146,15 @@ final class OwnerRepository {
 
     public function delete(
         int $id
-    ): bool {
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE id = :id",
+                [
+                    ':id' => $id
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }

@@ -1,136 +1,145 @@
 <?php
 namespace WarehouseCore\Repository\Identity;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
 
-use WarehouseCore\Payload\DTO\UserEntity;
+use WarehouseCore\Payload\Entity\UserEntity;
 
-final class UserRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
+final class UserRepository extends Repository
+{
+    public function hydrate(
+        array $raw
+    ): UserEntity {
+        return UserEntity::fromRaw($raw);
+    }
 
     public function getById(
         int $id
-    ): null|UserEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
+    ): ?UserEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE id = :id",
+            [
+                ':id' => $id
+            ]
         );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : UserEntity::fromRaw($result);
-    }
-
-    public function getAll(): array {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name}"
-        );
-        $stmt->execute();
-        return array_map(fn($row) => UserEntity::fromRaw($row), $stmt->fetchAll());
     }
 
     public function findByName(
         string $name
-    ): null|UserEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE name = :name"
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE name = :name",
+            [
+                ':name' => $name
+            ]
         );
-        $stmt->execute([
-            ":name" => $name
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : UserEntity::fromRaw($result);
     }
 
-    public function findByRoleId(
-        int $role_id
+    public function findByRole(
+        string $role
     ): array {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE role_id = :role_id"
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE role = :role",
+            [
+                ':role' => $role
+            ]
         );
-        $stmt->execute([
-            ":role_id" => $role_id
-        ]);
-        return array_map(fn($row) => UserEntity::fromRaw($row), $stmt->fetchAll());
+    }
+
+    public function findByStatus(
+        string $status
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE status = :status",
+            [
+                ':status' => $status
+            ]
+        );
     }
 
     public function add(
         string $name,
-        int $role_id
+        string $role
     ): int {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name}
-                (name, role_id) 
-                VALUES (:name, :role_id)"
+            return $this->insert(
+                "INSERT INTO {$this->table}
+                (
+                    name,
+                    role
+                )
+                VALUES
+                (
+                    :name,
+                    :role
+                )",
+                [
+                    ':name' => $name,
+                    ':role' => $role
+                ]
             );
-            $stmt->execute([
-                ':name' => $name,
-                ':role_id' => $role_id
-            ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function updateName(
-        int $id, 
+        int $id,
         string $name
-    ):bool {
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET name = :name 
-                WHERE id = :id"
+            $this->execute(
+                "UPDATE {$this->table}
+                SET name = :name
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':name' => $name
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id,
-                ':name' => $name
-            ]);
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
+
+    public function updateRole(
+        int $id,
+        string $role
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET role = :role
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':role' => $role
+                ]
+            );
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function updateStatus(
-        int $id, 
+        int $id,
         string $status
-    ):bool {
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET name = :name 
-                WHERE id = :id"
+            $this->execute(
+                "UPDATE {$this->table}
+                SET status = :status
+                WHERE id = :id",
+                [
+                    ':id' => $id,
+                    ':status' => $status
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id,
-                ':name' => $status
-            ]);
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateRoleId(
-        int $id, 
-        int $role_id
-    ):bool {
-        try {
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET role_id = :role_id 
-                WHERE id = :id"
-            );
-            return $stmt->execute([
-                ':id' => $id,
-                ':role_id' => $role_id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
@@ -138,15 +147,15 @@ final class UserRepository {
 
     public function delete(
         int $id
-    ): bool {
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE id = :id",
+                [
+                    ':id' => $id
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
