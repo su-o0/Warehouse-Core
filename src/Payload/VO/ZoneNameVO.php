@@ -16,7 +16,7 @@ final class ZoneNameVO {
     public static function fromRaw(
         array $raw
     ): self {
-        return new self(sdfsfsfshcdhgsdhfgsdhgfhsdgfhsgfhsdgfhsdgfhsdhxh
+        return new self(
             zone_id: self::requiredInt($raw, 'zone_id'),
             value: self::requiredString($raw, 'value'),
             is_primary: self::required($raw, 'is_primary'),
