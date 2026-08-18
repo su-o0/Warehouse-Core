@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Payload\Value;
+namespace WarehouseCore\Payload\VO\Audit;
 
 use WarehouseCore\Config\ConfigHelper;
 

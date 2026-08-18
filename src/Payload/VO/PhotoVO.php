@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Payload\Entity;
+namespace WarehouseCore\Payload\VO;
 
 use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Payload\DTO\PhotoDTO;

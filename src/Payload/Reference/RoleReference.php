@@ -1,5 +1,5 @@
 <?php
-namespace WarehouseCore\Payload\Entity;
+namespace WarehouseCore\Payload\Reference;
 
 use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Payload\Enum\RoleNameEnum;
