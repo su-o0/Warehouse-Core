@@ -2,7 +2,7 @@
 namespace WarehouseCore\Payload\Result;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\DTO\LocationEntity;
+use WarehouseCore\Payload\Entity\LocationEntity;
 
 final class GetLocationResult implements ApiResult {
     public function __construct(
