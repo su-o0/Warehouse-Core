@@ -5,7 +5,7 @@ use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Exception\ErrorCode;
 use WarehouseCore\Exception\ValidationException;
 
-final class ItemMovementArchiveValue {
+final class ItemMovementArchiveVO {
     use ConfigHelper;
     public function __construct(
         public readonly int $item_id,
