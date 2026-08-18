@@ -3,7 +3,7 @@ namespace WarehouseCore\Payload\VO\Audit;
 
 use WarehouseCore\Config\ConfigHelper;
 
-final readonly class ItemSalesArhiveVO {
+final readonly class ItemSalesArchiveVO {
     use ConfigHelper;
     public function __construct(
         public int $item_id,
