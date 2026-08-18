@@ -12,10 +12,9 @@ final class ZoneNameVO {
         public int $created_by_user_id,
         public string $created_at
     ){ }
-rr
-    ): self {
-        return <newwww class="win2 cn">
-        <g1></g1>
+
+    public static function fromRaw(
+        array $raw
     ): self {
         return new self(
             zone_id: self::requiredInt($raw, 'zone_id'),
