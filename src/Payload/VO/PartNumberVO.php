@@ -3,7 +3,7 @@ namespace WarehouseCore\Payload\VO;
 
 use WarehouseCore\Config\ConfigHelper;
 
-final readonly class PartNumberValue {
+final readonly class PartNumberVO {
     use ConfigHelper;
     public function __construct(
         public int $part_id,
