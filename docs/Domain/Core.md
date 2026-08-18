@@ -2,105 +2,90 @@
 
 ```
 Core
-├── Enitity
-├── Value Objects
-├── Relationship
-├── Audit Record
-├── Domain Service
-└── Event 
+├── Entity
+├── Type Enums
+├── Reference Data
+└── Value Objects
+    ├── Relationship
+    └── Audit
 ```
 ---
 ```
-Enitity
+Entity
 ├── Area
-├── Zone
-├── Rack
-├── Shelf
 ├── Container
 ├── Item
-├── Stock
-├── PhysicalTag
+├── Journal
+├── Owner
 ├── Part
-├── Vehicle
+├── PhysicalTag
+├── Rack
+├── Shelf
+├── Stock
 ├── StoredFile
-├── Telemetry
 ├── User
-└── UserIdentity
+├── UserIdentity
+├── Vehicle
+└── Zone
+```
+---
+```
+Reference Data
+├── Role
+└── Provider
+```
+---
+```
+Type Enums
+├── Area Status
+├── Container Status
+├── Container Type
+├── Item Condition
+├── Item Status
+├── ItemProcessingStep Stage
+├── Owner Status
+├── Part Status
+├── PartProcessingStep Stage
+├── PhysicalTag Status
+├── Provider Name
+├── Rack Status
+├── Role Name
+├── Shelf Status
+├── Stock Status
+├── User Status
+└── Zone Status
 ```
 ---
 ```
 Value Objects
-├── Role
-├── Provider
-├── ItemProcessingStep
-├── PartProcessingStep
 ├── AreaName
-├── ZoneName
-├── RackName
-├── PartNumber
+│
+├── Audit
+│   ├── ContainerMovementArchive
+│   ├── ContainerPlacementArchive
+│   ├── ItemMovementArchive
+│   ├── ItemPlacementArchive
+│   ├── ItemSalesArchive
+│   ├── RackMovementArchive
+│   ├── RackPlacementArchive
+│   ├── StockMovementArchive
+│   ├── StockPlacementArchive
+│   └── StockSalesArchive
+│
+├── ItemProcessingStep
 ├── PartName
-├── PartPhoto
-├── ItemPhoto
-├── StockPhoto
-├── VehiclePhoto
-├── PartVideo
-├── ItemVideo
-├── StockVideo
-├── VehicleVideo
-├── AreaStatus
-├── ZoneStatus
-├── RackStatus
-├── ShelfStatus
-├── ContainerStatus
-├── ItemStatus
-├── StockStatus
-├── PartStatus
-├── PhysicalTagStatus
-├── ItemProcessingStepStage
-├── PartProcessingStepStage
-├── UserStatus
-└── UserIdentityProvider
-```
----
-```
-Relationship
-├── AreaAccess
-├── Owner
-├── RackPlacement
-├── ContainerPlacement
-├── ItemPlacement
-└── StockPlacement
-```
----
-```
-Audit Record
-├── RackPlacementArchive
-├── ContainerPlacementArchive
-├── ItemPlacementArchive
-├── StockPlacementArchive
-├── RackMovementArchive
-├── ContainerMovementArchive
-├── ItemMovementArchive
-├── StockMovementArchive
-├── ItemSalesArchive
-└── StockSalesArchive
-```
----
-```
-Domain Service
-├── PlacementService
-├── MovementService
-├── ProcessingService
-└── StoredFileService
-```
----
-```
-Event
-├── UpdateTopology
-├── UpdateInventory
-├── Placement
-├── Movement
-├── Processing
-├── StoredFile
-└── UpdateDefantion
+├── PartNumber
+├── PartProcessingStep
+├── Video
+├── RackName
+│
+├── Relationship
+│   ├── AreaAccess
+│   ├── ContainerPlacement
+│   ├── ItemPlacement
+│   ├── RackPlacement
+│   └── StockPlacement
+│
+├── Photo
+└── ZoneName
 ```

@@ -32,26 +32,23 @@ Zone
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
-│   
+│
 ├── CreatedByUserId
 └── CreatedAt
 
 RackPlacement
-├── Id
 ├── AreaId
 ├── ZoneId
 ├── RackId
 └── CreatedAt   
 
 ContainerPlacement
-├── Id
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
 └── CreatedAt
 
 ItemPlacement
-├── Id
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
@@ -59,7 +56,6 @@ ItemPlacement
 └── CreatedAt
 
 StockPlacement
-├── Id
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
@@ -84,7 +80,7 @@ Rack
 ├── Id
 ├── Status 
 │   ├── Created
-│   ├── Active
+│   ├── nActive
 │   ├── Crowded
 │   └── Archived
 │   
@@ -178,11 +174,10 @@ Processing
 ---
 ```
 ItemProcessingStep
-├── Id
 ├── ItemId
 ├── Stage
 │   ├── Identify
-│   ├── Photo
+│   ├── Capture
 │   ├── Inspection
 │   └── Placement
 │
@@ -191,12 +186,10 @@ ItemProcessingStep
 └── CreatedAt
 
 PartProcessingStep
-├── Id
 ├── PartId
 ├── Stage
-│   ├── Number
-│   ├── Photo
-│   └── Name
+│   ├── Identify
+│   └── Capture
 │
 ├── Metadata
 ├── CreatedByUserId
@@ -218,16 +211,16 @@ Catalog
 ---
 ```
 AreaName
-├── Id
 ├── AreaId
 ├── Value
+├── IsPrimary
 ├── CreatedByUserId
 └── CreatedAt
 
 ZoneName
-├── Id
 ├── ZoneId
 ├── Value
+├── IsPrimary
 ├── CreatedByUserId
 └── CreatedAt
 
@@ -235,6 +228,7 @@ RackName
 ├── Id
 ├── RackId
 ├── Value
+├── IsPrimary
 ├── CreatedByUserId
 └── CreatedAt
 
@@ -242,21 +236,21 @@ Part
 ├── Id
 ├── Status
 │   ├── Created
+│   ├── Processing
 │   ├── Active
 │   └── Archived 
 │
-CreatedByUserId
+├── CreatedByUserId
 └── CreatedAt
 
 PartNumber
-├── Id
 ├── PartId
 ├── Value
 ├── IsPrimary
+├── CreatedByUserId
 └── CreatedAt
 
 PartName
-├── Id
 ├── PartId
 ├── Value
 ├── IsPrimary
@@ -358,19 +352,17 @@ Audit
 ├── StockMovementArchive
 ├── ItemSalesArchive
 ├── StockSalesArchive
-└── Telemetry
+└── Journal
 ```
 ---
 ```
 ItemSalesArchive
-├── Id
 ├── ItemId
 ├── UserId
 ├── CreatedByUserId
 └── CreatedAt
 
 StockSalesArchive
-├── Id
 ├── StockId
 ├── Qty
 ├── UserId
@@ -378,92 +370,89 @@ StockSalesArchive
 └── CreatedAt
 
 RackPlacementArchive
-├── Id
 ├── RackId
-├── From
-├── To
+├── ToAreaId
+├── ToZoneId
 ├── CreatedByUserId
 └── CreatedAt
 
 ContainerPlacementArchive
-├── Id
 ├── ContainerId
-├── From
-├── To
+├── ToZoneId
+├── ToShelfId
 ├── CreatedByUserId
 └── CreatedAt
 
 ItemPlacementArchive
-├── Id
 ├── ItemId
-├── From
-├── To
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
 ├── CreatedByUserId
 └── CreatedAt
 
 StockPlacementArchive
-├── Id
 ├── StockId
-├── From
-├── To
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
 ├── CreatedByUserId
 └── CreatedAt
 
 RackMovementArchive
-├── Id
 ├── RackId
-├── From
-├── To
+├── FromAreaId
+├── FromZoneId
+├── ToAreaId
+├── ToZoneId
 ├── CreatedByUserId
 └── CreatedAt
 
 ContainerMovementArchive
-├── Id
 ├── ContainerId
-├── From
-├── To
+├── FromZoneId
+├── FromShelfId
+├── ToZoneId
+├── ToShelfId
 ├── CreatedByUserId
 └── CreatedAt
 
 ItemMovementArchive
-├── Id
 ├── ItemId
-├── From
-├── To
+├── FromZoneId
+├── FromShelfId
+├── FromContainerId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
 ├── CreatedByUserId
 └── CreatedAt
 
 StockMovementArchive
-├── Id
 ├── StockId
-├── From
-├── To
+├── FromZoneId
+├── FromShelfId
+├── FromContainerId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
 ├── CreatedByUserId
 └── CreatedAt
 
-Telemetry
+Journal
 ├── Id
-├── EntityType
-│   ├── Area
-│   ├── Zone
-│   ├── Rack
-│   ├── Shelf
-│   ├── Container
-│   ├── Item
-│   ├── Stock
-│   ├── PhysicalTag
-│   ├── Part
-│   ├── Vehicle
-│   ├── StoredFile
-│   ├── Telemetry
-│   ├── User
-│   └── UserIdentity 
-│    
-├── EntityId
+├── PreviousHash
+├── Hash
+├── Statement
+├── Parameters
 ├── Metadata
-├── CreatedByUserId
+├── StartedAt
+├── FinishedAt
+├── AffectedRows
+├── Success
+├── Exception
+├── TransactionId
 └── CreatedAt
-
 ```
 
 ### Identity
@@ -480,41 +469,39 @@ Identity
 ---
 ```
 Role
-├── Id
-├── Name
-└── CreatedAt
+└── Name
 
 Provider
-├── Id
-├── Name
-└── CreatedAt
+└── Name
 
 User
 ├── Id
 ├── Name
-├── RoleId
+├── Role
 ├── Status
-│   ├── Created
 │   ├── Active
-│   └── Archive
+│   └── Archived
 │
 └── CreatedAt
 
 UserIdentity
 ├── Id
 ├── UserId
-├── ProviderId
+├── Provider
 ├── ExternalId
 └── CreatedAt
 
 Owner
 ├── Id
 ├── UserId
+├── Status
+│   ├── Active
+│   └── Archived
+│
 ├── CreatedByUserId
 └── CreatedAt
 
 AreaAccess
-├── Id
 ├── AreaId
 ├── UserId
 ├── CreatedByUserId

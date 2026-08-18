@@ -12,30 +12,21 @@ Area
 │   │       ├── Item
 │   │       └── Stock
 │   │
-│   └── Container
-│       ├── Item
-│       └── Stock
+│   ├── Container
+│   │   ├── Item
+│   │   └── Stock
+│   │
+│   ├── Item
+│   └── Stock
 │
-├── Rack
-│   └── Shelf
-│       ├── Container
-│       │   ├── Item
-│       │   └── Stock
-│       │
-│       ├── Item
-│       └── Stock
+├── Zone
+│   └── Rack
 │
-└── Container
-    ├── Item
-    └── Stock
+└── Rack
 ```
 
+
 # Rack Placement
-```
-Rack
-└── Area XOR Zone
-```
----
 ```
 Rack ->  Area
          /\
@@ -53,14 +44,9 @@ Area
 
 # Container Placement
 ```
-Container
-└── Shelf XOR Zone
-```
----
-```
-Zone -> Container
-         /\
-        Shelf
+Container -> Zone
+
+Container -> Shelf
 ```
 ---
 ```
@@ -75,14 +61,10 @@ Area
 
 # Item/Stock Placement
 ```
-Item
-└── Shelf XOR Container
-
-Stock
-└── Shelf XOR Container
-```
----
-```
+Item/Stock -> Zone
+                /\
+              Rack
+                /\
 Item/Stock -> Shelf
                 /\
 Item/Stock -> Container

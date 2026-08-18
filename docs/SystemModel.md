@@ -9,9 +9,10 @@ Entity Domain + Action API
 
 ## ENTRY POINTS
 ```
-Location.Address адрес (бирки на стеллаже)
+Rack.Id: номер стелажа (бирка на стойке стелаже)
+Shelf.Id: номер полки (бирка на стойке стелаже)
 Container.Id: номер контейнера (бирка на коробке)
-PhysicalTag.Id: номер бирки (бирка на запчасти)
+PhysicalTag.Id: номер бирки на запчасти
 ```
 Всё остальное - внутренние Id системы
 
@@ -21,11 +22,14 @@ PhysicalTag.Id: номер бирки (бирка на запчасти)
 System Of Records
 
 #### Setup 
-*createAdress* - Добавить адресс 
-*createTag* - Добавить Бирку
-*createUser* - Добавить Пользователя
+*createArea* - Создать Область 
+*createUser* - Создать Пользователя
 
 #### Fill
+
+*createZone* - Создать Зону
+*addRack* - Добавить Зону
+*addShelf* - Добавить Зону
 
 *createItem* - Добавить Элемент
 *createStock* - Добавить Кучу
@@ -40,28 +44,17 @@ System Of Records
 *moveContainer* - Переместить Контейнер
 
 #### Sell
-```
+
 *sellItem* - Продать Элемент 
 *sellStock* - Продать Часть из Кучи
 *returnItem* - Возврат Элемента
 *returnStock* - Возврат Части из Кучи
-```
+
 #### Query
-```
-*find* - Найти Элемент Или Кучу 
-```
+
 #### Audit
-```
 *getSells* - История продаж
-```
-## STATE
-```
-Container.Type: Box / Pallet
-PhysicalTag.Status: Free / Assigned / Lost / Broken
-Item.Status: Active / Sold / Archived / Lost
-Item.Condition: New / Good / Fair / Poor
-Owner.Permission: Admin / Worker / Salesman
-```
+
 ## FLOW
 [How information moves]
 Setup
@@ -72,34 +65,33 @@ Audit
 
 ## RULES
 [What is allowed]
-```
-PhysicalTag, Container, Location - уникальные сущности, имеющие точку входа в реальный мир.
+
+Rack, Shelf, Container, PhysicalTag - уникальные сущности, имеющие точку входа в реальный мир. 
 Placement описывает физическое расположение объектов.
-Placement применяется только к физически хранимым объектам:
-Container, Item, Stock.
-Placement — единственный источник Location.
-Container — необязательная физическая группировка объектов.
-Container всегда имеет Placement.
-Item/Stock имеют либо Placement, либо ContainerId.
-Location Item/Stock может определяться через Container.
+Placement применяется только к физически хранимым объектам.
+Placement — единственный источник истини о местонахождении обьектов.
+Zone, Container — необязательная физическая группировка объектов.
+ всегда имеет Placement.
+Item/Stock имеют Placement, ContainerId.
 Item имеет PhysicalTag.
+Part должен иметь минимум 1 PartPhoto.
 Item должен иметь минимум 1 ItemPhoto.
 Stock должен иметь минимум 1 StockPhoto.
-Car должен иметь минимум 1 CarPhoto.
+Vehicle должен иметь минимум 1 VehiclePhoto.
+Viewer: Find
 Salesman: Query/Sell
 Worker: Setup/Fill/Query/Sell
 Admin: full access
 ```
 ## DOMAIN MODEL 
 ```
-*Location* - Space - Площадь
-*Placement* - Spatial binding - Расположение
-*Container* - Shysical grouping - Физическая групировка 
-*PhysicalTag* - identity 
-*Item* - Shysical object - Обьект
-*Stock* - quantity - Куча
-*Part* - Каталог
-*Car* - Каталог 
+*Placement* - Расположение
+*Container* - Физическая групировка
+*PhysicalTag* - Физические идентификатор
+*Item* - Уникальная запчасть
+*Stock* - Идентичная запчасть
+*Part* - Каталогжное определение
+*Vehicle* - Каталог 
 *ItemPhoto* - Фото Элементов
 *StockPhoto* - Фото Кучи
 *CarPhoto* - Фото Авто 
@@ -112,7 +104,7 @@ Admin: full access
 ```
 WarehouseCore -> entry point
 Repository -> SQL abstraction
-Scenario -> business logic (contracts implementation)
+Service -> business logic (contracts implementation)
 ```
 
 

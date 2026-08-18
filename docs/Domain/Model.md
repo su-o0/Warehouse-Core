@@ -3,201 +3,207 @@
 ```
 Core
 │
-├── Topology
-│   ├── Placement
-│   │   ├── RackPlacement
-│   │   ├── ContainerPlacement
-│   │   ├── ItemPlacement
-│   │   └── StockPlacement
+├── Audit
+│   ├── Journal
 │   │
-│   └── Structure
-│       ├── Area
-│       └── Zone
+│   ├── MovementHistory
+│   │   ├── ContainerMovementArchive
+│   │   ├── ItemMovementArchive
+│   │   ├── RackMovementArchive
+│   │   └── StockMovementArchive
+│   │
+│   ├── PlacementHistory
+│   │   ├── ContainerPlacementArchive
+│   │   ├── ItemPlacementArchive
+│   │   ├── RackPlacementArchive
+│   │   └── StockPlacementArchive
+│   │
+│   └── SalesHistory
+│       ├── ItemSalesArchive
+│       └── StockSalesArchive
+│
+├── Catalog
+│   ├── AreaName
+│   ├── Part
+│   ├── PartName
+│   ├── PartNumber
+│   ├── RackName
+│   ├── Vehicle
+│   └── ZoneName
+│
+├── Identity
+│   ├── AreaAccess
+│   ├── Membership
+│   │   └── Owner
+│   ├── Provider
+│   ├── Role
+│   ├── User
+│   └── UserIdentity
 │
 ├── Inventory
-│   ├── Rack
-│   ├── Shelf
 │   ├── Container
 │   ├── Item
-│   ├── Stock
-│   └── PhysicalTag
+│   ├── PhysicalTag
+│   ├── Rack
+│   ├── Shelf
+│   └── Stock
+│
+├── Media
+│   ├── Photo
+│   │   ├── ItemPhoto
+│   │   ├── PartPhoto
+│   │   ├── StockPhoto
+│   │   └── VehiclePhoto
+│   │
+│   ├── StoredFile
+│   │
+│   └── Video
+│       ├── ItemVideo
+│       ├── PartVideo
+│       ├── StockVideo
+│       └── VehicleVideo
 │
 ├── Processing
 │   ├── ItemProcessingStep
 │   └── PartProcessingStep
 │
-├── Catalog
-│   ├── AreaName
-│   ├── ZoneName
-│   ├── RackName
-│   ├── Part
-│   ├── PartNumber
-│   ├── PartName
-│   └── Vehicle
-│
-├── Media
-│   ├── Photo
-│   │   ├── PartPhoto
-│   │   ├── ItemPhoto
-│   │   ├── StockPhoto
-│   │   └── VehiclePhoto
-│   │
-│   ├── Video
-│   │   ├── PartVideo
-│   │   ├── ItemVideo
-│   │   ├── StockVideo
-│   │   └── VehicleVideo
-│   │
-│   └── StoredFile
-│
-├── Audit
-│   ├── PlacementHistory
-│   │   ├── RackPlacementArchive
-│   │   ├── ContainerPlacementArchive
-│   │   ├── ItemPlacementArchive
-│   │   └── StockPlacementArchive
-│   │
-│   ├── MovementHistory
-│   │   ├── RackMovementArchive
-│   │   ├── ContainerMovementArchive
-│   │   ├── ItemMovementArchive
-│   │   └── StockMovementArchive
-│   │
-│   ├── SalesHistory
-│   │   ├── ItemSalesArchive
-│   │   └── StockSalesArchive
-│   │
-│   └── Telemetry
-│
-└── Identity
-    ├── Membership
-    │   └── Owner
+└── Topology
+    ├── Placement
+    │   ├── ContainerPlacement
+    │   ├── ItemPlacement
+    │   ├── RackPlacement
+    │   └── StockPlacement
     │
-    ├── AreaAccess
-    ├── Role
-    ├── Provider
-    ├── User
-    └── UserIdentity
-```
----
-```
-Subdomain
-├── Topology
-├── Inventory
-├── Processing 
-├── Catalog
-├── Media
-├── Audit
-└── Identity
+    └── Structure
+        ├── Area
+        └── Zone
 ```
 ---
 ```
 Area
-Zone
-RackPlacement
-ContainerPlacement
-ItemPlacement
-StockPlacement
-Rack
-Shelf
-Container
-Item
-Stock
-PhysicalTag
-ItemProcessingStep
-AreaName
-ZoneName
-RackName
-Part
-PartNumber
-PartName
-Vehicle
-PartPhoto
-ItemPhoto
-StockPhoto
-VehiclePhoto
-PartVideo
-ItemVideo
-StockVideo
-VehicleVideo
-StoredFile
-RackPlacementArchive
-ContainerPlacementArchive
-ItemPlacementArchive
-StockPlacementArchive
-RackMovementArchive
-ContainerMovementArchive
-ItemMovementArchive
-StockMovementArchive
-ItemSalesArchive
-StockSalesArchive
-Telemetry
-Owner
 AreaAccess
-Role
+Container
+ContainerMovementArchive
+ContainerPlacement
+ContainerPlacementArchive
+Item
+ItemMovementArchive
+ItemPhoto
+ItemPlacement
+ItemPlacementArchive
+ItemProcessingStep
+ItemSalesArchive
+ItemVideo
+Journal
+Owner
+Part
+PartName
+PartNumber
+PartPhoto
+PartProcessingStep
+PartVideo
+PhysicalTag
 Provider
+Rack
+RackMovementArchive
+RackName
+RackPlacement
+RackPlacementArchive
+Role
+Shelf
+Stock
+StockMovementArchive
+StockPhoto
+StockPlacement
+StockPlacementArchive
+StockSalesArchive
+StockVideo
+StoredFile
 User
 UserIdentity
-
+Vehicle
+VehiclePhoto
+VehicleVideo
+Zone
+ZoneName
 ```
 ---
 ```
-Topology
-├── Area
-├── Zone
-├── RackPlacement
-├── ContainerPlacement
-├── ItemPlacement
-└── StockPlacement
+Subdomain
+├── Audit
+├── Catalog
+├── Identity
+├── Inventory
+├── Media
+├── Processing 
+└── Topology
+```
+---
+```
+Audit
+├── ContainerMovementArchive
+├── ContainerPlacementArchive
+├── ItemMovementArchive
+├── ItemPlacementArchive
+├── ItemSalesArchive
+├── Journal
+├── RackMovementArchive
+├── RackPlacementArchive
+├── StockMovementArchive
+├── StockPlacementArchive
+└── StockSalesArchive
 
-Inventory
-├── Rack
-├── Shelf
-├── Container
-├── Item
-├── Stock
-└── PhysicalTag
-
-Processing
-└── ItemProcessingStep
 
 Catalog
 ├── AreaName
-├── ZoneName
 ├── Part
-├── PartNumber
 ├── PartName
-└── Vehicle
+├── PartNumber
+├── RackName
+├── Vehicle
+└── ZoneName
 
-Media
-├── PartPhoto
-├── ItemPhoto
-├── StockPhoto
-├── VehiclePhoto
-├── PartVideo
-├── ItemVideo
-├── StockVideo
-├── VehicleVideo
-└── StoredFile
 
-Audit
-├── RackPlacementArchive
-├── ContainerPlacementArchive
-├── ItemPlacementArchive
-├── StockPlacementArchive
-├── RackMovementArchive
-├── ContainerMovementArchive
-├── ItemMovementArchive
-├── StockMovementArchive
-├── ItemSalesArchive
-├── StockSalesArchive
-└── Telemetry
+Inventory
+├── Container
+├── Item
+├── PhysicalTag
+├── Rack
+├── Shelf
+└── Stock
+
 
 Identity
-├── Role
-├── Provider
-├── User
-├── UserIdentity
+├── AreaAccess
 ├── Owner
-└── AreaAccess
+├── Provider
+├── Role
+├── User
+└── UserIdentity
+
+
+Media
+├── ItemPhoto
+├── ItemVideo
+├── PartPhoto
+├── PartVideo
+├── StockPhoto
+├── StockVideo
+├── StoredFile
+├── VehiclePhoto
+└── VehicleVideo
+
+
+Processing
+├── ItemProcessingStep
+└── PartProcessingStep
+
+
+Topology
+├── Area
+├── ContainerPlacement
+├── ItemPlacement
+├── RackPlacement
+├── StockPlacement
+└── Zone
 ```
