@@ -12,7 +12,6 @@ Audit
 ├── Journal
 ├── RackMovementArchive
 ├── RackPlacementArchive
-├── SecurityJournal
 ├── StockMovementArchive
 ├── StockPlacementArchive
 └── StockSalesArchive
@@ -89,21 +88,6 @@ RackPlacementArchive
 ├── ToAreaId
 ├── ToZoneId
 ├── CreatedByUserId
-└── CreatedAt
-
-SecurityJournal
-├── Id
-├── PreviousHash
-├── Hash
-├── Statement
-├── Parameters
-├── Metadata
-├── StartedAt
-├── FinishedAt
-├── AffectedRows
-├── Success
-├── Exception
-├── TransactionId
 └── CreatedAt
 
 StockMovementArchive

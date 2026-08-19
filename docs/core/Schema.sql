@@ -476,34 +476,6 @@ CREATE TABLE journal (
     INDEX idx_journal_created_at (created_at)
 );
 
-CREATE TABLE security_journal (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-
-    previous_hash CHAR(64) NULL,
-    hash CHAR(64) NOT NULL,
-
-    statement TEXT NOT NULL,
-    parameters JSON NULL,
-    metadata JSON NULL,
-
-    started_at DATETIME(6) NOT NULL,
-    finished_at DATETIME(6) NOT NULL,
-
-    affected_rows INT NOT NULL DEFAULT 0,
-    success BOOLEAN NOT NULL,
-
-    exception TEXT NULL,
-
-    transaction_id CHAR(36) NULL,
-
-    created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-
-    UNIQUE KEY uq_security_journal_hash (hash),
-    INDEX idx_security_journal_previous_hash (previous_hash),
-    INDEX idx_security_journal_transaction_id (transaction_id),
-    INDEX idx_security_journal_created_at (created_at)
-);
-
 CREATE TABLE item_sales_archive (
     item_id BIGINT NOT NULL
     ,user_id BIGINT NOT NULL

@@ -18,11 +18,9 @@ Core
 │   │   ├── RackPlacementArchive
 │   │   └── StockPlacementArchive
 │   │
-│   ├── SalesHistory
-│   │   ├── ItemSalesArchive
-│   │   └── StockSalesArchive
-│   │
-│   └── SecurityJournal
+│   └── SalesHistory
+│       ├── ItemSalesArchive
+│       └── StockSalesArchive
 │
 ├── Catalog
 │   ├── AreaName
@@ -114,7 +112,6 @@ RackName
 RackPlacement
 RackPlacementArchive
 Role
-SecurityJournal
 Shelf
 Stock
 StockMovementArchive
@@ -155,7 +152,6 @@ Audit
 ├── Journal
 ├── RackMovementArchive
 ├── RackPlacementArchive
-├── SecurityJournal
 ├── StockMovementArchive
 ├── StockPlacementArchive
 └── StockSalesArchive
