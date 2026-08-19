@@ -18,9 +18,11 @@ Core
 │   │   ├── RackPlacementArchive
 │   │   └── StockPlacementArchive
 │   │
-│   └── SalesHistory
-│       ├── ItemSalesArchive
-│       └── StockSalesArchive
+│   ├── SalesHistory
+│   │   ├── ItemSalesArchive
+│   │   └── StockSalesArchive
+│   │
+│   └── SecurityJournal
 │
 ├── Catalog
 │   ├── AreaName
@@ -33,12 +35,8 @@ Core
 │
 ├── Identity
 │   ├── AreaAccess
-│   ├── Membership
-│   │   └── Owner
-│   ├── Provider
-│   ├── Role
-│   ├── User
-│   └── UserIdentity
+│   └── Membership
+│       └── Owner
 │
 ├── Inventory
 │   ├── Container
@@ -66,6 +64,12 @@ Core
 ├── Processing
 │   ├── ItemProcessingStep
 │   └── PartProcessingStep
+│
+├── Security
+│   ├── Provider
+│   ├── Role
+│   ├── User
+│   └── UserIdentity
 │
 └── Topology
     ├── Placement
@@ -110,6 +114,7 @@ RackName
 RackPlacement
 RackPlacementArchive
 Role
+SecurityJournal
 Shelf
 Stock
 StockMovementArchive
@@ -136,6 +141,7 @@ Subdomain
 ├── Inventory
 ├── Media
 ├── Processing 
+├── Security
 └── Topology
 ```
 ---
@@ -149,6 +155,7 @@ Audit
 ├── Journal
 ├── RackMovementArchive
 ├── RackPlacementArchive
+├── SecurityJournal
 ├── StockMovementArchive
 ├── StockPlacementArchive
 └── StockSalesArchive
@@ -175,11 +182,7 @@ Inventory
 
 Identity
 ├── AreaAccess
-├── Owner
-├── Provider
-├── Role
-├── User
-└── UserIdentity
+└── Owner
 
 
 Media
@@ -197,6 +200,13 @@ Media
 Processing
 ├── ItemProcessingStep
 └── PartProcessingStep
+
+
+Security
+├── Provider
+├── Role
+├── User
+└── UserIdentity
 
 
 Topology

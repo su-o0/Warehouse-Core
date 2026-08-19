@@ -1,65 +1,203 @@
 # Domain Schema
 
-### Topology 
-*where things are*
+### Audit
+*History and telemetry*
 ```
-Topology
-├── Area
-├── Zone
-├── RackPlacement
-├── ContainerPlacement
-├── ItemPlacement
-└── StockPlacement
+Audit
+├── ContainerMovementArchive
+├── ContainerPlacementArchive
+├── ItemMovementArchive
+├── ItemPlacementArchive
+├── ItemSalesArchive
+├── Journal
+├── RackMovementArchive
+├── RackPlacementArchive
+├── SecurityJournal
+├── StockMovementArchive
+├── StockPlacementArchive
+└── StockSalesArchive
 ```
 ---
 ```
-Area
-├── Id
-├── Status
-│   ├── Created
-│   ├── Active
-│   ├── Crowded
-│   └── Archived
-│   
+ContainerMovementArchive
+├── ContainerId
+├── FromZoneId
+├── FromShelfId
+├── ToZoneId
+├── ToShelfId
 ├── CreatedByUserId
 └── CreatedAt
 
-Zone
+ContainerPlacementArchive
+├── ContainerId
+├── ToZoneId
+├── ToShelfId
+├── CreatedByUserId
+└── CreatedAt
+
+ItemMovementArchive
+├── ItemId
+├── FromZoneId
+├── FromShelfId
+├── FromContainerId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
+├── CreatedByUserId
+└── CreatedAt
+    
+ItemPlacementArchive
+├── ItemId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
+├── CreatedByUserId
+└── CreatedAt
+
+ItemSalesArchive
+├── ItemId
+├── UserId
+├── CreatedByUserId
+└── CreatedAt
+
+Journal
 ├── Id
+├── PreviousHash
+├── Hash
+├── Statement
+├── Parameters
+├── Metadata
+├── StartedAt
+├── FinishedAt
+├── AffectedRows
+├── Success
+├── Exception
+├── TransactionId
+└── CreatedAt
+
+RackMovementArchive
+├── RackId
+├── FromAreaId
+├── FromZoneId
+├── ToAreaId
+├── ToZoneId
+├── CreatedByUserId
+└── CreatedAt
+
+RackPlacementArchive
+├── RackId
+├── ToAreaId
+├── ToZoneId
+├── CreatedByUserId
+└── CreatedAt
+
+SecurityJournal
+├── Id
+├── PreviousHash
+├── Hash
+├── Statement
+├── Parameters
+├── Metadata
+├── StartedAt
+├── FinishedAt
+├── AffectedRows
+├── Success
+├── Exception
+├── TransactionId
+└── CreatedAt
+
+StockMovementArchive
+├── StockId
+├── FromZoneId
+├── FromShelfId
+├── FromContainerId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
+├── CreatedByUserId
+└── CreatedAt
+
+StockPlacementArchive
+├── StockId
+├── ToZoneId
+├── ToShelfId
+├── ToContainerId
+├── CreatedByUserId
+└── CreatedAt
+
+StockSalesArchive
+├── StockId
+├── Qty
+├── UserId
+├── CreatedByUserId
+└── CreatedAt
+```
+
+### Catalog 
+*Product definitions*
+```
+Catalog
+├── AreaName
+├── Part
+├── PartName
+├── PartNumber
+├── RackName
+├── Vehicle
+└── ZoneName
+```
+---
+```
+AreaName
 ├── AreaId
-├── Status 
+├── Value
+├── IsPrimary
+├── CreatedByUserId
+└── CreatedAt
+
+Part
+├── Id
+├── Status
 │   ├── Created
+│   ├── Processing
 │   ├── Active
-│   ├── Crowded
-│   └── Archived
+│   └── Archived 
 │
 ├── CreatedByUserId
 └── CreatedAt
 
-RackPlacement
-├── AreaId
-├── ZoneId
-├── RackId
+PartNumber
+├── PartId
+├── Value
+├── IsPrimary
+├── CreatedByUserId
+└── CreatedAt
+
+PartName
+├── PartId
+├── Value
+├── IsPrimary
+├── CreatedByUserId
 └── CreatedAt   
 
-ContainerPlacement
-├── ZoneId
-├── ShelfId
-├── ContainerId
+RackName
+├── Id
+├── RackId
+├── Value
+├── IsPrimary
+├── CreatedByUserId
 └── CreatedAt
 
-ItemPlacement
-├── ZoneId
-├── ShelfId
-├── ContainerId
-├── ItemId
+Vehicle
+├── Id
+├── Vin
+├── CreatedByUserId
 └── CreatedAt
 
-StockPlacement
+ZoneName
 ├── ZoneId
-├── ShelfId
-├── ContainerId
-├── StockId
+├── Value
+├── IsPrimary
+├── CreatedByUserId
 └── CreatedAt
 ```
 
@@ -67,38 +205,15 @@ StockPlacement
 *what exists* 
 ```
 Inventory
-├── Rack
-├── Shelf
 ├── Container
 ├── Item
-├── Stock
-└── PhysicalTag
+├── PhysicalTag
+├── Rack
+├── Shelf
+└── Stock
 ```
 ---
 ```
-Rack 
-├── Id
-├── Status 
-│   ├── Created
-│   ├── nActive
-│   ├── Crowded
-│   └── Archived
-│   
-├── CreatedByUserId
-└── CreatedAt
-
-Shelf 
-├── Id
-├── RackId
-├── Status 
-│   ├── Created
-│   ├── Active
-│   ├── Crowded
-│   └── Archived
-│   
-├── CreatedByUserId
-└── CreatedAt
-
 Container 
 ├── Id
 ├── Type
@@ -139,6 +254,39 @@ Item
 ├── CreatedByUserId
 └── CreatedAt
 
+PhysicalTag  
+├── Id
+├── Status
+│   ├── Free
+│   ├── Assigned
+│   ├── Lost
+│   └── Broken
+│
+└── CreatedAt
+
+Rack 
+├── Id
+├── Status 
+│   ├── Created
+│   ├── Active
+│   ├── Crowded
+│   └── Archived
+│   
+├── CreatedByUserId
+└── CreatedAt
+
+Shelf 
+├── Id
+├── RackId
+├── Status 
+│   ├── Created
+│   ├── Active
+│   ├── Crowded
+│   └── Archived
+│   
+├── CreatedByUserId
+└── CreatedAt
+
 Stock
 ├── Id
 ├── PartId
@@ -152,15 +300,97 @@ Stock
 │
 ├── CreatedByUserId
 └── CreatedAt
+```
 
-PhysicalTag  
+### Identity
+*Actors and ownership*
+```
+Identity
+├── AreaAccess
+└── Owner
+```
+---
+```
+AreaAccess
+├── AreaId
+├── UserId
+├── CreatedByUserId
+└── CreatedAt
+
+Owner
 ├── Id
+├── UserId
 ├── Status
-│   ├── Free
-│   ├── Assigned
-│   ├── Lost
-│   └── Broken
+│   ├── Active
+│   └── Archived
 │
+├── CreatedByUserId
+└── CreatedAt
+```
+
+### Media
+*Digital assets* 
+```
+Media
+├── ItemPhoto
+├── ItemVideo
+├── PartPhoto
+├── PartVideo
+├── StockPhoto
+├── StockVideo
+├── StoredFile
+├── VehiclePhoto
+└── VehicleVideo
+```
+---
+```
+ItemPhoto
+├── ItemId
+├── StoredFileId
+└── CreatedAt
+
+ItemVideo
+├── ItemId
+├── StoredFileId
+└── CreatedAt
+
+PartPhoto
+├── PartId
+├── StoredFileId
+└── CreatedAt
+
+PartVideo
+├── PartId
+├── StoredFileId
+└── CreatedAt
+
+StockPhoto
+├── StockId
+├── StoredFileId
+└── CreatedAt
+
+StockVideo
+├── StockId
+├── StoredFileId
+└── CreatedAt
+
+StoredFile
+├── Id
+├── Path
+├── Hash
+├── MimeType
+├── Size
+├── CreatedByUserId
+└── CreatedAt
+
+VehiclePhoto
+├── VehicleId
+├── StoredFileId  
+└── CreatedAt
+
+VehicleVideo
+├── VehicleId
+├── StoredFileId  
 └── CreatedAt
 ```
 
@@ -196,282 +426,21 @@ PartProcessingStep
 └── CreatedAt
 ```
 
-### Catalog 
-*Product definitions*
+### Security
+*Authentication and authorization*
 ```
-Catalog
-├── AreaName
-├── ZoneName
-├── RackName
-├── Part
-├── PartNumber
-├── PartName
-└── Vehicle
-```
----
-```
-AreaName
-├── AreaId
-├── Value
-├── IsPrimary
-├── CreatedByUserId
-└── CreatedAt
-
-ZoneName
-├── ZoneId
-├── Value
-├── IsPrimary
-├── CreatedByUserId
-└── CreatedAt
-
-RackName
-├── Id
-├── RackId
-├── Value
-├── IsPrimary
-├── CreatedByUserId
-└── CreatedAt
-
-Part
-├── Id
-├── Status
-│   ├── Created
-│   ├── Processing
-│   ├── Active
-│   └── Archived 
-│
-├── CreatedByUserId
-└── CreatedAt
-
-PartNumber
-├── PartId
-├── Value
-├── IsPrimary
-├── CreatedByUserId
-└── CreatedAt
-
-PartName
-├── PartId
-├── Value
-├── IsPrimary
-├── CreatedByUserId
-└── CreatedAt   
-
-Vehicle
-├── Id
-├── Vin
-├── CreatedByUserId
-└── CreatedAt
-```
-
-### Media
-*Digital assets* 
-```
-Media
-├── PartPhoto
-├── ItemPhoto
-├── StockPhoto
-├── VehiclePhoto
-├── PartVideo
-├── ItemVideo
-├── StockVideo
-├── VehicleVideo
-└── StoredFile
-```
----
-```
-PartPhoto
-├── Id
-├── PartId
-├── StoredFileId
-└── CreatedAt
-
-ItemPhoto
-├── Id
-├── ItemId
-├── StoredFileId
-└── CreatedAt
-
-StockPhoto
-├── Id
-├── StockId
-├── StoredFileId
-└── CreatedAt
-
-VehiclePhoto
-├── Id
-├── VehicleId
-├── StoredFileId  
-└── CreatedAt
-
-PartVideo
-├── Id
-├── PartId
-├── StoredFileId
-└── CreatedAt
-
-ItemVideo
-├── Id
-├── ItemId
-├── StoredFileId
-└── CreatedAt
-
-StockVideo
-├── Id
-├── StockId
-├── StoredFileId
-└── CreatedAt
-
-VehicleVideo
-├── Id
-├── VehicleId
-├── StoredFileId  
-└── CreatedAt
-
-StoredFile
-├── Id
-├── Path
-├── Hash
-├── MimeType
-├── Size
-├── CreatedByUserId
-└── CreatedAt
-```
-
-### Audit
-*History and telemetry*
-```
-Audit
-├── RackPlacementArchive
-├── ContainerPlacementArchive
-├── ItemPlacementArchive
-├── StockPlacementArchive
-├── RackMovementArchive
-├── ContainerMovementArchive
-├── ItemMovementArchive
-├── StockMovementArchive
-├── ItemSalesArchive
-├── StockSalesArchive
-└── Journal
-```
----
-```
-ItemSalesArchive
-├── ItemId
-├── UserId
-├── CreatedByUserId
-└── CreatedAt
-
-StockSalesArchive
-├── StockId
-├── Qty
-├── UserId
-├── CreatedByUserId
-└── CreatedAt
-
-RackPlacementArchive
-├── RackId
-├── ToAreaId
-├── ToZoneId
-├── CreatedByUserId
-└── CreatedAt
-
-ContainerPlacementArchive
-├── ContainerId
-├── ToZoneId
-├── ToShelfId
-├── CreatedByUserId
-└── CreatedAt
-
-ItemPlacementArchive
-├── ItemId
-├── ToZoneId
-├── ToShelfId
-├── ToContainerId
-├── CreatedByUserId
-└── CreatedAt
-
-StockPlacementArchive
-├── StockId
-├── ToZoneId
-├── ToShelfId
-├── ToContainerId
-├── CreatedByUserId
-└── CreatedAt
-
-RackMovementArchive
-├── RackId
-├── FromAreaId
-├── FromZoneId
-├── ToAreaId
-├── ToZoneId
-├── CreatedByUserId
-└── CreatedAt
-
-ContainerMovementArchive
-├── ContainerId
-├── FromZoneId
-├── FromShelfId
-├── ToZoneId
-├── ToShelfId
-├── CreatedByUserId
-└── CreatedAt
-
-ItemMovementArchive
-├── ItemId
-├── FromZoneId
-├── FromShelfId
-├── FromContainerId
-├── ToZoneId
-├── ToShelfId
-├── ToContainerId
-├── CreatedByUserId
-└── CreatedAt
-
-StockMovementArchive
-├── StockId
-├── FromZoneId
-├── FromShelfId
-├── FromContainerId
-├── ToZoneId
-├── ToShelfId
-├── ToContainerId
-├── CreatedByUserId
-└── CreatedAt
-
-Journal
-├── Id
-├── PreviousHash
-├── Hash
-├── Statement
-├── Parameters
-├── Metadata
-├── StartedAt
-├── FinishedAt
-├── AffectedRows
-├── Success
-├── Exception
-├── TransactionId
-└── CreatedAt
-```
-
-### Identity
-*Actors and ownership*
-```
-Identity
-├── Role
+Security
 ├── Provider
+├── Role
 ├── User
-├── UserIdentity
-├── Owner
-└── AreaAccess
+└── UserIdentity
 ```
 ---
 ```
-Role
+Provider
 └── Name
 
-Provider
+Role
 └── Name
 
 User
@@ -490,20 +459,67 @@ UserIdentity
 ├── Provider
 ├── ExternalId
 └── CreatedAt
+```
 
-Owner
+### Topology 
+*where things are*
+```
+Topology
+├── Area
+├── ContainerPlacement
+├── ItemPlacement
+├── RackPlacement
+├── StockPlacement
+└── Zone
+```
+---
+```
+Area
 ├── Id
-├── UserId
 ├── Status
+│   ├── Created
 │   ├── Active
+│   ├── Crowded
 │   └── Archived
-│
+│   
 ├── CreatedByUserId
 └── CreatedAt
 
-AreaAccess
+ContainerPlacement
+├── ZoneId
+├── ShelfId
+├── ContainerId
+└── CreatedAt
+
+ItemPlacement
+├── ZoneId
+├── ShelfId
+├── ContainerId
+├── ItemId
+└── CreatedAt
+
+RackPlacement
 ├── AreaId
-├── UserId
+├── ZoneId
+├── RackId
+└── CreatedAt   
+
+StockPlacement
+├── ZoneId
+├── ShelfId
+├── ContainerId
+├── StockId
+└── CreatedAt
+
+Zone
+├── Id
+├── AreaId
+├── Status 
+│   ├── Created
+│   ├── Active
+│   ├── Crowded
+│   └── Archived
+│
 ├── CreatedByUserId
 └── CreatedAt
 ```
