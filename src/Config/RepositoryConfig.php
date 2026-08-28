@@ -50,7 +50,7 @@ final readonly class RepositoryConfig {
         public string $role,
         public string $provider,
         public string $user,
-        public string $user_identity,
+        public string $user_identity
     ) { }
 
     public static function fromRaw(

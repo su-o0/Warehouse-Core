@@ -1,15 +1,12 @@
 <?php
-namespace WarehouseCore\Service\Inventory;
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Payload\Value\ContainerTypeValue;
-use WarehouseCore\Payload\Result\SetupResult;
-use WarehouseCore\Payload\Type\ContainerType;
+use WarehouseCore\Payload\Enum\ContainerTypeEnum;
 use WarehouseCore\Security\Authorization;
 
 final class ContainerService {
@@ -21,7 +18,7 @@ final class ContainerService {
 
     public function create(
         int $id, 
-        ContainerType $type
+        ContainerTypeEnum $type
     ): ServiceResult {
         if(!$this->authorization->canCreateContainer()) {
             return new ServiceResult( 

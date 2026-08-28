@@ -63,4 +63,15 @@ trait ConfigHelper {
 
         return (string)$raw[$field];
     }
+
+    public static function xor(?int $a, ?int $b): bool {
+        return ($a !== null) !== ($b !== null);
+    }
+
+    public static function xor3(?int $a, ?int $b, ?int $c): bool {
+        return (($a !== null ? 1 : 0) +
+            ($b !== null ? 1 : 0) +
+            ($c !== null ? 1 : 0)
+        ) === 1;
+    } 
 }

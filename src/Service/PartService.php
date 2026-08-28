@@ -1,15 +1,14 @@
 <?php
 
-namespace WarehouseCore\Service\Catalog;
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Repository\Catalog\PartRepository;
 
 use WarehouseCore\Exception\RepositoryException;
 
-use WarehouseCore\Payload\DTO\PartEntity;
-
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Repository\Catalog\PartAliasRepository;
+use WarehouseCore\Repository\Catalog\PartNameRepository;
+use WarehouseCore\Repository\Catalog\PartNumberRepository;
 use WarehouseCore\Security\Authorization;
 
 final class PartService {
@@ -17,7 +16,8 @@ final class PartService {
         public string $service_name,
         private Authorization $authorization,
         private PartRepository $part_repository,
-        private PartAliasRepository $part_alias_repository
+        private PartNumberRepository $part_number_repository,
+        private PartNameRepository $part_name_repository
     ) {}
 
     public function normalizeArticle(
@@ -32,7 +32,7 @@ final class PartService {
     ): ServiceResult {
         try {
             $part_id = $this->part_repository->add(
-                $article, 
+                $article,   
                 $name
             );
         } catch (RepositoryException $e) {

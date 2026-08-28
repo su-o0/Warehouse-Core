@@ -1,7 +1,7 @@
 <?php
-namespace WarehouseCore\Service\Identity;
+namespace WarehouseCore\Service;
 
-use WarehouseCore\Repository\Identity\PhysicalTagRepository;
+use WarehouseCore\Repository\Inventory\PhysicalTagRepository;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Result\ServiceResult;

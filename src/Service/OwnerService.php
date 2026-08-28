@@ -1,13 +1,12 @@
 <?php 
-namespace WarehouseCore\Service\Identity;
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 
-use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 
-use WarehouseCore\Payload\DTO\UserEntity;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Security\Authorization;
 
@@ -27,7 +26,7 @@ final class OwnerService {
         if($user_entity !== null)
             return new ServiceResult(
                 success: false,
-                message: DomainException::USER_NOT_FOUND()->getMessage()
+                message: ErrorMessage::USER_NOT_FOUND
             );
 
         try {

@@ -32,4 +32,21 @@ final readonly class PhotoVO {
         );
     }
 
+    public static function fromStockRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::stock(self::requiredInt($raw, 'stock_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
+
+    public static function fromVehicleRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::vehicle(self::requiredInt($raw, 'vehicle_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
 }

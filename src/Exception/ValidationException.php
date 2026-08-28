@@ -23,4 +23,15 @@ final class ValidationException extends ExceptionContract {
             "Field '{$field}' must be {$expected}"
         );
     }
+
+    public static function EXACTLY_ONE_REQUIRED(
+        string $code,
+        array $fields
+    ): self {
+        $list = implode(', ', $fields);
+        return new self(
+            $code,
+            "Exactly one of [{$list}] must be provided"
+        );
+    }
 }

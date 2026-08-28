@@ -1,89 +1,236 @@
 <?php 
 namespace WarehouseCore\Security;
 
-use WarehouseCore\Payload\DTO\UserEntity;
-use WarehouseCore\Payload\Type\RoleName;
-use WarehouseCore\Payload\Value\SessionValue;
+use WarehouseCore\Payload\Entity\UserEntity;
+use WarehouseCore\Payload\Enum\RoleNameEnum;
+use WarehouseCore\Payload\DTO\SessionDTO;
 
-final class Authorization {
+final readonly class Authorization {
     public function __construct(
-        private readonly RoleName $role,
-        public readonly UserEntity $user
+        private RoleNameEnum $role,
+        public UserEntity $user
     ) { }
 
     public static function fromSession(
-        SessionValue $session
-    ) : self {
+        SessionDTO $session
+    ) : self {  
         return new self(
-            $session->role->name,
+            $session->role,
             $session->user
         );
     }
 
-    public function canCreatePhysicalTag(): bool {
-         return in_array(
+    public function canGrantAreaAccess(): bool{
+        return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canRemoveAreaName(): bool{
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canCreateArea(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canActivateArea(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canMarkAreaAsCrowded(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+        
+    public function canArchiveArea(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canGetArea(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+
+    public function canGetContainer(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+
+    public function canGetItem(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman]
+        );
+    }
+
+    public function canGetOwner(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canGetPart(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman]
+        );
+    }
+
+    public function canGetPhysicalTag(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman]
+        );
+    }
+
+    public function canGetRack(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+    
+    public function canGetShelf(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+    
+    public function canGetStock(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+    
+    public function canGetStoredFile(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canGetUser(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canGetUserIdentity(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canGetZone(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+
+    public function canGetRole(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root]
+        );
+    }
+
+    public function canGetProvider(): bool {
+       return in_array(
+            $this->role,
+            [RoleNameEnum::Root]
+        );
+    }
+    
+    public function canCreatePhysicalTag(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
 
     public function canFindArticle(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin, RoleName::Worker, RoleName::Salesman]
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman]
         );
     }
 
     public function canFindUser(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
 
     public function canCreateUser(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
 
     public function canCreateUserIdentity(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
     
     public function canCreateLocation():bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
 
     public function canCreateContainer():bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin, RoleName::Worker]
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
         );
     }
 
     public function canCreateItem(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin, RoleName::Worker]
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
         );
     }
 
     public function canArchiveItem(): bool {
         return in_array(
             $this->role,
-            [RoleName::Root, RoleName::Admin]
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
         );
     }
 
     public function canDelete( ): bool {
-        return $this->role === RoleName::Root;
+        return $this->role === RoleNameEnum::Root;
     }
 }

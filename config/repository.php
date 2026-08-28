@@ -42,7 +42,6 @@ return [
     'ItemSalesArchive' => 'item_sales_archive',
     'StockSalesArchive' => 'stock_sales_archive',
     'Journal' => 'journal',
-    'SecurityJournal' => 'security_journal',
     'Owner' => 'owners',
     'AreaAccess' => 'area_access',
     'Role' => 'roles',

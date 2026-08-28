@@ -1,114 +1,139 @@
 <?php
+declare(strict_types=1);
+
 namespace WarehouseCore\Repository\Catalog;
+
+use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\VO\PartNameVO;
 
-use WarehouseCore\Payload\Entity\PartNameEntity;
+final class PartNameRepository extends Repository {
+    public function hydrate(
+        array $raw
+    ): PartNameVO {
+        return PartNameVO::fromRaw($raw);
+    }
 
-final class PartNameRepository {
-    public function __construct(
-        private \PDO $db, 
-        private string $table_name
-    ) { }
-
-    public function getById(
-        string $id
-    ): null|PartNameEntity {
-        $stmt = $this->db->prepare( 
-            "SELECT * FROM {$this->table_name} 
-            WHERE id = :id"
+    public function findByPartId(
+        int $part_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE part_id = :part_id",
+            [
+                ':part_id' => $part_id
+            ]
         );
-        $stmt->execute([
-            ":id" => $id
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : PartNameEntity::fromRaw($result);
+    }
+
+    public function findPrimaryByPartId(
+        int $part_id
+    ): ?PartNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE part_id = :part_id
+            AND is_primary = TRUE",
+            [
+                ':part_id' => $part_id
+            ]
+        );
     }
 
     public function findByValue(
         string $value
-    ): null|PartNameEntity{
-        $stmt = $this->db->prepare(
-            "SELECT * FROM {$this->table_name} 
-            WHERE value = :value"
+    ): ?PartNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE value = :value",
+            [
+                ':value' => $value
+            ]
         );
-        $stmt->execute([
-            ":value" => $value
-        ]);
-        $result = $stmt->fetch();
-        return empty($result)? null : PartNameEntity::fromRaw($result);
     }
 
     public function add(
         int $part_id,
         string $value,
-        bool $is_primary = false
+        bool $is_primary,
+        int $user_id
     ): int {
         try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table_name} 
-                (part_id, value, is_primary) 
-                VALUES (:part_id, :value, :is_primary)"
+            return $this->insert(
+                "INSERT INTO {$this->table}
+                (
+                    part_id,
+                    value,
+                    is_primary,
+                    created_by_user_id
+                )
+                VALUES
+                (
+                    :part_id,
+                    :value,
+                    :is_primary,
+                    :user_id
+                )",
+                [
+                    ':part_id' => $part_id,
+                    ':value' => $value,
+                    ':is_primary' => $is_primary,
+                    ':user_id' => $user_id
+                ]
             );
-            $stmt->execute([
-                ':part_id' => $part_id,
-                ':value' => $value,
-                ':is_primary' => $is_primary
-            ]);
-            return (int) $this->db->lastInsertId();
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function updateValue(
-        int $id, 
+        int $part_id,
         string $value
-    ): bool {
-        try{
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET value = :value 
-                WHERE id = :id"
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET value = :value
+                WHERE part_id = :part_id",
+                [
+                    ':part_id' => $part_id,
+                    ':value' => $value
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id,
-                ':value' => $value,
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
-    
-    public function updateIsPrimary(
-        int $id, 
+
+    public function updatePrimary(
+        int $part_id,
         bool $is_primary
-    ): bool {
-        try{
-            $stmt = $this->db->prepare(
-                "UPDATE {$this->table_name} 
-                SET is_primary = :is_primary 
-                WHERE id = :id"
+    ): void {
+        try {
+            $this->execute(
+                "UPDATE {$this->table}
+                SET is_primary = :is_primary
+                WHERE part_id = :part_id",
+                [
+                    ':part_id' => $part_id,
+                    ':is_primary' => $is_primary
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id,
-                ':is_primary' => $is_primary,
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }
     }
 
     public function delete(
-        int $id
-    ): bool {
+        int $part_id
+    ): void {
         try {
-            $stmt = $this->db->prepare(
-                "DELETE FROM {$this->table_name} 
-                WHERE id = :id"
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE part_id = :part_id",
+                [
+                    ':part_id' => $part_id
+                ]
             );
-            return $stmt->execute([
-                ':id' => $id
-            ]);
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
         }

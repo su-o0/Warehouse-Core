@@ -1,7 +1,6 @@
 <?php 
-namespace WarehouseCore\Service\Topology;
+namespace WarehouseCore\Service;
 
-use WarehouseCore\Repository\Topology\LocationRepository;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
@@ -14,7 +13,6 @@ final class MovementService {
     public function __construct(
         public string $service_name,
         private Authorization $authorization,
-        private LocationRepository $location_repository,
         private ContainerRepository $container_repository,
         private ContainerPlacementRepository $container_placement_repository,
         private ItemRepository $item_repository,

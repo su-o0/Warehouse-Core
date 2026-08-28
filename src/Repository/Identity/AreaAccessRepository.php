@@ -37,6 +37,20 @@ final class AreaAccessRepository extends Repository {
         );
     }
 
+
+    public function getByAreaIdAndUserId(
+        int $area_id,
+        int $user_id
+    ): ?AreaAccessVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE area_id = :area_id",
+            [
+                ':area_id' => $area_id
+            ]
+        );
+    }
+
     public function find(
         int $area_id,
         int $user_id

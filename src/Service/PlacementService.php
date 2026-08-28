@@ -1,5 +1,5 @@
-<?
-namespace WarehouseCore\Service\Topology;
+<?php
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Result\ServiceResult;
@@ -66,25 +66,25 @@ final class PlacementService {
     public function placeStock(
         int $stock_id,
         int $location_id
-    ): ServiceResult {
+    ) {
 
     }
 
     public function removeContainer(
         int $container_id
-    ): ServiceResult  {
+    )  {
 
     }
 
     public function removeItem(
         int $item_id
-    ): ServiceResult  {
+    )  {
 
     }
 
     public function removeStock(
         int $stock_id
-    ): ServiceResult  {
+    )  {
 
     }
 }

@@ -2,19 +2,19 @@
 namespace WarehouseCore\Registry;
 
 use WarehouseCore\Output\Output;
-use WarehouseCore\Payload\Type\ProviderType;
+use WarehouseCore\Payload\Enum\ProviderNameEnum;
 
 final class OutputFactory {
     public static function Output(
-        ProviderType $provider
+        ProviderNameEnum $provider
     ): Output {
         return match ($provider) {
-            ProviderType::Cli => self::cli(),
+            ProviderNameEnum::Shell => self::shell(),
             default => throw new \RuntimeException("Unknown provider")
         };
     }
 
-    private static function cli(): Output {
-        return OutputCli::create();
+    private static function shell(): Output {
+        return OutputShell::create();
     }
 }

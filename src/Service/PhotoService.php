@@ -1,7 +1,7 @@
 <?php
-namespace WarehouseCore\Service\Media;
+namespace WarehouseCore\Service;
 
-use WarehouseCore\Payload\DTO\UserEntity;
+use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Repository\Media\ItemPhotoRepository;
 use WarehouseCore\Repository\Media\PartPhotoRepository;
 use WarehouseCore\Repository\Media\StockPhotoRepository;

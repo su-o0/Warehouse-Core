@@ -27,9 +27,12 @@ final class ErrorMessage {
     public const OWNER_ALREADY_EXISTS = 'Owner already exists';
     public const CONTAINER_PLACEMENT_ALREADY_EXISTS = 'Container placement already exists';
     public const ITEM_PHOTO_ALREADY_EXISTS = 'Item photo already exists';
-    public const LOCATION_ALREADY_EXISTS = 'Location already exists';
     public const CONTAINER_ALREADY_EXISTS = 'Container already exists';
+    public const AREA_ACCESS_ALREADY_EXISTS = 'Area access already exists';
 
+    
+    public const AREA_NOT_FOUND = 'Area not found';
+    public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
     public const STOCK_PHOTO_NOT_FOUND = 'Stock photo not found';
     public const VEHICLE_PHOTO_NOT_FOUND = 'Vehicle photo not found';
     public const VEHICLE_NOT_FOUND = 'Vehicle not found';
@@ -45,25 +48,45 @@ final class ErrorMessage {
     public const LOCATION_NOT_FOUND = 'Location not found';
     public const CONTAINER_NOT_FOUND = 'Container not found';
     public const ROLE_NOT_FOUND = 'Role not found';
+    public const PROVIDER_NOT_FOUND = 'Provider not found';
     public const PHYSICAL_TAG_NOT_FOUND = 'Physical tag not found';
+    public const RACK_NOT_FOUND = 'Rack not found';
+    public const SHELF_NOT_FOUND = 'Shelf not found';
+    public const STORED_FILE_NOT_FOUND = 'Shelf not found';
+    public const USER_IDENTITY_NOT_FOUND = 'Shelf not found';
+    public const ZONE_NOT_FOUND = 'Shelf not found';
+    public const AREA_NAME_NOT_FOUND = 'Area name not found';
+    public const AREA_ACCESS_NOT_FOUND = 'Area access not found';
 
 
-    public const PROVIDER_TYPE_INVALID_TYPE = 'Provider type must be ...';
-    public const PHYSICAL_TAG_STATUS_INVALID_TYPE = 'Physical tag status must be Free|Assigned|Lost|Broken';
+    public const PROVIDER_NAME_INVALID_TYPE = 'Provider name must be ...';
+    public const PHYSICAL_TAG_STATUS_INVALID_TYPE = 'Physical tag status must ...';
     public const LOCATION_INVALID_STATUS = 'Location status invalid';
     public const LOCATION_ADDRESS_INVALID_TYPE = 'Location address must be Z0>A1>B2';
     public const TELEMETRY_ACTION_INVALID_TYPE = 'Action type must be ...';
     public const TELEMETRY_INVALID_TYPE = 'Telemetry type must be ...';
     public const ROLE_NAME_INVALID_TYPE = 'Role name must be ...';
-    public const STOCK_STATUS_INVALID_TYPE  = "Stock status must be Created|Active|Crowded|Archived";
-    public const PLACEMENT_TARGET_INVALID_TYPE = 'Placement target must be Location|Container';
-    public const PLACEMENT_ENTITY_INVALID_TYPE = 'Placement entity must be Container|Item|Stock';
-    public const CONTAINER_TYPE_INVALID_TYPE   = 'Container type must be Created|Active|Crowded|Archived|Lost';
-    public const ITEM_STATUS_INVALID_TYPE      = 'Item status must be Created|Processing|Active|Sold|Archived|Lost';
-    public const ITEM_CONDITION_INVALID_TYPE = 'Item condition must be New|Good|Fair|Poor';
-    public const ITEM_PROCESSING_STAGE_INVALID_TYPE = 'Item processing stage must be Identify|Photo|Inspection|Placement';
+    public const STOCK_STATUS_INVALID_TYPE  = "Stock status must be ...";
+    public const PLACEMENT_TARGET_INVALID_TYPE = 'Placement target must be ...';
+    public const PLACEMENT_ENTITY_INVALID_TYPE = 'Placement entity must be ...';
+    public const CONTAINER_TYPE_INVALID_TYPE   = 'Container type must be ...';
+    public const CONTAINER_STATUS_INVALID_TYPE   = 'Container status must be ...';
+    public const ITEM_STATUS_INVALID_TYPE      = 'Item status must be ...';
+    public const AREA_STATUS_INVALID_TYPE      = 'Area status must be ...';
+    public const PART_STATUS_INVALID_TYPE      = 'Part status must be ...';
+    public const ZONE_STATUS_INVALID_TYPE      = 'Zone status must be ...';
+    public const RACK_STATUS_INVALID_TYPE      = 'Rack status must be ...';
+    public const USER_STATUS_INVALID_TYPE      = 'User status must be ...';
+    public const OWNER_STATUS_INVALID_TYPE      = 'User status must be ...';
+    public const ITEM_CONDITION_INVALID_TYPE = 'Item condition must be ...';
+    public const ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Item processing stage ...';
 
 
+    public const ITEM_ALREADY_PLACED = 'Item already placed';
     public const PHYSICAL_TAG_MUST_BE_FREE = 'PhysicalTag Status must be Free';
     public const PHYSICAL_TAG_ALREADY_EXISTS = 'Physical tag already exists';
+
+
+    public const AREA_INVALID_STATUS_TRANSITION = 'Area invalid status transition'; //007
+
 }

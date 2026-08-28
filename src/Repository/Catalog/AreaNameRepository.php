@@ -25,6 +25,21 @@ final class AreaNameRepository extends Repository {
         );
     }
 
+    public function getByAreaIdAndValue(
+        int $area_id,
+        string $value
+    ): ?AreaNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE area_id = :area_id
+            AND value = :value",
+            [
+                ':area_id' => $area_id,
+                ':value' => $value
+            ]
+        );
+    }
+
     public function getPrimaryByAreaId(
         int $area_id
     ): ?AreaNameVO {

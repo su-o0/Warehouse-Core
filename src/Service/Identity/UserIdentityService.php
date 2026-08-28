@@ -5,8 +5,8 @@ use WarehouseCore\Repository\Identity\UserIdentityRepository;
 
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Enum\ProviderNameEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Payload\Type\ProviderType;
 use WarehouseCore\Security\Authorization;
 
 final class UserIdentityService {
@@ -18,7 +18,7 @@ final class UserIdentityService {
 
     public function create(
         int $user_id,
-        ProviderType $provider,
+        ProviderNameEnum $provider,
         string $external_id
     ): ServiceResult {
         if(!$this->authorization->canCreateUserIdentity()) {

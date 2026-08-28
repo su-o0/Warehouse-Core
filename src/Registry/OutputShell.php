@@ -7,7 +7,7 @@ use WarehouseCore\Output\Runtime\Cli\GetLocationRender;
 use WarehouseCore\Output\Runtime\Cli\ListLocationsRender;
 use WarehouseCore\Output\Runtime\Cli\ServiceRenderer;
 
-final class OutputCli {
+final class OutputShell {
     public static function create(): Output {
         return new Output(
             new OutputDispatcher([

@@ -1,15 +1,14 @@
 <?php
-namespace WarehouseCore\Service\Inventory;
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Repository\Catalog\PartRepository;
 
 use WarehouseCore\Exception\RepositoryException;
 
-use WarehouseCore\Payload\DTO\PartEntity;
-use WarehouseCore\Payload\DTO\StockEntity;
-
-use WarehouseCore\Payload\Result\SetupResult;
+use WarehouseCore\Payload\Entity\PartEntity;
+use WarehouseCore\Payload\Entity\StockEntity;
+use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Security\Authorization;
 
 final class StockService {
@@ -23,7 +22,7 @@ final class StockService {
     public function create(
         string $article,
         int $qcy,
-    ): SetupResult {
+    ): ServiceResult {
         try {
             $part_entity = PartEntity::fromRaw(
                 $this->part_repository->findOrCreate($article)

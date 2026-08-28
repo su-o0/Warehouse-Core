@@ -23,7 +23,7 @@ final readonly class UserEntity {
             id: self::requiredInt($raw, 'id'),
             name: self::requiredString($raw, 'name'),
             role: RoleNameMapper::match(
-                self::requiredInt($raw, 'role_id')
+                self::requiredString($raw, 'role')
             ),
             status: UserStatusMapper::match(
                 self::requiredString($raw, 'status')

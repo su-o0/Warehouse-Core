@@ -1,91 +1,68 @@
 <?php
+declare(strict_types=1);
+
 namespace WarehouseCore\Repository\Catalog;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\VO\RackNameVO;
 
-use WarehouseCore\Payload\VO\PartNameVO;
-
-final class PartNameRepository extends Repository {
+final class RackNameRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PartNameVO {
-        return PartNameVO::fromRaw($raw);
+    ): RackNameVO {
+        return RackNameVO::fromRaw($raw);
     }
 
-    public function getByPartId(
-        int $part_id
+    public function findByRackId(
+        int $rack_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE part_id = :part_id",
+            WHERE rack_id = :rack_id",
             [
-                ':part_id' => $part_id
+                ':rack_id' => $rack_id
             ]
         );
     }
 
-    public function getPrimaryByPartId(
-        int $part_id
-    ): ?PartNameVO {
+    public function findPrimaryByRackId(
+        int $rack_id
+    ): ?RackNameVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
-            WHERE part_id = :part_id
+            WHERE rack_id = :rack_id
             AND is_primary = TRUE",
             [
-                ':part_id' => $part_id
-            ]
-        );
-    }
-
-    public function getByValue(
-        string $value
-    ): ?PartNameVO {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE value = :value",
-            [
-                ':value' => $value
-            ]
-        );
-    }
-
-    public function findByCreaterUserId(
-        int $user_id
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE created_by_user_id = :user_id",
-            [
-                ':user_id' => $user_id
+                ':rack_id' => $rack_id
             ]
         );
     }
 
     public function add(
-        int $part_id,
+        int $rack_id,
         string $value,
         bool $is_primary,
         int $user_id
-    ): void {
+    ): int {
         try {
-            $this->insert(
+            return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    part_id,
+                    rack_id,
                     value,
                     is_primary,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :part_id,
+                    :rack_id,
                     :value,
                     :is_primary,
                     :user_id
                 )",
                 [
-                    ':part_id' => $part_id,
+                    ':rack_id' => $rack_id,
                     ':value' => $value,
                     ':is_primary' => $is_primary,
                     ':user_id' => $user_id
@@ -97,20 +74,17 @@ final class PartNameRepository extends Repository {
     }
 
     public function updateValue(
-        int $part_id,
-        string $value,
-        string $new_value
+        int $rack_id,
+        string $value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET value = :new_value
-                WHERE part_id = :part_id
-                AND value = :value",
+                SET value = :value
+                WHERE rack_id = :rack_id",
                 [
-                    ':part_id' => $part_id,
-                    ':value' => $value,
-                    ':new_value' => $new_value
+                    ':rack_id' => $rack_id,
+                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {
@@ -119,19 +93,16 @@ final class PartNameRepository extends Repository {
     }
 
     public function updatePrimary(
-        int $part_id,
-        string $value,
+        int $rack_id,
         bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET is_primary = :is_primary
-                WHERE part_id = :part_id
-                AND value = :value",
+                WHERE rack_id = :rack_id",
                 [
-                    ':part_id' => $part_id,
-                    ':value' => $value,
+                    ':rack_id' => $rack_id,
                     ':is_primary' => $is_primary
                 ]
             );
@@ -141,17 +112,14 @@ final class PartNameRepository extends Repository {
     }
 
     public function delete(
-        int $part_id,
-        string $value
+        int $rack_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE part_id = :part_id
-                AND value = :value",
+                WHERE rack_id = :rack_id",
                 [
-                    ':part_id' => $part_id,
-                    ':value' => $value
+                    ':rack_id' => $rack_id
                 ]
             );
         } catch (\PDOException $e) {

@@ -1,9 +1,8 @@
 <?php
-namespace WarehouseCore\Service\Catalog;
+namespace WarehouseCore\Service;
 
 use WarehouseCore\Repository\Catalog\VehicleRepository;
 
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\RepositoryException;
 
 use WarehouseCore\Payload\Result\ServiceResult;

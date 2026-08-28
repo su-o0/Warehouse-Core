@@ -26,6 +26,15 @@ final class UserRepository extends Repository
         );
     }
 
+    public function list(
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}",
+            [
+            ]
+        );
+    }
+
     public function findByName(
         string $name
     ): array {
