@@ -5,9 +5,12 @@ Core
 ├── Entity
 ├── Type Enums
 ├── Reference Data
-└── Value Objects
-    ├── Relationship
-    └── Audit
+├── Value Objects
+│   ├── Relationship
+│   └── Audit
+│   
+└── Service
+
 ```
 ---
 ```
@@ -88,4 +91,35 @@ Value Objects
 │
 ├── Photo
 └── ZoneName
+```
+---
+```
+Service
+│
+├── Domain Services
+│   ├── Area
+│   ├── Container
+│   ├── Identity
+│   │   ├── Authentication
+│   │   ├── User
+│   │   └── UserIdentity
+│   ├── Item
+│   ├── Movement
+│   ├── Owner
+│   ├── Part
+│   ├── Photo
+│   ├── PhysicalTag
+│   ├── Placement
+│   ├── Rack
+│   ├── Sales
+│   ├── Shelf
+│   ├── Stock
+│   ├── Vehicle
+│   ├── Video
+│   └── Zone
+│
+└── Query
+    ├── Find
+    ├── Get
+    └── List
 ```

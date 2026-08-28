@@ -202,7 +202,7 @@ Container
 ├── Id
 ├── Type
 │   ├── Box
-│   └──Pallet
+│   └── Pallet
 │   
 ├── Status
 │   ├── Created
