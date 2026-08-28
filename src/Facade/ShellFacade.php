@@ -57,10 +57,42 @@ final class ShellFacade {
         return isset($this->api);
     }
 
-    public function createArea(): string {
-        $result = $this->api->createArea();
+    
 
-        return $this->output->render($result);
+    public function createArea(): string {
+        return $this->output->render(
+            $this->api->createArea()
+        );
+    }
+
+    public function activateArea(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->activateArea([
+                'area_id' => $area_id
+            ])
+        );
+    }
+
+    public function archiveArea(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->archiveArea([
+                'area_id' => $area_id
+            ])
+        );
+    }
+
+    public function markAreaAsCrowded(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->markAreaAsCrowded([
+                'area_id' => $area_id
+            ])
+        );
     }
 
     // public function createUser(

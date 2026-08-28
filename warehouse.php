@@ -1,7 +1,7 @@
 <?php
 require 'vendor/autoload.php';
-use WarehouseCore\Facade\CliFacade;
-$warehouse = CliFacade::create();
+use WarehouseCore\Facade\ShellFacade;
+$warehouse = ShellFacade::create();
 
 if (!isset($argv[1]))  
 die(
