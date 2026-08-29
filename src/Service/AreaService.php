@@ -203,7 +203,7 @@ final class AreaService {
 
         $area = $result->entity;
 
-        $area_access_value = $this->area_access_repository->getByAreaIdAndUserId(
+        $area_access_value = $this->area_access_repository->findByAreaIdAndUserId(
             area_id: $area->id,
             user_id: $user_id
         );
@@ -248,7 +248,7 @@ final class AreaService {
 
         $area = $result->entity;
 
-        $area_access_value = $this->area_access_repository->getByAreaIdAndUserId(
+        $area_access_value = $this->area_access_repository->findByAreaIdAndUserId(
             area_id: $area->id,
             user_id: $user_id
         );
