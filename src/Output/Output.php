@@ -19,8 +19,7 @@ final class Output {
         };
     }
 
-    public function render(object $result): mixed
-    {
+    public function render(object $result): mixed {
         return $this->dispatcher->render($result);
     }
 }
