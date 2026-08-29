@@ -14,15 +14,11 @@ final class Output {
         ProviderNameEnum $provider
     ): self {
         return match ($provider) {
-            ProviderNameEnum::Shell => self::shell(),
+            ProviderNameEnum::Shell => ShellOutputRegistry::create(),
             default => throw ServiceException::PROVIDER_NOT_FOUND()
         };
     }
 
-    private static function shell(): Output {
-        return ShellOutputRegistry::create();
-    }
-    
     public function render(object $result): mixed
     {
         return $this->dispatcher->render($result);
