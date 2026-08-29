@@ -14,6 +14,7 @@ use WarehouseCore\Api\Topology\Area\CreateAreaApi;
 use WarehouseCore\Api\Topology\Area\MarkAreaAsCrowdedApi;
 use WarehouseCore\Api\Identity\Area\GrantAreaAccessApi;
 use WarehouseCore\Api\Identity\Area\RevokeAreaAccessApi;
+use WarehouseCore\Api\Query\List\ListAreaApi;
 
 final class ApiRegistry {
     public function __construct(
@@ -85,8 +86,14 @@ final class ApiRegistry {
             $this->context->area_service
         );
     }
-    
 
+    public function listArea(): ListAreaApi {
+        return new ListAreaApi(
+            $this->config->set_primary_area_name,
+            $this->context->list_service,
+        );
+    }
+    
 
 
 

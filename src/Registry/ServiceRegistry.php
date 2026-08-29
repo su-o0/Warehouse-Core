@@ -302,7 +302,10 @@ final class ServiceRegistry {
         return new ListService(
             $this->config->list,
             $authorization,
-            $this->repository->area
+            $this->repository->area,
+            $this->repository->area_name,
+            $this->repository->area_access,
+            
         );
     }
 }

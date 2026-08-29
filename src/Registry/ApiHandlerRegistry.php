@@ -121,7 +121,12 @@ final class ApiHandlerRegistry {
         );
     }
 
-    
+    public function listArea(): ApiResult {
+        return $this->handle(
+            $this->api->listArea(),
+            null
+        );
+    }
 
     // public function createUser(
     //     array $raw

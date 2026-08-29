@@ -150,6 +150,12 @@ final class ShellFacade {
         );
     }
 
+    public function listArea(): string {
+        return $this->output->render(
+            $this->api->listArea()
+        );
+    }
+
     // public function createUser(
     //     string $name, 
     //     string $role

@@ -19,6 +19,12 @@ final readonly class Authorization {
             $session->user
         );
     }
+    public function canListArea(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
 
     public function canGrantAreaAccess(): bool{
         return in_array(

@@ -12,17 +12,16 @@ final class ListStructureRender implements Renderer {
     public function render(object $result): string {
         $structures = $result->list;
 
-        $result = "Structure: {$result->structure_name}";
-        foreach($structures as $structure) {
-            $result .= implode("\n", [
-                "  Id: {$structure->id}",
-                (isset($structure->name))?
-                    "  Name: {$structure->name}": 
-                    "",
-                "  Status: {$structure->status->value}",
-                ""
-            ]);
+        $output = "Structure: {$result->structure_name}\n";
+        foreach ($structures as $structure) {
+            $output .= "  ID: {$structure->id}\n";
+
+            if ($structure->name !== null) {
+                $output .= "  NAME: {$structure->name}\n";
+            }
+
+            $output .= "  STATUS: {$structure->status->value}\n\n";
         }
-        return $result;
+        return $output;
     }
 }
