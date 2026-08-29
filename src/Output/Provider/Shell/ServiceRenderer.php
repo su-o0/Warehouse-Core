@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Output\Runtime\Cli;
+namespace WarehouseCore\Output\Provider\Shell;
 
 use WarehouseCore\Contract\Renderer;
 use WarehouseCore\Payload\Result\ServiceResult;

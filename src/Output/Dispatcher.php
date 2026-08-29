@@ -1,9 +1,9 @@
 <?php
-namespace WarehouseCore\Output\Dispatcher;
+namespace WarehouseCore\Output;
 
-use RuntimeException;
+use WarehouseCore\Exception\ServiceException;
 
-final class OutputDispatcher {
+final class Dispatcher {
     public function __construct(
         private array $renderers
     ) {}
@@ -14,7 +14,7 @@ final class OutputDispatcher {
                 return $renderer->render($result);
             }
         }
-
-        throw new RuntimeException("No renderer for result");
+        
+        throw ServiceException::RENDERER_NOT_FOUND();
     }
 }
