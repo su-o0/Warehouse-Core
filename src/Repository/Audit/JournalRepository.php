@@ -67,7 +67,7 @@ final class JournalRepository {
             ':started_at' => $started_at->format('Y-m-d H:i:s.u'),
             ':finished_at' => $finished_at->format('Y-m-d H:i:s.u'),
             ':affected_rows' => $affected_rows,
-            ':success' => $success,
+            ':success' => $success ? 1 : 0,
             ':exception' => $exception,
             ':transaction_id' => $transaction_id
         ]);

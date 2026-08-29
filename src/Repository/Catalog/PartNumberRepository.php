@@ -87,7 +87,7 @@ final class PartNumberRepository extends Repository {
                 [
                     ':part_id' => $part_id,
                     ':value' => $value,
-                    ':is_primary' => $is_primary,
+                    ':is_primary' => $is_primary ? 1 : 0,
                     ':user_id' => $user_id
                 ]
             );
@@ -132,7 +132,7 @@ final class PartNumberRepository extends Repository {
                 [
                     ':part_id' => $part_id,
                     ':value' => $value,
-                    ':is_primary' => $is_primary
+                    ':is_primary' => $is_primary ? 1 : 0
                 ]
             );
         } catch (\PDOException $e) {
