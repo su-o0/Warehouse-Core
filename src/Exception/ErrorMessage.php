@@ -29,6 +29,7 @@ final class ErrorMessage {
     public const ITEM_PHOTO_ALREADY_EXISTS = 'Item photo already exists';
     public const CONTAINER_ALREADY_EXISTS = 'Container already exists';
     public const AREA_ACCESS_ALREADY_EXISTS = 'Area access already exists';
+    public const AREA_NAME_ALREADY_PRIMARY = 'Area name already primary';
 
     
     public const AREA_NOT_FOUND = 'Area not found';
@@ -57,7 +58,7 @@ final class ErrorMessage {
     public const ZONE_NOT_FOUND = 'Shelf not found';
     public const AREA_NAME_NOT_FOUND = 'Area name not found';
     public const AREA_ACCESS_NOT_FOUND = 'Area access not found';
-
+    public const RENDERER_NOT_FOUND = 'No renderer for result';
 
     public const PROVIDER_NAME_INVALID_TYPE = 'Provider name must be ...';
     public const PHYSICAL_TAG_STATUS_INVALID_TYPE = 'Physical tag status must ...';

@@ -2,7 +2,7 @@
 namespace WarehouseCore\Api\Topology\Area;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\AreaRequest;
+use WarehouseCore\Payload\Request\EntityRequest;
 use WarehouseCore\Service\AreaService;
 
 final class ArchiveAreaApi {
@@ -12,10 +12,10 @@ final class ArchiveAreaApi {
     ) { }
 
     public function handle(
-        AreaRequest $request
+        EntityRequest $request
     ): ApiResult {
         return $this->area_service->archiveArea(
-            $request->area_id
+            area_id: $request->id
         );
     }
 }

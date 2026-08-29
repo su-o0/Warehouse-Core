@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace WarehouseCore\Contract;
 
 use WarehouseCore\Connection\Statement;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
 abstract class Repository {
     public function __construct(

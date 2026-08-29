@@ -41,4 +41,18 @@ class ServiceException extends \RuntimeException
             ErrorMessage::FORBIDDEN
         );
     }
+
+    public static function RENDERER_NOT_FOUND(): self {
+        return new self(
+            ErrorCode::RENDERER_NOT_FOUND,
+            ErrorMessage::RENDERER_NOT_FOUND
+        );
+    }
+
+    public static function PROVIDER_NOT_FOUND(): self {
+        return new self(
+            ErrorCode::PROVIDER_NOT_FOUND,
+            ErrorMessage::PROVIDER_NOT_FOUND
+        );
+    }
 }

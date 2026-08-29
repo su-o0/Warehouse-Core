@@ -3,7 +3,6 @@ namespace WarehouseCore\Facade;
 
 use WarehouseCore\Bootstrap\Bootstrap;
 use WarehouseCore\Registry\ApiHandlerRegistry;
-use WarehouseCore\Registry\OutputFactory;
 use WarehouseCore\Output\Output;
 use WarehouseCore\Payload\Result\ServiceResult;
 
@@ -19,7 +18,7 @@ final class ShellFacade {
         private Bootstrap $setup,
         private ProviderNameEnum $provider
     ) {
-        $this->output = OutputFactory::Output(
+        $this->output = Output::create(
             $this->provider
         );
     }
@@ -70,7 +69,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->activateArea([
-                'area_id' => $area_id
+                'id' => $area_id
             ])
         );
     }
@@ -80,7 +79,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->archiveArea([
-                'area_id' => $area_id
+                'id' => $area_id
             ])
         );
     }
@@ -90,7 +89,63 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->markAreaAsCrowded([
-                'area_id' => $area_id
+                'id' => $area_id
+            ])
+        );
+    }
+
+    public function grantAreaAccess(
+        int $area_id,
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->grantAreaAccess([
+                'area_id' => $area_id,
+                'user_id' => $user_id
+            ])
+        );
+    }
+
+    public function revokeAreaAccess(
+        int $area_id,
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->revokeAreaAccess([
+                'area_id' => $area_id,
+                'user_id' => $user_id
+            ])
+        );
+    }
+
+    public function addAreaName(
+        int $area_id,
+        string $name
+    ): string {
+        return $this->output->render(
+            $this->api->addAreaName([
+                'id' => $area_id,
+                'name' => $name
+            ])
+        );
+    }
+
+    public function removeAreaName(
+        int $area_id,
+    ): string {
+        return $this->output->render(
+            $this->api->removeAreaName([
+                'id' => $area_id
+            ])
+        );
+    }
+
+    public function setPrimaryAreaName(
+        int $record_id,
+    ): string {
+        return $this->output->render(
+            $this->api->setPrimaryAreaName([
+                'record_id' => $record_id
             ])
         );
     }

@@ -3,10 +3,10 @@ namespace WarehouseCore\Payload\Result;
 
 use WarehouseCore\Contract\ApiResult;
 
-final class ServiceResult implements ApiResult{
+final class ListStructureResult implements ApiResult{
     public function __construct(
         public bool $success,
-        public mixed $entity = null,
-        public ?string $message = null,
+        public string $structure_name,
+        public ?array $list = null,
     ) {}
 }

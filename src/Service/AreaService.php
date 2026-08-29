@@ -26,7 +26,7 @@ final class AreaService {
         private SetPrimaryAreaNameTransaction $set_primary_area_name_transaction
     ) { }
 
-    private function areaExists(
+    private function existsArea(
         int $id
     ): ServiceResult {
         try { 
@@ -42,6 +42,31 @@ final class AreaService {
             return new ServiceResult(
                 success: false,
                 message: ErrorMessage::AREA_NOT_FOUND
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: $result
+        );
+    }
+
+    private function existsAreaName(
+        int $record_id
+    ): ServiceResult {
+        try { 
+            $result = $this->area_name_repository->findByRecordId($record_id);
+        } catch(RepositoryException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+
+        if ($result === null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_NAME_NOT_FOUND
             );
         }
 
@@ -76,13 +101,27 @@ final class AreaService {
         int $area_id,
         string $name
     ): ServiceResult {
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;
         }
 
         $area = $result->entity;
+
+        if (!in_array(
+            $area->status,
+            [
+                AreaStatusEnum::Active,
+                AreaStatusEnum::Crowded
+            ],
+            true
+        )) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
+        }
 
         return $this->add_area_name_transaction->handle(
             $area->id,
@@ -92,23 +131,27 @@ final class AreaService {
     }
 
     public function setPrimaryAreaName(
-        int $area_id,
-        string $name
+        int $record_id,
     ): ServiceResult {
-        $result = $this->areaExists($area_id);
+        $result = $this->existsAreaName($record_id);
 
         if(!$result->success) {
             return $result;
         }
 
-        $area = $result->entity;
+        $area_name = $result->entity;
+
+        if ($area_name->is_primary){
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_NAME_ALREADY_PRIMARY
+            );
+        }
 
         return $this->set_primary_area_name_transaction->handle(
-            $area->id,
-            $name,
-            $this->authorization->user->id
+            $record_id,
+            $area_name->area_id
         );
-
     }
 
     public function removeAreaName(
@@ -118,30 +161,18 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-       try { 
-            $result = $this->area_name_repository->findPrimaryByAreaId(
-                area_id: $area_id
-            );
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
+        $area_name = $this->area_name_repository->findPrimaryByAreaId($area_id);
 
-        if ($result === null) {
+        if ($area_name === null) {
             return new ServiceResult(
                 success: false,
                 message: ErrorMessage::AREA_NAME_NOT_FOUND
             );
-        }
-
-        $area_name_value = $result;
+        }   
 
         try {
             $this->area_name_repository->updatePrimary(
-                area_id: $area_name_value->area_id,
-                value: $area_name_value->value,
+                record_id: $area_name->record_id,
                 is_primary: false
             );
         } catch(RepositoryException $e) {
@@ -150,6 +181,7 @@ final class AreaService {
                 message: $e->getMessage()
             );
         }
+
         return new ServiceResult(
             success: true
         );
@@ -163,7 +195,7 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;
@@ -208,7 +240,7 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;
@@ -265,7 +297,7 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;
@@ -300,7 +332,7 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;
@@ -334,7 +366,7 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->areaExists($area_id);
+        $result = $this->existsArea($area_id);
 
         if(!$result->success) {
             return $result;

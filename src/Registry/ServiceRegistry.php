@@ -301,7 +301,8 @@ final class ServiceRegistry {
     ): ListService {
         return new ListService(
             $this->config->list,
-            $authorization
+            $authorization,
+            $this->repository->area
         );
     }
 }

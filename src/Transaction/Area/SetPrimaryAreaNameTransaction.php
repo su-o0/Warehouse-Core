@@ -16,33 +16,28 @@ final class SetPrimaryAreaNameTransaction extends Transaction {
     }
 
     public function handle(
-        int $area_id,
-        string $value,
-        int $user_id
+        int $record_id,
+        int $area_id
     ): mixed{
         return $this->run(function () use (
-            $area_id,
-            $value,
-            $user_id
+            $record_id,
+            $area_id
         ) {
             try { 
-                $primary_name = $this->area_name_repository->getPrimaryByAreaId(
+                $old_primary_name = $this->area_name_repository->findPrimaryByAreaId(
                     $area_id
                 );
 
-                if($primary_name !== null) {
+                if($old_primary_name !== null) {
                     $this->area_name_repository->updatePrimary(
-                        $primary_name->area_id,
-                        $primary_name->value,
+                        $old_primary_name->record_id,
                         false
                     );
                 }
 
-                $this->area_name_repository->add(
-                    area_id: $area_id,
-                    value: $value,
-                    is_primary: true,
-                    user_id: $user_id
+                $this->area_name_repository->updatePrimary(
+                    $record_id,
+                    true
                 );
                 
             }catch(RepositoryException $e) {

@@ -26,14 +26,13 @@ final class AddAreaNameTransaction extends Transaction {
             $user_id
         ) {
             try {
-                $primary_name = $this->area_name_repository->getPrimaryByAreaId(
+                $old_primary_name = $this->area_name_repository->findPrimaryByAreaId(
                     $area_id
                 );
 
-                if($primary_name !== null) {
+                if($old_primary_name !== null) {
                     $this->area_name_repository->updatePrimary(
-                        $primary_name->area_id,
-                        $primary_name->value,
+                        $old_primary_name->record_id,
                         false
                     );
                 }

@@ -5,10 +5,15 @@ use WarehouseCore\Config\ApiConfig;
 use WarehouseCore\Context\ServiceContext;
 
 use WarehouseCore\Api\Identity\CreateUserApi;
-use WarehouseCore\Api\Topology\Area\ActivateAreaApi;
+use WarehouseCore\Api\Catalog\Area\AddAreaNameApi;
+use WarehouseCore\Api\Catalog\Area\RemoveAreaNameApi;
+use WarehouseCore\Api\Catalog\Area\SetPrimaryAreaNameApi;
 use WarehouseCore\Api\Topology\Area\ArchiveAreaApi;
+use WarehouseCore\Api\Topology\Area\ActivateAreaApi;
 use WarehouseCore\Api\Topology\Area\CreateAreaApi;
 use WarehouseCore\Api\Topology\Area\MarkAreaAsCrowdedApi;
+use WarehouseCore\Api\Identity\Area\GrantAreaAccessApi;
+use WarehouseCore\Api\Identity\Area\RevokeAreaAccessApi;
 
 final class ApiRegistry {
     public function __construct(
@@ -43,7 +48,52 @@ final class ApiRegistry {
             $this->context->area_service
         );
     }
+
+    public function grantAreaAccess(): GrantAreaAccessApi {
+        return new GrantAreaAccessApi(
+            $this->config->grant_area_access,
+            $this->context->area_service,
+            $this->context->get_service
+        );
+    }
     
+    public function revokeAreaAccess(): RevokeAreaAccessApi {
+        return new RevokeAreaAccessApi(
+            $this->config->revoke_area_access,
+            $this->context->area_service,
+            $this->context->get_service
+        );
+    }
+    
+    public function addAreaName(): AddAreaNameApi {
+        return new AddAreaNameApi(
+            $this->config->add_area_name,
+            $this->context->area_service
+        );
+    }
+
+    public function removeAreaName(): RemoveAreaNameApi {
+        return new RemoveAreaNameApi(
+            $this->config->remove_area_name,
+            $this->context->area_service
+        );
+    }
+
+    public function setPrimaryAreaName(): SetPrimaryAreaNameApi {
+        return new SetPrimaryAreaNameApi(
+            $this->config->set_primary_area_name,
+            $this->context->area_service
+        );
+    }
+    
+
+
+
+
+
+
+
+
 
     public function createUser(): CreateUserApi {
         return new CreateUserApi(
@@ -52,6 +102,8 @@ final class ApiRegistry {
             $this->context->user_service
         );
     }
+
+
 
     // public function createUserIdentity(): CreateUserIdentityApi {
     //     return new CreateUserIdentityApi(

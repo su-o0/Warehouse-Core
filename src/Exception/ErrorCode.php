@@ -61,7 +61,7 @@ final class ErrorCode {
     public const SHELF_NOT_FOUND                    = 'SHELF_002';
     public const STORED_FILE_NOT_FOUND                    = 'SHELF_002';
     public const ZONE_NOT_FOUND                    = 'SHELF_002';
-
+    public const RENDERER_NOT_FOUND                = 'RENDERER_002';
 
     public const PROVIDER_NAME_INVALID_TYPE             = 'PROVIDER_003';
     public const TELEMETRY_ACTION_INVALID_TYPE          = 'TELEMETRY_ACTION_003';

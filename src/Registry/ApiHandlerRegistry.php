@@ -6,13 +6,18 @@ use WarehouseCore\Registry\ApiRegistry;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ValidationException;
+use WarehouseCore\Payload\Request\AreaAccessRequest;
+use WarehouseCore\Payload\Request\AreaNameRequest;
 use WarehouseCore\Payload\Request\AreaRequest;
 use WarehouseCore\Payload\Request\AssignPhysicalTagRequest;
 use WarehouseCore\Payload\Request\CreateContainerRequest;
 use WarehouseCore\Payload\Request\CreatePhysicalTagRequest;
 use WarehouseCore\Payload\Request\CreateUserIdentityRequest;
 use WarehouseCore\Payload\Request\CreateUserRequest;
+use WarehouseCore\Payload\Request\EntityRequest;
 use WarehouseCore\Payload\Request\PlaceApiRequest;
+use WarehouseCore\Payload\Request\RecordRequest;
+use WarehouseCore\Payload\Request\ValueNameRequest;
 
 final class ApiHandlerRegistry {
     public function __construct(
@@ -49,7 +54,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->activateArea(),
-            AreaRequest::fromRaw($raw)
+            EntityRequest::fromRaw($raw)
         );
     }
 
@@ -58,7 +63,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->archiveArea(),
-            AreaRequest::fromRaw($raw)
+            EntityRequest::fromRaw($raw)
         );
     }
 
@@ -67,9 +72,56 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->markAreaAsCrowded(),
-            AreaRequest::fromRaw($raw)
+            EntityRequest::fromRaw($raw)
         );
     }
+
+    public function grantAreaAccess(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->grantAreaAccess(),
+            AreaAccessRequest::fromRaw($raw)
+        );
+    }
+
+    public function revokeAreaAccess(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->revokeAreaAccess(),
+            AreaAccessRequest::fromRaw($raw)
+        );
+    }
+
+    public function addAreaName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addAreaName(),
+            ValueNameRequest::fromRaw($raw)
+        );
+    }
+
+    public function removeAreaName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeAreaName(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function setPrimaryAreaName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->setPrimaryAreaName(),
+            RecordRequest::fromRaw($raw)
+        );
+    }
+
+    
 
     // public function createUser(
     //     array $raw
