@@ -17,7 +17,7 @@ final readonly class AreaAccessVO {
             area_id: self::requiredInt($raw, 'area_id'),
             user_id: self::requiredInt($raw, 'user_id'),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
-            created_at: self::requiredInt($raw, 'created_at')
+            created_at: self::requiredString($raw, 'created_at')
         );
     }
 }
