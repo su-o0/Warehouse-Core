@@ -112,17 +112,15 @@ final class AreaService {
     }
 
     public function removeAreaName(
-        int $area_id,
-        string $name
+        int $area_id
     ): ServiceResult {
         if(!$this->authorization->canRemoveAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
 
        try { 
-            $result = $this->area_name_repository->getByAreaIdAndValue(
-                area_id: $area_id,
-                value: $name
+            $result = $this->area_name_repository->findPrimaryByAreaId(
+                area_id: $area_id
             );
         } catch(RepositoryException $e) {
             return new ServiceResult(

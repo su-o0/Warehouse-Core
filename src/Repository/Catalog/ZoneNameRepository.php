@@ -13,7 +13,19 @@ final class ZoneNameRepository extends Repository {
         return ZoneNameVO::fromRaw($raw);
     }
 
-    public function getByZoneId(
+    public function findByRecordId(
+        int $record_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
+
+    public function findByZoneId(
         int $zone_id
     ): array {
         return $this->entities(
@@ -25,7 +37,7 @@ final class ZoneNameRepository extends Repository {
         );
     }
 
-    public function getPrimaryByZoneId(
+    public function findPrimaryByZoneId(
         int $zone_id
     ): ?ZoneNameVO {
         return $this->entity(

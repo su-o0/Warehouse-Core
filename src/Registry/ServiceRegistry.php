@@ -290,7 +290,6 @@ final class ServiceRegistry {
             $this->repository->stock,
             $this->repository->stored_file,      
             $this->repository->user,
-            $this->repository->user_identity,
             $this->repository->zone,
             $this->repository->role,
             $this->repository->provider 

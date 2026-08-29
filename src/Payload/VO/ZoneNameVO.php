@@ -6,6 +6,7 @@ use WarehouseCore\Config\ConfigHelper;
 final class ZoneNameVO {
     use ConfigHelper;
     public function __construct(
+        public int $record_id,
         public int $zone_id,
         public string $value,
         public bool $is_primary,
@@ -17,6 +18,7 @@ final class ZoneNameVO {
         array $raw
     ): self {
         return new self(
+            record_id: self::requiredInt($raw, 'record_id'),
             zone_id: self::requiredInt($raw, 'zone_id'),
             value: self::requiredString($raw, 'value'),
             is_primary: self::required($raw, 'is_primary'),

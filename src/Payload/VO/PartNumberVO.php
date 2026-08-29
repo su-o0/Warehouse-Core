@@ -6,6 +6,7 @@ use WarehouseCore\Config\ConfigHelper;
 final readonly class PartNumberVO {
     use ConfigHelper;
     public function __construct(
+        public int $record_id,
         public int $part_id,
         public string $value,
         public bool $is_primary,
@@ -15,6 +16,7 @@ final readonly class PartNumberVO {
 
     public static function fromRaw(array $raw): self {
         return new self(
+            record_id: self::requiredInt($raw, 'record_id'),
             part_id: self::requiredInt($raw, 'part_id'),
             value: self::requiredString($raw, 'value'),
             is_primary: self::required($raw, 'is_primary'),

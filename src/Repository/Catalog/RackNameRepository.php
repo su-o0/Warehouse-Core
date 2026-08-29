@@ -13,6 +13,18 @@ final class RackNameRepository extends Repository {
     ): RackNameVO {
         return RackNameVO::fromRaw($raw);
     }
+    
+    public function findByRecordId(
+        int $record_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
 
     public function findByRackId(
         int $rack_id

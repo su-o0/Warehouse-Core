@@ -14,6 +14,19 @@ final class PartNameRepository extends Repository {
         return PartNameVO::fromRaw($raw);
     }
 
+    public function findByRecordId(
+        int $record_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
+
+
     public function findByPartId(
         int $part_id
     ): array {

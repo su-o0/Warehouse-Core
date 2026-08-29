@@ -6,6 +6,7 @@ use WarehouseCore\Config\ConfigHelper;
 final class RackNameVO {
     use ConfigHelper;
     public function __construct(
+        public int $record_id,
         public int $rack_id,
         public string $value,
         public bool $is_primary,
@@ -17,6 +18,7 @@ final class RackNameVO {
         array $raw
     ): self {
         return new self(
+            record_id: self::requiredInt($raw, 'record_id'),
             rack_id: self::requiredInt($raw, 'rack_id'),
             value: self::requiredString($raw, 'value'),
             is_primary: self::required($raw, 'is_primary'),

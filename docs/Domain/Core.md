@@ -27,7 +27,6 @@ Entity
 ├── Stock
 ├── StoredFile
 ├── User
-├── UserIdentity
 ├── Vehicle
 └── Zone
 ```
@@ -83,6 +82,7 @@ Value Objects
 ├── RackName
 │
 ├── Relationship
+│   ├── UserIdentity
 │   ├── AreaAccess
 │   ├── ContainerPlacement
 │   ├── ItemPlacement

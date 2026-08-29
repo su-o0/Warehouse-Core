@@ -132,6 +132,7 @@ Catalog
 ---
 ```
 AreaName
+├── RecordId
 ├── AreaId
 ├── Value
 ├── IsPrimary
@@ -150,6 +151,7 @@ Part
 └── CreatedAt
 
 PartNumber
+├── RecordId
 ├── PartId
 ├── Value
 ├── IsPrimary
@@ -157,6 +159,7 @@ PartNumber
 └── CreatedAt
 
 PartName
+├── RecordId
 ├── PartId
 ├── Value
 ├── IsPrimary
@@ -164,7 +167,7 @@ PartName
 └── CreatedAt   
 
 RackName
-├── Id
+├── RecordId
 ├── RackId
 ├── Value
 ├── IsPrimary
@@ -178,6 +181,7 @@ Vehicle
 └── CreatedAt
 
 ZoneName
+├── RecordId
 ├── ZoneId
 ├── Value
 ├── IsPrimary
@@ -438,7 +442,7 @@ User
 └── CreatedAt
 
 UserIdentity
-├── Id
+├── RecordId
 ├── UserId
 ├── Provider
 ├── ExternalId

@@ -14,7 +14,6 @@ use WarehouseCore\Payload\Entity\ShelfEntity;
 use WarehouseCore\Payload\Entity\StockEntity;
 use WarehouseCore\Payload\Entity\StoredFileEntity;
 use WarehouseCore\Payload\Entity\UserEntity;
-use WarehouseCore\Payload\Entity\UserIdentityEntity;
 use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Reference\ProviderReference;
 use WarehouseCore\Payload\Reference\RoleReference;
@@ -22,7 +21,6 @@ use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\ProviderRepository;
 use WarehouseCore\Repository\Identity\RoleRepository;
-use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
@@ -50,7 +48,6 @@ final class GetService {
         private StockRepository $stock,
         private StoredFileRepository $stored_file,
         private UserRepository $user,
-        private UserIdentityRepository $user_identity,
         private ZoneRepository $zone,
         private RoleRepository $role,
         private ProviderRepository $provider
@@ -231,22 +228,6 @@ final class GetService {
         }
 
         return $user;
-    }
-
-    public function getUserIdentity(
-        int $user_identity_id
-    ): UserIdentityEntity {
-        if (!$this->authorization->canGetUserIdentity()) {
-            throw ServiceException::FORBIDDEN();
-        }
-
-        $user_identity = $this->user_identity->getById($user_identity_id);
-
-        if ($user_identity === null) {
-            throw DomainException::USER_IDENTITY_NOT_FOUND();
-        }
-
-        return $user_identity;
     }
 
     public function getZone(

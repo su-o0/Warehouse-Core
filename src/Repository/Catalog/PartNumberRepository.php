@@ -13,7 +13,19 @@ final class PartNumberRepository extends Repository {
         return PartNumberVO::fromRaw($raw);
     }
 
-    public function getByPartId(
+    public function findByRecordId(
+        int $record_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
+
+    public function findByPartId(
         int $part_id
     ): array {
         return $this->entities(
@@ -25,7 +37,7 @@ final class PartNumberRepository extends Repository {
         );
     }
 
-    public function getPrimaryByPartId(
+    public function findPrimaryByPartId(
         int $part_id
     ): ?PartNumberVO {
         return $this->entity(
@@ -38,7 +50,7 @@ final class PartNumberRepository extends Repository {
         );
     }
 
-    public function getByValue(
+    public function findByValue(
         string $value
     ): ?PartNumberVO {
         return $this->entity(

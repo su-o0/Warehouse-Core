@@ -13,7 +13,19 @@ final class AreaNameRepository extends Repository {
         return AreaNameVO::fromRaw($raw);
     }
 
-    public function getByAreaId(
+    public function findByRecordId(
+        int $record_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
+
+    public function findByAreaId(
         int $area_id
     ): array {
         return $this->entities(
@@ -25,7 +37,7 @@ final class AreaNameRepository extends Repository {
         );
     }
 
-    public function getByAreaIdAndValue(
+    public function findByAreaIdAndValue(
         int $area_id,
         string $value
     ): ?AreaNameVO {
@@ -40,7 +52,7 @@ final class AreaNameRepository extends Repository {
         );
     }
 
-    public function getPrimaryByAreaId(
+    public function findPrimaryByAreaId(
         int $area_id
     ): ?AreaNameVO {
         return $this->entity(

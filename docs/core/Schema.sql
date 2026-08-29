@@ -19,7 +19,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE user_identities (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,user_id BIGINT NOT NULL
     ,provider VARCHAR(64) NOT NULL
     ,external_id VARCHAR(255) NOT NULL
@@ -49,7 +49,8 @@ CREATE TABLE parts (
 );
 
 CREATE TABLE part_numbers (
-    part_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,part_id BIGINT NOT NULL
     ,value VARCHAR(128) NOT NULL UNIQUE
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
@@ -60,7 +61,8 @@ CREATE TABLE part_numbers (
 );
 
 CREATE TABLE part_names (
-    part_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,part_id BIGINT NOT NULL
     ,value VARCHAR(512) NOT NULL UNIQUE
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
@@ -199,7 +201,8 @@ CREATE TABLE stock (
 -- =========================
 
 CREATE TABLE area_names (
-    area_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,area_id BIGINT NOT NULL
     ,value VARCHAR(255) NOT NULL
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
@@ -210,7 +213,8 @@ CREATE TABLE area_names (
 );
 
 CREATE TABLE zone_names (
-    zone_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,zone_id BIGINT NOT NULL
     ,value VARCHAR(255) NOT NULL
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
@@ -221,7 +225,8 @@ CREATE TABLE zone_names (
 );
 
 CREATE TABLE rack_names (
-    rack_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,rack_id BIGINT NOT NULL
     ,value VARCHAR(255) NOT NULL
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
