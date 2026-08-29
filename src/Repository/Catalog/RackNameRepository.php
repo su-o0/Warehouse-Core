@@ -16,8 +16,8 @@ final class RackNameRepository extends Repository {
     
     public function findByRecordId(
         int $record_id
-    ): array {
-        return $this->entities(
+    ): ?RackNameVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE record_id = :record_id",
             [
