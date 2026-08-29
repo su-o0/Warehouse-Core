@@ -13,7 +13,7 @@ final class AreaAccessRepository extends Repository {
         return AreaAccessVO::fromRaw($raw);
     }
 
-    public function getByAreaId(
+    public function findByAreaId(
         int $area_id
     ): array {
         return $this->entities(
@@ -25,7 +25,7 @@ final class AreaAccessRepository extends Repository {
         );
     }
 
-    public function getByUserId(
+    public function findByUserId(
         int $user_id
     ): array {
         return $this->entities(
@@ -37,21 +37,7 @@ final class AreaAccessRepository extends Repository {
         );
     }
 
-
-    public function getByAreaIdAndUserId(
-        int $area_id,
-        int $user_id
-    ): ?AreaAccessVO {
-        return $this->entity(
-            "SELECT * FROM {$this->table}
-            WHERE area_id = :area_id",
-            [
-                ':area_id' => $area_id
-            ]
-        );
-    }
-
-    public function find(
+    public function findByAreaIdAndUserId(
         int $area_id,
         int $user_id
     ): ?AreaAccessVO {
