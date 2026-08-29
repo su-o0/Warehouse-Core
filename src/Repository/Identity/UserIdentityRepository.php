@@ -108,16 +108,16 @@ final class UserIdentityRepository extends Repository
     }
 
     public function updateUserId(
-        int $id,
+        int $record_id,
         int $user_id
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET user_id = :user_id
-                WHERE id = :id",
+                WHERE record_id = :record_id",
                 [
-                    ':id' => $id,
+                    ':record_id' => $record_id,
                     ':user_id' => $user_id
                 ]
             );
@@ -127,16 +127,16 @@ final class UserIdentityRepository extends Repository
     }
 
     public function updateProvider(
-        int $id,
+        int $record_id,
         string $provider
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET provider = :provider
-                WHERE id = :id",
+                WHERE record_id = :record_id",
                 [
-                    ':id' => $id,
+                    ':record_id' => $record_id,
                     ':provider' => $provider
                 ]
             );
@@ -146,16 +146,16 @@ final class UserIdentityRepository extends Repository
     }
 
     public function updateExternalId(
-        int $id,
+        int $record_id,
         string $external_id
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET external_id = :external_id
-                WHERE id = :id",
+                WHERE record_id = :record_id",
                 [
-                    ':id' => $id,
+                    ':record_id' => $record_id,
                     ':external_id' => $external_id
                 ]
             );
@@ -165,14 +165,14 @@ final class UserIdentityRepository extends Repository
     }
 
     public function delete(
-        int $id
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE id = :id",
+                WHERE record_id = :record_id",
                 [
-                    ':id' => $id
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

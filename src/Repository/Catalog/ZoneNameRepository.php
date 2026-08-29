@@ -109,20 +109,17 @@ final class ZoneNameRepository extends Repository {
     }
 
     public function updateValue(
-        int $zone_id,
+        int $record_id,
         string $value,
-        string $new_value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET value = :new_value
-                WHERE zone_id = :zone_id
-                AND value = :value",
+                SET value = :value
+                WHERE record_id = :record_id",
                 [
-                    ':zone_id' => $zone_id,
-                    ':value' => $value,
-                    ':new_value' => $new_value
+                    ':record_id' => $record_id,
+                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {
@@ -131,19 +128,16 @@ final class ZoneNameRepository extends Repository {
     }
 
     public function updatePrimary(
-        int $zone_id,
-        string $value,
+        int $record_id,
         bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET is_primary = :is_primary
-                WHERE zone_id = :zone_id
-                AND value = :value",
+                WHERE record_id = :record_id",
                 [
-                    ':zone_id' => $zone_id,
-                    ':value' => $value,
+                    ':record_id' => $record_id,
                     ':is_primary' => $is_primary ? 1 : 0
                 ]
             );
@@ -153,17 +147,14 @@ final class ZoneNameRepository extends Repository {
     }
 
     public function delete(
-        int $zone_id,
-        string $value
+        int $record_id,
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE zone_id = :zone_id
-                AND value = :value",
+                WHERE record_id = :record_id",
                 [
-                    ':zone_id' => $zone_id,
-                    ':value' => $value
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

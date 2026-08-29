@@ -124,20 +124,17 @@ final class AreaNameRepository extends Repository {
     }
 
     public function updateValue(
-        int $area_id,
-        string $value,
-        string $new_value
+        int $record_id,
+        string $value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
-                SET value = :new_value
-                WHERE area_id = :area_id
-                AND value = :value",
+                SET value = :value
+                WHERE record_id = :record_id",
                 [
-                    ':area_id' => $area_id,
-                    ':value' => $value,
-                    ':new_value' => $new_value
+                    ':record_id' => $record_id,
+                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {
@@ -146,19 +143,16 @@ final class AreaNameRepository extends Repository {
     }
 
     public function updatePrimary(
-        int $area_id,
-        string $value,
+        int $record_id,
         bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET is_primary = :is_primary
-                WHERE area_id = :area_id
-                AND value = :value",
+                WHERE record_id = :record_id",
                 [
-                    ':area_id' => $area_id,
-                    ':value' => $value,
+                    ':record_id' => $record_id,
                     ':is_primary' => $is_primary ? 1 : 0
                 ]
             );
@@ -168,17 +162,14 @@ final class AreaNameRepository extends Repository {
     }
 
     public function delete(
-        int $area_id,
-        string $value
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE area_id = :area_id
-                AND value = :value",
+                WHERE record_id = :record_id",
                 [
-                    ':area_id' => $area_id,
-                    ':value' => $value
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

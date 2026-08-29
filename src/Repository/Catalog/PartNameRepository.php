@@ -99,16 +99,16 @@ final class PartNameRepository extends Repository {
     }
 
     public function updateValue(
-        int $part_id,
+        int $record_id,
         string $value
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET value = :value
-                WHERE part_id = :part_id",
+                WHERE record_id = :record_id",
                 [
-                    ':part_id' => $part_id,
+                    ':record_id' => $record_id,
                     ':value' => $value
                 ]
             );
@@ -118,16 +118,16 @@ final class PartNameRepository extends Repository {
     }
 
     public function updatePrimary(
-        int $part_id,
+        int $record_id,
         bool $is_primary
     ): void {
         try {
             $this->execute(
                 "UPDATE {$this->table}
                 SET is_primary = :is_primary
-                WHERE part_id = :part_id",
+                WHERE record_id = :record_id",
                 [
-                    ':part_id' => $part_id,
+                    ':record_id' => $record_id,
                     ':is_primary' => $is_primary ? 1 : 0
                 ]
             );
@@ -137,14 +137,14 @@ final class PartNameRepository extends Repository {
     }
 
     public function delete(
-        int $part_id
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE part_id = :part_id",
+                WHERE record_id = :record_id",
                 [
-                    ':part_id' => $part_id
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {
