@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 use WarehouseCore\Payload\VO\Relationship\StockPlacementVO;
 
 final class StockPlacementRepository extends Repository {

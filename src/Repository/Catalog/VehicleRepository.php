@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Catalog;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 use WarehouseCore\Payload\Entity\VehicleEntity;
 
 final class VehicleRepository extends Repository

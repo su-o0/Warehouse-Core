@@ -1,6 +1,6 @@
 <?php
 namespace WarehouseCore\Repository\Media;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
 use WarehouseCore\Payload\Entity\PhotoEntity;
 

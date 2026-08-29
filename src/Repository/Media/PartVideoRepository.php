@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Media;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
 use WarehouseCore\Payload\VO\VideoVO;
 

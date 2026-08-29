@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 use WarehouseCore\Payload\Entity\AreaEntity;
 
 final class AreaRepository extends Repository {
@@ -10,6 +10,13 @@ final class AreaRepository extends Repository {
         array $raw
     ): AreaEntity {
         return AreaEntity::fromRaw($raw);
+    }
+
+    public function list(): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}",
+            []
+        );
     }
 
     public function getById(

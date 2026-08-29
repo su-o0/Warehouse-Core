@@ -2,7 +2,7 @@
 namespace WarehouseCore\Repository\Inventory;
 
 use WarehouseCore\Contract\Repository;
-use WarehouseCore\Exception\PdoExceptionMapper;
+use WarehouseCore\Payload\Map\PdoExceptionMapper;
 use WarehouseCore\Payload\Entity\ShelfEntity;
 
 final class ShelfRepository extends Repository {
