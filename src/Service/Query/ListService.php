@@ -5,6 +5,8 @@ use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\DTO\StructureDTO;
+use WarehouseCore\Payload\DTO\StructureNamesDTO;
+use WarehouseCore\Payload\Result\ListStructureNamesResult;
 use WarehouseCore\Payload\Result\ListStructureResult;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\AreaNameRepository;
@@ -104,6 +106,44 @@ final class ListService {
         return new ListStructureResult(
             success: true,
             structure_name: 'Zone',
+            list: $result
+        );
+    }
+
+
+    public function listAreaNames(
+        int $area_id
+    ): ApiResult {
+        if(!$this->authorization->canListAreaNames()) {
+            throw ServiceException::FORBIDDEN();
+        }
+        
+        $area = $this->area_repository->getById($area_id);
+
+        if ($area === null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_NOT_FOUND
+            );
+        }
+
+        $area_names = $this->area_name_repository->findByAreaId($area->id);
+
+        $result = [];
+        foreach($area_names as $area_name) {
+
+            array_push($result, 
+                new StructureNamesDTO(
+                    record_id: $area_name->record_id,
+                    name: $area_name->value,
+                    is_primary: $area_name->is_primary
+                ) 
+            );
+        }
+
+        return new ListStructureNamesResult(
+            success: true,
+            structure_name: 'Area',
             list: $result
         );
     }

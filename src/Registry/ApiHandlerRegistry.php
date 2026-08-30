@@ -1,6 +1,7 @@
 <?php
 namespace WarehouseCore\Registry;
 
+use Dom\Entity;
 use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Registry\ApiRegistry;
 use WarehouseCore\Payload\Result\ServiceResult;
@@ -14,6 +15,7 @@ use WarehouseCore\Payload\Request\CreateContainerRequest;
 use WarehouseCore\Payload\Request\CreatePhysicalTagRequest;
 use WarehouseCore\Payload\Request\CreateUserIdentityRequest;
 use WarehouseCore\Payload\Request\CreateUserRequest;
+use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Payload\Request\EntityRequest;
 use WarehouseCore\Payload\Request\PlaceApiRequest;
 use WarehouseCore\Payload\Request\RecordRequest;
@@ -117,7 +119,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->setPrimaryAreaName(),
-            RecordRequest::fromRaw($raw)
+            EntityRecordRequest::fromRaw($raw)
         );
     }
 
@@ -142,7 +144,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->setPrimaryZoneName(),
-            RecordRequest::fromRaw($raw)
+            EntityRecordRequest::fromRaw($raw)
         );
     }
 
@@ -196,6 +198,15 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->listZoneByArea(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function listAreaNames(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listAreaNames(),
             EntityRequest::fromRaw($raw)
         );
     }

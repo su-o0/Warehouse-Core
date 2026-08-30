@@ -135,12 +135,20 @@ final class ZoneService {
 
 
     public function setPrimaryZoneName(
+        int $zone_id,
         int $record_id,
     ): ServiceResult {
         if(!$this->authorization->canSetPrimaryZoneName()) {
             throw ServiceException::FORBIDDEN();
         }
 
+        $result = $this->existsZone($zone_id);
+
+        if(!$result->success) {
+            return $result;
+        }
+
+        $zone = $result->entity;
         $result = $this->existsZoneName($record_id);
 
         if(!$result->success) {
@@ -148,7 +156,14 @@ final class ZoneService {
         }
 
         $zone_name = $result->entity;
-
+        
+        if ($zone->id != $zone_name->zone_id) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::ZONE_NAME_NOT_FOUND
+            );
+        }
+        
         if ($zone_name->is_primary){
             return new ServiceResult(
                 success: false,

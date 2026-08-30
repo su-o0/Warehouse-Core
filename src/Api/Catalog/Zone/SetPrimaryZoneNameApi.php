@@ -2,7 +2,7 @@
 namespace WarehouseCore\Api\Catalog\Zone;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\RecordRequest;
+use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Service\ZoneService;
 
 final class SetPrimaryZoneNameApi {
@@ -12,9 +12,10 @@ final class SetPrimaryZoneNameApi {
     ) { }
 
     public function handle(
-        RecordRequest $request
+        EntityRecordRequest $request
     ): ApiResult {
         return $this->zone_service->setPrimaryZoneName(
+            zone_id: $request->id,
             record_id: $request->record_id,
         );
     }

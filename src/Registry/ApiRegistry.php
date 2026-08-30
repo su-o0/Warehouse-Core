@@ -18,6 +18,7 @@ use WarehouseCore\Api\Topology\Area\MarkAreaAsCrowdedApi;
 use WarehouseCore\Api\Identity\Area\GrantAreaAccessApi;
 use WarehouseCore\Api\Identity\Area\RevokeAreaAccessApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
+use WarehouseCore\Api\Query\List\ListAreaNamesApi;
 use WarehouseCore\Api\Query\List\ListZoneByAreaApi;
 use WarehouseCore\Api\Topology\Zone\ActivateZoneApi;
 use WarehouseCore\Api\Topology\Zone\ArchiveZoneApi;
@@ -153,6 +154,13 @@ final class ApiRegistry {
 
     public function listZoneByArea(): ListZoneByAreaApi {
         return new ListZoneByAreaApi(
+            $this->config->list_area,
+            $this->context->list_service,
+        );
+    }
+
+    public function listAreaNames(): ListAreaNamesApi {
+        return new ListAreaNamesApi(
             $this->config->list_area,
             $this->context->list_service,
         );

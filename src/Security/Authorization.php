@@ -20,6 +20,13 @@ final readonly class Authorization {
         );
     }
 
+    public function canListAreaNames(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
     public function canListZone(): bool {
         return in_array(
             $this->role,

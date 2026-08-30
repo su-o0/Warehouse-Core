@@ -2,7 +2,7 @@
 namespace WarehouseCore\Api\Catalog\Area;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\RecordRequest;
+use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Service\AreaService;
 
 final class SetPrimaryAreaNameApi {
@@ -12,9 +12,10 @@ final class SetPrimaryAreaNameApi {
     ) { }
 
     public function handle(
-        RecordRequest $request
+        EntityRecordRequest $request
     ): ApiResult {
         return $this->area_service->setPrimaryAreaName(
+            area_id: $request->id,
             record_id: $request->record_id,
         );
     }

@@ -141,10 +141,12 @@ final class ShellFacade {
     }
 
     public function setPrimaryAreaName(
+        int $area_id,
         int $record_id,
     ): string {
         return $this->output->render(
             $this->api->setPrimaryAreaName([
+                'id' => $area_id,
                 'record_id' => $record_id
             ])
         );
@@ -169,10 +171,12 @@ final class ShellFacade {
     }
 
     public function setPrimaryZoneName(
+        int $zone_id,
         int $record_id,
     ): string {
         return $this->output->render(
             $this->api->setPrimaryZoneName([
+                'id' => $zone_id,
                 'record_id' => $record_id
             ])
         );
@@ -233,6 +237,16 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->listZoneByArea([
+                'id' => $area_id
+            ])
+        );
+    }
+
+    public function listAreaNames(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->listAreaNames([
                 'id' => $area_id
             ])
         );

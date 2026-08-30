@@ -135,12 +135,20 @@ final class AreaService {
     }
 
     public function setPrimaryAreaName(
+        int $area_id,
         int $record_id,
     ): ServiceResult {
         if(!$this->authorization->canSetPrimaryAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
-        
+
+        $result = $this->existsArea($area_id);
+
+        if(!$result->success) {
+            return $result;
+        }
+
+        $area = $result->entity;
         $result = $this->existsAreaName($record_id);
 
         if(!$result->success) {
@@ -148,6 +156,13 @@ final class AreaService {
         }
 
         $area_name = $result->entity;
+
+        if ($area->id != $area_name->area_id) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_NAME_NOT_FOUND
+            );
+        }
 
         if ($area_name->is_primary){
             return new ServiceResult(
