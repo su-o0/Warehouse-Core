@@ -126,6 +126,7 @@ Catalog
 ├── PartName
 ├── PartNumber
 ├── RackName
+├── UserName
 ├── Vehicle
 └── ZoneName
 ```
@@ -169,6 +170,14 @@ PartName
 RackName
 ├── RecordId
 ├── RackId
+├── Value
+├── IsPrimary
+├── CreatedByUserId
+└── CreatedAt
+
+UserName
+├── RecordId
+├── UserId
 ├── Value
 ├── IsPrimary
 ├── CreatedByUserId
@@ -387,11 +396,13 @@ VehicleVideo
 ```
 Processing
 ├── ItemProcessingStep
-└── PartProcessingStep
+├── PartProcessingStep
+└── UserProcessingStep
 ```
 ---
 ```
 ItemProcessingStep
+├── RecordId
 ├── ItemId
 ├── Stage
 │   ├── Identify
@@ -404,10 +415,23 @@ ItemProcessingStep
 └── CreatedAt
 
 PartProcessingStep
+├── RecordId
 ├── PartId
 ├── Stage
 │   ├── Identify
 │   └── Capture
+│
+├── Metadata
+├── CreatedByUserId
+└── CreatedAt
+
+UserProcessingStep
+├── RecordId
+├── UserId
+├── Stage
+│   ├── Named
+│   ├── AssignRole
+│   └── Identify
 │
 ├── Metadata
 ├── CreatedByUserId
@@ -433,9 +457,10 @@ Role
 
 User
 ├── Id
-├── Name
 ├── Role
 ├── Status
+│   ├── Created
+│   ├── Processing
 │   ├── Active
 │   └── Archived
 │
@@ -474,12 +499,14 @@ Area
 └── CreatedAt
 
 ContainerPlacement
+├── RecordId
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
 └── CreatedAt
 
 ItemPlacement
+├── RecordId
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
@@ -487,12 +514,14 @@ ItemPlacement
 └── CreatedAt
 
 RackPlacement
+├── RecordId
 ├── AreaId
 ├── ZoneId
 ├── RackId
 └── CreatedAt   
 
 StockPlacement
+├── RecordId
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId

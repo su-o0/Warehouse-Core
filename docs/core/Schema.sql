@@ -11,9 +11,8 @@ CREATE TABLE providers (
 
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,name VARCHAR(255) NOT NULL
-    ,role VARCHAR(64) NOT NULL
-    ,status ENUM('Active','Archived') NOT NULL DEFAULT 'Active'
+    ,role VARCHAR(64) NULL
+    ,status ENUM('Created','Processing','Active','Archived') NOT NULL DEFAULT 'Created'
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ,FOREIGN KEY (role) REFERENCES roles(name)
 );
@@ -124,7 +123,7 @@ CREATE TABLE owners (
 -- INVENTORY
 -- =========================
 CREATE TABLE racks (
-    id BIGINT PRIMARY KEY
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,status ENUM('Created','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -133,7 +132,7 @@ CREATE TABLE racks (
 );
 
 CREATE TABLE shelfs (
-    id BIGINT PRIMARY KEY
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,rack_id BIGINT NOT NULL
     ,status ENUM('Created','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
     ,created_by_user_id BIGINT NOT NULL
@@ -236,12 +235,25 @@ CREATE TABLE rack_names (
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
+CREATE TABLE user_names (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,user_id BIGINT NOT NULL
+    ,value VARCHAR(255) NOT NULL
+    ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+);
+
 -- =========================
 -- PROCESSING
 -- =========================
 
 CREATE TABLE item_processing_steps (
-    item_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,item_id BIGINT NOT NULL
     ,stage ENUM('Identify','Capture','Inspection','Placement') NOT NULL
     ,metadata JSON NULL
     ,created_by_user_id BIGINT NOT NULL
@@ -252,13 +264,26 @@ CREATE TABLE item_processing_steps (
 );
 
 CREATE TABLE part_processing_steps (
-    part_id BIGINT NOT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,part_id BIGINT NOT NULL
     ,stage ENUM('Identify','Capture') NOT NULL
     ,metadata JSON NULL
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+);
+
+CREATE TABLE user_processing_steps (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,user_id BIGINT NOT NULL
+    ,stage ENUM('Named','AssignRole','Identify') NOT NULL
+    ,metadata JSON NULL
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
@@ -271,7 +296,8 @@ CREATE TABLE part_processing_steps (
 -- =========================
 
 CREATE TABLE rack_placements (
-    area_id BIGINT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,area_id BIGINT NULL
     ,zone_id BIGINT NULL
     ,rack_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -287,7 +313,8 @@ CREATE TABLE rack_placements (
 );
 
 CREATE TABLE container_placements (
-    zone_id BIGINT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,zone_id BIGINT NULL
     ,shelf_id BIGINT NULL
     ,container_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -303,7 +330,8 @@ CREATE TABLE container_placements (
 );
 
 CREATE TABLE item_placements (
-    zone_id BIGINT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,zone_id BIGINT NULL
     ,shelf_id BIGINT NULL
     ,container_id BIGINT NULL
     ,item_id BIGINT NOT NULL
@@ -323,7 +351,8 @@ CREATE TABLE item_placements (
 );
 
 CREATE TABLE stock_placements (
-    zone_id BIGINT NULL
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,zone_id BIGINT NULL
     ,shelf_id BIGINT NULL
     ,container_id BIGINT NULL
     ,stock_id BIGINT NOT NULL
@@ -664,8 +693,11 @@ VALUES ('Root'), ('Admin'), ('Worker'), ('Salesman'), ('Viewer');
 INSERT INTO providers (name)
 VALUES ('Shell'), ('Web'), ('Telegram');
 
-INSERT INTO users (name, role, status)
-VALUES ('Root', 'Root', 'Active');
+INSERT INTO users (role, status)
+VALUES ('Root', 'Active');
+
+INSERT INTO user_names (user_id, value, is_primary, created_by_user_id)
+VALUES (1, 'Root', TRUE, 1);
 
 INSERT INTO user_identities (user_id, provider, external_id)
 VALUES (1, 'Shell', 'root');

@@ -55,6 +55,7 @@ Type Enums
 ├── Shelf Status
 ├── Stock Status
 ├── User Status
+├── UserProcessingStep Stage 
 └── Zone Status
 ```
 ---
@@ -78,18 +79,20 @@ Value Objects
 ├── PartName
 ├── PartNumber
 ├── PartProcessingStep
-├── Video
+├── Photo
 ├── RackName
 │
 ├── Relationship
-│   ├── UserIdentity
 │   ├── AreaAccess
 │   ├── ContainerPlacement
 │   ├── ItemPlacement
 │   ├── RackPlacement
-│   └── StockPlacement
+│   ├── StockPlacement
+│   └── UserIdentity
 │
-├── Photo
+├── UserName
+├── UserProcessingStep
+├── Video
 └── ZoneName
 ```
 ---

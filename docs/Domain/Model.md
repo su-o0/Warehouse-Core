@@ -28,6 +28,7 @@ Core
 │   ├── PartName
 │   ├── PartNumber
 │   ├── RackName
+│   ├── UserName
 │   ├── Vehicle
 │   └── ZoneName
 │
@@ -61,7 +62,8 @@ Core
 │
 ├── Processing
 │   ├── ItemProcessingStep
-│   └── PartProcessingStep
+│   ├── PartProcessingStep
+│   └── UserProcessingStep
 │
 ├── Security
 │   ├── Provider
@@ -123,6 +125,8 @@ StockVideo
 StoredFile
 User
 UserIdentity
+UserName
+UserProcessingStep
 Vehicle
 VehiclePhoto
 VehicleVideo
@@ -163,6 +167,7 @@ Catalog
 ├── PartName
 ├── PartNumber
 ├── RackName
+├── UserName
 ├── Vehicle
 └── ZoneName
 
@@ -195,7 +200,8 @@ Media
 
 Processing
 ├── ItemProcessingStep
-└── PartProcessingStep
+├── PartProcessingStep
+└── UserProcessingStep
 
 
 Security
