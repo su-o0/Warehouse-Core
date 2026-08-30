@@ -30,7 +30,7 @@ final class ErrorMessage {
     public const CONTAINER_ALREADY_EXISTS = 'Container already exists';
     public const AREA_ACCESS_ALREADY_EXISTS = 'Area access already exists';
     public const AREA_NAME_ALREADY_PRIMARY = 'Area name already primary';
-
+    public const ZONE_NAME_ALREADY_PRIMARY = 'Zone name already primary';
     
     public const AREA_NOT_FOUND = 'Area not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
@@ -57,6 +57,7 @@ final class ErrorMessage {
     public const USER_IDENTITY_NOT_FOUND = 'Shelf not found';
     public const ZONE_NOT_FOUND = 'Shelf not found';
     public const AREA_NAME_NOT_FOUND = 'Area name not found';
+    public const ZONE_NAME_NOT_FOUND = 'Zone name not found';
     public const AREA_ACCESS_NOT_FOUND = 'Area access not found';
     public const RENDERER_NOT_FOUND = 'No renderer for result';
 
@@ -89,5 +90,6 @@ final class ErrorMessage {
 
 
     public const AREA_INVALID_STATUS_TRANSITION = 'Area invalid status transition'; //007
+    public const ZONE_INVALID_STATUS_TRANSITION = 'Zone invalid status transition'; //007
 
 }

@@ -128,6 +128,82 @@ final class ApiHandlerRegistry {
         );
     }
 
+    public function addZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addZoneName(),
+            ValueNameRequest::fromRaw($raw)
+        );
+    }
+
+    public function setPrimaryZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->setPrimaryZoneName(),
+            RecordRequest::fromRaw($raw)
+        );
+    }
+
+    public function removeZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeZoneName(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function createZone(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->createZone(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function activateZone(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->activateZone(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function archiveZone(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveZone(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function markZoneAsCrowded(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveZone(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function listZoneByArea(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listZoneByArea(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+
+
+
+
     // public function createUser(
     //     array $raw
     // ): ApiResult{

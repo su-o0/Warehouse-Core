@@ -19,6 +19,77 @@ final readonly class Authorization {
             $session->user
         );
     }
+
+    public function canListZone(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
+        );
+    }
+
+    public function canArchiveZone(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canMarkZoneAsCrowded(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canActivateZone(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canCreateZone(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canAddZoneName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canSetPrimaryZoneName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canRemoveZoneName(): bool{
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canAddAreaName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canSetPrimaryAreaName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
     public function canListArea(): bool {
         return in_array(
             $this->role,

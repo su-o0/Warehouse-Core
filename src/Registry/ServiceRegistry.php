@@ -230,6 +230,11 @@ final class ServiceRegistry {
         return new ZoneService(
             $this->config->zone,
             $authorization,
+            $this->repository->zone,
+            $this->repository->zone_name,
+            $this->transaction->create_zone,
+            $this->transaction->add_zone_name,
+            $this->transaction->set_primary_zone_name
         );
     }
 
@@ -305,6 +310,8 @@ final class ServiceRegistry {
             $this->repository->area,
             $this->repository->area_name,
             $this->repository->area_access,
+            $this->repository->zone,
+            $this->repository->zone_name,
             
         );
     }

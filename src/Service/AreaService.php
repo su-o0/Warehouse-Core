@@ -101,6 +101,10 @@ final class AreaService {
         int $area_id,
         string $name
     ): ServiceResult {
+        if(!$this->authorization->canAddAreaName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
         $result = $this->existsArea($area_id);
 
         if(!$result->success) {
@@ -133,6 +137,10 @@ final class AreaService {
     public function setPrimaryAreaName(
         int $record_id,
     ): ServiceResult {
+        if(!$this->authorization->canSetPrimaryAreaName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+        
         $result = $this->existsAreaName($record_id);
 
         if(!$result->success) {

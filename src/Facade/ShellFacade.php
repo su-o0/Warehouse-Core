@@ -156,6 +156,89 @@ final class ShellFacade {
         );
     }
 
+    public function addZoneName(
+        int $zone_id,
+        string $name
+    ): string {
+        return $this->output->render(
+            $this->api->addZoneName([
+                'id' => $zone_id,
+                'name' => $name
+            ])
+        );
+    }
+
+    public function setPrimaryZoneName(
+        int $record_id,
+    ): string {
+        return $this->output->render(
+            $this->api->setPrimaryZoneName([
+                'record_id' => $record_id
+            ])
+        );
+    }
+
+    public function removeZoneName(
+        int $zone_id,
+    ): string {
+        return $this->output->render(
+            $this->api->removeZoneName([
+                'id' => $zone_id
+            ])
+        );
+    }
+    
+    public function createZone(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->createZone([
+                'id' => $area_id
+            ])
+        );
+    }
+
+    public function activateZone(
+        int $zone_id
+    ): string {
+        return $this->output->render(
+            $this->api->activateZone([
+                'id' => $zone_id
+            ])
+        );
+    }
+
+    public function archiveZone(
+        int $zone_id
+    ): string {
+        return $this->output->render(
+            $this->api->archiveZone([
+                'id' => $zone_id
+            ])
+        );
+    }
+
+    public function markZoneAsCrowded(
+        int $zone_id
+    ): string {
+        return $this->output->render(
+            $this->api->markZoneAsCrowded([
+                'id' => $zone_id
+            ])
+        );
+    }
+
+    public function listZoneByArea(
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->listZoneByArea([
+                'id' => $area_id
+            ])
+        );
+    }
+
+
     // public function createUser(
     //     string $name, 
     //     string $role

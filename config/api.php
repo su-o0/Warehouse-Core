@@ -10,19 +10,22 @@ return [
     'ActivateArea' => 'activate_area',
     'MarkAreaAsCrowded' => 'mark_area_as_crowded',
     'ArchiveArea' => 'archive_area',
+    'ListArea' => 'list_area',
 
+    'AddZoneName' => 'add_zone_name',
+    'SetPrimaryZoneName' => 'set_primary_zone_name',
+    'RemoveZoneName' => 'remove_zone_name',
+    'CreateZone' => 'create_zone',
+    'ActivateZone' => 'activate_zone',
+    'MarkZoneaAsCrowded' => 'mark_zone_as_crowded',
+    'ArchiveZone' => 'archive_zone',
 
 
     'CreateUser' => 'create_user',
     'CreateUserIdentity' => 'create_user_identity',
     'CreatePhysicalTag' => 'create_physical_tag',
-    'CreateLocation' => 'create_location',
     'CreateContainer' => 'create_container',
     'AssignPhysicalTag' => 'assign_physical_tag',
     'CreateStock' => 'create_stock',
-    'ActiveteLocation' => 'activate_location',
-    'ArchiveLocation' => 'archive_location',
-    'GetLocation' => 'get_location',
-    'ListLocations' => 'list_locations',
     'PlaceItem' => 'place_item'
 ];

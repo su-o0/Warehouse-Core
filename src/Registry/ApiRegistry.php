@@ -8,6 +8,9 @@ use WarehouseCore\Api\Identity\CreateUserApi;
 use WarehouseCore\Api\Catalog\Area\AddAreaNameApi;
 use WarehouseCore\Api\Catalog\Area\RemoveAreaNameApi;
 use WarehouseCore\Api\Catalog\Area\SetPrimaryAreaNameApi;
+use WarehouseCore\Api\Catalog\Zone\AddZoneNameApi;
+use WarehouseCore\Api\Catalog\Zone\RemoveZoneNameApi;
+use WarehouseCore\Api\Catalog\Zone\SetPrimaryZoneNameApi;
 use WarehouseCore\Api\Topology\Area\ArchiveAreaApi;
 use WarehouseCore\Api\Topology\Area\ActivateAreaApi;
 use WarehouseCore\Api\Topology\Area\CreateAreaApi;
@@ -15,6 +18,11 @@ use WarehouseCore\Api\Topology\Area\MarkAreaAsCrowdedApi;
 use WarehouseCore\Api\Identity\Area\GrantAreaAccessApi;
 use WarehouseCore\Api\Identity\Area\RevokeAreaAccessApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
+use WarehouseCore\Api\Query\List\ListZoneByAreaApi;
+use WarehouseCore\Api\Topology\Zone\ActivateZoneApi;
+use WarehouseCore\Api\Topology\Zone\ArchiveZoneApi;
+use WarehouseCore\Api\Topology\Zone\CreateZoneApi;
+use WarehouseCore\Api\Topology\Zone\MarkZoneAsCrowdedApi;
 
 final class ApiRegistry {
     public function __construct(
@@ -89,13 +97,66 @@ final class ApiRegistry {
 
     public function listArea(): ListAreaApi {
         return new ListAreaApi(
-            $this->config->set_primary_area_name,
+            $this->config->list_area,
             $this->context->list_service,
         );
     }
+
+    public function addZoneName(): AddZoneNameApi {
+        return new AddZoneNameApi(
+            $this->config->set_primary_area_name,
+            $this->context->zone_service
+        );
+    }
+
+    public function setPrimaryZoneName(): SetPrimaryZoneNameApi {
+        return new SetPrimaryZoneNameApi(
+            $this->config->set_primary_zone_name,
+            $this->context->zone_service
+        );
+    }
+
+    public function removeZoneName(): RemoveZoneNameApi {
+        return new RemoveZoneNameApi(
+            $this->config->remove_zone_name,
+            $this->context->zone_service
+        );
+    }
+
+    public function createZone(): CreateZoneApi {
+        return new CreateZoneApi(
+            $this->config->create_zone,
+            $this->context->zone_service
+        );
+    }
     
+    public function activateZone(): ActivateZoneApi {
+        return new ActivateZoneApi(
+            $this->config->activate_zone,
+            $this->context->zone_service
+        );
+    }
+    
+    public function archiveZone(): ArchiveZoneApi {
+        return new ArchiveZoneApi(
+            $this->config->archive_zone,
+            $this->context->zone_service
+        );
+    }
+        
+    public function markZoneAsCrowded(): MarkZoneAsCrowdedApi {
+        return new MarkZoneAsCrowdedApi(
+            $this->config->mark_zone_as_crowded,
+            $this->context->zone_service
+        );
+    }
 
-
+    public function listZoneByArea(): ListZoneByAreaApi {
+        return new ListZoneByAreaApi(
+            $this->config->list_area,
+            $this->context->list_service,
+        );
+    }
 
 
 
