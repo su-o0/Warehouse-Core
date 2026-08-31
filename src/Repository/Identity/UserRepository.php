@@ -57,26 +57,13 @@ final class UserRepository extends Repository {
         );
     }
 
-    public function add(
-        string $name,
-        string $role
+    public function add( 
     ): int {
         try {
             return $this->insert(
-                "INSERT INTO {$this->table}
-                (
-                    name,
-                    role
-                )
-                VALUES
-                (
-                    :name,
-                    :role
-                )",
-                [
-                    ':name' => $name,
-                    ':role' => $role
-                ]
+                "INSERT INTO {$this->table} ()
+                VALUES ()",
+                [ ]
             );
         } catch (\PDOException $e) {
             throw PdoExceptionMapper::map($e);
