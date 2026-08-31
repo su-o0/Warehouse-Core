@@ -3,18 +3,18 @@ namespace WarehouseCore\Repository\Processing;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Payload\Map\PdoExceptionMapper;
-use WarehouseCore\Payload\VO\PartProcessingStepVO;
+use WarehouseCore\Payload\VO\UserProcessingStepVO;
 
-final class PartProcessingStepRepository extends Repository {
+final class UserProcessingStepRepository extends Repository {
     public function hydrate(
         array $raw
-    ): PartProcessingStepVO {
-        return PartProcessingStepVO::fromRaw($raw);
+    ): UserProcessingStepVO {
+        return UserProcessingStepVO::fromRaw($raw);
     }
 
     public function findByRecordId(
         int $record_id
-    ): ?PartProcessingStepVO {
+    ): ?UserProcessingStepVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE record_id = :record_id",
@@ -24,14 +24,14 @@ final class PartProcessingStepRepository extends Repository {
         );
     }
 
-    public function findByPartId(
-        int $part_id
+    public function findByUserId(
+        int $user_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE part_id = :part_id",
+            WHERE user_id = :user_id",
             [
-                ':part_id' => $part_id
+                ':user_id' => $user_id
             ]
         );
     }
@@ -48,16 +48,16 @@ final class PartProcessingStepRepository extends Repository {
         );
     }
 
-    public function findByPartIdAndStage(
-        int $part_id,
+    public function findByUserIdAndStage(
+        int $user_id,
         string $stage
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE part_id = :part_id
+            WHERE user_id = :user_id
             AND stage = :stage",
             [
-                ':part_id' => $part_id,
+                ':user_id' => $user_id,
                 ':stage' => $stage
             ]
         );
@@ -76,7 +76,7 @@ final class PartProcessingStepRepository extends Repository {
     }
 
     public function add(
-        int $part_id,
+        int $user_id,
         string $stage,
         ?string $metadata,
         int $created_by_user_id
@@ -85,20 +85,20 @@ final class PartProcessingStepRepository extends Repository {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    part_id,
+                    user_id,
                     stage,
                     metadata,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :part_id,
+                    :user_id,
                     :stage,
                     :metadata,
                     :created_by_user_id
                 )",
                 [
-                    ':part_id' => $part_id,
+                    ':user_id' => $user_id,
                     ':stage' => $stage,
                     ':metadata' => $metadata,
                     ':created_by_user_id' => $created_by_user_id

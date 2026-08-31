@@ -2,16 +2,14 @@
 namespace WarehouseCore\Payload\VO;
 
 use WarehouseCore\Config\ConfigHelper;
-use WarehouseCore\Payload\Map\ItemProcessingStepStageMapper;
-use WarehouseCore\Payload\Enum\ItemProcessingStepStageEnum;
 
-final readonly class ItemProcessingStepVO {
+final class UserNameVO {
     use ConfigHelper;
     public function __construct(
         public int $record_id,
-        public int $item_id,
-        public ItemProcessingStepStageEnum $stage,
-        public string $metadata,
+        public int $user_id,
+        public string $value,
+        public bool $is_primary,
         public int $created_by_user_id,
         public string $created_at
     ){ }
@@ -21,11 +19,9 @@ final readonly class ItemProcessingStepVO {
     ): self {
         return new self(
             record_id: self::requiredInt($raw, 'record_id'),
-            item_id: self::requiredInt($raw, 'item_id'),
-            stage: ItemProcessingStepStageMapper::match(
-                self::requiredString($raw, 'stage')
-            ),
-            metadata: self::requiredString($raw, 'metadata'),
+            user_id: self::requiredInt($raw, 'user_id'),
+            value: self::requiredString($raw, 'value'),
+            is_primary: self::required($raw, 'is_primary'),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')
         );

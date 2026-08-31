@@ -2,15 +2,15 @@
 namespace WarehouseCore\Payload\VO;
 
 use WarehouseCore\Config\ConfigHelper;
-use WarehouseCore\Payload\Enum\PartProcessingStepStageEnum;
-use WarehouseCore\Payload\Map\PartProcessingStepStageMapper;
+use WarehouseCore\Payload\Enum\UserProcessingStepStageEnum;
+use WarehouseCore\Payload\Map\UserProcessingStepStageMapper;
 
-final class PartProcessingStepVO {
+final class UserProcessingStepVO {
     use ConfigHelper;
     public function __construct(
-        public int $record__id,
-        public int $part_id,
-        public PartProcessingStepStageEnum $stage,
+        public int $record_id,
+        public int $user_id,
+        public UserProcessingStepStageEnum $stage,
         public string $metadata,
         public int $created_by_user_id,
         public string $created_at
@@ -20,9 +20,9 @@ final class PartProcessingStepVO {
         array $raw
     ): self {
         return new self(
-            record__id: self::requiredInt($raw, 'record__id'),
-            part_id: self::requiredInt($raw, 'part_id'),
-            stage: PartProcessingStepStageMapper::match(
+            record_id: self::requiredInt($raw, 'record_id'),
+            user_id: self::requiredInt($raw, 'pauser_idrt_id'),
+            stage: UserProcessingStepStageMapper::match(
                 self::requiredString($raw, 'stage')
             ),
             metadata: self::requiredString($raw, 'metadata'),

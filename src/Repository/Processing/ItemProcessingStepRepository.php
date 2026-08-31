@@ -12,7 +12,19 @@ final class ItemProcessingStepRepository extends Repository {
         return ItemProcessingStepVO::fromRaw($raw);
     }
 
-    public function getByItemId(
+    public function findByRecordId(
+        int $record_id
+    ): ?ItemProcessingStepVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE record_id = :record_id",
+            [
+                ':record_id' => $record_id
+            ]
+        );
+    }
+
+    public function findByItemId(
         int $item_id
     ): array {
         return $this->entities(
@@ -67,7 +79,7 @@ final class ItemProcessingStepRepository extends Repository {
         int $item_id,
         string $stage,
         ?string $metadata,
-        int $user_id
+        int $created_by_user_id
     ): void {
         try {
             $this->insert(
@@ -83,76 +95,13 @@ final class ItemProcessingStepRepository extends Repository {
                     :item_id,
                     :stage,
                     :metadata,
-                    :user_id
+                    :created_by_user_id
                 )",
                 [
                     ':item_id' => $item_id,
                     ':stage' => $stage,
                     ':metadata' => $metadata,
-                    ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateStage(
-        int $item_id,
-        string $stage,
-        string $new_stage
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET stage = :new_stage
-                WHERE item_id = :item_id
-                AND stage = :stage",
-                [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':new_stage' => $new_stage
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateMetadata(
-        int $item_id,
-        string $stage,
-        ?string $metadata
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET metadata = :metadata
-                WHERE item_id = :item_id
-                AND stage = :stage",
-                [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':metadata' => $metadata
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function delete(
-        int $item_id,
-        string $stage
-    ): void {
-        try {
-            $this->execute(
-                "DELETE FROM {$this->table}
-                WHERE item_id = :item_id
-                AND stage = :stage",
-                [
-                    ':item_id' => $item_id,
-                    ':stage' => $stage
+                    ':created_by_user_id' => $created_by_user_id
                 ]
             );
         } catch (\PDOException $e) {

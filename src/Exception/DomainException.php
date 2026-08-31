@@ -26,6 +26,21 @@ final class DomainException extends ExceptionContract {
         );
     }
 
+    public static function PART_PROCESSING_STEP_NOT_FOUND(): self {
+        return new self(
+            ErrorCode::PART_PROCESSING_STEP_NOT_FOUND,
+            ErrorMessage::PART_PROCESSING_STEP_NOT_FOUND
+        );
+    }
+
+    public static function USER_PROCESSING_STEP_NOT_FOUND(): self {
+        return new self(
+            ErrorCode::USER_PROCESSING_STEP_NOT_FOUND,
+            ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
+        );
+    }
+
+
     public static function CONTAINER_TYPE_INVALID_TYPE(): self {
         return new self(
             ErrorCode::CONTAINER_TYPE_INVALID_TYPE,
@@ -65,6 +80,20 @@ final class DomainException extends ExceptionContract {
         return new self(
             ErrorCode::ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE,
             ErrorMessage::ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
+
+    public static function PART_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::PART_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::PART_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
+
+    public static function USER_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::USER_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::USER_PROCESSING_STEP_STAGE_INVALID_TYPE
         );
     }
 

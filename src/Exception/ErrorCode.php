@@ -36,6 +36,8 @@ final class ErrorCode {
 
     public const AREA_NOT_FOUND                     = 'AREA_002';
     public const ITEM_PROCESSING_STEP_NOT_FOUND     = 'ITEM_PROCESSING_STEP_002';
+    public const PART_PROCESSING_STEP_NOT_FOUND     = 'PART_PROCESSING_STEP_002';
+    public const USER_PROCESSING_STEP_NOT_FOUND     = 'USER_PROCESSING_STEP_002';
     public const SERVICE_NOT_FOUND                  = 'SERVICE_002';
     public const PHYSICAL_TAG_NOT_FOUND             = 'PHYSICAL_TAG_002';
     public const LOCATION_NOT_FOUND                 = 'LOCATION_002';
@@ -68,6 +70,8 @@ final class ErrorCode {
     public const TELEMETRY_INVALID_TYPE                 = 'TELEMETRY_003';
     public const STOCK_STATUS_INVALID_TYPE              = 'STOCK_STATUS_003';
     public const ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'ITEM_PROCESSING_STEP_STAGE_003';
+    public const PART_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'PART_PROCESSING_STEP_STAGE_003';
+    public const USER_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'USER_PROCESSING_STEP_STAGE_003';
     public const CONTAINER_TYPE_INVALID_TYPE            = 'CONTAINER_TYPE_003';
     public const CONTAINER_STATUS_INVALID_TYPE          = 'CONTAINER_STATUS_003';
     public const LOCATION_ADDRESS_INVALID_TYPE          = 'LOCATION_ADDRESS_003';

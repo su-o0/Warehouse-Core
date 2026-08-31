@@ -42,6 +42,7 @@ use WarehouseCore\Repository\Audit\ItemMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\ItemSalesArchiveRepository;
 use WarehouseCore\Repository\Audit\StockMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\StockSalesArchiveRepository;
+use WarehouseCore\Repository\Catalog\UserNameRepository;
 use WarehouseCore\Repository\Identity\RoleRepository;
 use WarehouseCore\Repository\Identity\ProviderRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
@@ -49,6 +50,7 @@ use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
 use WarehouseCore\Repository\Media\StoredFileRepository;
+use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 
 final readonly class RepositoryRegistry {
     public AreaRepository $area;
@@ -97,6 +99,8 @@ final readonly class RepositoryRegistry {
     public UserIdentityRepository $user_identity;
     public OwnerRepository $owner;
     public AreaAccessRepository $area_access;
+    public UserNameRepository $user_name;
+    public UserProcessingStepRepository $user_processing_step;
 
     public function __construct(
         RepositoryConfig $config,
@@ -319,6 +323,16 @@ final readonly class RepositoryRegistry {
             $config->user
         );
         
+        $this->user_name = new UserNameRepository(
+            $db, 
+            $config->user_name
+        );
+
+        $this->user_processing_step = new UserProcessingStepRepository(
+            $db, 
+            $config->user_processing_step
+        );
+
         $this->user_identity = new UserIdentityRepository(
             $db, 
             $config->user_identity

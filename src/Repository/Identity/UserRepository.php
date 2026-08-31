@@ -6,12 +6,19 @@ use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
 use WarehouseCore\Payload\Entity\UserEntity;
 
-final class UserRepository extends Repository
-{
+final class UserRepository extends Repository {
     public function hydrate(
         array $raw
     ): UserEntity {
         return UserEntity::fromRaw($raw);
+    }
+    
+    public function list(
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}",
+            []
+        );
     }
 
     public function getById(
@@ -22,27 +29,6 @@ final class UserRepository extends Repository
             WHERE id = :id",
             [
                 ':id' => $id
-            ]
-        );
-    }
-
-    public function list(
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}",
-            [
-            ]
-        );
-    }
-
-    public function findByName(
-        string $name
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE name = :name",
-            [
-                ':name' => $name
             ]
         );
     }

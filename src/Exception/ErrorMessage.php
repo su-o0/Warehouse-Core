@@ -34,6 +34,8 @@ final class ErrorMessage {
     
     public const AREA_NOT_FOUND = 'Area not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
+    public const PART_PROCESSING_STEP_NOT_FOUND  = 'Part processing step not found';
+    public const USER_PROCESSING_STEP_NOT_FOUND  = 'User processing step not found';
     public const STOCK_PHOTO_NOT_FOUND = 'Stock photo not found';
     public const VEHICLE_PHOTO_NOT_FOUND = 'Vehicle photo not found';
     public const VEHICLE_NOT_FOUND = 'Vehicle not found';
@@ -82,6 +84,8 @@ final class ErrorMessage {
     public const OWNER_STATUS_INVALID_TYPE      = 'User status must be ...';
     public const ITEM_CONDITION_INVALID_TYPE = 'Item condition must be ...';
     public const ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Item processing stage ...';
+    public const PART_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Part processing stage ...';
+    public const USER_PROCESSING_STEP_STAGE_INVALID_TYPE = 'User processing stage ...';
 
 
     public const ITEM_ALREADY_PLACED = 'Item already placed';

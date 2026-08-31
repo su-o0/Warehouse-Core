@@ -13,18 +13,20 @@ final readonly class UserEntity {
     public function __construct(
         public int $id,
         public string $name,
-        public RoleNameEnum $role,
+        public ?RoleNameEnum $role,
         public UserStatusEnum $status,
         public string $created_at
     ) { }
 
     public static function fromRaw(array $raw): self {
+        $role = self::nullableString($raw, 'role');
+
         return new self(
             id: self::requiredInt($raw, 'id'),
             name: self::requiredString($raw, 'name'),
-            role: RoleNameMapper::match(
-                self::requiredString($raw, 'role')
-            ),
+            role: $role !== null
+                ? RoleNameMapper::match($role)
+                : null,
             status: UserStatusMapper::match(
                 self::requiredString($raw, 'status')
             ),
