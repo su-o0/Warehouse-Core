@@ -3,6 +3,7 @@
 return [
     'Area' => 'areas',
     'AreaAccess' => 'area_access',
+    'AreaName' => 'area_names',
     'Container' => 'containers',
     'ContainerMovementArchive' => 'container_movement_archives',
     'ContainerPlacement' => 'container_placements',

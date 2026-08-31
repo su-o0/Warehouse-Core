@@ -86,6 +86,7 @@ Core
 ```
 Area
 AreaAccess
+AreaName
 Container
 ContainerMovementArchive
 ContainerPlacement
