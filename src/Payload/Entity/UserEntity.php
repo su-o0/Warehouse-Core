@@ -12,7 +12,6 @@ final readonly class UserEntity {
 
     public function __construct(
         public int $id,
-        public string $name,
         public ?RoleNameEnum $role,
         public UserStatusEnum $status,
         public string $created_at
@@ -23,7 +22,6 @@ final readonly class UserEntity {
 
         return new self(
             id: self::requiredInt($raw, 'id'),
-            name: self::requiredString($raw, 'name'),
             role: $role !== null
                 ? RoleNameMapper::match($role)
                 : null,
