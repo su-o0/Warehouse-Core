@@ -16,7 +16,7 @@ return [
     'ItemProcessingStep' => 'item_processing_steps',
     'ItemSalesArchive' => 'item_sales_archives',
     'ItemVideo' => 'item_videos',
-    'Journal' => 'journals',
+    'Journal' => 'journal',
     'Owner' => 'owners',
     'Part' => 'parts',
     'PartName' => 'part_names',
