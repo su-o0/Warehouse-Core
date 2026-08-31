@@ -70,25 +70,6 @@ final class UserRepository extends Repository {
         }
     }
 
-    public function updateName(
-        int $id,
-        string $name
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET name = :name
-                WHERE id = :id",
-                [
-                    ':id' => $id,
-                    ':name' => $name
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
     public function updateRole(
         int $id,
         string $role

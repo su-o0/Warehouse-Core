@@ -63,45 +63,25 @@ final class ItemProcessingStepRepository extends Repository {
         );
     }
 
-    public function findByCreaterUserId(
-        int $user_id
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE created_by_user_id = :user_id",
-            [
-                ':user_id' => $user_id
-            ]
-        );
-    }
-
     public function add(
         int $item_id,
-        string $stage,
-        ?string $metadata,
-        int $created_by_user_id
+        string $stage
     ): void {
         try {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
                     item_id,
-                    stage,
-                    metadata,
-                    created_by_user_id
+                    stage
                 )
                 VALUES
                 (
                     :item_id,
-                    :stage,
-                    :metadata,
-                    :created_by_user_id
+                    :stage
                 )",
                 [
                     ':item_id' => $item_id,
-                    ':stage' => $stage,
-                    ':metadata' => $metadata,
-                    ':created_by_user_id' => $created_by_user_id
+                    ':stage' => $stage
                 ]
             );
         } catch (\PDOException $e) {

@@ -11,8 +11,6 @@ final class UserProcessingStepVO {
         public int $record_id,
         public int $user_id,
         public UserProcessingStepStageEnum $stage,
-        public string $metadata,
-        public int $created_by_user_id,
         public string $created_at
     ){ }
 
@@ -25,8 +23,6 @@ final class UserProcessingStepVO {
             stage: UserProcessingStepStageMapper::match(
                 self::requiredString($raw, 'stage')
             ),
-            metadata: self::requiredString($raw, 'metadata'),
-            created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')
         );
     }

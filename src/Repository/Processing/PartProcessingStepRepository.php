@@ -63,45 +63,25 @@ final class PartProcessingStepRepository extends Repository {
         );
     }
 
-    public function findByCreaterUserId(
-        int $user_id
-    ): array {
-        return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE created_by_user_id = :user_id",
-            [
-                ':user_id' => $user_id
-            ]
-        );
-    }
-
     public function add(
         int $part_id,
-        string $stage,
-        ?string $metadata,
-        int $created_by_user_id
+        string $stage
     ): void {
         try {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
                     part_id,
-                    stage,
-                    metadata,
-                    created_by_user_id
+                    stage
                 )
                 VALUES
                 (
                     :part_id,
-                    :stage,
-                    :metadata,
-                    :created_by_user_id
+                    :stage
                 )",
                 [
                     ':part_id' => $part_id,
-                    ':stage' => $stage,
-                    ':metadata' => $metadata,
-                    ':created_by_user_id' => $created_by_user_id
+                    ':stage' => $stage
                 ]
             );
         } catch (\PDOException $e) {
