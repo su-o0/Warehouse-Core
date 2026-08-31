@@ -108,4 +108,20 @@ final class PartProcessingStepRepository extends Repository {
             throw PdoExceptionMapper::map($e);
         }
     }
+
+    public function delete(
+        int $record_id
+    ): void {
+        try {
+            $this->execute(
+                "DELETE FROM {$this->table}
+                WHERE record_id = :record_id",
+                [
+                    ':record_id' => $record_id
+                ]
+            );
+        } catch (\PDOException $e) {
+            throw PdoExceptionMapper::map($e);
+        }
+    }
 }
