@@ -10,6 +10,8 @@ final class UserStatusMapper implements Mapper {
         string $field
     ): UserStatusEnum {
         return match($field){
+            'Created'       => UserStatusEnum::Created,
+            'Processing'    => UserStatusEnum::Processing,
             'Active'        => UserStatusEnum::Active,
             'Archived'      => UserStatusEnum::Archived,
             default         => throw DomainException::USER_STATUS_INVALID_TYPE()
