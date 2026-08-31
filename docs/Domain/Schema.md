@@ -410,8 +410,6 @@ ItemProcessingStep
 │   ├── Inspection
 │   └── Placement
 │
-├── Metadata
-├── CreatedByUserId
 └── CreatedAt
 
 PartProcessingStep
@@ -421,8 +419,6 @@ PartProcessingStep
 │   ├── Identify
 │   └── Capture
 │
-├── Metadata
-├── CreatedByUserId
 └── CreatedAt
 
 UserProcessingStep
@@ -433,8 +429,6 @@ UserProcessingStep
 │   ├── AssignRole
 │   └── Identify
 │
-├── Metadata
-├── CreatedByUserId
 └── CreatedAt
 ```
 

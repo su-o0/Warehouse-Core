@@ -255,36 +255,27 @@ CREATE TABLE item_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,item_id BIGINT NOT NULL
     ,stage ENUM('Identify','Capture','Inspection','Placement') NOT NULL
-    ,metadata JSON NULL
-    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (item_id) REFERENCES items(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE part_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,part_id BIGINT NOT NULL
     ,stage ENUM('Identify','Capture') NOT NULL
-    ,metadata JSON NULL
-    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE user_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,user_id BIGINT NOT NULL
     ,stage ENUM('Named','AssignRole','Identify') NOT NULL
-    ,metadata JSON NULL
-    ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (user_id) REFERENCES users(id)
-    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
 -- =========================
