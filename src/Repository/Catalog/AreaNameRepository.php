@@ -123,25 +123,6 @@ final class AreaNameRepository extends Repository {
         }
     }
 
-    public function updateValue(
-        int $record_id,
-        string $value
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
     public function updatePrimary(
         int $record_id,
         bool $is_primary

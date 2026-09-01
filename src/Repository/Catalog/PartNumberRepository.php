@@ -37,6 +37,21 @@ final class PartNumberRepository extends Repository {
         );
     }
 
+    public function findByPartIdAndValue(
+        int $part_id,
+        string $value
+    ): ?PartNumberVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE part_id = :part_id
+            AND value = :value",
+            [
+                ':part_id' => $part_id,
+                ':value' => $value
+            ]
+        );
+    }
+
     public function findPrimaryByPartId(
         int $part_id
     ): ?PartNumberVO {
@@ -101,25 +116,6 @@ final class PartNumberRepository extends Repository {
                     ':value' => $value,
                     ':is_primary' => $is_primary ? 1 : 0,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateValue(
-        int $record_id,
-        string $value,
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {

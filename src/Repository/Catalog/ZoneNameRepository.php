@@ -37,6 +37,21 @@ final class ZoneNameRepository extends Repository {
         );
     }
 
+    public function findByZoneIdAndValue(
+        int $zone_id,
+        string $value
+    ): ?ZoneNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE zone_id = :zone_id
+            AND value = :value",
+            [
+                ':zone_id' => $zone_id,
+                ':value' => $value
+            ]
+        );
+    }
+
     public function findPrimaryByZoneId(
         int $zone_id
     ): ?ZoneNameVO {
@@ -101,25 +116,6 @@ final class ZoneNameRepository extends Repository {
                     ':value' => $value,
                     ':is_primary' => $is_primary ? 1 : 0,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateValue(
-        int $record_id,
-        string $value,
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {

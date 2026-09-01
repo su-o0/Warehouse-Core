@@ -39,6 +39,21 @@ final class PartNameRepository extends Repository {
         );
     }
 
+    public function findByPartIdAndValue(
+        int $part_id,
+        string $value
+    ): ?PartNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE part_id = :part_id
+            AND value = :value",
+            [
+                ':part_id' => $part_id,
+                ':value' => $value
+            ]
+        );
+    }
+
     public function findPrimaryByPartId(
         int $part_id
     ): ?PartNameVO {
@@ -64,6 +79,18 @@ final class PartNameRepository extends Repository {
         );
     }
 
+    public function findByCreaterUserId(
+        int $user_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE created_by_user_id = :user_id",
+            [
+                ':user_id' => $user_id
+            ]
+        );
+    }
+    
     public function add(
         int $part_id,
         string $value,
@@ -91,25 +118,6 @@ final class PartNameRepository extends Repository {
                     ':value' => $value,
                     ':is_primary' => $is_primary ? 1 : 0,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateValue(
-        int $record_id,
-        string $value
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {

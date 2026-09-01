@@ -4,18 +4,18 @@ namespace WarehouseCore\Repository\Catalog;
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
-use WarehouseCore\Payload\VO\AreaNameVO;
+use WarehouseCore\Payload\VO\UserNameVO;
 
 final class UserNameRepository extends Repository {
     public function hydrate(
         array $raw
-    ): AreaNameVO {
-        return AreaNameVO::fromRaw($raw);
+    ): UserNameVO {
+        return UserNameVO::fromRaw($raw);
     }
 
     public function findByRecordId(
         int $record_id
-    ): ?AreaNameVO {
+    ): ?UserNameVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE record_id = :record_id",
@@ -25,42 +25,42 @@ final class UserNameRepository extends Repository {
         );
     }
 
-    public function findByAreaId(
-        int $area_id
+    public function findByUserId(
+        int $user_id
     ): array {
         return $this->entities(
             "SELECT * FROM {$this->table}
-            WHERE area_id = :area_id",
+            WHERE user_id = :user_id",
             [
-                ':area_id' => $area_id
+                ':user_id' => $user_id
             ]
         );
     }
 
-    public function findByAreaIdAndValue(
-        int $area_id,
+    public function findByUserIdAndValue(
+        int $user_id,
         string $value
-    ): ?AreaNameVO {
+    ): ?UserNameVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
-            WHERE area_id = :area_id
+            WHERE user_id = :user_id
             AND value = :value",
             [
-                ':area_id' => $area_id,
+                ':user_id' => $user_id,
                 ':value' => $value
             ]
         );
     }
 
-    public function findPrimaryByAreaId(
-        int $area_id
-    ): ?AreaNameVO {
+    public function findPrimaryByUserId(
+        int $user_id
+    ): ?UserNameVO {
         return $this->entity(
             "SELECT * FROM {$this->table}
-            WHERE area_id = :area_id
+            WHERE user_id = :user_id
             AND is_primary = TRUE",
             [
-                ':area_id' => $area_id
+                ':user_id' => $user_id
             ]
         );
     }
@@ -90,51 +90,32 @@ final class UserNameRepository extends Repository {
     }
 
     public function add(
-        int $area_id,
+        int $user_id,
         string $value,
         bool $is_primary,
-        int $user_id
+        int $created_by_user_id
     ): void {
         try {
             $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    area_id,
+                    user_id,
                     value,
                     is_primary,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :area_id,
+                    :user_id,
                     :value,
                     :is_primary,
-                    :user_id
+                    :created_by_user_id
                 )",
                 [
-                    ':area_id' => $area_id,
+                    ':user_id' => $user_id,
                     ':value' => $value,
                     ':is_primary' => $is_primary ? 1 : 0,
-                    ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateValue(
-        int $record_id,
-        string $value
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
+                    ':created_by_user_id' => $created_by_user_id
                 ]
             );
         } catch (\PDOException $e) {

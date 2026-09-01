@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace WarehouseCore\Repository\Catalog;
 
 use WarehouseCore\Contract\Repository;
@@ -38,6 +36,21 @@ final class RackNameRepository extends Repository {
         );
     }
 
+    public function findByRackIdAndValue(
+        int $rack_id,
+        string $value
+    ): ?RackNameVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id
+            AND value = :value",
+            [
+                'rack_id' => $rack_id,
+                ':value' => $value
+            ]
+        );
+    }
+
     public function findPrimaryByRackId(
         int $rack_id
     ): ?RackNameVO {
@@ -47,6 +60,30 @@ final class RackNameRepository extends Repository {
             AND is_primary = TRUE",
             [
                 ':rack_id' => $rack_id
+            ]
+        );
+    }
+
+    public function findByValue(
+        string $value
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE value = :value",
+            [
+                ':value' => $value
+            ]
+        );
+    }
+
+    public function findByCreaterUserId(
+        int $user_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE created_by_user_id = :user_id",
+            [
+                ':user_id' => $user_id
             ]
         );
     }
@@ -78,25 +115,6 @@ final class RackNameRepository extends Repository {
                     ':value' => $value,
                     ':is_primary' => $is_primary ? 1 : 0,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateValue(
-        int $record_id,
-        string $value
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET value = :value
-                WHERE record_id = :record_id",
-                [
-                    ':record_id' => $record_id,
-                    ':value' => $value
                 ]
             );
         } catch (\PDOException $e) {
