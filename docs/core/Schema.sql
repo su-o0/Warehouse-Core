@@ -207,6 +207,16 @@ CREATE TABLE area_names (
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
+    ,primary_area_id BIGINT
+        GENERATED ALWAYS AS (
+            CASE
+                WHEN is_primary = TRUE THEN area_id
+                ELSE NULL
+            END
+        ) STORED
+
+    ,UNIQUE KEY uq_area_primary_name (primary_area_id)
+
     ,FOREIGN KEY (area_id) REFERENCES areas(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
@@ -218,6 +228,16 @@ CREATE TABLE zone_names (
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,primary_zone_id BIGINT
+        GENERATED ALWAYS AS (
+            CASE
+                WHEN is_primary = TRUE THEN zone_id
+                ELSE NULL
+            END
+        ) STORED
+
+    ,UNIQUE KEY uq_zone_primary_name (primary_zone_id)
 
     ,FOREIGN KEY (zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
@@ -231,6 +251,16 @@ CREATE TABLE rack_names (
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
+    ,primary_rack_id BIGINT
+        GENERATED ALWAYS AS (
+            CASE
+                WHEN is_primary = TRUE THEN rack_id
+                ELSE NULL
+            END
+        ) STORED
+
+    ,UNIQUE KEY uq_rack_primary_name (primary_rack_id)
+
     ,FOREIGN KEY (rack_id) REFERENCES racks(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
@@ -242,6 +272,16 @@ CREATE TABLE user_names (
     ,is_primary BOOLEAN NOT NULL DEFAULT FALSE
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,primary_user_id BIGINT
+        GENERATED ALWAYS AS (
+            CASE
+                WHEN is_primary = TRUE THEN user_id
+                ELSE NULL
+            END
+        ) STORED
+
+    ,UNIQUE KEY uq_user_primary_name (primary_user_id)
 
     ,FOREIGN KEY (user_id) REFERENCES users(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
