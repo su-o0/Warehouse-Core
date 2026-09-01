@@ -51,8 +51,8 @@ final class UserProcessingStepRepository extends Repository {
     public function findByUserIdAndStage(
         int $user_id,
         string $stage
-    ): array {
-        return $this->entities(
+    ): ?UserProcessingStepVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE user_id = :user_id
             AND stage = :stage",

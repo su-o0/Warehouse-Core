@@ -51,8 +51,8 @@ final class PartProcessingStepRepository extends Repository {
     public function findByPartIdAndStage(
         int $part_id,
         string $stage
-    ): array {
-        return $this->entities(
+    ): ?PartProcessingStepVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE part_id = :part_id
             AND stage = :stage",

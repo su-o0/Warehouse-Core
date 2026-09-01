@@ -51,8 +51,8 @@ final class ItemProcessingStepRepository extends Repository {
     public function findByItemIdAndStage(
         int $item_id,
         string $stage
-    ): array {
-        return $this->entities(
+    ): ?ItemProcessingStepVO {
+        return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE item_id = :item_id
             AND stage = :stage",
