@@ -5,7 +5,6 @@ use WarehouseCore\Config\ServiceConfig;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Service\AreaService;
 use WarehouseCore\Service\ContainerService;
-use WarehouseCore\Service\Identity\UserIdentityService;
 use WarehouseCore\Service\Identity\UserService;
 use WarehouseCore\Service\ItemService;
 use WarehouseCore\Service\MovementService;
@@ -185,23 +184,21 @@ final class ServiceRegistry {
         );
     }
     
-    public function userIdentity(
-        Authorization $authorization
-    ): UserIdentityService {
-        return new UserIdentityService(
-            $this->config->user_identity,
-            $authorization,
-            $this->repository->user_identity
-        );
-    }
-
     public function user(
         Authorization $authorization
     ): UserService {
         return new UserService(
             $this->config->user,
             $authorization,
-            $this->repository->user
+            $this->repository->role,
+            $this->repository->user,
+            $this->repository->user_name,
+            $this->repository->user_processing_step,
+            $this->repository->user_identity,
+            $this->transaction->assign_user_role,
+            $this->transaction->dismiss_user_role,
+            $this->transaction->add_user_name,
+            $this->transaction->set_primary_user_name
         );
     }
      
