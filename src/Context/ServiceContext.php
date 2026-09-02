@@ -12,7 +12,6 @@ use WarehouseCore\Service\VehicleService;
 use WarehouseCore\Service\OwnerService;
 use WarehouseCore\Service\PhysicalTagService;
 use WarehouseCore\Service\ContainerService;
-use WarehouseCore\Service\Identity\UserIdentityService;
 use WarehouseCore\Service\Identity\UserService;
 use WarehouseCore\Service\ItemService;
 use WarehouseCore\Service\StockService;
@@ -31,7 +30,6 @@ final class ServiceContext {
     public AreaService $area_service;
     public ContainerService $container_service;
     public UserService $user_service;
-    public UserIdentityService $user_identity_service;
     public ItemService $item_service;
     public MovementService $movement_service;
     public OwnerService $owner_service;
@@ -64,10 +62,6 @@ final class ServiceContext {
         );
 
         $this->user_service = $this->service->user(
-            $this->authorization
-        );
-
-        $this->user_identity_service = $this->service->userIdentity(
             $this->authorization
         );
 
