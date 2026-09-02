@@ -72,7 +72,7 @@ final class UserRepository extends Repository {
 
     public function updateRole(
         int $id,
-        string $role
+        ?string $role
     ): void {
         try {
             $this->execute(
