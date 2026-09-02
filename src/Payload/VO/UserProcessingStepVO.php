@@ -19,7 +19,7 @@ final class UserProcessingStepVO {
     ): self {
         return new self(
             record_id: self::requiredInt($raw, 'record_id'),
-            user_id: self::requiredInt($raw, 'pauser_idrt_id'),
+            user_id: self::requiredInt($raw, 'user_id'),
             stage: UserProcessingStepStageMapper::match(
                 self::requiredString($raw, 'stage')
             ),
