@@ -1,7 +1,7 @@
 <?php 
 namespace WarehouseCore\Payload\DTO;
 
-final readonly class StructureNamesDTO  {
+final readonly class EntityNamesDTO  {
     public function __construct(
         public int $record_id,
         public string $name,

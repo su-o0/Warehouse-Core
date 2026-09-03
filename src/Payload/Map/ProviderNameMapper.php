@@ -16,4 +16,11 @@ final class ProviderNameMapper implements Mapper {
             default     => throw DomainException::PROVIDER_NAME_INVALID_TYPE()
         };
     }
+
+
+    public static function fromString(
+        string $field
+    ): ProviderNameEnum {
+        return self::match($field);
+    }
 }
