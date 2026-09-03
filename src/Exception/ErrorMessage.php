@@ -20,6 +20,9 @@ final class ErrorMessage {
     public const VEHICLE_ALREADY_EXISTS = 'Car already exists';
 
     public const VEHICLE_PHOTO_ALREADY_EXISTS = 'Car photo already exists';
+    public const USER_PROCESSING_STEP_ALREADY_EXISTS = 'User processing step already exists';
+    
+    public const USER_ROLE_ALREADY_SET = 'User role is already set';
 
     public const STOCK_ALREADY_EXISTS = 'Stock already exists';
     public const USER_ALREADY_EXISTS = 'User already exists';
@@ -29,9 +32,16 @@ final class ErrorMessage {
     public const ITEM_PHOTO_ALREADY_EXISTS = 'Item photo already exists';
     public const CONTAINER_ALREADY_EXISTS = 'Container already exists';
     public const AREA_ACCESS_ALREADY_EXISTS = 'Area access already exists';
+
     public const AREA_NAME_ALREADY_PRIMARY = 'Area name already primary';
     public const ZONE_NAME_ALREADY_PRIMARY = 'Zone name already primary';
-    
+    public const USER_NAME_ALREADY_PRIMARY = 'User name already primary';
+
+    public const AREA_NAME_ALREADY_EXISTS = 'Area name already exists';
+    public const ZONE_NAME_ALREADY_EXISTS = 'Zone name already exists';
+    public const USER_NAME_ALREADY_EXISTS = 'User name already exists';
+    public const USER_IDENTITY_ALREADY_EXISTS = 'User identity already exists';
+
     public const AREA_NOT_FOUND = 'Area not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
     public const PART_PROCESSING_STEP_NOT_FOUND  = 'Part processing step not found';
@@ -55,13 +65,16 @@ final class ErrorMessage {
     public const PHYSICAL_TAG_NOT_FOUND = 'Physical tag not found';
     public const RACK_NOT_FOUND = 'Rack not found';
     public const SHELF_NOT_FOUND = 'Shelf not found';
-    public const STORED_FILE_NOT_FOUND = 'Shelf not found';
-    public const USER_IDENTITY_NOT_FOUND = 'Shelf not found';
-    public const ZONE_NOT_FOUND = 'Shelf not found';
+    public const STORED_FILE_NOT_FOUND = 'Stored file not found';
+    public const USER_IDENTITY_NOT_FOUND = 'User identity not found';
+    public const ZONE_NOT_FOUND = 'Zone not found';
     public const AREA_NAME_NOT_FOUND = 'Area name not found';
     public const ZONE_NAME_NOT_FOUND = 'Zone name not found';
+    public const USER_NAME_NOT_FOUND = 'User name not found';
     public const AREA_ACCESS_NOT_FOUND = 'Area access not found';
     public const RENDERER_NOT_FOUND = 'No renderer for result';
+    public const USER_ROLE_NOT_FOUND = 'User role not found';
+    public const USER_IDENTITIES_NOT_FOUND = 'User identities not found';
 
     public const PROVIDER_NAME_INVALID_TYPE = 'Provider name must be ...';
     public const PHYSICAL_TAG_STATUS_INVALID_TYPE = 'Physical tag status must ...';
@@ -95,5 +108,8 @@ final class ErrorMessage {
 
     public const AREA_INVALID_STATUS_TRANSITION = 'Area invalid status transition'; //007
     public const ZONE_INVALID_STATUS_TRANSITION = 'Zone invalid status transition'; //007
+    public const USER_INVALID_STATUS_TRANSITION = 'User invalid status transition'; //007
 
+    public const USER_PROCESSING_NOT_COMPLETED = 'User invalid status transition'; //007
+    
 }

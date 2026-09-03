@@ -20,6 +20,98 @@ final readonly class Authorization {
         );
     }
 
+    public function canListUserNames(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canListUserIdentities(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canListUser(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canRemoveUserIdentity(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canAddUserIdentity(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canRemoveUserName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canSetPrimaryUserName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canAddUserName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canDismissUserRole(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canAssignUserRole(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canActivateUser(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canArchiveUser(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canListZoneNames(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+
     public function canListAreaNames(): bool {
         return in_array(
             $this->role,

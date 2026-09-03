@@ -2,7 +2,9 @@
 namespace WarehouseCore\Api\Identity\Area;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\AreaAccessRequest;
+use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Payload\Request\EntityEntityRequest;
+use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Service\AreaService;
 use WarehouseCore\Service\Query\GetService;
 
@@ -14,15 +16,22 @@ final class RevokeAreaAccessApi {
     ) { }
 
     public function handle(
-        AreaAccessRequest $request
+        EntityEntityRequest $request
     ): ApiResult {
-        $user = $this->get_service->getUser(
-            $request->user_id
-        );
-
+        try {
+            $user = $this->get_service->getUser(
+                $request->first_id
+            );
+        } catch (DomainException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+    
         return $this->area_service->revokeAreaAccess(
-            $request->area_id,
-            $user->id
+            area_id: $request->second_id,
+            user_id: $user->id
         );
     }
 }

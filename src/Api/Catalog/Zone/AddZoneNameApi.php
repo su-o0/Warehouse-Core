@@ -2,7 +2,7 @@
 namespace WarehouseCore\Api\Catalog\Zone;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\ValueNameRequest;
+use WarehouseCore\Payload\Request\EntityValueRequest;
 use WarehouseCore\Service\ZoneService;
 
 final class AddZoneNameApi {
@@ -12,11 +12,11 @@ final class AddZoneNameApi {
     ) { }
 
     public function handle(
-        ValueNameRequest $request
+        EntityValueRequest $request
     ): ApiResult {
         return $this->zone_service->addZoneName(
             zone_id: $request->id,
-            name: $request->name
+            name: $request->value
         );
     }
 }

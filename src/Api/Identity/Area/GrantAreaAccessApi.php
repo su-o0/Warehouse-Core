@@ -1,8 +1,10 @@
 <?php
 namespace WarehouseCore\Api\Identity\Area;
 
+use DomainException;
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\AreaAccessRequest;
+use WarehouseCore\Payload\Request\EntityEntityRequest;
+use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Service\AreaService;
 use WarehouseCore\Service\Query\GetService;
 
@@ -14,14 +16,21 @@ final class GrantAreaAccessApi {
     ) { }
 
     public function handle(
-        AreaAccessRequest $request
+        EntityEntityRequest $request
     ): ApiResult {
-        $user = $this->get_service->getUser(
-            $request->user_id
-        );
-
+        try {
+            $user = $this->get_service->getUser(
+                $request->first_id
+            );
+        } catch (DomainException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
+            );
+        }
+    
         return $this->area_service->grantAreaAccess(
-            area_id: $request->area_id,
+            area_id: $request->second_id,
             user_id: $user->id
         );
     }

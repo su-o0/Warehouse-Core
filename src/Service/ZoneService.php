@@ -24,7 +24,6 @@ final class ZoneService {
         private SetPrimaryZoneNameTransaction $set_primary_zone_name_transaction
     ) { }
 
-
     private function existsZone(
         int $id
     ): ServiceResult {
@@ -125,14 +124,24 @@ final class ZoneService {
                 message: ErrorMessage::ZONE_INVALID_STATUS_TRANSITION
             );
         }
+        
+        $result = $this->zone_name_repository->findByZoneIdAndValue(
+            zone_id: $zone_id,
+            value: $name
+        );
 
+        if($result !== null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::USER_NAME_ALREADY_EXISTS
+            );
+        } 
         return $this->add_zone_name_transaction->handle(
             $zone->id,
             $name,
             $this->authorization->user->id
         );
     }
-
 
     public function setPrimaryZoneName(
         int $zone_id,
@@ -163,7 +172,7 @@ final class ZoneService {
                 message: ErrorMessage::ZONE_NAME_NOT_FOUND
             );
         }
-        
+
         if ($zone_name->is_primary){
             return new ServiceResult(
                 success: false,
@@ -182,6 +191,12 @@ final class ZoneService {
     ): ServiceResult {
         if(!$this->authorization->canRemoveZoneName()) {
             throw ServiceException::FORBIDDEN();
+        }
+
+        $result = $this->existsZone($zone_id);
+
+        if(!$result->success) {
+            return $result;
         }
 
         $zone_name = $this->zone_name_repository->findPrimaryByZoneId($zone_id);

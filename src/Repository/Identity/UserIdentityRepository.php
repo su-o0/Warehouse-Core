@@ -6,15 +6,14 @@ use WarehouseCore\Payload\Map\PdoExceptionMapper;
 
 use WarehouseCore\Payload\VO\Relationship\UserIdentityVO;
 
-final class UserIdentityRepository extends Repository
-{
+final class UserIdentityRepository extends Repository {
     public function hydrate(
         array $raw
     ): UserIdentityVO {
         return UserIdentityVO::fromRaw($raw);
     }
 
-    public function getByRecordId(
+    public function findByRecordId(
         int $record_id
     ): ?UserIdentityVO {
         return $this->entity(
@@ -49,6 +48,21 @@ final class UserIdentityRepository extends Repository
             [
                 ':provider' => $provider,
                 ':external_id' => $external_id
+            ]
+        );
+    }
+
+    public function findByUserIdAndProvider(
+        int $user_id,
+        string $provider
+    ): ?UserIdentityVO {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE user_id = :user_id
+            AND provider = :provider",
+            [
+                ':user_id' => $user_id,
+                ':provider' => $provider
             ]
         );
     }
