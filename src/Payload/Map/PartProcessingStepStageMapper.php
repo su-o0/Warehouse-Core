@@ -10,7 +10,7 @@ final class PartProcessingStepStageMapper implements Mapper {
         string $field
     ) : PartProcessingStepStageEnum {
         return match ($field) {
-            'Identify'      => PartProcessingStepStageEnum::Identify,
+            'Identified'      => PartProcessingStepStageEnum::Identified,
             'Capture'       => PartProcessingStepStageEnum::Capture,
             default         => throw DomainException::PART_PROCESSING_STEP_STAGE_INVALID_TYPE()
         };

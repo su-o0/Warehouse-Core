@@ -19,8 +19,8 @@ final class UserStageHydrator implements Hydrator {
                 UserProcessingStepStageEnum::AssignRole =>
                     $dto->assign_role = true,
 
-                UserProcessingStepStageEnum::Identify =>
-                    $dto->identify = true,
+                UserProcessingStepStageEnum::Identified =>
+                    $dto->identified = true,
             };
         }
 

@@ -104,8 +104,8 @@ Service
 │   ├── Container
 │   ├── Identity
 │   │   ├── Authentication
-│   │   ├── User
-│   │   └── UserIdentity
+│   │   └── User
+│   │
 │   ├── Item
 │   ├── Movement
 │   ├── Owner

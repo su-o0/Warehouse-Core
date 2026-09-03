@@ -405,7 +405,7 @@ ItemProcessingStep
 ├── RecordId
 ├── ItemId
 ├── Stage
-│   ├── Identify
+│   ├── Identified
 │   ├── Capture
 │   ├── Inspection
 │   └── Placement
@@ -416,7 +416,7 @@ PartProcessingStep
 ├── RecordId
 ├── PartId
 ├── Stage
-│   ├── Identify
+│   ├── Identified
 │   └── Capture
 │
 └── CreatedAt
@@ -427,7 +427,7 @@ UserProcessingStep
 ├── Stage
 │   ├── Named
 │   ├── AssignRole
-│   └── Identify
+│   └── Identified
 │
 └── CreatedAt
 ```

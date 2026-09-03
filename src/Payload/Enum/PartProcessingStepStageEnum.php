@@ -2,6 +2,6 @@
 namespace WarehouseCore\Payload\Enum;
 
 enum PartProcessingStepStageEnum : string {
-    case Identify = 'Identify';
+    case Identified = 'Identified';
     case Capture = 'Capture';
 }

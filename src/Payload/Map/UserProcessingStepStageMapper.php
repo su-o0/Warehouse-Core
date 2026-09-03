@@ -12,7 +12,7 @@ final class UserProcessingStepStageMapper implements Mapper {
         return match ($field) {
             'Named'      => UserProcessingStepStageEnum::Named,
             'AssignRole'      => UserProcessingStepStageEnum::AssignRole,
-            'Identify'      => UserProcessingStepStageEnum::Identify,
+            'Identified'      => UserProcessingStepStageEnum::Identified,
             default         => throw DomainException::USER_PROCESSING_STEP_STAGE_INVALID_TYPE()
         };
     }
