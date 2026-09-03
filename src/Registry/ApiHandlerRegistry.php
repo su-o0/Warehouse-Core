@@ -1,25 +1,17 @@
 <?php
 namespace WarehouseCore\Registry;
 
-use Dom\Entity;
 use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Registry\ApiRegistry;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ValidationException;
-use WarehouseCore\Payload\Request\AreaAccessRequest;
-use WarehouseCore\Payload\Request\AreaNameRequest;
-use WarehouseCore\Payload\Request\AreaRequest;
-use WarehouseCore\Payload\Request\AssignPhysicalTagRequest;
-use WarehouseCore\Payload\Request\CreateContainerRequest;
-use WarehouseCore\Payload\Request\CreatePhysicalTagRequest;
-use WarehouseCore\Payload\Request\CreateUserIdentityRequest;
-use WarehouseCore\Payload\Request\CreateUserRequest;
+use WarehouseCore\Payload\Request\AddUserIdentityRequest;
+use WarehouseCore\Payload\Request\EntityEntityRequest;
 use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Payload\Request\EntityRequest;
-use WarehouseCore\Payload\Request\PlaceApiRequest;
-use WarehouseCore\Payload\Request\RecordRequest;
-use WarehouseCore\Payload\Request\ValueNameRequest;
+use WarehouseCore\Payload\Request\EntityValueRequest;
+use WarehouseCore\Payload\Request\UserIdentityRequest;
 
 final class ApiHandlerRegistry {
     public function __construct(
@@ -38,6 +30,14 @@ final class ApiHandlerRegistry {
                 message: $e->getMessage()
             );
         } catch (\Throwable $e) {
+            var_dump([
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'errorInfo' => $e->errorInfo,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return new ServiceResult(
                 success: false,
                 message: ErrorMessage::SERVICE_UNAVAILABLE
@@ -83,7 +83,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->grantAreaAccess(),
-            AreaAccessRequest::fromRaw($raw)
+            EntityEntityRequest::fromRaw($raw)
         );
     }
 
@@ -92,7 +92,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->revokeAreaAccess(),
-            AreaAccessRequest::fromRaw($raw)
+            EntityEntityRequest::fromRaw($raw)
         );
     }
 
@@ -101,7 +101,7 @@ final class ApiHandlerRegistry {
     ): ApiResult {
         return $this->handle(
             $this->api->addAreaName(),
-            ValueNameRequest::fromRaw($raw)
+            EntityValueRequest::fromRaw($raw)
         );
     }
 
@@ -130,12 +130,19 @@ final class ApiHandlerRegistry {
         );
     }
 
+    public function listUser(): ApiResult {
+        return $this->handle(
+            $this->api->listUser(),
+            null
+        );
+    }
+
     public function addZoneName(
         array $raw
     ): ApiResult {
         return $this->handle(
             $this->api->addZoneName(),
-            ValueNameRequest::fromRaw($raw)
+            EntityValueRequest::fromRaw($raw)
         );
     }
 
@@ -211,61 +218,109 @@ final class ApiHandlerRegistry {
         );
     }
 
+    public function createUser(): ApiResult{
+        return $this->handle(
+            $this->api->createUser(),
+            null
+        );
+    }
 
+    public function assignUserRole(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->assignUserRole(),
+            EntityValueRequest::fromRaw($raw)
+        );
+    }
 
+    public function dismissUserRole(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->dismissUserRole(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
 
+    public function addUserName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addUserName(),
+            EntityValueRequest::fromRaw($raw)
+        );
+    }
 
-    // public function createUser(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle(
-    //         $this->api->createUser(),
-    //         CreateUserRequest::fromRaw($raw)
-    //     );
-    // }
+    public function setPrimaryUserName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->setPrimaryUserName(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
 
-    // public function createUserIdentity(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle(
-    //         $this->api->createUserIdentity(),
-    //         CreateUserIdentityRequest::fromRaw($raw)
-    //     );
-    // }
+    public function removeUserName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeUserName(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
 
-    // public function createContainer(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle(
-    //         $this->api->createContainer(),
-    //         CreateContainerRequest::fromRaw($raw)
-    //     );
-    // }
+    public function addUserIdentity(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addUserIdentity(),
+            AddUserIdentityRequest::fromRaw($raw)
+        );
+    }
 
-    // public function createPhysicalTag(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle( 
-    //         $this->api->createPhysicalTag(),
-    //         CreatePhysicalTagRequest::fromRaw($raw)
-    //     );
-    // }
-    // public function assignPhysicalTag(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle(
-    //         $this->api->assignPhysicalTag(),
-    //         AssignPhysicalTagRequest::fromRaw($raw)
-    //     );
-    // }
+    public function removeUserIdentity(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeUserIdentity(),
+            UserIdentityRequest::fromRaw($raw)
+        );
+    }
 
+    public function listUserIdentities(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listUserIdentities(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
 
-    // public function placeItem(
-    //     array $raw
-    // ): ApiResult{
-    //     return $this->handle( 
-    //         $this->api->placeItem(),
-    //         PlaceApiRequest::fromRaw($raw)
-    //     );
-    // }
+    public function listUserNames(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listUserNames(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function activateUser(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->activateUser(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+    
+    public function archiveUser(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveUser(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
 }

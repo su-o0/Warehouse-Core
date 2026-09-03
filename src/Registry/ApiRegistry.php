@@ -4,10 +4,12 @@ namespace WarehouseCore\Registry;
 use WarehouseCore\Config\ApiConfig;
 use WarehouseCore\Context\ServiceContext;
 
-use WarehouseCore\Api\Identity\CreateUserApi;
 use WarehouseCore\Api\Catalog\Area\AddAreaNameApi;
 use WarehouseCore\Api\Catalog\Area\RemoveAreaNameApi;
 use WarehouseCore\Api\Catalog\Area\SetPrimaryAreaNameApi;
+use WarehouseCore\Api\Catalog\User\AddUserNameApi;
+use WarehouseCore\Api\Catalog\User\RemoveUserNameApi;
+use WarehouseCore\Api\Catalog\User\SetPrimaryUserNameApi;
 use WarehouseCore\Api\Catalog\Zone\AddZoneNameApi;
 use WarehouseCore\Api\Catalog\Zone\RemoveZoneNameApi;
 use WarehouseCore\Api\Catalog\Zone\SetPrimaryZoneNameApi;
@@ -17,9 +19,20 @@ use WarehouseCore\Api\Topology\Area\CreateAreaApi;
 use WarehouseCore\Api\Topology\Area\MarkAreaAsCrowdedApi;
 use WarehouseCore\Api\Identity\Area\GrantAreaAccessApi;
 use WarehouseCore\Api\Identity\Area\RevokeAreaAccessApi;
+use WarehouseCore\Api\Identity\User\ActivateUserApi;
+use WarehouseCore\Api\Identity\User\AddUserIdentityApi;
+use WarehouseCore\Api\Identity\User\ArchiveUserApi;
+use WarehouseCore\Api\Identity\User\AssignUserRoleApi;
+use WarehouseCore\Api\Identity\User\CreateUserApi;
+use WarehouseCore\Api\Identity\User\DismissUserRoleApi;
+use WarehouseCore\Api\Identity\User\RemoveUserIdentityApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
 use WarehouseCore\Api\Query\List\ListAreaNamesApi;
+use WarehouseCore\Api\Query\List\ListUserApi;
+use WarehouseCore\Api\Query\List\ListUserIdentitiesApi;
 use WarehouseCore\Api\Query\List\ListZoneByAreaApi;
+use WarehouseCore\Api\Query\List\ListZoneNamesApi;
+use WarehouseCore\Api\Query\List\ListUserNamesApi;
 use WarehouseCore\Api\Topology\Zone\ActivateZoneApi;
 use WarehouseCore\Api\Topology\Zone\ArchiveZoneApi;
 use WarehouseCore\Api\Topology\Zone\CreateZoneApi;
@@ -96,13 +109,6 @@ final class ApiRegistry {
         );
     }
 
-    public function listArea(): ListAreaApi {
-        return new ListAreaApi(
-            $this->config->list_area,
-            $this->context->list_service,
-        );
-    }
-
     public function addZoneName(): AddZoneNameApi {
         return new AddZoneNameApi(
             $this->config->set_primary_area_name,
@@ -152,76 +158,122 @@ final class ApiRegistry {
         );
     }
 
-    public function listZoneByArea(): ListZoneByAreaApi {
-        return new ListZoneByAreaApi(
+    public function listArea(): ListAreaApi {
+        return new ListAreaApi(
             $this->config->list_area,
+            $this->context->list_service,
+        );
+    }
+
+    public function listUser(): ListUserApi {
+        return new ListUserApi(
+            $this->config->list_user,
             $this->context->list_service,
         );
     }
 
     public function listAreaNames(): ListAreaNamesApi {
         return new ListAreaNamesApi(
-            $this->config->list_area,
+            $this->config->list_area_names,
             $this->context->list_service,
         );
     }
 
+    public function listZoneByArea(): ListZoneByAreaApi {
+        return new ListZoneByAreaApi(
+            $this->config->list_zone_by_area,
+            $this->context->list_service,
+        );
+    }
 
-
-
-
+    public function listZoneNames(): ListZoneNamesApi {
+        return new ListZoneNamesApi(
+            $this->config->list_zone_names,
+            $this->context->list_service,
+        );
+    }
 
     public function createUser(): CreateUserApi {
         return new CreateUserApi(
             $this->config->create_user,
-            $this->context->find_service,
             $this->context->user_service
         );
     }
 
+    public function assignUserRole(): AssignUserRoleApi {
+        return new AssignUserRoleApi(
+            $this->config->assign_user_role,
+            $this->context->user_service
+        );
+    }
 
+    public function dismissUserRole(): DismissUserRoleApi {
+        return new DismissUserRoleApi(
+            $this->config->dismiss_user_role,
+            $this->context->user_service
+        );
+    }
 
-    // public function createUserIdentity(): CreateUserIdentityApi {
-    //     return new CreateUserIdentityApi(
-    //         $this->config->create_user_identity,
-    //         $this->context->get_service,
-    //         $this->context->find_service,
-    //         $this->context->user_identity_service
-    //     );
-    // }
+    public function addUserName(): AddUserNameApi {
+        return new AddUserNameApi(
+            $this->config->add_user_name,
+            $this->context->user_service
+        );
+    }
 
-    // public function createPhysicalTag(): CreatePhysicalTagApi {
-    //     return new CreatePhysicalTagApi(
-    //         $this->config->create_physical_tag,
-    //         $this->context->physical_tag_service,
-    //         $this->context->get()
-    //     );
-    // }
+    public function setPrimaryUserName(): SetPrimaryUserNameApi {
+        return new SetPrimaryUserNameApi(
+            $this->config->set_primary_user_name,
+            $this->context->user_service
+        );
+    }
 
-    // public function createContainer(): CreateContainerApi {
-    //     return new CreateContainerApi(
-    //         $this->config->create_container,
-    //         $this->context->container_,
-    //         $this->context->get()
-    //     );
-    // }
+    public function removeUserName(): RemoveUserNameApi {
+        return new RemoveUserNameApi(
+            $this->config->remove_user_name,
+            $this->context->user_service
+        );
+    }
 
-    // public function assignPhysicalTag(): AssignPhysicalTagApi {
-    //     return new AssignPhysicalTagApi(
-    //         $this->config->assign_physical_tag,
-    //         $this->context->physicalTag(),
-    //         $this->context->item(),
-    //         $this->context->get()
-    //     );
-    // }
+    public function addUserIdentity(): AddUserIdentityApi {
+        return new AddUserIdentityApi(
+            $this->config->add_user_identity,
+            $this->context->user_service
+        );
+    }
+    
+    public function removeUserIdentity(): RemoveUserIdentityApi {
+        return new RemoveUserIdentityApi(
+            $this->config->remove_user_identity,
+            $this->context->user_service
+        );
+    }
 
-    // public function placeItem(): PlaceItemApi {
-    //     return new PlaceItemApi(
-    //         $this->config->place_item,
-    //         $this->context->placement(),
-    //         $this->context->item(),
-    //         $this->context->get(),
-    //         $this->context->find()
-    //     );
-    // }
+    public function listUserIdentities(): ListUserIdentitiesApi {
+        return new ListUserIdentitiesApi(
+            $this->config->list_user_identities,
+            $this->context->list_service
+        );
+    }
+
+    public function listUserNames(): ListUserNamesApi {
+        return new ListUserNamesApi(
+            $this->config->list_user_names,
+            $this->context->list_service
+        );
+    }
+
+    public function activateUser(): ActivateUserApi {
+        return new ActivateUserApi(
+            $this->config->activate_user,
+            $this->context->user_service
+        );
+    }
+
+    public function archiveUser(): ArchiveUserApi {
+        return new ArchiveUserApi(
+            $this->config->archive_user,
+            $this->context->user_service
+        );
+    }
 }

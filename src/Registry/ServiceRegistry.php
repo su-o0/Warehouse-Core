@@ -198,7 +198,10 @@ final class ServiceRegistry {
             $this->transaction->assign_user_role,
             $this->transaction->dismiss_user_role,
             $this->transaction->add_user_name,
-            $this->transaction->set_primary_user_name
+            $this->transaction->set_primary_user_name,
+            $this->transaction->remove_user_name,
+            $this->transaction->add_user_identity,
+            $this->transaction->remove_user_identity
         );
     }
      
@@ -307,6 +310,10 @@ final class ServiceRegistry {
             $this->repository->area,
             $this->repository->area_name,
             $this->repository->area_access,
+            $this->repository->user,
+            $this->repository->user_name,
+            $this->repository->user_identity,
+            $this->repository->user_processing_step,
             $this->repository->zone,
             $this->repository->zone_name,
             

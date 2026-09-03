@@ -55,9 +55,7 @@ final class ShellFacade {
     public function isAuthenticated(): bool {
         return isset($this->api);
     }
-
-    
-
+ 
     public function createArea(): string {
         return $this->output->render(
             $this->api->createArea()
@@ -100,8 +98,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->grantAreaAccess([
-                'area_id' => $area_id,
-                'user_id' => $user_id
+                'first_id' => $area_id,
+                'second_id' => $user_id
             ])
         );
     }
@@ -112,8 +110,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->revokeAreaAccess([
-                'area_id' => $area_id,
-                'user_id' => $user_id
+                'first_id' => $area_id,
+                'second_id' => $user_id
             ])
         );
     }
@@ -125,7 +123,7 @@ final class ShellFacade {
         return $this->output->render(
             $this->api->addAreaName([
                 'id' => $area_id,
-                'name' => $name
+                'value' => $name
             ])
         );
     }
@@ -158,6 +156,12 @@ final class ShellFacade {
         );
     }
 
+    public function listUser(): string {
+        return $this->output->render(
+            $this->api->listUser()
+        );
+    }
+
     public function addZoneName(
         int $zone_id,
         string $name
@@ -165,7 +169,7 @@ final class ShellFacade {
         return $this->output->render(
             $this->api->addZoneName([
                 'id' => $zone_id,
-                'name' => $name
+                'value' => $name
             ])
         );
     }
@@ -252,53 +256,131 @@ final class ShellFacade {
         );
     }
 
+    public function createUser(): string {
+        return $this->output->render(
+            $this->api->createUser()
+        );
+    }
 
-    // public function createUser(
-    //     string $name, 
-    //     string $role
-    // ): string {
-    //     $result = $this->api->createUser([
-    //         'name' => $name,
-    //         'role' => $role
-    //     ]);
+    public function assignUserRole(
+        int $user_id,
+        string $role
+    ): string {
+        return $this->output->render(
+            $this->api->assignUserRole([
+                'id' => $user_id,
+                'value' => $role
+            ])
+        );
+    }
 
-    //     return $this->output->render($result);
-    // }
+    public function dismissUserRole(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->dismissUserRole([
+                'id' => $user_id
+            ])
+        );
+    }
 
-    // public function createContainer(
-    //     int $id,
-    //     string $type
-    // ): string {
-    //     $result = $this->api->createContainer([
-    //         'id' => $id,
-    //         'type' => $type
-    //     ]);
+    public function addUserName(
+        int $user_id,
+        string $name
+    ): string {
+        return $this->output->render(
+            $this->api->addUserName([
+                'id' => $user_id,
+                'value' => $name
+            ])
+        );
+    }
 
-    //     return $this->output->render($result);
-    // }
+    public function setPrimaryUserName(
+        int $user_id,
+        int $record_id
+    ): string {
+        return $this->output->render(
+            $this->api->setPrimaryUserName([
+                'id' => $user_id,
+                'record_id' => $record_id
+            ])
+        );
+    }
 
-    // public function createPhysicalTag(
-    //     int $id,
-    // ): string {
-    //     $result = $this->api->createPhysicalTag([
-    //         'id' => $id,
-    //     ]);
+    public function removeUserName(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->removeUserName([
+                'id' => $user_id
+            ])
+        );
+    }
 
-    //     return $this->output->render($result);
-    // }
+    public function addUserIdentity(
+        int $user_id,
+        string $provider,
+        string $external_id
+    ): string {
+        return $this->output->render(
+            $this->api->addUserIdentity([
+                'user_id' => $user_id,
+                'provider' => $provider,
+                'external_id' => $external_id
+            ])
+        );
+    }
 
-    // public function placeItem(
-    //     int $id,
-    //     string $target_type,
-    //     int $target_id
-    // ) : string {
-    //     $result = $this->api->placeItem([
-    //         'entity' => 'Item',
-    //         'target' => $target_type,
-    //         'entity_id' => $id,
-    //         'target_id' => $target_id
-    //     ]);
+    public function removeUserIdentity(
+        int $user_id,
+        string $provider
+    ): string {
+        return $this->output->render(
+            $this->api->removeUserIdentity([
+                'user_id' => $user_id,
+                'provider' => $provider
+            ])
+        );
+    }
 
-    //     return $this->output->render($result);
-    // }
+    public function listUserIdentities(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->listUserIdentities([
+                'id' => $user_id
+            ])
+        );
+    }
+
+    public function listUserNames(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->listUserNames([
+                'id' => $user_id
+            ])
+        );
+    }
+
+    public function activateUser(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->activateUser([
+                'id' => $user_id
+            ])
+        );
+    }
+
+    public function archiveUser(
+        int $user_id
+    ): string {
+        return $this->output->render(
+            $this->api->archiveUser([
+                'id' => $user_id
+            ])
+        );
+    }
 }
