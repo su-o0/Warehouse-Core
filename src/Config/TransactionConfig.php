@@ -16,6 +16,9 @@ final readonly class TransactionConfig {
         public string $dismiss_user_role,
         public string $add_user_name,
         public string $set_primary_user_name,
+        public string $remove_user_name,
+        public string $add_user_identity,
+        public string $remove_user_identity,
     ) { }
 
     public static function fromRaw(array $raw): self {
@@ -32,7 +35,9 @@ final readonly class TransactionConfig {
             dismiss_user_role: self::requiredString($raw, 'DismissUserRole'),
             add_user_name: self::requiredString($raw, 'AddUserName'),
             set_primary_user_name: self::requiredString($raw, 'SetPrimaryUserName'),
-            
+            remove_user_name: self::requiredString($raw, 'RemoveUserName'),
+            add_user_identity: self::requiredString($raw, 'AddUserIdentity'),
+            remove_user_identity: self::requiredString($raw, 'RemoveUserIdentity'),
         );
     }
 } 
