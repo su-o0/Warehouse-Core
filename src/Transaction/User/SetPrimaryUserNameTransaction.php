@@ -3,25 +3,31 @@ namespace WarehouseCore\Transaction\User;
 
 use WarehouseCore\Contract\Transaction;
 use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\Enum\UserProcessingStepStageEnum;
+use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\UserNameRepository;
+use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 
 final class SetPrimaryUserNameTransaction extends Transaction {
     public function __construct(
         \PDO $db,
         string $transaction_name,
-        private UserNameRepository $user_name_repository
+        private UserNameRepository $user_name_repository,
+        private UserProcessingStepRepository $user_processing_step_repository
     ) {
         parent::__construct($db, $transaction_name);
     }
 
     public function handle(
-        int $record_id,
-        int $user_id
+        int $user_name_record_id,
+        int $user_id,
+        bool $create_processing_step,
     ): mixed{
         return $this->run(function () use (
-            $record_id,
-            $user_id
+            $user_name_record_id,
+            $user_id,
+            $create_processing_step
         ) {
             try { 
                 $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
@@ -36,10 +42,16 @@ final class SetPrimaryUserNameTransaction extends Transaction {
                 }
 
                 $this->user_name_repository->updatePrimary(
-                    $record_id,
+                    $user_name_record_id,
                     true
                 );
-                
+
+                if ($create_processing_step) {
+                    $this->user_processing_step_repository->add(
+                        user_id: $user_id,
+                        stage: UserProcessingStepStageEnum::Named->value
+                    );
+                }
             }catch(RepositoryException $e) {
                 return new ServiceResult(
                     success: false,

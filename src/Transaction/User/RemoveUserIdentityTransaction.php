@@ -5,54 +5,50 @@ use WarehouseCore\Contract\Transaction;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Repository\Catalog\UserNameRepository;
+use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 
-final class RemoveUserNameTransaction extends Transaction {
+final class RemoveUserIdentityTransaction extends Transaction {
     public function __construct(
         \PDO $db,
         string $transaction_name,
         private UserRepository $user_repository,
-        private UserNameRepository $user_name_repository,
+        private UserIdentityRepository $user_identity_repository,
         private UserProcessingStepRepository $user_processing_step_repository
     ) {
         parent::__construct($db, $transaction_name);
     }
 
     public function handle(
-        int $record_id,
         int $user_id,
-        UserStatusEnum $user_status
+        int $identity_record_id,
+        int $identified_record_id,
+        bool $change_status
     ): mixed{
         return $this->run(function () use (
-            $record_id,
             $user_id,
-            $user_status
+            $identity_record_id,
+            $identified_record_id,
+            $change_status
         ) {
             try { 
-                $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
-                    user_id: $user_id
+                $this->user_identity_repository->delete(
+                    $identity_record_id
                 );
 
-                if($old_primary_name !== null) {
-                    $this->user_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
-
-                $this->user_processing_step_repository->delete(
-                    $record_id
-                );
-
-                if($user_status == UserStatusEnum::Active) {
+                if($change_status) {
                     $this->user_repository->updateStatus(
                         id: $user_id,
                         status: UserStatusEnum::Processing->value
                     );
+                    
+                    if($identified_record_id) {
+                        $this->user_processing_step_repository->delete(
+                            $identified_record_id
+                        );
+                    }
                 }
-                
             }catch(RepositoryException $e) {
                 return new ServiceResult(
                     success: false,
