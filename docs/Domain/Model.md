@@ -42,7 +42,6 @@ Core
 │   ├── Item
 │   ├── PhysicalTag
 │   ├── Rack
-│   ├── Shelf
 │   └── Stock
 │
 ├── Media
@@ -81,6 +80,8 @@ Core
     │
     └── Structure
         ├── Area
+        ├── Shelf
+        ├── StorageSlot
         └── Zone
 ```
 ---
@@ -125,6 +126,7 @@ StockPlacement
 StockPlacementArchive
 StockSalesArchive
 StockVideo
+StorageSlot
 StoredFile
 User
 UserIdentity
@@ -180,7 +182,6 @@ Inventory
 ├── Item
 ├── PhysicalTag
 ├── Rack
-├── Shelf
 └── Stock
 
 
@@ -220,6 +221,8 @@ Topology
 ├── ContainerPlacement
 ├── ItemPlacement
 ├── RackPlacement
+├── Shelf
 ├── StockPlacement
+├── StorageSlot
 └── Zone
 ```
