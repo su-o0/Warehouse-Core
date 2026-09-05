@@ -259,7 +259,7 @@ final class AreaService {
         int $area_id,
         int $user_id
     ): ServiceResult {
-        if(!$this->authorization->canRemoveAreaName()) {
+        if(!$this->authorization->canRevokeAreaAccess()) {
             throw ServiceException::FORBIDDEN();
         }
 

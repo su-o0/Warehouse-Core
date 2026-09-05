@@ -19,8 +19,64 @@ final readonly class Authorization {
             $session->user
         );
     }
+    
+    public function canRevokeAreaAccess(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canSetPrimaryRackName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canRemoveRackName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
 
     public function canListUserNames(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+    
+    public function canAddRackName(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canArchiveRack(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canMarkRackAsCrowded(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canActivateRack(): bool {
+        return in_array(
+            $this->role,
+            [RoleNameEnum::Root, RoleNameEnum::Admin]
+        );
+    }
+
+    public function canCreateRack(): bool {
         return in_array(
             $this->role,
             [RoleNameEnum::Root, RoleNameEnum::Admin]
@@ -350,45 +406,10 @@ final readonly class Authorization {
         );
     }
 
-    public function canFindArticle(): bool {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman]
-        );
-    }
-
-    public function canFindUser(): bool {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin]
-        );
-    }
-
     public function canCreateUser(): bool {
         return in_array(
             $this->role,
             [RoleNameEnum::Root, RoleNameEnum::Admin]
-        );
-    }
-
-    public function canCreateUserIdentity(): bool {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin]
-        );
-    }
-    
-    public function canCreateLocation():bool {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin]
-        );
-    }
-
-    public function canCreateContainer():bool {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker]
         );
     }
 
