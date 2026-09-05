@@ -63,6 +63,7 @@ Core
 ├── Processing
 │   ├── ItemProcessingStep
 │   ├── PartProcessingStep
+│   ├── RackProcessingStep
 │   └── UserProcessingStep
 │
 ├── Security
@@ -114,6 +115,7 @@ RackMovementArchive
 RackName
 RackPlacement
 RackPlacementArchive
+RackProcessingStep
 Role
 Shelf
 Stock
@@ -202,6 +204,7 @@ Media
 Processing
 ├── ItemProcessingStep
 ├── PartProcessingStep
+├── RackProcessingStep
 └── UserProcessingStep
 
 

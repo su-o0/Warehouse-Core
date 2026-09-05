@@ -2,7 +2,7 @@
 namespace WarehouseCore\Payload\Enum;
 
 enum ShelfStatusEnum : string {
-    case Created = "Created";
+    case Registered = "Registered";
     case Active = "Active";
     case Crowded = "Crowded";
     case Archived = "Archived";

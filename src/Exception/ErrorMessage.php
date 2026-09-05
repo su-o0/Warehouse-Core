@@ -35,11 +35,13 @@ final class ErrorMessage {
 
     public const AREA_NAME_ALREADY_PRIMARY = 'Area name already primary';
     public const ZONE_NAME_ALREADY_PRIMARY = 'Zone name already primary';
+    public const RACK_NAME_ALREADY_PRIMARY = 'Rack name already primary';
     public const USER_NAME_ALREADY_PRIMARY = 'User name already primary';
 
     public const AREA_NAME_ALREADY_EXISTS = 'Area name already exists';
     public const ZONE_NAME_ALREADY_EXISTS = 'Zone name already exists';
     public const USER_NAME_ALREADY_EXISTS = 'User name already exists';
+    public const RACK_NAME_ALREADY_EXISTS = 'Rack name already exists';
     public const USER_IDENTITY_ALREADY_EXISTS = 'User identity already exists';
 
     public const AREA_NOT_FOUND = 'Area not found';
@@ -71,6 +73,7 @@ final class ErrorMessage {
     public const AREA_NAME_NOT_FOUND = 'Area name not found';
     public const ZONE_NAME_NOT_FOUND = 'Zone name not found';
     public const USER_NAME_NOT_FOUND = 'User name not found';
+    public const RACK_NAME_NOT_FOUND = 'Rack name not found';
     public const AREA_ACCESS_NOT_FOUND = 'Area access not found';
     public const RENDERER_NOT_FOUND = 'No renderer for result';
     public const USER_ROLE_NOT_FOUND = 'User role not found';
@@ -98,6 +101,7 @@ final class ErrorMessage {
     public const ITEM_CONDITION_INVALID_TYPE = 'Item condition must be ...';
     public const ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Item processing stage ...';
     public const PART_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Part processing stage ...';
+    public const RACK_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Rack processing stage ...';
     public const USER_PROCESSING_STEP_STAGE_INVALID_TYPE = 'User processing stage ...';
 
 

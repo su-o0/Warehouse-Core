@@ -10,7 +10,7 @@ final class ContainerStatusMapper implements Mapper{
         string $field
     ): ContainerStatusEnum {
         return match ($field) {
-            'Created'   => ContainerStatusEnum::Created,
+            'Registered'   => ContainerStatusEnum::Registered,
             'Active'    => ContainerStatusEnum::Active,
             'Crowded'   => ContainerStatusEnum::Crowded,
             'Archived'  => ContainerStatusEnum::Archived,

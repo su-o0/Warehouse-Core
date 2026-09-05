@@ -90,6 +90,13 @@ final class DomainException extends ExceptionContract {
         );
     }
 
+    public static function RACK_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::RACK_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::RACK_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
+
     public static function USER_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
         return new self(
             ErrorCode::USER_PROCESSING_STEP_STAGE_INVALID_TYPE,

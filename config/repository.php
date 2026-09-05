@@ -31,6 +31,7 @@ return [
     'RackName' => 'rack_names',
     'RackPlacement' => 'rack_placements',
     'RackPlacementArchive' => 'rack_placement_archives',
+    'RackProcessingStep' => 'rack_processing_steps',
     'Role' => 'roles',
     'Shelf' => 'shelves',
     'Stock' => 'stocks',

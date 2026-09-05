@@ -51,6 +51,7 @@ Type Enums
 ├── PhysicalTag Status
 ├── Provider Name
 ├── Rack Status
+├── RackProcessingStep Stage
 ├── Role Name
 ├── Shelf Status
 ├── Stock Status
@@ -81,6 +82,7 @@ Value Objects
 ├── PartProcessingStep
 ├── Photo
 ├── RackName
+├── RackProcessingStep
 │
 ├── Relationship
 │   ├── AreaAccess

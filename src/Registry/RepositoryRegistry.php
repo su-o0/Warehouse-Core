@@ -50,6 +50,7 @@ use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
 use WarehouseCore\Repository\Media\StoredFileRepository;
+use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 
 final readonly class RepositoryRegistry {
@@ -101,6 +102,7 @@ final readonly class RepositoryRegistry {
     public AreaAccessRepository $area_access;
     public UserNameRepository $user_name;
     public UserProcessingStepRepository $user_processing_step;
+    public RackProcessingStepRepository $rack_processing_step;
 
     public function __construct(
         RepositoryConfig $config,
@@ -250,7 +252,7 @@ final readonly class RepositoryRegistry {
 
         $this->vehicle_video = new VehicleVideoRepository(
             $db, 
-            $config->vehicle_photo
+            $config->vehicle_video
         );
         
         $this->stored_file = new StoredFileRepository(
@@ -331,6 +333,11 @@ final readonly class RepositoryRegistry {
         $this->user_processing_step = new UserProcessingStepRepository(
             $db, 
             $config->user_processing_step
+        );
+
+        $this->rack_processing_step = new RackProcessingStepRepository(
+            $db, 
+            $config->rack_processing_step
         );
 
         $this->user_identity = new UserIdentityRepository(

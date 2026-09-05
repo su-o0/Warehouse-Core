@@ -124,7 +124,7 @@ CREATE TABLE owners (
 -- =========================
 CREATE TABLE racks (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,status ENUM('Created','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Registered','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -134,7 +134,7 @@ CREATE TABLE racks (
 CREATE TABLE shelfs (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,rack_id BIGINT NOT NULL
-    ,status ENUM('Created','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Registered','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -145,7 +145,7 @@ CREATE TABLE shelfs (
 CREATE TABLE containers (
     id BIGINT PRIMARY KEY
     ,type ENUM('Box','Pallet') NOT NULL
-    ,status ENUM('Created','Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Registered','Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -307,6 +307,15 @@ CREATE TABLE part_processing_steps (
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
+);
+
+CREATE TABLE rack_processing_steps (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,rack_id BIGINT NOT NULL
+    ,stage ENUM('Populate','Placement') NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (rack_id) REFERENCES racks(id)
 );
 
 CREATE TABLE user_processing_steps (

@@ -216,9 +216,9 @@ Container
 ├── Type
 │   ├── Box
 │   └── Pallet
-│   
+│
 ├── Status
-│   ├── Created
+│   ├── Registered
 │   ├── Active
 │   ├── Crowded
 │   ├── Archived
@@ -263,24 +263,24 @@ PhysicalTag
 
 Rack 
 ├── Id
-├── Status 
-│   ├── Created
+├── Status
+│   ├── Registered
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
-│   
+│
 ├── CreatedByUserId
 └── CreatedAt
 
-Shelf 
+Shelf
 ├── Id
 ├── RackId
-├── Status 
-│   ├── Created
+├── Status
+│   ├── Registered
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
-│   
+│
 ├── CreatedByUserId
 └── CreatedAt
 
@@ -382,12 +382,12 @@ StoredFile
 
 VehiclePhoto
 ├── VehicleId
-├── StoredFileId  
+├── StoredFileId
 └── CreatedAt
 
 VehicleVideo
 ├── VehicleId
-├── StoredFileId  
+├── StoredFileId
 └── CreatedAt
 ```
 
@@ -397,6 +397,7 @@ VehicleVideo
 Processing
 ├── ItemProcessingStep
 ├── PartProcessingStep
+├── RackProcessingStep
 └── UserProcessingStep
 ```
 ---
@@ -418,6 +419,15 @@ PartProcessingStep
 ├── Stage
 │   ├── Identified
 │   └── Capture
+│
+└── CreatedAt
+
+RackProcessingStep
+├── RecordId
+├── RackId
+├── Stage
+│   ├── Populate
+│   └── Placement
 │
 └── CreatedAt
 
@@ -468,7 +478,7 @@ UserIdentity
 └── CreatedAt
 ```
 
-### Topology 
+### Topology
 *where things are*
 ```
 Topology
@@ -488,7 +498,7 @@ Area
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
-│   
+│
 ├── CreatedByUserId
 └── CreatedAt
 

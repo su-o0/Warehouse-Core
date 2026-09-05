@@ -10,13 +10,14 @@ final class ShelfStatusMapper implements Mapper{
         string $field
     ): ShelfStatusEnum {
         return match($field){
-            'Created'   => ShelfStatusEnum::Created,
+            'Registered'   => ShelfStatusEnum::Registered,
             'Active'    => ShelfStatusEnum::Active,
             'Crowded'   => ShelfStatusEnum::Crowded,
             'Archived'  => ShelfStatusEnum::Archived,
             default     => throw DomainException::STOCK_STATUS_INVALID_TYPE()
         };
     }
+    
     public static function fromRaw(
         array $raw, 
         string $field

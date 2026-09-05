@@ -10,7 +10,7 @@ final class RackStatusMapper implements Mapper {
         string $field
     ): RackStatusEnum {
         return match($field){
-            'Created'   => RackStatusEnum::Created,
+            'Registered'   => RackStatusEnum::Registered,
             'Active'    => RackStatusEnum::Active,
             'Crowded'   => RackStatusEnum::Crowded,
             'Archived'  => RackStatusEnum::Archived,
