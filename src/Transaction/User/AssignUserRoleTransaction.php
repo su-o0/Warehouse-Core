@@ -30,30 +30,23 @@ final class AssignUserRoleTransaction extends Transaction {
             $role,
             $user_status
         ) {
-            try {
-                $this->user_repository->updateRole(
-                    id: $user_id,
-                    role: $role->value
-                );
+            $this->user_repository->updateRole(
+                id: $user_id,
+                role: $role->value
+            );
 
-                $this->user_processing_step_repository->add(
-                    user_id: $user_id,
-                    stage: UserProcessingStepStageEnum::AssignRole->value
-                );
-                
-                if ($user_status === UserStatusEnum::Created) {
-                    $this->user_repository->updateStatus(
-                        id: $user_id,
-                        status: UserStatusEnum::Processing->value
-                    );
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            $this->user_processing_step_repository->add(
+                user_id: $user_id,
+                stage: UserProcessingStepStageEnum::AssignRole->value
+            );
+            
+            if ($user_status === UserStatusEnum::Created) {
+                $this->user_repository->updateStatus(
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
             }
-
+        
             return new ServiceResult(
                 success: true
             );

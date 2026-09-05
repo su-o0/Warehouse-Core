@@ -27,29 +27,22 @@ final class CreateZoneTransaction extends Transaction {
             $area_id,
             $user_id
         ) {
-            try { 
-                $area = $this->area_repository->getById(
-                    $area_id
-                );
+            $area = $this->area_repository->getById(
+                $area_id
+            );
 
-                if($area === null) {
-                    return new ServiceResult(
-                        success: false,
-                        message: ErrorMessage::AREA_NOT_FOUND
-                    );
-                }
-
-                $this->zone_repository->add(
-                    area_id: $area_id,
-                    user_id: $user_id
-                ); 
-            }catch(RepositoryException $e) {
+            if($area === null) {
                 return new ServiceResult(
                     success: false,
-                    message: $e->getMessage()
+                    message: ErrorMessage::AREA_NOT_FOUND
                 );
             }
 
+            $this->zone_repository->add(
+                area_id: $area_id,
+                user_id: $user_id
+            ); 
+          
             return new ServiceResult(
                 success: true
             );

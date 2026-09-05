@@ -30,33 +30,25 @@ final class RemoveUserNameTransaction extends Transaction {
             $user_id,
             $user_status
         ) {
-            try { 
-                $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
-                    user_id: $user_id
+            $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
+                user_id: $user_id
+            );
+
+            if($old_primary_name !== null) {
+                $this->user_name_repository->updatePrimary(
+                    $old_primary_name->record_id,
+                    false
                 );
+            }
 
-                if($old_primary_name !== null) {
-                    $this->user_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
+            $this->user_processing_step_repository->delete(
+                $record_id
+            );
 
-                $this->user_processing_step_repository->delete(
-                    $record_id
-                );
-
-                if($user_status == UserStatusEnum::Active) {
-                    $this->user_repository->updateStatus(
-                        id: $user_id,
-                        status: UserStatusEnum::Processing->value
-                    );
-                }
-                
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if($user_status == UserStatusEnum::Active) {
+                $this->user_repository->updateStatus(
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
             }
 

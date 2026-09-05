@@ -25,27 +25,20 @@ final class CreateAreaTransaction extends Transaction {
         return $this->run(function () use (
             $user_id
         ) {
-            try { 
-                $area_id = $this->area_repository->add(
-                    user_id: $user_id
-                );
+            $area_id = $this->area_repository->add(
+                user_id: $user_id
+            );
 
-                $users = $this->user_repository->list();
+            $users = $this->user_repository->list();
 
-                foreach ($users as $user) {
-                    $this->area_access_repository->add(
-                        area_id: $area_id,
-                        user_id: $user->id,
-                        created_by_user_id: $user_id
-                    );
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            foreach ($users as $user) {
+                $this->area_access_repository->add(
+                    area_id: $area_id,
+                    user_id: $user->id,
+                    created_by_user_id: $user_id
                 );
             }
-
+        
             return new ServiceResult(
                 success: true
             );

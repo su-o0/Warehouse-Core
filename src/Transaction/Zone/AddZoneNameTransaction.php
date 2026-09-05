@@ -25,31 +25,23 @@ final class AddZoneNameTransaction extends Transaction {
             $value,
             $user_id
         ) {
-            try {
-                $old_primary_name = $this->zone_name_repository->findPrimaryByZoneId(
-                    $zone_id
-                );
+            $old_primary_name = $this->zone_name_repository->findPrimaryByZoneId(
+                $zone_id
+            );
 
-                if($old_primary_name !== null) {
-                    $this->zone_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
-
-                $this->zone_name_repository->add(
-                    zone_id: $zone_id,
-                    value: $value,
-                    is_primary: true,
-                    user_id: $user_id
-                );
-                
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if($old_primary_name !== null) {
+                $this->zone_name_repository->updatePrimary(
+                    $old_primary_name->record_id,
+                    false
                 );
             }
+
+            $this->zone_name_repository->add(
+                zone_id: $zone_id,
+                value: $value,
+                is_primary: true,
+                user_id: $user_id
+            );
 
             return new ServiceResult(
                 success: true

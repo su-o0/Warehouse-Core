@@ -29,36 +29,29 @@ final class SetPrimaryUserNameTransaction extends Transaction {
             $user_id,
             $create_processing_step
         ) {
-            try { 
-                $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
-                    user_id: $user_id
-                );
+            $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
+                user_id: $user_id
+            );
 
-                if($old_primary_name !== null) {
-                    $this->user_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
-
+            if($old_primary_name !== null) {
                 $this->user_name_repository->updatePrimary(
-                    $user_name_record_id,
-                    true
-                );
-
-                if ($create_processing_step) {
-                    $this->user_processing_step_repository->add(
-                        user_id: $user_id,
-                        stage: UserProcessingStepStageEnum::Named->value
-                    );
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+                    $old_primary_name->record_id,
+                    false
                 );
             }
 
+            $this->user_name_repository->updatePrimary(
+                $user_name_record_id,
+                true
+            );
+
+            if ($create_processing_step) {
+                $this->user_processing_step_repository->add(
+                    user_id: $user_id,
+                    stage: UserProcessingStepStageEnum::Named->value
+                );
+            }
+           
             return new ServiceResult(
                 success: true
             );

@@ -35,45 +35,37 @@ final class AddUserNameTransaction extends Transaction {
             $user_status,
             $created_by_user_id
         ) {
-            try {
-                $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
-                    user_id: $user_id
-                );
+            $old_primary_name = $this->user_name_repository->findPrimaryByUserId(
+                user_id: $user_id
+            );
 
-                if($old_primary_name !== null) {
-                    $this->user_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
-
-                $this->user_name_repository->add(
-                    user_id: $user_id,
-                    value: $value,
-                    is_primary: true,
-                    created_by_user_id: $created_by_user_id
-                );
-
-                if ($user_status === UserStatusEnum::Created) {
-                    $this->user_repository->updateStatus(
-                        $user_id,
-                        UserStatusEnum::Processing->value
-                    );
-                }
-
-                if ($record_id === null) {
-                    $this->user_processing_step_repository->add(
-                        user_id: $user_id,
-                        stage: UserProcessingStepStageEnum::Named->value
-                    );
-                } 
-                
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if($old_primary_name !== null) {
+                $this->user_name_repository->updatePrimary(
+                    $old_primary_name->record_id,
+                    false
                 );
             }
+
+            $this->user_name_repository->add(
+                user_id: $user_id,
+                value: $value,
+                is_primary: true,
+                created_by_user_id: $created_by_user_id
+            );
+
+            if ($user_status === UserStatusEnum::Created) {
+                $this->user_repository->updateStatus(
+                    $user_id,
+                    UserStatusEnum::Processing->value
+                );
+            }
+
+            if ($record_id === null) {
+                $this->user_processing_step_repository->add(
+                    user_id: $user_id,
+                    stage: UserProcessingStepStageEnum::Named->value
+                );
+            } 
 
             return new ServiceResult(
                 success: true

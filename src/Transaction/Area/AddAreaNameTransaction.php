@@ -25,31 +25,23 @@ final class AddAreaNameTransaction extends Transaction {
             $value,
             $user_id
         ) {
-            try {
-                $old_primary_name = $this->area_name_repository->findPrimaryByAreaId(
-                    $area_id
-                );
+            $old_primary_name = $this->area_name_repository->findPrimaryByAreaId(
+                $area_id
+            );
 
-                if($old_primary_name !== null) {
-                    $this->area_name_repository->updatePrimary(
-                        $old_primary_name->record_id,
-                        false
-                    );
-                }
-
-                $this->area_name_repository->add(
-                    area_id: $area_id,
-                    value: $value,
-                    is_primary: true,
-                    user_id: $user_id
-                );
-                
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if($old_primary_name !== null) {
+                $this->area_name_repository->updatePrimary(
+                    $old_primary_name->record_id,
+                    false
                 );
             }
+
+            $this->area_name_repository->add(
+                area_id: $area_id,
+                value: $value,
+                is_primary: true,
+                user_id: $user_id
+            );
 
             return new ServiceResult(
                 success: true

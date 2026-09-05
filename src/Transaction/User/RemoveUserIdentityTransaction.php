@@ -32,28 +32,21 @@ final class RemoveUserIdentityTransaction extends Transaction {
             $identified_record_id,
             $change_status
         ) {
-            try { 
-                $this->user_identity_repository->delete(
-                    $identity_record_id
-                );
+            $this->user_identity_repository->delete(
+                $identity_record_id
+            );
 
-                if($change_status) {
-                    $this->user_repository->updateStatus(
-                        id: $user_id,
-                        status: UserStatusEnum::Processing->value
-                    );
-                    
-                    if($identified_record_id) {
-                        $this->user_processing_step_repository->delete(
-                            $identified_record_id
-                        );
-                    }
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if($change_status) {
+                $this->user_repository->updateStatus(
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
+                
+                if($identified_record_id) {
+                    $this->user_processing_step_repository->delete(
+                        $identified_record_id
+                    );
+                }
             }
 
             return new ServiceResult(

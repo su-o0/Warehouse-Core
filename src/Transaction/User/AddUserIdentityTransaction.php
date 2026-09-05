@@ -36,30 +36,23 @@ final class AddUserIdentityTransaction extends Transaction {
             $identified,
             $user_status
         ) {
-            try { 
-                $this->user_identity_repository->add(
+            $this->user_identity_repository->add(
+                user_id: $user_id,
+                provider: $provider->value,
+                external_id: $external_id
+            );
+
+            if (!$identified) {
+                $this->user_processing_step_repository->add(
                     user_id: $user_id,
-                    provider: $provider->value,
-                    external_id: $external_id
+                    stage: UserProcessingStepStageEnum::Identified->value
                 );
+            }
 
-                if (!$identified) {
-                    $this->user_processing_step_repository->add(
-                        user_id: $user_id,
-                        stage: UserProcessingStepStageEnum::Identified->value
-                    );
-                }
-
-                if ($user_status === UserStatusEnum::Created) {
-                    $this->user_repository->updateStatus(
-                        id: $user_id,
-                        status: UserStatusEnum::Processing->value
-                    );
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            if ($user_status === UserStatusEnum::Created) {
+                $this->user_repository->updateStatus(
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
             }
 

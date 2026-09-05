@@ -29,26 +29,19 @@ final class DismissUserRoleTransaction extends Transaction {
             $record_id,
             $user_status
         ) {
-            try {
-                $this->user_repository->updateRole(
-                    id: $user_id,
-                    role: null
-                );
+            $this->user_repository->updateRole(
+                id: $user_id,
+                role: null
+            );
 
-                $this->user_processing_step_repository->delete(
-                    record_id: $record_id
-                );
-                
-                if ($user_status === UserStatusEnum::Active) {
-                    $this->user_repository->updateStatus(
-                        $user_id,
-                        UserStatusEnum::Processing->value
-                    );
-                }
-            }catch(RepositoryException $e) {
-                return new ServiceResult(
-                    success: false,
-                    message: $e->getMessage()
+            $this->user_processing_step_repository->delete(
+                record_id: $record_id
+            );
+            
+            if ($user_status === UserStatusEnum::Active) {
+                $this->user_repository->updateStatus(
+                    $user_id,
+                    UserStatusEnum::Processing->value
                 );
             }
 
