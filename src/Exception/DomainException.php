@@ -12,6 +12,13 @@ final class DomainException extends ExceptionContract {
         );
     }
 
+    public static function STORAGE_SLOT_NOT_FOUND(): self {
+        return new self(
+            ErrorCode::STORAGE_SLOT_NOT_FOUND,
+            ErrorMessage::STORAGE_SLOT_NOT_FOUND
+        );
+    }
+
     public static function PROVIDER_NAME_INVALID_TYPE(): self {
         return new self(
             ErrorCode::PROVIDER_NAME_INVALID_TYPE,

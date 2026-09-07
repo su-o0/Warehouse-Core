@@ -19,6 +19,11 @@ final readonly class TransactionConfig {
         public string $remove_user_name,
         public string $add_user_identity,
         public string $remove_user_identity,
+
+        public string $populate_rack,
+        public string $add_rack_name,
+        public string $set_primary_rack_name,
+        public string $remove_rack_name,
     ) { }
 
     public static function fromRaw(array $raw): self {
@@ -38,6 +43,11 @@ final readonly class TransactionConfig {
             remove_user_name: self::requiredString($raw, 'RemoveUserName'),
             add_user_identity: self::requiredString($raw, 'AddUserIdentity'),
             remove_user_identity: self::requiredString($raw, 'RemoveUserIdentity'),
+        
+            populate_rack: self::requiredString($raw, 'PopulateRack'),
+            add_rack_name: self::requiredString($raw, 'AddRackName'),
+            set_primary_rack_name: self::requiredString($raw, 'SetPrimaryRackName'),
+            remove_rack_name: self::requiredString($raw, 'RemoveRackName'),
         );
     }
 } 

@@ -54,312 +54,414 @@ use WarehouseCore\Repository\Media\StoredFileRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 
-final readonly class RepositoryRegistry {
-    public AreaRepository $area;
-    public ZoneRepository $zone;
-    public RackPlacementRepository $rack_placement;
-    public ContainerPlacementRepository $container_placement;
-    public ItemPlacementRepository $item_placement;
-    public StockPlacementRepository $stock_placement;
-    public RackRepository $rack;
-    public ShelfRepository $shelf;
-    public StorageSlotRepository $storage_slot;
-    public ContainerRepository $container;
-    public ItemRepository $item;
-    public StockRepository $stock;
-    public PhysicalTagRepository $physical_tag;
-    public ItemProcessingStepRepository $item_processing_step;
-    public PartProcessingStepRepository $part_processing_step;
-    public AreaNameRepository $area_name;
-    public ZoneNameRepository $zone_name;
-    public RackNameRepository $rack_name;
-    public PartRepository $part;
-    public PartNumberRepository $part_number;
-    public PartNameRepository $part_name;
-    public VehicleRepository $vehicle;
-    public PartPhotoRepository $part_photo;
-    public ItemPhotoRepository $item_photo;
-    public StockPhotoRepository $stock_photo;
-    public VehiclePhotoRepository $vehicle_photo;
-    public PartVideoRepository $part_video;
-    public ItemVideoRepository $item_video;
-    public StockVideoRepository $stock_video;
-    public VehicleVideoRepository $vehicle_video;
-    public StoredFileRepository $stored_file; 
-    public RackPlacementArchiveRepository $rack_placement_archive;
-    public ContainerPlacementArchiveRepository $container_placement_archive;
-    public ItemPlacementArchiveRepository $item_placement_archive;
-    public StockPlacementArchiveRepository $stock_placement_archive;
-    public RackMovementArchiveRepository $rack_movement_archive;
-    public ContainerMovementArchiveRepository $container_movement_archive;
-    public ItemMovementArchiveRepository $item_movement_archive;
-    public StockMovementArchiveRepository $stock_movement_archive;
-    public ItemSalesArchiveRepository $item_sales_archive;
-    public StockSalesArchiveRepository $stock_sales_archive;
-    public RoleRepository $role;
-    public ProviderRepository $provider;
-    public UserRepository $user;
-    public UserIdentityRepository $user_identity;
-    public OwnerRepository $owner;
-    public AreaAccessRepository $area_access;
-    public UserNameRepository $user_name;
-    public UserProcessingStepRepository $user_processing_step;
-    public RackProcessingStepRepository $rack_processing_step;
+final class RepositoryRegistry {
+    private \PDO $db;
+
+    private ?AreaRepository $area = null;
+    private ?ZoneRepository $zone = null;
+    private ?RackPlacementRepository $rack_placement = null;
+    private ?ContainerPlacementRepository $container_placement = null;
+    private ?ItemPlacementRepository $item_placement = null;
+    private ?StockPlacementRepository $stock_placement = null;
+    private ?RackRepository $rack = null;
+    private ?ShelfRepository $shelf = null;
+    private ?StorageSlotRepository $storage_slot = null;
+    private ?ContainerRepository $container = null;
+    private ?ItemRepository $item = null;
+    private ?StockRepository $stock = null;
+    private ?PhysicalTagRepository $physical_tag = null;
+    private ?ItemProcessingStepRepository $item_processing_step = null;
+    private ?PartProcessingStepRepository $part_processing_step = null;
+    private ?AreaNameRepository $area_name = null;
+    private ?ZoneNameRepository $zone_name = null;
+    private ?RackNameRepository $rack_name = null;
+    private ?PartRepository $part = null;
+    private ?PartNumberRepository $part_number = null;
+    private ?PartNameRepository $part_name = null;
+    private ?VehicleRepository $vehicle = null;
+    private ?PartPhotoRepository $part_photo = null;
+    private ?ItemPhotoRepository $item_photo = null;
+    private ?StockPhotoRepository $stock_photo = null;
+    private ?VehiclePhotoRepository $vehicle_photo = null;
+    private ?PartVideoRepository $part_video = null;
+    private ?ItemVideoRepository $item_video = null;
+    private ?StockVideoRepository $stock_video = null;
+    private ?VehicleVideoRepository $vehicle_video = null;
+    private ?StoredFileRepository $stored_file = null; 
+    private ?RackPlacementArchiveRepository $rack_placement_archive = null;
+    private ?ContainerPlacementArchiveRepository $container_placement_archive = null;
+    private ?ItemPlacementArchiveRepository $item_placement_archive = null;
+    private ?StockPlacementArchiveRepository $stock_placement_archive = null;
+    private ?RackMovementArchiveRepository $rack_movement_archive = null;
+    private ?ContainerMovementArchiveRepository $container_movement_archive = null;
+    private ?ItemMovementArchiveRepository $item_movement_archive = null;
+    private ?StockMovementArchiveRepository $stock_movement_archive = null;
+    private ?ItemSalesArchiveRepository $item_sales_archive = null;
+    private ?StockSalesArchiveRepository $stock_sales_archive = null;
+    private ?RoleRepository $role = null;
+    private ?ProviderRepository $provider = null;
+    private ?UserRepository $user = null;
+    private ?UserIdentityRepository $user_identity = null;
+    private ?OwnerRepository $owner = null;
+    private ?AreaAccessRepository $area_access = null;
+    private ?UserNameRepository $user_name = null;
+    private ?UserProcessingStepRepository $user_processing_step = null;
+    private ?RackProcessingStepRepository $rack_processing_step = null;
 
     public function __construct(
-        RepositoryConfig $config,
+        private RepositoryConfig $config,
         Connection $connection
     ) { 
-        $db = $connection->get();
+        $this->db = $connection->get();
+    }
 
-        $this->area = new AreaRepository(
-            $db, 
-            $config->area
+    public function area(): AreaRepository {
+        return $this->area ??= new AreaRepository(
+            $this->db, 
+            $this->config->area
         );
+    }
 
-        $this->zone = new ZoneRepository(
-            $db, 
-            $config->zone
+    public function zone(): ZoneRepository {
+        return $this->zone ??= new ZoneRepository(
+            $this->db, 
+            $this->config->zone
         );
+    }
 
-        $this->rack_placement = new RackPlacementRepository(
-            $db, 
-            $config->rack_placement
+    public function rackPlacement(): RackPlacementRepository {
+        return $this->rack_placement ??= new RackPlacementRepository(
+            $this->db, 
+            $this->config->rack_placement
         );
+    }
 
-        $this->container_placement = new ContainerPlacementRepository(
-            $db, 
-            $config->container_placement
+    public function containerPlacement(): ContainerPlacementRepository {
+        return $this->container_placement ??= new ContainerPlacementRepository(
+            $this->db, 
+            $this->config->container_placement
         );
+    }
 
-        $this->item_placement = new ItemPlacementRepository(
-            $db, 
-            $config->item_placement
+    public function itemPlacement(): ItemPlacementRepository {
+        return $this->item_placement ??= new ItemPlacementRepository(
+            $this->db, 
+            $this->config->item_placement
         );
-
-        $this->stock_placement = new StockPlacementRepository(
-            $db, 
-            $config->stock_placement
+    }
+    
+    public function stockPlacement(): StockPlacementRepository {
+        return $this->stock_placement ??= new StockPlacementRepository(
+            $this->db, 
+            $this->config->stock_placement
         );
-
-        $this->rack = new RackRepository(
-            $db, 
-            $config->rack
+    }
+    
+    public function rack(): RackRepository {
+        return $this->rack ??= new RackRepository(
+            $this->db, 
+            $this->config->rack
         );
-
-        $this->shelf = new ShelfRepository(
-            $db, 
-            $config->shelf
+    }
+    
+    public function shelf(): ShelfRepository {
+        return $this->shelf ??= new ShelfRepository(
+            $this->db, 
+            $this->config->shelf
         );
-
-        $this->storage_slot = new StorageSlotRepository(
-            $db, 
-            $config->storage_slot
+    }
+    
+    public function storageSlot(): StorageSlotRepository {
+        return $this->storage_slot ??= new StorageSlotRepository(
+            $this->db, 
+            $this->config->storage_slot
         );
-
-        $this->container = new ContainerRepository(
-            $db, 
-            $config->container
+    }
+    
+    public function container(): ContainerRepository {
+        return $this->container ??= new ContainerRepository(
+            $this->db, 
+            $this->config->container
         );
-        
-        $this->item = new ItemRepository(
-            $db, 
-            $config->item
+    }
+    
+    public function item(): ItemRepository {
+        return $this->item ??= new ItemRepository(
+            $this->db, 
+            $this->config->item
         );
-        
-        $this->stock = new StockRepository(
-            $db, 
-            $config->stock
+    }
+    
+    public function stock(): StockRepository {
+        return $this->stock ??= new StockRepository(
+            $this->db, 
+            $this->config->stock
         );
-        
-        $this->physical_tag = new PhysicalTagRepository(
-            $db, 
-            $config->physical_tag
+    }
+    
+    public function physicalTag(): PhysicalTagRepository {
+        return $this->physical_tag ??= new PhysicalTagRepository(
+            $this->db, 
+            $this->config->physical_tag
         );
-
-        $this->item_processing_step = new ItemProcessingStepRepository(
-            $db,
-            $config->item_processing_step
+    }
+    
+    public function itemProcessingStep(): ItemProcessingStepRepository {
+        return $this->item_processing_step ??= new ItemProcessingStepRepository(
+            $this->db,
+            $this->config->item_processing_step
         );
-        
-        $this->part_processing_step = new PartProcessingStepRepository(
-            $db,
-            $config->part_processing_step
+    }
+    
+    public function partProcessingStep(): PartProcessingStepRepository {
+        return $this->part_processing_step ??= new PartProcessingStepRepository(
+            $this->db,
+            $this->config->part_processing_step
         );
-
-        $this->area_name = new AreaNameRepository(
-            $db,
-            $config->area_name
+    }
+    
+    public function areaName(): AreaNameRepository {
+        return $this->area_name ??= new AreaNameRepository(
+            $this->db,
+            $this->config->area_name
         );
-
-        $this->zone_name = new ZoneNameRepository(
-            $db,
-            $config->zone_name
+    }
+    
+    public function zoneName(): ZoneNameRepository {
+        return $this->zone_name ??= new ZoneNameRepository(
+            $this->db,
+            $this->config->zone_name
         );
-
-        $this->rack_name = new RackNameRepository(
-            $db,
-            $config->rack_name
+    }
+    
+    public function rackName(): RackNameRepository {
+        return $this->rack_name ??= new RackNameRepository(
+            $this->db,
+            $this->config->rack_name
         );
-
-        $this->part = new PartRepository(
-            $db, 
-            $config->part
+    }
+    
+    public function part(): PartRepository {
+        return $this->part ??= new PartRepository(
+            $this->db, 
+            $this->config->part
         );
-        
-        $this->part_number = new PartNumberRepository(
-            $db, 
-            $config->part_number
+    }
+    
+    public function partNumber(): PartNumberRepository {
+        return $this->part_number ??= new PartNumberRepository(
+            $this->db, 
+            $this->config->part_number
         );
-
-        $this->part_name = new PartNameRepository(
-            $db, 
-            $config->part_name
+    }
+    
+    public function partName(): PartNameRepository {
+        return $this->part_name ??= new PartNameRepository(
+            $this->db, 
+            $this->config->part_name
         );
-
-        $this->vehicle = new VehicleRepository(
-            $db, 
-            $config->vehicle
+    }
+    
+    public function vehicle(): VehicleRepository {
+        return $this->vehicle ??= new VehicleRepository(
+            $this->db, 
+            $this->config->vehicle
         );
-
-        $this->part_photo = new PartPhotoRepository(
-            $db,
-            $config->part_photo
+    }
+    
+    public function partPhoto(): PartPhotoRepository {
+        return $this->part_photo ??= new PartPhotoRepository(
+            $this->db,
+            $this->config->part_photo
         );
-        
-        $this->item_photo = new ItemPhotoRepository(
-            $db, 
-            $config->item_photo
+    }
+    
+    public function itemPhoto(): ItemPhotoRepository {
+        return $this->item_photo ??= new ItemPhotoRepository(
+            $this->db, 
+            $this->config->item_photo
         );
-        
-        $this->stock_photo = new StockPhotoRepository(
-            $db, 
-            $config->stock_photo
+    }
+    
+    public function stockPhoto(): StockPhotoRepository {
+        return $this->stock_photo ??= new StockPhotoRepository(
+            $this->db, 
+            $this->config->stock_photo
         );
-        
-        $this->vehicle_photo = new VehiclePhotoRepository(
-            $db, 
-            $config->vehicle_photo
+    }
+    
+    public function vehiclePhoto(): VehiclePhotoRepository {
+        return $this->vehicle_photo ??= new VehiclePhotoRepository(
+            $this->db, 
+            $this->config->vehicle_photo
         );
-
-        $this->part_video = new PartVideoRepository(
-            $db,
-            $config->part_video
+    }
+    
+    public function partVideo(): PartVideoRepository {
+        return $this->part_video ??= new PartVideoRepository(
+            $this->db,
+            $this->config->part_video
         );
-
-        $this->item_video = new ItemVideoRepository(
-            $db, 
-            $config->item_video
+    }
+    
+    public function itemVideo(): ItemVideoRepository {
+        return $this->item_video ??= new ItemVideoRepository(
+            $this->db, 
+            $this->config->item_video
         );
-        
-        $this->stock_video = new StockVideoRepository(
-            $db, 
-            $config->stock_video
+    }
+    
+    public function stockVideo(): StockVideoRepository {
+        return $this->stock_video ??= new StockVideoRepository(
+            $this->db, 
+            $this->config->stock_video
         );
-
-        $this->vehicle_video = new VehicleVideoRepository(
-            $db, 
-            $config->vehicle_video
+    }
+    
+    public function vehicleVideo(): VehicleVideoRepository {
+        return $this->vehicle_video ??= new VehicleVideoRepository(
+            $this->db, 
+            $this->config->vehicle_video
         );
-        
-        $this->stored_file = new StoredFileRepository(
-            $db,
-            $config->stored_file
+    }
+    
+    public function storedFile(): StoredFileRepository {
+        return $this->stored_file ??= new StoredFileRepository(
+            $this->db,
+            $this->config->stored_file
         );
-
-        $this->rack_placement_archive = new RackPlacementArchiveRepository(
-            $db,
-            $config->rack_placement_archive
+    }
+    
+    public function rackPlacementArchive(): RackPlacementArchiveRepository {
+        return $this->rack_placement_archive ??= new RackPlacementArchiveRepository(
+            $this->db,
+            $this->config->rack_placement_archive
         );
-      
-        $this->container_placement_archive = new ContainerPlacementArchiveRepository(
-            $db,
-            $config->container_placement_archive
+    }
+    
+    public function containerPlacementArchive(): ContainerPlacementArchiveRepository {
+        return $this->container_placement_archive ??= new ContainerPlacementArchiveRepository(
+            $this->db,
+            $this->config->container_placement_archive
         );
-
-        $this->item_placement_archive = new ItemPlacementArchiveRepository(
-            $db,
-            $config->item_placement_archive
+    }
+    
+    public function itemPlacementArchive(): ItemPlacementArchiveRepository{
+        return $this->item_placement_archive ??= new ItemPlacementArchiveRepository(
+            $this->db,
+            $this->config->item_placement_archive
         );
-
-        $this->stock_placement_archive = new StockPlacementArchiveRepository(
-            $db,
-            $config->stock_placement_archive
+    }
+    
+    public function stockPlacementArchive(): StockPlacementArchiveRepository {
+        return $this->stock_placement_archive ??= new StockPlacementArchiveRepository(
+            $this->db,
+            $this->config->stock_placement_archive
         );
-
-        $this->rack_movement_archive = new RackMovementArchiveRepository(
-            $db,
-            $config->rack_movement_archive
+    }
+    
+    public function rackMovementArchive(): RackMovementArchiveRepository {
+        return $this->rack_movement_archive ??= new RackMovementArchiveRepository(
+            $this->db,
+            $this->config->rack_movement_archive
         );
-
-        $this->container_movement_archive = new ContainerMovementArchiveRepository(
-            $db,
-            $config->container_movement_archive
+    }
+    
+    public function containerMovementArchive(): ContainerMovementArchiveRepository {
+        return $this->container_movement_archive ??= new ContainerMovementArchiveRepository(
+            $this->db,
+            $this->config->container_movement_archive
         );
-
-        $this->item_movement_archive = new ItemMovementArchiveRepository(
-            $db,
-            $config->item_movement_archive
+    }
+    
+    public function itemMovementArchive(): ItemMovementArchiveRepository {
+        return $this->item_movement_archive ??= new ItemMovementArchiveRepository(
+            $this->db,
+            $this->config->item_movement_archive
         );
-
-        $this->stock_movement_archive = new StockMovementArchiveRepository(
-            $db,
-            $config->stock_movement_archive
+    }
+    
+    public function stockMovementArchive(): StockMovementArchiveRepository {
+        return $this->stock_movement_archive ??= new StockMovementArchiveRepository(
+            $this->db,
+            $this->config->stock_movement_archive
         );
-        
-        $this->item_sales_archive = new ItemSalesArchiveRepository(
-            $db, 
-            $config->item_sales_archive
+    }
+    
+    public function itemSalesArchive(): ItemSalesArchiveRepository {
+        return $this->item_sales_archive ??= new ItemSalesArchiveRepository(
+            $this->db, 
+            $this->config->item_sales_archive
         );
-        
-        $this->stock_sales_archive = new StockSalesArchiveRepository(
-            $db, 
-            $config->stock_sales_archive
+    }
+    
+    public function stockSalesArchive(): StockSalesArchiveRepository {
+        return $this->stock_sales_archive ??= new StockSalesArchiveRepository(
+            $this->db, 
+            $this->config->stock_sales_archive
         );
-
-        $this->role = new RoleRepository(
-            $db, 
-            $config->role
+    }
+    
+    public function role(): RoleRepository {
+        return $this->role ??= new RoleRepository(
+            $this->db, 
+            $this->config->role
         );
-
-        $this->provider = new ProviderRepository(
-            $db, 
-            $config->provider
+    }
+    
+    public function provider(): ProviderRepository {
+        return $this->provider ??= new ProviderRepository(
+            $this->db, 
+            $this->config->provider
         );
-
-        $this->user = new UserRepository(
-            $db, 
-            $config->user
+    }
+    
+    public function user(): UserRepository {
+        return $this->user ??= new UserRepository(
+            $this->db, 
+            $this->config->user
         );
-        
-        $this->user_name = new UserNameRepository(
-            $db, 
-            $config->user_name
+    }
+    
+    public function userName(): UserNameRepository {
+        return $this->user_name ??= new UserNameRepository(
+            $this->db, 
+            $this->config->user_name
         );
-
-        $this->user_processing_step = new UserProcessingStepRepository(
-            $db, 
-            $config->user_processing_step
+    }
+    
+    public function userProcessingStep(): UserProcessingStepRepository {
+        return $this->user_processing_step ??= new UserProcessingStepRepository(
+            $this->db, 
+            $this->config->user_processing_step
         );
-
-        $this->rack_processing_step = new RackProcessingStepRepository(
-            $db, 
-            $config->rack_processing_step
+    }
+    
+    public function rackProcessingStep(): RackProcessingStepRepository {
+        return $this->rack_processing_step ??= new RackProcessingStepRepository(
+            $this->db, 
+            $this->config->rack_processing_step
         );
-
-        $this->user_identity = new UserIdentityRepository(
-            $db, 
-            $config->user_identity
+    }
+    
+    public function userIdentity(): UserIdentityRepository {
+        return $this->user_identity ??= new UserIdentityRepository(
+            $this->db, 
+            $this->config->user_identity
         );
-        
-        $this->owner = new OwnerRepository(
-            $db, 
-            $config->owner
+    }
+    
+    public function owner(): OwnerRepository {
+        return $this->owner ??= new OwnerRepository(
+            $this->db, 
+            $this->config->owner
         );
-
-        $this->area_access = new AreaAccessRepository(
-            $db, 
-            $config->area_access
+    }
+    
+    public function areaAccess(): AreaAccessRepository {
+        return $this->area_access ??= new AreaAccessRepository(
+            $this->db, 
+            $this->config->area_access
         );
     }
 }

@@ -35,34 +35,25 @@ final class Bootstrap {
     }
 
     private function connection(): Connection {
-        if ($this->connection === null) {
-            $this->connection = new Connection(
-                config: $this->config->database,
-                journal_table: $this->config->repository->journal
-            );
-        }
-        return $this->connection;
+        return $this->connection ??= new Connection(
+            config: $this->config->database,
+            journal_table: $this->config->repository->journal
+        );
     }
 
     private function repository_registry(): RepositoryRegistry {
-        if ($this->repository_registry === null) {
-            $this->repository_registry = new RepositoryRegistry(
-                config: $this->config->repository,
-                connection: $this->connection()
-            );
-        }
-        return $this->repository_registry;
+        return $this->repository_registry ??= new RepositoryRegistry(
+            config: $this->config->repository,
+            connection: $this->connection()
+        );
     }
 
     private function transaction_registry(): TransactionRegistry {
-        if ($this->transaction_registry === null) {
-            $this->transaction_registry = new TransactionRegistry(
-                config: $this->config->transaction,
-                repository: $this->repository_registry(),
-                connection: $this->connection()
-            );
-        }
-        return $this->transaction_registry;
+        return $this->transaction_registry ??= new TransactionRegistry(
+            config: $this->config->transaction,
+            repository: $this->repository_registry(),
+            connection: $this->connection()
+        );
     }
 
     public function buildAuthentication(): AuthenticationService {
@@ -70,22 +61,19 @@ final class Bootstrap {
 
         return new AuthenticationService(
             service_name: $this->config->service->authentication,
-            role_repository: $repository->role,
-            provider_repository: $repository->provider,
-            user_repository: $repository->user,
-            user_identity_repository: $repository->user_identity
+            role_repository: $repository->role(),
+            provider_repository: $repository->provider(),
+            user_repository: $repository->user(),
+            user_identity_repository: $repository->userIdentity()
         );
     }
 
     public function buildService(): ServiceRegistry {
-        if ($this->service_registry === null) {
-            $this->service_registry = new ServiceRegistry(
-                config: $this->config->service,
-                repository: $this->repository_registry(),
-                transaction: $this->transaction_registry()
-            );
-        }
-        return $this->service_registry;
+        return $this->service_registry ??= new ServiceRegistry(
+            config: $this->config->service,
+            repository: $this->repository_registry(),
+            transaction: $this->transaction_registry()
+        );
     }
 
     public function buildApi(

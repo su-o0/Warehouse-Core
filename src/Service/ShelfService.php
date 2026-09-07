@@ -1,7 +1,7 @@
 <?php 
 namespace WarehouseCore\Service;
 
-use WarehouseCore\Repository\Inventory\ShelfRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Security\Authorization;
 
 final class ShelfService {

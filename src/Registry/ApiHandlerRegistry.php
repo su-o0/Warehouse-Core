@@ -323,4 +323,21 @@ final class ApiHandlerRegistry {
             EntityRequest::fromRaw($raw)
         );
     }
+
+    public function registerRack(
+    ): ApiResult {
+        return $this->handle(
+            $this->api->registerRack(),
+            null
+        );
+    }
+
+    public function populateRack(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->populateRack(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
 }

@@ -29,7 +29,7 @@ final class ContainerService {
 
         try {
             $container_id = $this->container_repository->add(
-                $this->authorization->user->id,
+                $this->authorization->getUserId(),
                 $id,
                 $type->value
             );

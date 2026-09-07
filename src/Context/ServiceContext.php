@@ -27,109 +27,149 @@ use WarehouseCore\Service\VideoService;
 use WarehouseCore\Service\ZoneService;
 
 final class ServiceContext {
-    public AreaService $area_service;
-    public ContainerService $container_service;
-    public UserService $user_service;
-    public ItemService $item_service;
-    public MovementService $movement_service;
-    public OwnerService $owner_service;
-    public PartService $part_service;
-    public PhotoService $photo_service;
-    public PhysicalTagService $physical_tag_service;
-    public PlacementService $placement_service;
-    public RackService $rack_service;
-    public SalesService $sales_service;
-    public ShelfService $shelf_service;
-    public StockService $stock_service;
-    public VehicleService $vehicle_service;
-    public VideoService $video_service;
-    public ZoneService $zone_service;
-    public FindService $find_service;
-    public GetService $get_service;
-    public ListService $list_service;
+    private ?AreaService $area_service = null;
+    private ?ContainerService $container_service = null;
+    private ?UserService $user_service = null;
+    private ?ItemService $item_service = null;
+    private ?MovementService $movement_service = null;
+    private ?OwnerService $owner_service = null;
+    private ?PartService $part_service = null;
+    private ?PhotoService $photo_service = null;
+    private ?PhysicalTagService $physical_tag_service = null;
+    private ?PlacementService $placement_service = null;
+    private ?RackService $rack_service = null;
+    private ?SalesService $sales_service = null;
+    private ?ShelfService $shelf_service = null;
+    private ?StockService $stock_service = null;
+    private ?VehicleService $vehicle_service = null;
+    private ?VideoService $video_service = null;
+    private ?ZoneService $zone_service = null;
+    private ?FindService $find_service = null;
+    private ?GetService $get_service = null;
+    private ?ListService $list_service = null;
 
     public function __construct(
         public readonly SessionDTO $session,
         private readonly Authorization $authorization,
         private readonly ServiceRegistry $service
-    ) {
-        $this->area_service = $this->service->area(
-            $this->authorization
-        );
+    ) { }
 
-        $this->container_service = $this->service->container(
+    public function areaService(): AreaService {
+        return $this->area_service ??= $this->service->area(
             $this->authorization
         );
+    }
 
-        $this->user_service = $this->service->user(
+    public function containerService(): ContainerService {
+        return $this->container_service ??= $this->service->container(
             $this->authorization
         );
+    }
 
-        $this->item_service = $this->service->item(
+    public function userService(): UserService {
+       return $this->user_service ??= $this->service->user(
             $this->authorization
         );
+    }
 
-        $this->movement_service= $this->service->movement(
+    public function itemService(): ItemService {
+        return $this->item_service ??= $this->service->item(
             $this->authorization
         );
+    }
 
-        $this->owner_service = $this->service->owner(
+    public function movementService(): MovementService {
+        return $this->movement_service ??= $this->service->movement(
             $this->authorization
         );
+    }
 
-        $this->part_service = $this->service->part(
+    public function ownerService(): OwnerService {
+        return $this->owner_service ??= $this->service->owner(
             $this->authorization
         );
+    }
 
-        $this->photo_service = $this->service->photo(
+    public function partService(): PartService {
+        return $this->part_service ??= $this->service->part(
             $this->authorization
         );
-        
-        $this->physical_tag_service = $this->service->physicalTag(
-            $this->authorization
-        );
-        
-        $this->placement_service = $this->service->placement(
-            $this->authorization
-        );
-        
-        $this->rack_service = $this->service->rack(
-            $this->authorization
-        );
-        
-        $this->sales_service = $this->service->sales(
-            $this->authorization
-        );
+    }
 
-        $this->shelf_service = $this->service->shelf(
+    public function photoService(): PhotoService {
+        return $this->photo_service ??= $this->service->photo(
             $this->authorization
         );
+    }
+    
+    public function physicalTagService(): PhysicalTagService {
+        return $this->physical_tag_service ??= $this->service->physicalTag(
+            $this->authorization
+        );
+    }
 
-        $this->stock_service = $this->service->stock(
+    public function placementService(): PlacementService {
+        return $this->placement_service ??= $this->service->placement(
             $this->authorization
         );
+    }
+    
+    public function rackService(): RackService {
+        return $this->rack_service ??= $this->service->rack(
+            $this->authorization
+        );
+    }
+    
+    public function salesService(): SalesService {
+        return $this->sales_service ??= $this->service->sales(
+            $this->authorization
+        );
+    }
 
-        $this->vehicle_service = $this->service->vehicle(
+    public function shelfService(): ShelfService {
+        return $this->shelf_service ??= $this->service->shelf(
             $this->authorization
         );
-        
-        $this->video_service = $this->service->video(
+    }
+
+    public function stockService(): StockService {
+        return $this->stock_service ??= $this->service->stock(
             $this->authorization
         );
-        
-        $this->zone_service = $this->service->zone(
+    }
+
+    public function vehicleService(): VehicleService {
+        return $this->vehicle_service ??= $this->service->vehicle(
             $this->authorization
         );
-        
-        $this->find_service = $this->service->find(
+    }
+    
+    public function videoService(): VideoService {
+        return $this->video_service ??= $this->service->video(
             $this->authorization
         );
-        
-        $this->get_service = $this->service->get(
+    }
+
+    public function zoneService(): ZoneService {
+        return $this->zone_service ??= $this->service->zone(
             $this->authorization
         );
-        
-        $this->list_service = $this->service->list(
+    }
+    
+    public function find_serive(): FindService {
+        return $this->find_service ??= $this->service->find(
+            $this->authorization
+        );
+    }
+
+    public function getService(): GetService {
+        return $this->get_service ??= $this->service->get(
+            $this->authorization
+        );
+    }
+
+    public function listService(): ListService {
+        return $this->list_service ??= $this->service->list(
             $this->authorization
         );
     }

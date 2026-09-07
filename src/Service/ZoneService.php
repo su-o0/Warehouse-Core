@@ -139,7 +139,7 @@ final class ZoneService {
         return $this->add_zone_name_transaction->handle(
             $zone->id,
             $name,
-            $this->authorization->user->id
+            $this->authorization->getUserId()
         );
     }
 
@@ -234,7 +234,7 @@ final class ZoneService {
 
         return $this->create_zone_transaction->handle(
             $area_id,
-            $this->authorization->user->id
+            $this->authorization->getUserId()
         );
     }
 

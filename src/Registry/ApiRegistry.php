@@ -26,6 +26,8 @@ use WarehouseCore\Api\Identity\User\AssignUserRoleApi;
 use WarehouseCore\Api\Identity\User\CreateUserApi;
 use WarehouseCore\Api\Identity\User\DismissUserRoleApi;
 use WarehouseCore\Api\Identity\User\RemoveUserIdentityApi;
+use WarehouseCore\Api\Inventory\Rack\PopulateRackApi;
+use WarehouseCore\Api\Inventory\Rack\RegisterRackApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
 use WarehouseCore\Api\Query\List\ListAreaNamesApi;
 use WarehouseCore\Api\Query\List\ListUserApi;
@@ -47,65 +49,70 @@ final class ApiRegistry {
     public function createArea(): CreateAreaApi {
         return new CreateAreaApi(
             $this->config->create_area,
-            $this->context->area_service
+            $this->context->areaService()
         );
     }
 
     public function activateArea(): ActivateAreaApi {
         return new ActivateAreaApi(
             $this->config->activate_area,
-            $this->context->area_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
 
     public function archiveArea(): ArchiveAreaApi {
         return new ArchiveAreaApi(
             $this->config->archive_area,
-            $this->context->area_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
         
     public function markAreaAsCrowded(): MarkAreaAsCrowdedApi {
         return new MarkAreaAsCrowdedApi(
             $this->config->mark_area_as_crowded,
-            $this->context->area_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
 
     public function grantAreaAccess(): GrantAreaAccessApi {
         return new GrantAreaAccessApi(
             $this->config->grant_area_access,
-            $this->context->area_service,
-            $this->context->get_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
     
     public function revokeAreaAccess(): RevokeAreaAccessApi {
         return new RevokeAreaAccessApi(
             $this->config->revoke_area_access,
-            $this->context->area_service,
-            $this->context->get_service
+            $this->context->areaService(),
+            $this->context->getService()
         );
     }
     
     public function addAreaName(): AddAreaNameApi {
         return new AddAreaNameApi(
             $this->config->add_area_name,
-            $this->context->area_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
 
     public function removeAreaName(): RemoveAreaNameApi {
         return new RemoveAreaNameApi(
             $this->config->remove_area_name,
-            $this->context->area_service
+            $this->context->getService(),
+            $this->context->areaService()
         );
     }
 
     public function setPrimaryAreaName(): SetPrimaryAreaNameApi {
         return new SetPrimaryAreaNameApi(
             $this->config->set_primary_area_name,
-            $this->context->area_service
+            $this->context->areaService()
         );
     }
 
@@ -274,6 +281,20 @@ final class ApiRegistry {
         return new ArchiveUserApi(
             $this->config->archive_user,
             $this->context->user_service
+        );
+    }
+
+    public function registerRack(): RegisterRackApi {
+        return new RegisterRackApi(
+            $this->config->register_rack,
+            $this->context->rack_service
+        );
+    }
+
+    public function populateRack(): PopulateRackApi {
+        return new PopulateRackApi(
+            $this->config->populate_rack,
+            $this->context->rack_service
         );
     }
 }

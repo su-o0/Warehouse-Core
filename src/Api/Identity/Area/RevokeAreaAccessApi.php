@@ -18,20 +18,27 @@ final class RevokeAreaAccessApi {
     public function handle(
         EntityEntityRequest $request
     ): ApiResult {
-        try {
-            $user = $this->get_service->getUser(
-                $request->first_id
-            );
-        } catch (DomainException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
+        $result = $this->get_service->getUser(
+            user_id: $request->first_id
+        );
+
+        if (!$result->success) {
+            return $result;
+        }
+
+        $user = $result->entity;
+
+        $result = $this->get_service->getArea(
+            area_id: $request->second_id
+        );
+
+        if (!$result->success) {
+            return $result;
         }
     
         return $this->area_service->revokeAreaAccess(
-            area_id: $request->second_id,
-            user_id: $user->id
+            area: $result->entity,
+            user: $user
         );
     }
 }

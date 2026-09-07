@@ -2,6 +2,7 @@
 namespace WarehouseCore\Service\Query;
 
 use WarehouseCore\Exception\DomainException;
+use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\Entity\AreaEntity;
 use WarehouseCore\Payload\Entity\ContainerEntity;
@@ -12,11 +13,13 @@ use WarehouseCore\Payload\Entity\PhysicalTagEntity;
 use WarehouseCore\Payload\Entity\RackEntity;
 use WarehouseCore\Payload\Entity\ShelfEntity;
 use WarehouseCore\Payload\Entity\StockEntity;
+use WarehouseCore\Payload\Entity\StorageSlotEntity;
 use WarehouseCore\Payload\Entity\StoredFileEntity;
 use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Reference\ProviderReference;
 use WarehouseCore\Payload\Reference\RoleReference;
+use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\ProviderRepository;
@@ -26,10 +29,11 @@ use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Inventory\PhysicalTagRepository;
 use WarehouseCore\Repository\Inventory\RackRepository;
-use WarehouseCore\Repository\Inventory\ShelfRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Repository\Inventory\StockRepository;
 use WarehouseCore\Repository\Media\StoredFileRepository;
 use WarehouseCore\Repository\Topology\AreaRepository;
+use WarehouseCore\Repository\Topology\StorageSlotRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
 
@@ -45,6 +49,7 @@ final class GetService {
         private PhysicalTagRepository $physical_tag,
         private RackRepository $rack,
         private ShelfRepository $shelf,
+        private StorageSlotRepository $storage_slot,
         private StockRepository $stock,
         private StoredFileRepository $stored_file,
         private UserRepository $user,
@@ -56,7 +61,7 @@ final class GetService {
 
     public function getArea(
         int $area_id
-    ): AreaEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetArea()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -64,15 +69,15 @@ final class GetService {
         $area = $this->area->getById($area_id);
 
         if ($area === null) {
-            throw DomainException::AREA_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::AREA_NOT_FOUND);
         }
 
-        return $area;
+        return ServiceResult::entity($area);
     }
 
     public function getContainer(
         int $container_id
-    ): ContainerEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetContainer()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -80,15 +85,15 @@ final class GetService {
         $container = $this->container->getById($container_id);
 
         if ($container === null) {
-            throw DomainException::CONTAINER_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::CONTAINER_NOT_FOUND);
         }
 
-        return $container;
+        return ServiceResult::entity($container);
     }
 
     public function getItem(
         int $item_id
-    ): ItemEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetItem()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -96,15 +101,15 @@ final class GetService {
         $item = $this->item->getById($item_id);
 
         if ($item === null) {
-            throw DomainException::ITEM_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::ITEM_NOT_FOUND);
         }
 
-        return $item;
+        return ServiceResult::entity($item);
     }
 
     public function getOwner(
         int $owner_id
-    ): OwnerEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetOwner()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -112,15 +117,15 @@ final class GetService {
         $owner = $this->owner->getById($owner_id);
 
         if ($owner === null) {
-            throw DomainException::OWNER_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::OWNER_NOT_FOUND);
         }
 
-        return $owner;
+        return ServiceResult::entity($owner);
     }
 
     public function getPart(
         int $part_id
-    ): PartEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetPart()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -128,15 +133,15 @@ final class GetService {
         $part = $this->part->getById($part_id);
 
         if ($part === null) {
-            throw DomainException::PART_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::PART_NOT_FOUND);
         }
 
-        return $part;
+        return ServiceResult::entity($part);
     }
 
     public function getPhysicalTag(
         int $physical_tag_id
-    ): PhysicalTagEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetPhysicalTag()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -144,15 +149,15 @@ final class GetService {
         $physical_tag = $this->physical_tag->getById($physical_tag_id);
 
         if ($physical_tag === null) {
-            throw DomainException::PHYSICAL_TAG_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::PHYSICAL_TAG_NOT_FOUND);
         }
 
-        return $physical_tag;
+        return ServiceResult::entity($physical_tag);
     }
 
     public function getRack(
         int $rack_id
-    ): RackEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetRack()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -160,15 +165,15 @@ final class GetService {
         $rack = $this->rack->getById($rack_id);
 
         if ($rack === null) {
-            throw DomainException::RACK_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::RACK_NOT_FOUND);
         }
 
-        return $rack;
+        return ServiceResult::entity($rack);
     }
 
     public function getShelf(
         int $shelf_id
-    ): ShelfEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetShelf()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -176,15 +181,15 @@ final class GetService {
         $shelf = $this->shelf->getById($shelf_id);
 
         if ($shelf === null) {
-            throw DomainException::SHELF_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::SHELF_NOT_FOUND);
         }
 
-        return $shelf;
+        return ServiceResult::entity($shelf);
     }
 
     public function getStock(
         int $stock_id
-    ): StockEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetStock()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -192,15 +197,15 @@ final class GetService {
         $stock = $this->stock->getById($stock_id);
 
         if ($stock === null) {
-            throw DomainException::STOCK_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::STOCK_NOT_FOUND);
         }
 
-        return $stock;
+        return ServiceResult::entity($stock);
     }
 
     public function getStoredFile(
         int $stored_file_id
-    ): StoredFileEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetStoredFile()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -208,15 +213,15 @@ final class GetService {
         $stored_file = $this->stored_file->getById($stored_file_id);
 
         if ($stored_file === null) {
-            throw DomainException::STORED_FILE_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::STORED_FILE_NOT_FOUND);
         }
 
-        return $stored_file;
+        return ServiceResult::entity($stored_file);
     }
 
     public function getUser(
         int $user_id
-    ): UserEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetUser()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -224,15 +229,21 @@ final class GetService {
         $user = $this->user->getById($user_id);
 
         if ($user === null) {
-            throw DomainException::USER_NOT_FOUND();
+            return new ServiceResult( 
+                success: false,
+                message: ErrorMessage::USER_NOT_FOUND
+            );
         }
 
-        return $user;
+        return new ServiceResult(
+            success: true,
+            entity: $user
+        );
     }
 
     public function getZone(
         int $zone_id
-    ): ZoneEntity {
+    ): ServiceResult {
         if (!$this->authorization->canGetZone()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -240,15 +251,21 @@ final class GetService {
         $zone = $this->zone->getById($zone_id);
 
         if ($zone === null) {
-            throw DomainException::ZONE_NOT_FOUND();
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::ZONE_NOT_FOUND
+            );
         }
 
-        return $zone;
+        return new ServiceResult(
+            success: true,
+            entity: $zone
+        );
     }
 
     public function getRole(
         string $name
-    ): RoleReference {
+    ): ServiceResult {
         if (!$this->authorization->canGetRole()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -256,15 +273,15 @@ final class GetService {
         $role = $this->role->getByName($name);
 
         if ($role === null) {
-            throw DomainException::ROLE_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::ROLE_NOT_FOUND);
         }
 
-        return $role;
+        return ServiceResult::entity($role);
     }
 
     public function getProvider(
         string $name
-    ): ProviderReference {
+    ): ServiceResult {
         if (!$this->authorization->canGetProvider()) {
             throw ServiceException::FORBIDDEN();
         }
@@ -272,9 +289,9 @@ final class GetService {
         $provider = $this->provider->getByName($name);
 
         if ($provider === null) {
-            throw DomainException::PROVIDER_NOT_FOUND();
+            return ServiceResult::failure(ErrorMessage::PROVIDER_NOT_FOUND);
         }
 
-        return $provider;
+        return ServiceResult::entity($provider);
     }
 }

@@ -21,7 +21,7 @@ final class CreateAreaTransaction extends Transaction {
 
     public function handle(
         int $user_id
-    ): mixed{
+    ): mixed {
         return $this->run(function () use (
             $user_id
         ) {
@@ -39,9 +39,7 @@ final class CreateAreaTransaction extends Transaction {
                 );
             }
         
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

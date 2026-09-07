@@ -46,6 +46,7 @@ final class ErrorMessage {
     public const USER_IDENTITY_ALREADY_EXISTS = 'User identity already exists';
 
     public const AREA_NOT_FOUND = 'Area not found';
+    public const STORAGE_SLOT_NOT_FOUND = 'Storage slot not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
     public const PART_PROCESSING_STEP_NOT_FOUND  = 'Part processing step not found';
     public const RACK_PROCESSING_STEP_NOT_FOUND  = 'Rack processing step not found';

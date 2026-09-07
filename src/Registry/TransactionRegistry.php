@@ -8,6 +8,7 @@ use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Area\CreateAreaTransaction;
 use WarehouseCore\Transaction\Zone\CreateZoneTransaction;
 use WarehouseCore\Transaction\Area\SetPrimaryAreaNameTransaction;
+use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
 use WarehouseCore\Transaction\User\AddUserNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
@@ -18,119 +19,159 @@ use WarehouseCore\Transaction\User\RemoveUserNameTransaction;
 use WarehouseCore\Transaction\User\SetPrimaryUserNameTransaction;
 
 final class TransactionRegistry {
-    public CreateAreaTransaction $create_area;
-    public AddAreaNameTransaction $add_area_name;
-    public SetPrimaryAreaNameTransaction $set_primary_area_name;
+    private \PDO $db;
 
-    public CreateZoneTransaction $create_zone;
-    public AddZoneNameTransaction $add_zone_name;
-    public SetPrimaryZoneNameTransaction $set_primary_zone_name;
+    private ?CreateAreaTransaction $create_area = null;
+    private ?AddAreaNameTransaction $add_area_name = null;
+    private ?SetPrimaryAreaNameTransaction $set_primary_area_name = null;
 
-    public AssignUserRoleTransaction $assign_user_role;
-    public DismissUserRoleTransaction $dismiss_user_role;
-    public AddUserNameTransaction $add_user_name;
-    public SetPrimaryUserNameTransaction $set_primary_user_name;
-    public RemoveUserNameTransaction $remove_user_name;
-    public AddUserIdentityTransaction $add_user_identity;
-    public RemoveUserIdentityTransaction $remove_user_identity;
+    private ?CreateZoneTransaction $create_zone = null;
+    private ?AddZoneNameTransaction $add_zone_name = null;
+    private ?SetPrimaryZoneNameTransaction $set_primary_zone_name = null;
+
+    private ?AssignUserRoleTransaction $assign_user_role = null;
+    private ?DismissUserRoleTransaction $dismiss_user_role = null;
+    private ?AddUserNameTransaction $add_user_name = null;
+    private ?SetPrimaryUserNameTransaction $set_primary_user_name = null;
+    private ?RemoveUserNameTransaction $remove_user_name = null;
+    private ?AddUserIdentityTransaction $add_user_identity = null;
+    private ?RemoveUserIdentityTransaction $remove_user_identity = null;
+
+    private ?PopulateRackTransaction $populate_rack = null;
 
     public function __construct(
-        TransactionConfig $config,
-        RepositoryRegistry $repository,
+        private TransactionConfig $config,
+        private RepositoryRegistry $repository,
         Connection $connection,
     ) { 
-        $db = $connection->get();
+        $this->db = $connection->get();
+    }
 
-        $this->create_area = new CreateAreaTransaction(
-            $db,
-            $config->add_area_name,
-            $repository->area,
-            $repository->area_access,
-            $repository->user
+    public function createArea(): CreateAreaTransaction {
+        return $this->create_area ??= new CreateAreaTransaction(
+            $this->db,
+            $this->config->add_area_name,
+            $this->repository->area(),
+            $this->repository->areaAccess(),
+            $this->repository->user()
         );
-
-        $this->add_area_name = new AddAreaNameTransaction(
-            $db,
-            $config->add_area_name,
-            $repository->area_name, 
+    }
+        
+    public function addAreaName(): AddAreaNameTransaction {
+        return $this->add_area_name ??= new AddAreaNameTransaction(
+            $this->db,
+            $this->config->add_area_name,
+            $this->repository->areaName(), 
         );
+    }
 
-        $this->set_primary_area_name = new SetPrimaryAreaNameTransaction(
-            $db,
-            $config->set_primary_area_name,
-            $repository->area_name, 
+    public function setPrimaryAreaName(): SetPrimaryAreaNameTransaction {
+        return $this->set_primary_area_name ??= new SetPrimaryAreaNameTransaction(
+            $this->db,
+            $this->config->set_primary_area_name,
+            $this->repository->areaName(), 
         );
+    }
 
-        $this->create_zone = new CreateZoneTransaction(
-            $db,
-            $config->add_zone_name,
-            $repository->area,
-            $repository->zone
+    public function createZone(): CreateZoneTransaction {
+        return $this->create_zone ??= new CreateZoneTransaction(
+            $this->db,
+            $this->config->add_zone_name,
+            $this->repository->area(),
+            $this->repository->zone()
         );
-
-        $this->add_zone_name = new AddZoneNameTransaction(
-            $db,
-            $config->add_zone_name,
-            $repository->zone_name, 
+    }
+        
+    public function addZoneName(): AddZoneNameTransaction {
+        return $this->add_zone_name ??= new AddZoneNameTransaction(
+            $this->db,
+            $this->config->add_zone_name,
+            $this->repository->zoneName(), 
         );
+    }
 
-        $this->set_primary_zone_name = new SetPrimaryZoneNameTransaction(
-            $db,
-            $config->set_primary_zone_name,
-            $repository->zone_name, 
+    public function setPrimaryZoneName(): SetPrimaryZoneNameTransaction {
+        return $this->set_primary_zone_name ??= new SetPrimaryZoneNameTransaction(
+            $this->db,
+            $this->config->set_primary_zone_name,
+            $this->repository->zoneName(), 
         );
+    }
 
-        $this->assign_user_role = new AssignUserRoleTransaction(
-            $db,
-            $config->assign_user_role,
-            $repository->user, 
-            $repository->user_processing_step, 
+    public function assignUserRole(): AssignUserRoleTransaction {
+        return $this->assign_user_role ??= new AssignUserRoleTransaction(
+            $this->db,
+            $this->config->assign_user_role,
+            $this->repository->user(), 
+            $this->repository->userProcessingStep(), 
         );
+    }
 
-        $this->dismiss_user_role = new DismissUserRoleTransaction(
-            $db,
-            $config->dismiss_user_role,
-            $repository->user, 
-            $repository->user_processing_step, 
+    public function dismissUserRole(): DismissUserRoleTransaction {
+        return $this->dismiss_user_role ??= new DismissUserRoleTransaction(
+            $this->db,
+            $this->config->dismiss_user_role,
+            $this->repository->user(), 
+            $this->repository->userProcessingStep(), 
         );
+    }
 
-        $this->add_user_name = new AddUserNameTransaction(
-            $db,
-            $config->add_area_name,
-            $repository->user,
-            $repository->user_name, 
-            $repository->user_processing_step
+    public function addUserName(): AddUserNameTransaction {
+        return $this->add_user_name ??= new AddUserNameTransaction(
+            $this->db,
+            $this->config->add_area_name,
+            $this->repository->user(),
+            $this->repository->userName(), 
+            $this->repository->userProcessingStep()
         );
+    }
 
-        $this->set_primary_user_name = new SetPrimaryUserNameTransaction(
-            $db,
-            $config->set_primary_zone_name,
-            $repository->user_name, 
-            $repository->user_processing_step
+    public function setPrimaryUserName(): SetPrimaryUserNameTransaction {
+        return $this->set_primary_user_name ??= new SetPrimaryUserNameTransaction(
+            $this->db,
+            $this->config->set_primary_zone_name,
+            $this->repository->userName(), 
+            $this->repository->userProcessingStep()
         );
+    }
 
-        $this->remove_user_name = new RemoveUserNameTransaction(
-            $db,
-            $config->remove_user_name,
-            $repository->user,
-            $repository->user_name, 
-            $repository->user_processing_step
+    public function removeUserName(): RemoveUserNameTransaction {
+        return $this->remove_user_name ??= new RemoveUserNameTransaction(
+            $this->db,
+            $this->config->remove_user_name,
+            $this->repository->user(),
+            $this->repository->userName(), 
+            $this->repository->userProcessingStep()
         );
+    }
 
-        $this->add_user_identity = new AddUserIdentityTransaction(
-            $db,
-            $config->add_user_identity,
-            $repository->user,
-            $repository->user_identity, 
-            $repository->user_processing_step
+    public function addUserIdentity(): AddUserIdentityTransaction {
+        return $this->add_user_identity ??= new AddUserIdentityTransaction(
+            $this->db,
+            $this->config->add_user_identity,
+            $this->repository->user(),
+            $this->repository->userIdentity(), 
+            $this->repository->userProcessingStep()
         );
+    }
 
-        $this->remove_user_identity = new RemoveUserIdentityTransaction(
-            $db,
-            $config->remove_user_identity,
-            $repository->user,
-            $repository->user_identity, 
-            $repository->user_processing_step
+    public function removeUserIdentity(): RemoveUserIdentityTransaction {
+        return $this->remove_user_identity ??= new RemoveUserIdentityTransaction(
+            $this->db,
+            $this->config->remove_user_identity,
+            $this->repository->user(),
+            $this->repository->userIdentity(), 
+            $this->repository->userProcessingStep()
+        );
+    }
+
+    public function populateRack(): PopulateRackTransaction {
+        return $this->populate_rack ??= new PopulateRackTransaction(
+            $this->db,
+            $this->config->populate_rack,
+            $this->repository->rack(),
+            $this->repository->shelf(),
+            $this->repository->rackProcessingStep()
         );
     }
 }

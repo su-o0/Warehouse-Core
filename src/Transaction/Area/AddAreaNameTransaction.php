@@ -43,9 +43,7 @@ final class AddAreaNameTransaction extends Transaction {
                 user_id: $user_id
             );
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

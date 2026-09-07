@@ -57,7 +57,7 @@ final class ListService {
         foreach($areas as $area) {
             $access = $this->area_access_repository->findByAreaIdAndUserId(
                 $area->id,
-                $this->authorization->user->id
+                $this->authorization->getUserId()
             );
             
             if ($access === null) {

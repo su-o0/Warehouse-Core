@@ -383,4 +383,23 @@ final class ShellFacade {
             ])
         );
     }
+
+    public function registerRack(
+    ): string {
+        return $this->output->render(
+            $this->api->registerRack()
+        );
+    }
+
+    public function populateRack(
+        int $rack_id,
+        int $count
+    ): string {
+        return $this->output->render(
+            $this->api->populateRack([
+                'id' => $rack_id,
+                'record_id' => $count
+            ])
+        );
+    }
 }

@@ -2,12 +2,11 @@
 namespace WarehouseCore\Transaction\Rack;
 
 use WarehouseCore\Contract\Transaction;
-use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Enum\RackProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Inventory\RackRepository;
-use WarehouseCore\Repository\Inventory\ShelfRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
 
 final class PopulateRackTransaction extends Transaction {
@@ -25,13 +24,11 @@ final class PopulateRackTransaction extends Transaction {
         int $rack_id,
         int $count,
         int $user_id,
-        RackStatusEnum $rack_status
     ): mixed{
         return $this->run(function () use (
             $rack_id,
             $count,
-            $user_id,
-            $rack_status
+            $user_id
         ) {
             $this->rack_processing_step_repository->add(
                 rack_id: $rack_id,
@@ -41,17 +38,15 @@ final class PopulateRackTransaction extends Transaction {
             for($i = 1; $i <= $count; $i++) {
                 $this->shelf_repository->add(
                     rack_id: $rack_id,
-                    rack_level_id: $i,
+                    shelf_level: $i,
                     user_id: $user_id
                 );
             }
             
-            if ($rack_status === RackStatusEnum::Registered) {
-                $this->rack_repository->updateStatus(
-                    id: $user_id,
-                    status: RackStatusEnum::Processing->value
-                );
-            }
+            $this->rack_repository->updateStatus(
+                id: $user_id,
+                status: RackStatusEnum::Processing->value
+            );
 
             return new ServiceResult(
                 success: true

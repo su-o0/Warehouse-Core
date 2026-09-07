@@ -39,9 +39,7 @@ final class SetPrimaryAreaNameTransaction extends Transaction {
                 true
             );
             
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

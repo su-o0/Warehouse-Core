@@ -34,7 +34,7 @@ final class ItemService {
 
         try {
             $item_id = $this->item_repository->add(
-                $this->authorization->user->id,
+                $this->authorization->getUserId(),
                 $physical_tag_id,
                 $owner_id,
                 $vehicle_id
@@ -61,7 +61,7 @@ final class ItemService {
                 $item_id,
                 ItemProcessingStage::Placement->value,
                 $metadata,
-                $this->authorization->user->id
+                $this->authorization->getUserId()
             );
         } catch (RepositoryException $e) {
             return new ServiceResult(

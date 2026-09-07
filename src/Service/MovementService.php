@@ -21,4 +21,7 @@ final class MovementService {
         private StockPlacementRepository $stock_placement_repository
     ) { }
 
+    public function moveRack() {
+        
+    }
 }

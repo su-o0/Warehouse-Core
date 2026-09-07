@@ -35,6 +35,7 @@ final class ErrorCode {
 
 
     public const AREA_NOT_FOUND                     = 'AREA_002';
+    public const STORAGE_SLOT_NOT_FOUND             = 'STORAGE_SLOT_002';
     public const ITEM_PROCESSING_STEP_NOT_FOUND     = 'ITEM_PROCESSING_STEP_002';
     public const PART_PROCESSING_STEP_NOT_FOUND     = 'PART_PROCESSING_STEP_002';
     public const USER_PROCESSING_STEP_NOT_FOUND     = 'USER_PROCESSING_STEP_002';

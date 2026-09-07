@@ -7,6 +7,7 @@ use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\Enum\AreaStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\Type\ProviderType;
+use WarehouseCore\Payload\VO\AreaNameVO;
 use WarehouseCore\Repository\Audit\ContainerMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\ContainerPlacementArchiveRepository;
 use WarehouseCore\Repository\Audit\ItemMovementArchiveRepository;
@@ -76,182 +77,26 @@ final class FindService {
         private StockPlacementArchiveRepository $stock_placement_archive
     ) { }
 
-    public function findAreaByStatus(
-        AreaStatusEnum $status
-    ): ServiceResult {
-        $result = $this->area->findByStatus(
-            $status->value
-        );
 
-        if($result === null) {
-            return new ServiceResult(
-                success: true, 
-                entity: null,
-                message: ErrorMessage::AREA_NOT_FOUND
-            );
+    public function findAreaNameByAreaId(
+        int $area_id
+    ): ServiceResult {
+        if (!$this->authorization->canFindAreaName()) {
+            throw ServiceException::FORBIDDEN();
         }
 
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
+        $area_name = $this->area_name->findByAreaId($area_id);
 
-    public function findContainerPlacement(
-        int $container_id
-    ): ServiceResult {
-        $result = $this->container_placement->getByContainerId(
-            $container_id
-        );
-
-        if($result === null) {
-            return new ServiceResult(
-                success: true, 
-                entity: null,
-                message: ErrorMessage::CONTAINER_PLACEMENT_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    public function findItemPlacement(
-        int $container_id
-    ): ServiceResult {
-        $result = $this->container_placement->getByContainerId(
-            $container_id
-        );
-
-        if($result === null) {
-            return new ServiceResult(
-                success: true, 
-                entity: null,
-                message: ErrorMessage::CONTAINER_PLACEMENT_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-
-    public function findItemByPhysicalTag(
-        int $physical_tag_id
-    ): ServiceResult {
-        $result = $this->item->findByPhysicalTagId(
-            $physical_tag_id
-        );
-
-        if($result === null) {
-            return new ServiceResult(
-                success: true, 
-                entity: null,
-                message: ErrorMessage::ITEM_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    public function findPartIdByArticle(
-        string $article
-    ): ServiceResult {
-         if (!$this->authorization->canFindArticle()) {
+        if ($area_name === null) {
             return new ServiceResult(
                 success: false,
-                message: ServiceException::FORBIDDEN()->getMessage()
-            );
-        }
-
-        $part = $this->part_repository->findByArticle($article);
-
-        if ($part !== null) {
-            return new ServiceResult(
-                success: true,
-                entity: $part->id
-            );
-        }
-        
-        $alias = $this->part_alias_repository->findByArticle($article);
-
-        if ($alias !== null) {
-            return new ServiceResult(
-                success: true,
-                entity: $alias->part_id
+                message: ErrorMessage::AREA_NAME_NOT_FOUND
             );
         }
 
         return new ServiceResult(
             success: true,
-            entity: null
+            entity: $area_name
         );
     }
-
-    public function findUserIdentity(
-        ProviderType $provider,
-        string $external_id
-    ): ServiceResult {
-        if(!$this->authorization->canFindUser()){
-            return new ServiceResult(
-                success: false,
-                message: ServiceException::FORBIDDEN()->getMessage()
-            );
-        }
-
-        $result = $this->user_identity_repository->findByProviderAndId(
-            $provider->value,
-            $external_id
-        );
-        
-        if($result === null) {
-            return new ServiceResult(
-                success: false,
-                entity: null
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-
-    public function getAllLocations(): array {
-        return $this->location_repository->getAll();
-    }
-
-    public function findUserByName(
-        string $name,
-    ): ServiceResult {
-        if(!$this->authorization->canFindUser()){
-            return new ServiceResult(
-                success: false,
-                message: ServiceException::FORBIDDEN()->getMessage()
-            );
-        }
-
-        $result = $this->user_repository->findByName($name);
-        
-        if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: DomainException::USER_NOT_FOUND()->getMessage()
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-    
 }

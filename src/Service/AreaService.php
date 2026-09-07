@@ -5,11 +5,15 @@ use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Repository\Topology\AreaRepository;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Entity\AreaEntity;
+use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Payload\Enum\AreaStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\VO\AreaNameVO;
 use WarehouseCore\Repository\Catalog\AreaNameRepository;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
 use WarehouseCore\Security\Authorization;
+use WarehouseCore\Security\Lifecycle;
 use WarehouseCore\Transaction\Area\AddAreaNameTransaction;
 use WarehouseCore\Transaction\Area\CreateAreaTransaction;
 use WarehouseCore\Transaction\Area\SetPrimaryAreaNameTransaction;
@@ -26,56 +30,6 @@ final class AreaService {
         private SetPrimaryAreaNameTransaction $set_primary_area_name_transaction
     ) { }
 
-    private function existsArea(
-        int $id
-    ): ServiceResult {
-        try { 
-            $result = $this->area_repository->getById($id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    private function existsAreaName(
-        int $record_id
-    ): ServiceResult {
-        try { 
-            $result = $this->area_name_repository->findByRecordId($record_id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NAME_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
     private function changeStatus(
         int $id,
         AreaStatusEnum $status
@@ -86,110 +40,87 @@ final class AreaService {
                 $status->value
             );
         }catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function addAreaName(
-        int $area_id,
+        AreaEntity $area,
         string $name
     ): ServiceResult {
-        if(!$this->authorization->canAddAreaName()) {
+        if (!$this->authorization->canAddAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $area = $result->entity;
-
-        if (!in_array(
-            $area->status,
-            [
-                AreaStatusEnum::Active,
-                AreaStatusEnum::Crowded
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canAddAreaName($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
             );
         }
 
         return $this->add_area_name_transaction->handle(
             $area->id,
             $name,
-            $this->authorization->user->id
+            $this->authorization->getUserId()
         );
     }
 
     public function setPrimaryAreaName(
-        int $area_id,
-        int $record_id,
+        AreaEntity $area,
+        AreaNameVO $area_name
     ): ServiceResult {
-        if(!$this->authorization->canSetPrimaryAreaName()) {
+        if (!$this->authorization->canSetPrimaryAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
-
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
+        
+        if (!Lifecycle::canSetPrimaryAreaName($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
         }
-
-        $area = $result->entity;
-        $result = $this->existsAreaName($record_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $area_name = $result->entity;
 
         if ($area->id != $area_name->area_id) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_NOT_FOUND
             );
         }
 
         if ($area_name->is_primary){
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NAME_ALREADY_PRIMARY
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_ALREADY_PRIMARY
             );
         }
 
         return $this->set_primary_area_name_transaction->handle(
-            $record_id,
+            $area_name->record_id,
             $area_name->area_id
         );
     }
 
     public function removeAreaName(
-        int $area_id
+        AreaEntity $area
     ): ServiceResult {
-        if(!$this->authorization->canRemoveAreaName()) {
+        if (!$this->authorization->canRemoveAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
+        
+        if (!Lifecycle::canRemoveAreaName($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
+        }
 
-        $area_name = $this->area_name_repository->findPrimaryByAreaId($area_id);
+        $area_name = $this->area_name_repository->findPrimaryByAreaId(
+            $area->id
+        );
 
         if ($area_name === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_NOT_FOUND
             );
         }   
 
@@ -199,104 +130,88 @@ final class AreaService {
                 is_primary: false
             );
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function grantAreaAccess(
-        int $area_id,
-        int $user_id
+        AreaEntity $area,
+        UserEntity $user
     ): ServiceResult {
-        if(!$this->authorization->canGrantAreaAccess()) {
+        if (!$this->authorization->canGrantAreaAccess()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
+        if (!Lifecycle::canGrantAreaAccess($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
         }
 
-        $area = $result->entity;
-
-        $area_access_value = $this->area_access_repository->findByAreaIdAndUserId(
+        $area_access = $this->area_access_repository->findByAreaIdAndUserId(
             area_id: $area->id,
-            user_id: $user_id
+            user_id: $user->id
         );
 
-        if ($area_access_value !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_ACCESS_ALREADY_EXISTS
+        if ($area_access !== null) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_ACCESS_ALREADY_EXISTS
             );
         }
 
         try {
             $this->area_access_repository->add(
                 area_id: $area->id,
-                user_id: $user_id,
-                created_by_user_id: $this->authorization->user->id
+                user_id: $user->id,
+                created_by_user_id: $this->authorization->getUserId()
             );
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
-        return new ServiceResult(
-            success: true
-        );
+
+        return ServiceResult::success();
     }
 
     public function revokeAreaAccess(
-        int $area_id,
-        int $user_id
+        AreaEntity $area,
+        UserEntity $user
     ): ServiceResult {
-        if(!$this->authorization->canRevokeAreaAccess()) {
+        if (!$this->authorization->canRevokeAreaAccess()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
+        if (!Lifecycle::canRevokeAreaAccess($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
         }
 
-        $area = $result->entity;
-
-        $area_access_value = $this->area_access_repository->findByAreaIdAndUserId(
+        $area_access = $this->area_access_repository->findByAreaIdAndUserId(
             area_id: $area->id,
-            user_id: $user_id
+            user_id: $user->id
         );
 
-        if ($area_access_value === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_ACCESS_NOT_FOUND
+        if ($area_access === null) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_ACCESS_NOT_FOUND
             );
         }
 
         try {
             $this->area_access_repository->delete(
-                area_id: $area_access_value->area_id,
-                user_id: $user_id
+                area_id: $area->id,
+                user_id: $user->id
             );
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
+            return ServiceResult::failure($e->getMessage());
         }
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function createArea(): ServiceResult {
@@ -304,41 +219,21 @@ final class AreaService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $this->create_area_transaction->handle(
-            $this->authorization->user->id
-        );
-
-        return new ServiceResult(
-            success: true
+        return $this->create_area_transaction->handle(
+            $this->authorization->getUserId()
         );
     }
 
     public function activateArea(
-        int $area_id
+        AreaEntity $area
     ): ServiceResult {
-        if(!$this->authorization->canActivateArea()) {
+        if (!$this->authorization->canActivateArea()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-        
-        $area = $result->entity;
-
-        if (!in_array(
-            $area->status,
-            [
-                AreaStatusEnum::Created,
-                AreaStatusEnum::Archived,
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canActivateArea($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
             );
         }
 
@@ -349,30 +244,15 @@ final class AreaService {
     }
 
     public function markAreaAsCrowded(
-        int $area_id
+        AreaEntity $area
     ): ServiceResult {
         if(!$this->authorization->canMarkAreaAsCrowded()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $area = $result->entity;
-
-        if (!in_array(
-            $area->status,
-            [
-                AreaStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canMarkAreaAsCrowded($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
             );
         }
 
@@ -383,32 +263,15 @@ final class AreaService {
     }
 
     public function archiveArea(
-        int $area_id
+        AreaEntity $area
     ): ServiceResult {
          if(!$this->authorization->canArchiveArea()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsArea($area_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $area = $result->entity;
-
-        if (!in_array(
-            $area->status,
-            [
-                AreaStatusEnum::Active,
-                AreaStatusEnum::Crowded
-
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canArchiveArea($area)) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
             );
         }
 

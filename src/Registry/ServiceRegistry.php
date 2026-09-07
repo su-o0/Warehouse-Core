@@ -37,12 +37,12 @@ final class ServiceRegistry {
         return new AreaService(
             $this->config->area,
             $authorization,
-            $this->repository->area,
-            $this->repository->area_name,
-            $this->repository->area_access,
-            $this->transaction->create_area,
-            $this->transaction->add_area_name,
-            $this->transaction->set_primary_area_name
+            $this->repository->area(),
+            $this->repository->areaName(),
+            $this->repository->areaAccess(),
+            $this->transaction->createArea(),
+            $this->transaction->addAreaName(),
+            $this->transaction->setPrimaryAreaName()
         );
     }
 
@@ -52,7 +52,7 @@ final class ServiceRegistry {
         return new ContainerService(
             $this->config->container,
             $authorization,
-            $this->repository->container
+            $this->repository->container()
         );
     }
 
@@ -62,8 +62,8 @@ final class ServiceRegistry {
         return new ItemService(
             $this->config->item,
             $authorization,
-            $this->repository->item,
-            $this->repository->item_processing_step
+            $this->repository->item(),
+            $this->repository->itemProcessingStep()
         );
     }
 
@@ -73,12 +73,12 @@ final class ServiceRegistry {
         return new MovementService(
             $this->config->movement,
             $authorization,
-            $this->repository->container,
-            $this->repository->container_placement,
-            $this->repository->item,
-            $this->repository->item_placement,
-            $this->repository->stock,
-            $this->repository->stock_placement
+            $this->repository->container(),
+            $this->repository->containerPlacement(),
+            $this->repository->item(),
+            $this->repository->itemPlacement(),
+            $this->repository->stock(),
+            $this->repository->stockPlacement()
         );
     }
 
@@ -88,8 +88,8 @@ final class ServiceRegistry {
         return new OwnerService(
             $this->config->owner,
             $authorization,
-            $this->repository->owner,
-            $this->repository->user
+            $this->repository->owner(),
+            $this->repository->user()
         );
     }
 
@@ -99,9 +99,9 @@ final class ServiceRegistry {
         return new PartService(
             $this->config->part,
             $authorization,
-            $this->repository->part,
-            $this->repository->part_number,
-            $this->repository->part_name
+            $this->repository->part(),
+            $this->repository->partNumber(),
+            $this->repository->partName()
         );
     }
 
@@ -111,10 +111,10 @@ final class ServiceRegistry {
         return new PhotoService(
             $this->config->photo,
             $authorization,
-            $this->repository->part_photo,
-            $this->repository->item_photo,
-            $this->repository->stock_photo,
-            $this->repository->vehicle_photo
+            $this->repository->partPhoto(),
+            $this->repository->itemPhoto(),
+            $this->repository->stockPhoto(),
+            $this->repository->vehiclePhoto()
         );
     }
 
@@ -124,7 +124,7 @@ final class ServiceRegistry {
         return new PhysicalTagService(
             $this->config->physical_tag,
             $authorization,
-            $this->repository->physical_tag
+            $this->repository->physicalTag()
         );
     }
 
@@ -134,9 +134,17 @@ final class ServiceRegistry {
         return new PlacementService(
             $this->config->placement,
             $authorization,
-            $this->repository->container_placement,
-            $this->repository->item_placement,
-            $this->repository->stock_placement
+            $this->repository->area(),
+            $this->repository->zone(),
+            $this->repository->rack(),
+            $this->repository->shelf(),
+            $this->repository->container(),
+            $this->repository->item(),
+            $this->repository->stock(),
+            $this->repository->rackPlacement(),
+            $this->repository->containerPlacement(),
+            $this->repository->itemPlacement(),
+            $this->repository->stockPlacement()
         );
     }
 
@@ -146,8 +154,11 @@ final class ServiceRegistry {
         return new RackService(
             $this->config->rack,
             $authorization,
-            $this->repository->rack,
-            $this->repository->rack_name
+            $this->repository->rack(),
+            $this->repository->rackName(),
+            $this->repository->rackPlacement(),
+            $this->repository->rackProcessingStep(),
+            $this->transaction->populateRack()
         );
     }
 
@@ -158,8 +169,8 @@ final class ServiceRegistry {
         return new SalesService(
             $this->config->sales,
             $authorization,
-            $this->repository->item_sales_archive,
-            $this->repository->stock_sales_archive
+            $this->repository->itemSalesArchive(),
+            $this->repository->stockSalesArchive()
         );
     }
 
@@ -169,7 +180,7 @@ final class ServiceRegistry {
         return new ShelfService(
             $this->config->sales,
             $authorization,
-            $this->repository->shelf,
+            $this->repository->shelf(),
         );
     }
 
@@ -179,8 +190,8 @@ final class ServiceRegistry {
         return new StockService(
             $this->config->stock,
             $authorization,
-            $this->repository->stock,
-            $this->repository->part
+            $this->repository->stock(),
+            $this->repository->part()
         );
     }
     
@@ -190,18 +201,18 @@ final class ServiceRegistry {
         return new UserService(
             $this->config->user,
             $authorization,
-            $this->repository->role,
-            $this->repository->user,
-            $this->repository->user_name,
-            $this->repository->user_processing_step,
-            $this->repository->user_identity,
-            $this->transaction->assign_user_role,
-            $this->transaction->dismiss_user_role,
-            $this->transaction->add_user_name,
-            $this->transaction->set_primary_user_name,
-            $this->transaction->remove_user_name,
-            $this->transaction->add_user_identity,
-            $this->transaction->remove_user_identity
+            $this->repository->role(),
+            $this->repository->user(),
+            $this->repository->userName(),
+            $this->repository->userProcessingStep(),
+            $this->repository->userIdentity(),
+            $this->transaction->assignUserRole(),
+            $this->transaction->dismissUserRole(),
+            $this->transaction->addUserName(),
+            $this->transaction->setPrimaryUserName(),
+            $this->transaction->removeUserName(),
+            $this->transaction->addUserIdentity(),
+            $this->transaction->removeUserIdentity()
         );
     }
      
@@ -211,7 +222,7 @@ final class ServiceRegistry {
         return new VehicleService(
             $this->config->vehicle,
             $authorization,
-            $this->repository->vehicle
+            $this->repository->vehicle()
         );
     }
 
@@ -230,11 +241,11 @@ final class ServiceRegistry {
         return new ZoneService(
             $this->config->zone,
             $authorization,
-            $this->repository->zone,
-            $this->repository->zone_name,
-            $this->transaction->create_zone,
-            $this->transaction->add_zone_name,
-            $this->transaction->set_primary_zone_name
+            $this->repository->zone(),
+            $this->repository->zoneName(),
+            $this->transaction->createZone(),
+            $this->transaction->addZoneName(),
+            $this->transaction->setPrimaryZoneName()
         );
     }
 
@@ -244,37 +255,37 @@ final class ServiceRegistry {
         return new FindService(
             $this->config->find,
             $authorization,
-            $this->repository->container_placement,
-            $this->repository->item_placement,
-            $this->repository->rack_placement,
-            $this->repository->stock_placement,
-            $this->repository->area,
-            $this->repository->zone,
-            $this->repository->item,
-            $this->repository->stock,
-            $this->repository->container,
-            $this->repository->item_processing_step,
-            $this->repository->part_processing_step,
-            $this->repository->user_identity,
-            $this->repository->user,
-            $this->repository->owner,
-            $this->repository->part_number,
-            $this->repository->part_name,
-            $this->repository->area_name,
-            $this->repository->rack_name,
-            $this->repository->zone_name,
-            $this->repository->owner,
-            $this->repository->physical_tag,
-            $this->repository->item_sales_archive,
-            $this->repository->stock_sales_archive,
-            $this->repository->container_movement_archive,
-            $this->repository->container_placement_archive,
-            $this->repository->item_movement_archive,
-            $this->repository->item_placement_archive,
-            $this->repository->rack_movement_archive,
-            $this->repository->rack_placement_archive,
-            $this->repository->stock_movement_archive,
-            $this->repository->stock_placement_archive
+            $this->repository->containerPlacement(),
+            $this->repository->itemPlacement(),
+            $this->repository->rackPlacement(),
+            $this->repository->stockPlacement(),
+            $this->repository->area(),
+            $this->repository->zone(),
+            $this->repository->item(),
+            $this->repository->stock(),
+            $this->repository->container(),
+            $this->repository->itemProcessingStep(),
+            $this->repository->partProcessingStep(),
+            $this->repository->userIdentity(),
+            $this->repository->user(),
+            $this->repository->owner(),
+            $this->repository->partNumber(),
+            $this->repository->partName(),
+            $this->repository->areaName(),
+            $this->repository->rackName(),
+            $this->repository->zoneName(),
+            $this->repository->owner(),
+            $this->repository->physicalTag(),
+            $this->repository->itemSalesArchive(),
+            $this->repository->stockSalesArchive(),
+            $this->repository->containerMovementArchive(),
+            $this->repository->containerPlacementArchive(),
+            $this->repository->itemMovementArchive(),
+            $this->repository->itemPlacementArchive(),
+            $this->repository->rackMovementArchive(),
+            $this->repository->rackPlacementArchive(),
+            $this->repository->stockMovementArchive(),
+            $this->repository->stockPlacementArchive()
         );
     }
 
@@ -284,20 +295,21 @@ final class ServiceRegistry {
         return new GetService(
             $this->config->get, 
             $authorization,
-            $this->repository->area,
-            $this->repository->container,
-            $this->repository->item,
-            $this->repository->owner,
-            $this->repository->part,
-            $this->repository->physical_tag,
-            $this->repository->rack,
-            $this->repository->shelf,  
-            $this->repository->stock,
-            $this->repository->stored_file,      
-            $this->repository->user,
-            $this->repository->zone,
-            $this->repository->role,
-            $this->repository->provider 
+            $this->repository->area(),
+            $this->repository->container(),
+            $this->repository->item(),
+            $this->repository->owner(),
+            $this->repository->part(),
+            $this->repository->physicalTag(),
+            $this->repository->rack(),
+            $this->repository->shelf(),  
+            $this->repository->storageSlot(),  
+            $this->repository->stock(),
+            $this->repository->storedFile(),      
+            $this->repository->user(),
+            $this->repository->zone(),
+            $this->repository->role(),
+            $this->repository->provider() 
         );
     }
 
@@ -307,16 +319,15 @@ final class ServiceRegistry {
         return new ListService(
             $this->config->list,
             $authorization,
-            $this->repository->area,
-            $this->repository->area_name,
-            $this->repository->area_access,
-            $this->repository->user,
-            $this->repository->user_name,
-            $this->repository->user_identity,
-            $this->repository->user_processing_step,
-            $this->repository->zone,
-            $this->repository->zone_name,
-            
+            $this->repository->area(),
+            $this->repository->areaName(),
+            $this->repository->areaAccess(),
+            $this->repository->user(),
+            $this->repository->userName(),
+            $this->repository->userIdentity(),
+            $this->repository->userProcessingStep(),
+            $this->repository->zone(),
+            $this->repository->zoneName(),
         );
     }
 }

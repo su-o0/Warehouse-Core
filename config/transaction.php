@@ -17,4 +17,8 @@ return [
     'AddUserIdentity' => 'add_user_identity',
     'RemoveUserIdentity' => 'remove_user_identity',
 
+    'PopulateRack' => 'populate_rack',
+    'AddRackName' => 'add_rack_name',
+    'SetPrimaryRackName' => 'set_primary_rack_name',
+    'RemoveRackName' => 'remove_rack_name',
 ];  

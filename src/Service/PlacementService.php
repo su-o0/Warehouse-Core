@@ -1,90 +1,183 @@
 <?php
 namespace WarehouseCore\Service;
 
+use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Enum\AreaStatusEnum;
+use WarehouseCore\Payload\Enum\RackStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Payload\Type\PlacementTarget;
+use WarehouseCore\Repository\Inventory\ContainerRepository;
+use WarehouseCore\Repository\Inventory\ItemRepository;
+use WarehouseCore\Repository\Inventory\RackRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
+use WarehouseCore\Repository\Inventory\StockRepository;
+use WarehouseCore\Repository\Topology\AreaRepository;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
+use WarehouseCore\Repository\Topology\RackPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
 
 final class PlacementService {
     public function __construct(
         public string $service_name,
         private Authorization $authorization,
+        private AreaRepository $area_repository, 
+        private ZoneRepository $zone_repository, 
+        private RackRepository $rack_repository, 
+        private ShelfRepository $shelf_repository, 
+        private ContainerRepository $container_repository,
+        private ItemRepository $item_repository,
+        private StockRepository $stock_repository,
+        private RackPlacementRepository $rack_placement_repository, 
         private ContainerPlacementRepository $container_placement_repository,
         private ItemPlacementRepository $item_placement_repository,
         private StockPlacementRepository $stock_placement_repository
     ) { }
 
-    public function placeContainer(
-        int $location_id,
-        int $container_id
+    private function existsArea(
+        int $id
     ): ServiceResult {
-        try{
-            $result = $this->container_placement_repository->add(
-                $location_id,
-                $container_id
+        try { 
+            $result = $this->area_repository->getById($id);
+        } catch(RepositoryException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
             );
-            return new ServiceResult(success: true, entity: $result);
-        } catch (RepositoryException $e) {
-            return new ServiceResult(success: false, message: $e->getMessage());
         }
+
+        if ($result === null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_NOT_FOUND
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: $result
+        );
     }
 
-    public function placeItemToContainer(
-        int $container_id,
-        int $item_id
+    private function existsZone(
+        int $id
     ): ServiceResult {
-        try{
-            $result = $this->item_placement_repository->addByContainerId(
-                $container_id,
-                $item_id
+        try { 
+            $result = $this->zone_repository->getById($id);
+        } catch(RepositoryException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
             );
-            return new ServiceResult(success: true, entity: $result);
-        } catch (RepositoryException $e) {
-            return new ServiceResult(success: false, message: $e->getMessage());
         }
+
+        if ($result === null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::ZONE_NOT_FOUND
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: $result
+        );
     }
 
-    public function placeItemToLocation(
-        int $location_id,
-        int $item_id
+    private function existsRack(
+        int $id
     ): ServiceResult {
-        try{
-            $result = $this->item_placement_repository->addByLocationId(
-                $location_id,
-                $item_id
+        try { 
+            $result = $this->rack_repository->getById($id);
+        } catch(RepositoryException $e) {
+            return new ServiceResult(
+                success: false,
+                message: $e->getMessage()
             );
-            return new ServiceResult(success: true, entity: $result);
-        } catch (RepositoryException $e) {
-            return new ServiceResult(success: false, message: $e->getMessage());
         }
+
+        if ($result === null) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::RACK_NOT_FOUND
+            );
+        }
+
+        return new ServiceResult(
+            success: true,
+            entity: $result
+        );
     }
 
-    public function placeStock(
-        int $stock_id,
-        int $location_id
+
+    public function placeRackToArea(
+        int $rack_id,
+        int $area_id,
     ) {
+        if (!$this->authorization->canPlaceRackToArea()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $result = $this->existsRack($rack_id);
+
+        if(!$result->success) {
+            return $result;
+        }
+
+        $rack = $result->entity;
+
+        $result = $this->existsArea($rack_id);
+
+        if(!$result->success) {
+            return $result;
+        }
+
+        $area = $result->entity;
+
+        if (!in_array(
+            $rack->status,
+            [
+                RackStatusEnum::Processing,
+                RackStatusEnum::Active
+            ],
+            true
+        )) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::RACK_INVALID_STATUS_TRANSITION
+            );
+        }
+
+        if (!in_array(
+            $area->status,
+            [
+                AreaStatusEnum::Active
+            ],
+            true
+        )) {
+            return new ServiceResult(
+                success: false,
+                message: ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+            );
+        }
+
+
+        
+
+
+
 
     }
 
-    public function removeContainer(
-        int $container_id
-    )  {
 
+    public function placeRackToZone() {
+        if (!$this->authorization->canPlaceRackToZone()) {
+            throw ServiceException::FORBIDDEN();
+        }
     }
 
-    public function removeItem(
-        int $item_id
-    )  {
 
-    }
-
-    public function removeStock(
-        int $stock_id
-    )  {
-
-    }
 }

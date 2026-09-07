@@ -437,7 +437,7 @@ final class UserService {
             $record_id,
             $name,
             $user->status,
-            $this->authorization->user->id
+            $this->authorization->getUserId()
         );
     }   
 
