@@ -25,7 +25,6 @@ final class TransactionRegistry {
     private ?AddAreaNameTransaction $add_area_name = null;
     private ?SetPrimaryAreaNameTransaction $set_primary_area_name = null;
 
-    private ?CreateZoneTransaction $create_zone = null;
     private ?AddZoneNameTransaction $add_zone_name = null;
     private ?SetPrimaryZoneNameTransaction $set_primary_zone_name = null;
 
@@ -73,15 +72,6 @@ final class TransactionRegistry {
         );
     }
 
-    public function createZone(): CreateZoneTransaction {
-        return $this->create_zone ??= new CreateZoneTransaction(
-            $this->db,
-            $this->config->add_zone_name,
-            $this->repository->area(),
-            $this->repository->zone()
-        );
-    }
-        
     public function addZoneName(): AddZoneNameTransaction {
         return $this->add_zone_name ??= new AddZoneNameTransaction(
             $this->db,
