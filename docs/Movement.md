@@ -1,6 +1,7 @@
 ### Movement Model
 
 # Rack Movement
+*From -> To*
 ```
 Area -> Area
 Area -> Zone
@@ -78,6 +79,7 @@ Area
 ---
 
 # Container Movement
+*From -> To*
 ```
 Zone -> Zone 
 Zone -> Shelf
@@ -172,7 +174,8 @@ Area
     └── Shelf
 ```
 
-# Item/Stock Movement
+# Stock Movement
+*From -> To*
 ```
 Zone -> Zone 
 Zone -> Shelf
@@ -192,7 +195,6 @@ Before:
 
 Area
 ├── Zone
-│   ├── Item
 │   └── Stock
 │
 └── Zone
@@ -203,7 +205,6 @@ Area
 ├── Zone
 │
 └── Zone
-    ├── Item
     └── Stock
 ```
 ---
@@ -214,7 +215,6 @@ Before:
 
 Area
 ├── Zone
-│   ├── Item
 │   └── Stock
 │
 └── Rack
@@ -227,7 +227,6 @@ Area
 │
 └── Rack
     └── Shelf
-        ├── Item
         └── Stock
 ```
 ---
@@ -238,7 +237,6 @@ Before:
 
 Area
 ├── Zone
-│   ├── Item
 │   └── Stock
 │
 └── Rack
@@ -252,7 +250,6 @@ Area
 └── Rack
     └── Shelf
         └── Container
-            ├── Item
             └── Stock
 ```
 ---
@@ -264,7 +261,6 @@ Before:
 Area
 ├── Rack
 │   └── Shelf
-│       ├── Item
 │       └── Stock
 │
 └── Rack
@@ -278,7 +274,6 @@ Area
 │
 └── Rack
     └── Shelf
-        ├── Item
         └── Stock
 ```
 ---
@@ -290,7 +285,6 @@ Before:
 Area
 ├── Rack
 │   └── Shelf
-│       ├── Item
 │       └── Stock
 │
 └── Zone
@@ -302,7 +296,6 @@ Area
 │   └── Shelf
 │
 └── Zone
-    ├── Item
     └── Stock
 ```
 ---
@@ -314,7 +307,6 @@ Before:
 Area
 ├── Rack
 │   └── Shelf
-│       ├── Item
 │       └── Stock
 │
 └── Zone
@@ -327,7 +319,6 @@ Area
 │
 └── Zone
     └── Container
-        ├── Item
         └── Stock
 ```
 ---
@@ -340,7 +331,6 @@ Area
 ├── Rack
 │   └── Shelf
 │       └── Container
-│           ├── Item
 │           └── Stock
 │
 └── Rack
@@ -353,13 +343,10 @@ Area
 ├── Rack
 │   └── Shelf
 │       └── Container
-│           ├── Item
-│           └── Stock
 │
 └── Rack
     └── Shelf
         └── Container
-            ├── Item
             └── Stock
 ```
 ---
@@ -372,12 +359,9 @@ Area
 ├── Rack
 │   └── Shelf
 │       └── Container
-│           ├── Item
 │           └── Stock
 │
-└── Rack
-    └── Shelf
-        └── Container
+└── Zone
 
 After:
 
@@ -385,11 +369,8 @@ Area
 ├── Rack
 │   └── Shelf
 │       └── Container
-│           ├── Item
-│           └── Stock
 │
 └── Zone
-    ├── Item
     └── Stock
 ```
 ---
@@ -402,13 +383,402 @@ Area
 └── Rack
     └── Shelf
         └── Container
-            ├── Item
             └── Stock
 After:
 
 Area
 └── Rack
     └── Shelf
-        ├── Item
+        ├── Container
         └── Stock
+```
+
+# Item Movement
+*From -> To*
+```
+Zone -> Zone 
+Zone -> Shelf
+Zone -> StorageSlot
+Zone -> Container
+Shelf -> Shelf
+Shelf -> Zone
+Shelf -> StorageSlot
+Shelf -> Container
+Container -> Container
+Container -> Zone
+Container -> StorageSlot
+Container -> Shelf
+StorageSlot -> StorageSlot
+StorageSlot -> Zone
+StorageSlot -> Shelf
+StorageSlot -> Container
+```
+---
+
+*From Zone To Zone*
+```
+Before:
+
+Area
+├── Zone
+│   └── Item
+│
+└── Zone
+
+After:
+
+Area
+├── Zone
+│
+└── Zone
+    └── Item
+```
+---
+
+*From Zone To Shelf*
+```
+Before:
+
+Area
+├── Zone
+│   └── Item
+│
+└── Rack
+    └── Shelf
+
+After:
+
+Area
+├── Zone
+│
+└── Rack
+    └── Shelf
+        └── Item
+```
+---
+
+*From Zone To StorageSlot*
+```
+Before:
+
+Area
+├── Zone
+│   └── Item
+│
+└── Rack
+    └── StorageSlot
+
+After:
+
+Area
+├── Zone
+│
+└── Rack
+    └── StorageSlot
+        └── Item
+```
+---
+
+*From Zone To Container*
+```
+Before:
+
+Area
+├── Zone
+│   └── Item
+│
+└── Rack
+    └── Shelf
+
+After:
+
+Area
+├── Zone
+│
+└── Rack
+    └── Shelf
+        └── Container
+            └── Item
+```
+---
+
+*From Shelf To Shelf*
+```
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Item
+│
+└── Rack
+    └── Shelf
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│
+└── Rack
+    └── Shelf
+        └── Item
+```
+---
+
+*From Shelf To Zone*
+```
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Item
+│
+└── Zone
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│
+└── Zone
+    └── Item
+```
+---
+
+*From Shelf To StorageSlot*
+```
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Item
+│
+└── Rack
+    └── StorageSlot
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│
+└── Rack
+    └── StorageSlot
+        └── Item
+```
+---
+
+*From Shelf To Container*
+```
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Item
+│
+└── Zone
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│
+└── Zone
+    └── Container
+        └── Item
+```
+---
+
+*From Container To Container*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│           └── Item
+│
+└── Rack
+    └── Shelf
+        └── Container
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│
+└── Rack
+    └── Shelf
+        └── Container
+            └── Item
+```
+---
+
+*From Container To Zone*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│           └── Item
+│
+└── Zone
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│
+└── Zone
+    └── Item
+```
+---
+
+*From Container To StorageSlot*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│           └── Item
+│
+└── Rack
+    └── StorageSlot
+
+After:
+
+Area
+├── Rack
+│   └── Shelf
+│       └── Container
+│
+└── Rack
+    └── StorageSlot
+        └── Item
+```
+---
+
+*From Container To Shelf*
+``` 
+Before:
+
+Area
+└── Rack
+    └── Shelf
+        └── Container
+            └── Item
+After:
+
+Area
+└── Rack
+    └── Shelf
+        ├── Container
+        └── Item
+```
+
+*From StorageSlot To StorageSlot*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── StorageSlot
+│       └── Item
+│
+└── Rack
+    └── StorageSlot
+
+After:
+
+Area
+├── Rack
+│   └── StorageSlot
+│
+└── Rack
+    └── StorageSlot
+        └── Item
+```
+
+*From StorageSlot To Zone*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── StorageSlot
+│       └── Item
+│
+└── Zone
+
+After:
+
+Area
+├── Rack
+│   └── StorageSlot
+│
+└── Zone
+    └── Item
+```
+
+*From StorageSlot To Shelf*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── StorageSlot
+│       └── Item
+│
+└── Rack
+    └── Shelf
+
+After:
+
+Area
+├── Rack
+│   └── StorageSlot
+│
+└── Rack
+    └── Shelf
+        └── Item
+```
+
+*From StorageSlot To Container*
+``` 
+Before:
+
+Area
+├── Rack
+│   └── StorageSlot
+│       └── Item
+│
+└── Rack
+    └── Shelf
+        └── Container
+
+After:
+
+Area
+├── Rack
+│   └── StorageSlot
+│
+└── Rack
+    └── Shelf
+        └── Container
+            └── Item
 ```

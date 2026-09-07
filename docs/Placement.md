@@ -19,17 +19,15 @@ Area
 │   ├── Item
 │   └── Stock
 │
-├── Zone
-│   └── Rack
-│
 └── Rack
+    └── StorageSlot
+        └── Item
 ```
 
 
 # Rack Placement
 ```
-Rack ->  Area
-         /\
+Rack -> Area
 Rack -> Zone
 ```
 ---
@@ -45,7 +43,6 @@ Area
 # Container Placement
 ```
 Container -> Zone
-
 Container -> Shelf
 ```
 ---
@@ -59,30 +56,59 @@ Area
     └── Container
 ```
 
-# Item/Stock Placement
+# Stock Placement
 ```
-Item/Stock -> Zone
-                /\
-              Rack
-                /\
-Item/Stock -> Shelf
-                /\
-Item/Stock -> Container
+Stock -> Zone
+Stock -> Shelf
+Stock -> Container
 ```
 ---
 ```
 Area
-└── Zone
-    ├── Rack
-    │   └── Shelf
-    │       ├── Container
-    │       │   ├── Item
-    │       │   └── Stock
-    │       │
-    │       ├── Item
-    │       └── Stock
-    │
-    └── Container
-        ├── Item
-        └── Stock
+├── Zone
+│    ├── Rack
+│    │   └── Shelf
+│    │       ├── Container
+│    │       │   ├── Item
+│    │       │   └── Stock
+│    │       │
+│    │       ├── Item
+│    │       └── Stock
+│    │
+│    └── Container
+│        ├── Item
+│        └── Stock
+│
+└── Rack
+    └── StorageSlot
+        └── Item
+```
+
+# Item Placement
+```
+Item -> Zone
+Item -> StorageSlot
+Item -> Shelf
+Item -> Container
+```
+---
+```
+Area
+├── Zone
+│    ├── Rack
+│    │   └── Shelf
+│    │       ├── Container
+│    │       │   ├── Item
+│    │       │   └── Stock
+│    │       │
+│    │       ├── Item
+│    │       └── Stock
+│    │
+│    └── Container
+│        ├── Item
+│        └── Stock
+│
+└── Rack
+    └── StorageSlot
+        └── Item
 ```
