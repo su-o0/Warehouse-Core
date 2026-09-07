@@ -8,7 +8,7 @@ use WarehouseCore\Payload\Map\PartProcessingStepStageMapper;
 final class PartProcessingStepVO {
     use ConfigHelper;
     public function __construct(
-        public int $record__id,
+        public int $record_id,
         public int $part_id,
         public PartProcessingStepStageEnum $stage,
         public string $created_at
@@ -18,7 +18,7 @@ final class PartProcessingStepVO {
         array $raw
     ): self {
         return new self(
-            record__id: self::requiredInt($raw, 'record__id'),
+            record_id: self::requiredInt($raw, 'record_id'),
             part_id: self::requiredInt($raw, 'part_id'),
             stage: PartProcessingStepStageMapper::match(
                 self::requiredString($raw, 'stage')

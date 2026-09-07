@@ -20,6 +20,7 @@ final class ErrorMessage {
     public const VEHICLE_ALREADY_EXISTS = 'Car already exists';
 
     public const VEHICLE_PHOTO_ALREADY_EXISTS = 'Car photo already exists';
+    public const RACK_PROCESSING_STEP_ALREADY_EXISTS = 'Rack processing step already exists';
     public const USER_PROCESSING_STEP_ALREADY_EXISTS = 'User processing step already exists';
     
     public const USER_ROLE_ALREADY_SET = 'User role is already set';
@@ -47,6 +48,7 @@ final class ErrorMessage {
     public const AREA_NOT_FOUND = 'Area not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
     public const PART_PROCESSING_STEP_NOT_FOUND  = 'Part processing step not found';
+    public const RACK_PROCESSING_STEP_NOT_FOUND  = 'Rack processing step not found';
     public const USER_PROCESSING_STEP_NOT_FOUND  = 'User processing step not found';
     public const STOCK_PHOTO_NOT_FOUND = 'Stock photo not found';
     public const VEHICLE_PHOTO_NOT_FOUND = 'Vehicle photo not found';
@@ -87,6 +89,8 @@ final class ErrorMessage {
     public const TELEMETRY_INVALID_TYPE = 'Telemetry type must be ...';
     public const ROLE_NAME_INVALID_TYPE = 'Role name must be ...';
     public const STOCK_STATUS_INVALID_TYPE  = "Stock status must be ...";
+    public const SHELF_STATUS_INVALID_TYPE  = "Shelf status must be ...";
+    public const STORAGE_SLOT_STATUS_INVALID_TYPE  = "Storage slot status must be ...";
     public const PLACEMENT_TARGET_INVALID_TYPE = 'Placement target must be ...';
     public const PLACEMENT_ENTITY_INVALID_TYPE = 'Placement entity must be ...';
     public const CONTAINER_TYPE_INVALID_TYPE   = 'Container type must be ...';
@@ -112,6 +116,7 @@ final class ErrorMessage {
 
     public const AREA_INVALID_STATUS_TRANSITION = 'Area invalid status transition'; //007
     public const ZONE_INVALID_STATUS_TRANSITION = 'Zone invalid status transition'; //007
+    public const RACK_INVALID_STATUS_TRANSITION = 'Rack invalid status transition'; //007
     public const USER_INVALID_STATUS_TRANSITION = 'User invalid status transition'; //007
 
     public const USER_PROCESSING_NOT_COMPLETED = 'User invalid status transition'; //007

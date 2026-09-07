@@ -25,6 +25,7 @@ Entity
 ├── Rack
 ├── Shelf
 ├── Stock
+├── StorageSlot
 ├── StoredFile
 ├── User
 ├── Vehicle
@@ -51,9 +52,11 @@ Type Enums
 ├── PhysicalTag Status
 ├── Provider Name
 ├── Rack Status
+├── Rack Type
 ├── RackProcessingStep Stage
 ├── Role Name
 ├── Shelf Status
+├── StorageSlot Status
 ├── Stock Status
 ├── User Status
 ├── UserProcessingStep Stage 

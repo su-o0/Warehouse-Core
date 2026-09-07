@@ -263,20 +263,13 @@ PhysicalTag
 
 Rack 
 ├── Id
-├── Status
-│   ├── Registered
-│   ├── Active
-│   ├── Crowded
-│   └── Archived
+├── Type
+│   ├── Shelf
+│   └── StorageSlot
 │
-├── CreatedByUserId
-└── CreatedAt
-
-Shelf
-├── Id
-├── RackId
 ├── Status
 │   ├── Registered
+│   ├── Processing
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
@@ -408,8 +401,7 @@ ItemProcessingStep
 ├── Stage
 │   ├── Identified
 │   ├── Capture
-│   ├── Inspection
-│   └── Placement
+│   └── Inspection
 │
 └── CreatedAt
 
@@ -426,8 +418,7 @@ RackProcessingStep
 ├── RecordId
 ├── RackId
 ├── Stage
-│   ├── Populate
-│   └── Placement
+│   └── Populate
 │
 └── CreatedAt
 
@@ -524,12 +515,38 @@ RackPlacement
 ├── RackId
 └── CreatedAt   
 
+Shelf
+├── Id
+├── RackId
+├── ShelfLevel
+├── Status
+│   ├── Registered
+│   ├── Active
+│   ├── Crowded
+│   └── Archived
+│
+├── CreatedByUserId
+└── CreatedAt
+
 StockPlacement
 ├── RecordId
 ├── ZoneId
 ├── ShelfId
 ├── ContainerId
 ├── StockId
+└── CreatedAt
+
+StorageSlot
+├── Id
+├── RackId
+├── SlotPosition
+├── Status
+│   ├── Registered
+│   ├── Active
+│   ├── Crowded
+│   └── Archived
+│
+├── CreatedByUserId
 └── CreatedAt
 
 Zone

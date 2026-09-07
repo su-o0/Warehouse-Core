@@ -22,7 +22,7 @@ final readonly class RackEntity {
             status: RackStatusMapper::match(
                 self::requiredString($raw, 'status')
             ),
-            created_by_user_id: self::requiredString($raw, 'created_by_user_id'),
+            created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),
             created_at: self::requiredString($raw, 'created_at')
         );
     }

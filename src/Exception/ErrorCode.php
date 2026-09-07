@@ -69,6 +69,8 @@ final class ErrorCode {
     public const TELEMETRY_ACTION_INVALID_TYPE          = 'TELEMETRY_ACTION_003';
     public const TELEMETRY_INVALID_TYPE                 = 'TELEMETRY_003';
     public const STOCK_STATUS_INVALID_TYPE              = 'STOCK_STATUS_003';
+    public const SHELF_STATUS_INVALID_TYPE              = 'STORAGE_SLOT_STATUS_003';
+    public const STORAGE_SLOT_STATUS_INVALID_TYPE              = 'SHELF_STATUS_003';
     public const ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'ITEM_PROCESSING_STEP_STAGE_003';
     public const PART_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'PART_PROCESSING_STEP_STAGE_003';
     public const RACK_PROCESSING_STEP_STAGE_INVALID_TYPE   = 'RACK_PROCESSING_STEP_STAGE_003';
@@ -112,6 +114,8 @@ final class ErrorCode {
     public const DB_RELATION_ERROR   = 'DB_RELATION_004'; //1452 1451 
     public const DB_DUPLICATE_ERROR  = 'DB_DUPLICATE_004';
     public const DB_UNKNOWN_ERROR    = 'DB_UNKNOWN_004';
+    public const DB_VALIDATION_ERROR    = 'DB_UNKNOWN_007';
+    public const DB_IMMUTABLE_FIELD_ERROR    = 'DB_IMMUTABLE_007';
 
     public const PERMISSION_DENIED  = 'PERMISSION_006';
 }

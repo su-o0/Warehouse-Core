@@ -10,7 +10,8 @@ use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
 use WarehouseCore\Repository\Inventory\RackRepository;
-use WarehouseCore\Repository\Inventory\ShelfRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
+use WarehouseCore\Repository\Topology\StorageSlotRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;
 use WarehouseCore\Repository\Inventory\StockRepository;
@@ -62,6 +63,7 @@ final readonly class RepositoryRegistry {
     public StockPlacementRepository $stock_placement;
     public RackRepository $rack;
     public ShelfRepository $shelf;
+    public StorageSlotRepository $storage_slot;
     public ContainerRepository $container;
     public ItemRepository $item;
     public StockRepository $stock;
@@ -148,6 +150,11 @@ final readonly class RepositoryRegistry {
         $this->shelf = new ShelfRepository(
             $db, 
             $config->shelf
+        );
+
+        $this->storage_slot = new StorageSlotRepository(
+            $db, 
+            $config->storage_slot
         );
 
         $this->container = new ContainerRepository(

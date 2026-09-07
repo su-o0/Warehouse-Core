@@ -14,7 +14,7 @@ final class ShelfStatusMapper implements Mapper{
             'Active'    => ShelfStatusEnum::Active,
             'Crowded'   => ShelfStatusEnum::Crowded,
             'Archived'  => ShelfStatusEnum::Archived,
-            default     => throw DomainException::STOCK_STATUS_INVALID_TYPE()
+            default     => throw DomainException::SHELF_STATUS_INVALID_TYPE()
         };
     }
     

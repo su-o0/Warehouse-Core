@@ -18,7 +18,25 @@ final class RepositoryException extends RuntimeException {
             $previous
         );
     }
+   public static function DB_IMMUTABLE_FIELD_ERROR(?Throwable $previous = null): self
+{
+    return new self(
+        ErrorCode::DB_IMMUTABLE_FIELD_ERROR,
+        'Field is immutable and cannot be modified',
+        0,
+        $previous
+    );
+}
 
+public static function DB_VALIDATION_ERROR(?Throwable $previous = null): self
+{
+    return new self(
+        ErrorCode::DB_VALIDATION_ERROR,
+        'Database validation constraint violated',
+        0,
+        $previous
+    );
+}
     public static function DB_CONNECTION_ERROR(?Throwable $previous = null): self
     {
         return new self(

@@ -1,26 +1,52 @@
 <?php
-namespace WarehouseCore\Repository\Inventory;
+namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Payload\Map\PdoExceptionMapper;
+use WarehouseCore\Payload\Entity\ShelfEntity;
 
-use WarehouseCore\Payload\Entity\RackEntity;
-
-final class RackRepository extends Repository {
+final class ShelfRepository extends Repository {
     public function hydrate(
         array $raw
-    ): RackEntity {
-        return RackEntity::fromRaw($raw);
+    ): ShelfEntity {
+        return ShelfEntity::fromRaw($raw);
     }
 
     public function getById(
         int $id
-    ): ?RackEntity {
+    ): ?ShelfEntity {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE id = :id",
             [
                 ':id' => $id
+            ]
+        );
+    }
+
+    public function findByRackId(
+        int $rack_id
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id",
+            [
+                ':rack_id' => $rack_id
+            ]
+        );
+    }
+
+    public function findByRackIdAndShelfLevel(
+        int $rack_id,
+        int $shelf_level
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id 
+            AND shelf_level = :shelf_level",
+            [
+                ':rack_id' => $rack_id,
+                ':shelf_level' => $shelf_level
             ]
         );
     }
@@ -37,7 +63,7 @@ final class RackRepository extends Repository {
         );
     }
 
-    public function findByCreater(
+    public function findByCreatedUserId(
         int $user_id
     ): array {
         return $this->entities(
@@ -50,23 +76,27 @@ final class RackRepository extends Repository {
     }
 
     public function add(
-        string $type,
+        int $rack_id,
+        int $shelf_level,
         int $user_id
-    ): void {
+    ): int {
         try {
-            $this->insert(
+            return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    type,
+                    rack_id,
+                    shelf_level,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :type
+                    :rack_id,
+                    :shelf_level,
                     :user_id
                 )",
                 [
-                    ':type' => $type,
+                    ':rack_id' => $rack_id,
+                    ':shelf_level' => $shelf_level,
                     ':user_id' => $user_id
                 ]
             );

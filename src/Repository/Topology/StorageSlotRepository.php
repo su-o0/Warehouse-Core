@@ -1,20 +1,21 @@
 <?php
-namespace WarehouseCore\Repository\Inventory;
+namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Payload\Map\PdoExceptionMapper;
 use WarehouseCore\Payload\Entity\ShelfEntity;
+use WarehouseCore\Payload\Entity\StorageSlotEntity;
 
-final class ShelfRepository extends Repository {
+final class StorageSlotRepository extends Repository {
     public function hydrate(
         array $raw
-    ): ShelfEntity {
-        return ShelfEntity::fromRaw($raw);
+    ): StorageSlotEntity {
+        return StorageSlotEntity::fromRaw($raw);
     }
 
     public function getById(
         int $id
-    ): ?ShelfEntity {
+    ): ?StorageSlotEntity {
         return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE id = :id",
@@ -32,6 +33,21 @@ final class ShelfRepository extends Repository {
             WHERE rack_id = :rack_id",
             [
                 ':rack_id' => $rack_id
+            ]
+        );
+    }
+
+    public function findByRackIdAndSlotPosition(
+        int $rack_id,
+        int $slot_position
+    ): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id 
+            AND slot_position = :slot_position",
+            [
+                ':rack_id' => $rack_id,
+                ':slot_position' => $slot_position
             ]
         );
     }
@@ -61,43 +77,28 @@ final class ShelfRepository extends Repository {
     }
 
     public function add(
-        int $user_id,
-        int $rack_id
+        int $rack_id,
+        int $slot_position,
+        int $user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
                     rack_id,
+                    slot_position,
                     created_by_user_id
                 )
                 VALUES
                 (
                     :rack_id,
+                    :slot_position,
                     :user_id
                 )",
                 [
                     ':rack_id' => $rack_id,
+                    ':slot_position' => $slot_position,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateRackId(
-        int $id,
-        int $rack_id
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET rack_id = :rack_id
-                WHERE id = :id",
-                [
-                    ':id' => $id,
-                    ':rack_id' => $rack_id
                 ]
             );
         } catch (\PDOException $e) {

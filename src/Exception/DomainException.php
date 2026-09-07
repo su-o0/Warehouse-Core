@@ -375,6 +375,21 @@ final class DomainException extends ExceptionContract {
             ErrorMessage::STOCK_STATUS_INVALID_TYPE
         );
     }
+
+    public static function SHELF_STATUS_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::SHELF_STATUS_INVALID_TYPE,
+            ErrorMessage::SHELF_STATUS_INVALID_TYPE
+        );
+    }
+
+    public static function STORAGE_SLOT_STATUS_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::STORAGE_SLOT_STATUS_INVALID_TYPE,
+            ErrorMessage::STORAGE_SLOT_STATUS_INVALID_TYPE
+        );
+    }
+
     
     public static function STOCK_PHOTO_NOT_FOUND(): self {
         return new self(

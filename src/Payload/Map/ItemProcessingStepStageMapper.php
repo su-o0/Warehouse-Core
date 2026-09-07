@@ -13,7 +13,6 @@ final class ItemProcessingStepStageMapper implements Mapper {
             'Identified'      => ItemProcessingStepStageEnum::Identified,
             'Photo'         => ItemProcessingStepStageEnum::Photo,
             'Inspection'    => ItemProcessingStepStageEnum::Inspection,
-            'Placement'     => ItemProcessingStepStageEnum::Placement,
             default         => throw DomainException::ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE()
         };
     }
@@ -25,4 +24,3 @@ final class ItemProcessingStepStageMapper implements Mapper {
        return self::match($raw[$field]);
     }
 }
-    

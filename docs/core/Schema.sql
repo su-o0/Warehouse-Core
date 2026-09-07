@@ -124,23 +124,48 @@ CREATE TABLE owners (
 -- =========================
 CREATE TABLE racks (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,status ENUM('Registered','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
+    ,type ENUM('Shelf','StorageSlot') NOT NULL
+    ,status ENUM('Registered','Processing','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
+-- =========================
+-- TOPOLOGY / STRUCTURE
+-- Shelf/StorageSlot: fixed subdivisions of a Rack, no independent Placement
+-- =========================
+
 CREATE TABLE shelfs (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,rack_id BIGINT NOT NULL
+    ,shelf_level TINYINT UNSIGNED NOT NULL
     ,status ENUM('Registered','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (rack_id) REFERENCES racks(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    ,UNIQUE (rack_id, shelf_level)
 );
+
+CREATE TABLE storage_slots (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,rack_id BIGINT NOT NULL
+    ,slot_position TINYINT UNSIGNED NOT NULL
+    ,status ENUM('Registered','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (rack_id) REFERENCES racks(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    ,UNIQUE (rack_id, slot_position)
+);
+
+-- =========================
+-- INVENTORY (continued)
+-- =========================
 
 CREATE TABLE containers (
     id BIGINT PRIMARY KEY
@@ -294,7 +319,7 @@ CREATE TABLE user_names (
 CREATE TABLE item_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,item_id BIGINT NOT NULL
-    ,stage ENUM('Identified','Capture','Inspection','Placement') NOT NULL
+    ,stage ENUM('Identified','Capture','Inspection') NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (item_id) REFERENCES items(id)
@@ -312,7 +337,7 @@ CREATE TABLE part_processing_steps (
 CREATE TABLE rack_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,rack_id BIGINT NOT NULL
-    ,stage ENUM('Populate','Placement') NOT NULL
+    ,stage ENUM('Populate') NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (rack_id) REFERENCES racks(id)
@@ -332,7 +357,7 @@ CREATE TABLE user_processing_steps (
 -- Each placement table enforces the XOR invariant:
 -- every physical object has exactly one immediate owner of its position.
 -- RackPlacement / ContainerPlacement: binary XOR (2 candidate owners).
--- ItemPlacement / StockPlacement: triple XOR (3 candidate owners).
+-- ItemPlacement / StockPlacement: triple XOR (3f candidate owners).
 -- =========================
 
 CREATE TABLE rack_placements (
@@ -373,18 +398,24 @@ CREATE TABLE item_placements (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,zone_id BIGINT NULL
     ,shelf_id BIGINT NULL
+    ,storage_slot_id BIGINT NULL
     ,container_id BIGINT NULL
     ,item_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (shelf_id) REFERENCES shelfs(id)
+    ,FOREIGN KEY (storage_slot_id) REFERENCES storage_slots(id)
     ,FOREIGN KEY (container_id) REFERENCES containers(id)
     ,FOREIGN KEY (item_id) REFERENCES items(id)
 
     ,CONSTRAINT chk_item_placement_target_xor
         CHECK (
-            (zone_id IS NOT NULL) + (shelf_id IS NOT NULL) + (container_id IS NOT NULL) = 1
+            (zone_id IS NOT NULL) 
+            + (shelf_id IS NOT NULL) 
+            + (storage_slot_id IS NOT NULL) 
+            + (container_id IS NOT NULL) 
+            = 1
         )
 
     ,UNIQUE KEY uq_item_placement_item (item_id)
@@ -612,6 +643,7 @@ CREATE TABLE item_placement_archive (
     item_id BIGINT NOT NULL
     ,to_zone_id BIGINT NULL
     ,to_shelf_id BIGINT NULL
+    ,to_storage_slot_id BIGINT NULL
     ,to_container_id BIGINT NULL
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -619,6 +651,7 @@ CREATE TABLE item_placement_archive (
     ,FOREIGN KEY (item_id) REFERENCES items(id)
     ,FOREIGN KEY (to_zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (to_shelf_id) REFERENCES shelfs(id)
+    ,FOREIGN KEY (to_storage_slot_id) REFERENCES storage_slots(id)
     ,FOREIGN KEY (to_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
@@ -685,9 +718,11 @@ CREATE TABLE item_movement_archive (
     item_id BIGINT NOT NULL
     ,from_zone_id BIGINT NULL
     ,from_shelf_id BIGINT NULL
+    ,from_storage_slot_id BIGINT NULL
     ,from_container_id BIGINT NULL
     ,to_zone_id BIGINT NULL
     ,to_shelf_id BIGINT NULL
+    ,to_storage_slot_id BIGINT NULL
     ,to_container_id BIGINT NULL
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -726,6 +761,30 @@ CREATE TABLE stock_movement_archive (
 
     ,INDEX idx_stock_movement_archive_stock (stock_id)
 );
+
+DELIMITER $$
+CREATE TRIGGER trg_containers_type_immutable
+BEFORE UPDATE ON containers
+FOR EACH ROW
+BEGIN
+    IF OLD.type != NEW.type THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'container.type is immutable once set';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_racks_type_immutable
+BEFORE UPDATE ON racks
+FOR EACH ROW
+BEGIN
+    IF OLD.type != NEW.type THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'rack.type is immutable once set';
+    END IF;
+END$$
+DELIMITER ;
 
 INSERT INTO roles (name)
 VALUES ('Root'), ('Admin'), ('Worker'), ('Salesman'), ('Viewer');

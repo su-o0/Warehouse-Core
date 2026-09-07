@@ -2,16 +2,16 @@
 namespace WarehouseCore\Payload\Entity;
 
 use WarehouseCore\Config\ConfigHelper;
-use WarehouseCore\Payload\Enum\ShelfStatusEnum;
-use WarehouseCore\Payload\Map\ShelfStatusMapper;
+use WarehouseCore\Payload\Enum\StorageSlotStatusEnum;
+use WarehouseCore\Payload\Map\StorageSlotStatusMapper;
 
-final readonly class ShelfEntity {
+final readonly class StorageSlotEntity {
     use ConfigHelper;
     public function __construct(
         public int $id,
         public int $rack_id,
-        public int $shelf_level,
-        public ShelfStatusEnum $status,
+        public int $slot_position,
+        public StorageSlotStatusEnum $status,
         public int $created_by_user_id,
         public string $created_at
     ) { }
@@ -22,8 +22,8 @@ final readonly class ShelfEntity {
         return new self(
             id: self::required($raw, 'id'),
             rack_id: self::requiredInt($raw, 'rack_id'),
-            shelf_level: self::requiredInt($raw, 'shelf_level'),
-            status: ShelfStatusMapper::match(
+            slot_position: self::requiredInt($raw, 'slot_position'),
+            status: StorageSlotStatusMapper::match(
                 self::requiredString($raw, 'status')
             ),
             created_by_user_id: self::requiredInt($raw, 'created_by_user_id'),

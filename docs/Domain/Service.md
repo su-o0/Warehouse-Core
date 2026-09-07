@@ -7,6 +7,13 @@ Service
 │   ├── Item
 │   └── Stock
 │
+├── UserService
+│   ├── Role
+│   ├── User
+│   ├── UserName
+│   ├── UserProcessingStep
+│   └── UserIdentity
+│
 ├── PlacementService
 │   ├── ContainerPlacement
 │   ├── ItemPlacement
@@ -34,6 +41,7 @@ Service
 │   └── VehicleVideo
 │
 ├── AreaService
+│   ├── Area
 │   ├── AreaName
 │   └── AreaAccess
 │
@@ -48,6 +56,7 @@ Service
 ├── VehicleService
 │
 ├── ZoneService
+│   ├── Zone
 │   └── ZoneName
 │
 ├── OwnerService

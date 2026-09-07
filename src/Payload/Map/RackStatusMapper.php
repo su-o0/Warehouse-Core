@@ -10,11 +10,12 @@ final class RackStatusMapper implements Mapper {
         string $field
     ): RackStatusEnum {
         return match($field){
-            'Registered'   => RackStatusEnum::Registered,
-            'Active'    => RackStatusEnum::Active,
-            'Crowded'   => RackStatusEnum::Crowded,
-            'Archived'  => RackStatusEnum::Archived,
-            default     => throw DomainException::RACK_STATUS_INVALID_TYPE()
+            'Registered'    => RackStatusEnum::Registered,
+            'Processing'    => RackStatusEnum::Processing,
+            'Active'        => RackStatusEnum::Active,
+            'Crowded'       => RackStatusEnum::Crowded,
+            'Archived'      => RackStatusEnum::Archived,
+            default         => throw DomainException::RACK_STATUS_INVALID_TYPE()
         };
     }
 

@@ -11,7 +11,6 @@ final class RackProcessingStepStageMapper implements Mapper {
     ) : RackProcessingStepStageEnum {
         return match ($field) {
             'Populate'      => RackProcessingStepStageEnum::Populate,
-            'Placement'     => RackProcessingStepStageEnum::Placement,
             default         => throw DomainException::RACK_PROCESSING_STEP_STAGE_INVALID_TYPE()
         };
     }
