@@ -49,7 +49,9 @@ final class ShellFacade {
             )
         );
 
-        return $this->output->render(new ServiceResult(success: true));
+        return $this->output->render(
+            ServiceResult::success()
+        );
     }
 
     public function isAuthenticated(): bool {

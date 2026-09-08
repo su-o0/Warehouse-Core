@@ -25,9 +25,8 @@ final class ApiHandlerRegistry {
         try {
             return $api->handle($request);
         } catch (ValidationException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         } catch (\Throwable $e) {
             var_dump([
@@ -38,9 +37,8 @@ final class ApiHandlerRegistry {
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::SERVICE_UNAVAILABLE
+            return ServiceResult::failure(
+                ErrorMessage::SERVICE_UNAVAILABLE
             );
         }
     }

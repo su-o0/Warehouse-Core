@@ -6,15 +6,13 @@ use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\DTO\EntityNamesDTO;
 use WarehouseCore\Payload\DTO\StructureDTO;
-use WarehouseCore\Payload\DTO\StructureNamesDTO;
 use WarehouseCore\Payload\DTO\UserDTO;
 use WarehouseCore\Payload\DTO\UserIdentityDTO;
-use WarehouseCore\Payload\DTO\UserStageDTO;
-use WarehouseCore\Payload\Enum\ProviderNameEnum;
-use WarehouseCore\Payload\Enum\UserProcessingStepStageEnum;
+use WarehouseCore\Payload\Entity\AreaEntity;
+use WarehouseCore\Payload\Entity\UserEntity;
+use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Hydrate\UserStageHydrator;
 use WarehouseCore\Payload\Result\ListEntityNamesResult;
-use WarehouseCore\Payload\Result\ListStructureNamesResult;
 use WarehouseCore\Payload\Result\ListStructureResult;
 use WarehouseCore\Payload\Result\ListUserIdentitiesResult;
 use WarehouseCore\Payload\Result\ListUserResult;
@@ -87,22 +85,15 @@ final class ListService {
     }
 
     public function listZoneByArea(
-        int $area_id
+        AreaEntity $area
     ): ApiResult {
-        if(!$this->authorization->canListZone()) {
+        if(!$this->authorization->canListZoneByArea()) {
             throw ServiceException::FORBIDDEN();
         }
         
-        $area = $this->area_repository->getById($area_id);
-
-        if ($area === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NOT_FOUND
-            );
-        }
-
-        $zones = $this->zone_repository->findByAreaId($area->id);
+        $zones = $this->zone_repository->findByAreaId(
+            $area->id
+        );
 
         $result = [];
         foreach($zones as $zone) {
@@ -129,26 +120,18 @@ final class ListService {
     }
 
     public function listAreaNames(
-        int $area_id
+        AreaEntity $area
     ): ApiResult {
         if(!$this->authorization->canListAreaNames()) {
             throw ServiceException::FORBIDDEN();
         }
         
-        $area = $this->area_repository->getById($area_id);
-
-        if ($area === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NOT_FOUND
-            );
-        }
-
-        $area_names = $this->area_name_repository->findByAreaId($area->id);
+        $area_names = $this->area_name_repository->findByAreaId(
+            $area->id
+        );
 
         $result = [];
         foreach($area_names as $area_name) {
-
             array_push($result, 
                 new EntityNamesDTO(
                     record_id: $area_name->record_id,
@@ -167,22 +150,15 @@ final class ListService {
     }
 
     public function listZoneNames(
-        int $zone_id
+        ZoneEntity $zone
     ): ApiResult {
         if(!$this->authorization->canListZoneNames()) {
             throw ServiceException::FORBIDDEN();
         }
         
-        $zone = $this->zone_repository->getById($zone_id);
-
-        if ($zone === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NOT_FOUND
-            );
-        }
-
-        $zone_names = $this->zone_name_repository->findByZoneId($zone->id);
+        $zone_names = $this->zone_name_repository->findByZoneId(
+            $zone->id
+        );
 
         $result = [];
         foreach($zone_names as $zone_name) {
@@ -243,22 +219,16 @@ final class ListService {
     }
 
     public function listUserIdentities(
-        int $user_id
+        UserEntity $user
     ): ApiResult {
         if(!$this->authorization->canListUserIdentities()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $user = $this->user_repository->getById($user_id);
+        $identities = $this->user_identity_repository->findByUserId(
+            $user->id
+        );
 
-        if ($user === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NOT_FOUND
-            );
-        }
-
-        $identities = $this->user_identity_repository->findByUserId($user->id);
         if (count($identities) == 0) {
             return new ServiceResult(
                 success: false,
@@ -286,22 +256,15 @@ final class ListService {
 
 
     public function listUserNames(
-        int $user_id
+        UserEntity $user
     ): ApiResult {
         if(!$this->authorization->canListUserNames()) {
             throw ServiceException::FORBIDDEN();
         }
-        
-        $user = $this->user_repository->getById($user_id);
 
-        if ($user === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NOT_FOUND
-            );
-        }
-
-        $user_names = $this->user_name_repository->findByUserId($user->id);
+        $user_names = $this->user_name_repository->findByUserId(
+            $user->id
+        );
 
         $result = [];
         foreach($user_names as $user_name) {

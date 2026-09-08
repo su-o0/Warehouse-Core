@@ -112,6 +112,8 @@ final class ApiRegistry {
     public function setPrimaryAreaName(): SetPrimaryAreaNameApi {
         return new SetPrimaryAreaNameApi(
             $this->config->set_primary_area_name,
+            $this->context->getService(),
+            $this->context->findService(),
             $this->context->areaService()
         );
     }
@@ -119,182 +121,194 @@ final class ApiRegistry {
     public function addZoneName(): AddZoneNameApi {
         return new AddZoneNameApi(
             $this->config->set_primary_area_name,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->zoneService()
         );
     }
 
     public function setPrimaryZoneName(): SetPrimaryZoneNameApi {
         return new SetPrimaryZoneNameApi(
             $this->config->set_primary_zone_name,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->findService(),
+            $this->context->zoneService()
         );
     }
 
     public function removeZoneName(): RemoveZoneNameApi {
         return new RemoveZoneNameApi(
             $this->config->remove_zone_name,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->zoneService()
         );
     }
 
     public function createZone(): CreateZoneApi {
         return new CreateZoneApi(
             $this->config->create_zone,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->zoneService()
         );
     }
     
     public function activateZone(): ActivateZoneApi {
         return new ActivateZoneApi(
             $this->config->activate_zone,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->zoneService()
         );
     }
     
     public function archiveZone(): ArchiveZoneApi {
         return new ArchiveZoneApi(
             $this->config->archive_zone,
-            $this->context->zone_service
+            $this->context->zoneService()
         );
     }
         
     public function markZoneAsCrowded(): MarkZoneAsCrowdedApi {
         return new MarkZoneAsCrowdedApi(
             $this->config->mark_zone_as_crowded,
-            $this->context->zone_service
+            $this->context->getService(),
+            $this->context->zoneService()
         );
     }
 
     public function listArea(): ListAreaApi {
         return new ListAreaApi(
             $this->config->list_area,
-            $this->context->list_service,
+            $this->context->listService(),
         );
     }
 
     public function listUser(): ListUserApi {
         return new ListUserApi(
             $this->config->list_user,
-            $this->context->list_service,
+            $this->context->listService(),
         );
     }
 
     public function listAreaNames(): ListAreaNamesApi {
         return new ListAreaNamesApi(
             $this->config->list_area_names,
-            $this->context->list_service,
+            $this->context->getService(),
+            $this->context->listService(),
         );
     }
 
     public function listZoneByArea(): ListZoneByAreaApi {
         return new ListZoneByAreaApi(
             $this->config->list_zone_by_area,
-            $this->context->list_service,
+            $this->context->getService(),
+            $this->context->listService(),
         );
     }
 
     public function listZoneNames(): ListZoneNamesApi {
         return new ListZoneNamesApi(
             $this->config->list_zone_names,
-            $this->context->list_service,
+            $this->context->getService(),
+            $this->context->listService(),
         );
     }
 
     public function createUser(): CreateUserApi {
         return new CreateUserApi(
             $this->config->create_user,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function assignUserRole(): AssignUserRoleApi {
         return new AssignUserRoleApi(
             $this->config->assign_user_role,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function dismissUserRole(): DismissUserRoleApi {
         return new DismissUserRoleApi(
             $this->config->dismiss_user_role,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function addUserName(): AddUserNameApi {
         return new AddUserNameApi(
             $this->config->add_user_name,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function setPrimaryUserName(): SetPrimaryUserNameApi {
         return new SetPrimaryUserNameApi(
             $this->config->set_primary_user_name,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function removeUserName(): RemoveUserNameApi {
         return new RemoveUserNameApi(
             $this->config->remove_user_name,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function addUserIdentity(): AddUserIdentityApi {
         return new AddUserIdentityApi(
             $this->config->add_user_identity,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
     
     public function removeUserIdentity(): RemoveUserIdentityApi {
         return new RemoveUserIdentityApi(
             $this->config->remove_user_identity,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function listUserIdentities(): ListUserIdentitiesApi {
         return new ListUserIdentitiesApi(
             $this->config->list_user_identities,
-            $this->context->list_service
+            $this->context->getService(),
+            $this->context->listService()
         );
     }
 
     public function listUserNames(): ListUserNamesApi {
         return new ListUserNamesApi(
             $this->config->list_user_names,
-            $this->context->list_service
+            $this->context->getService(),
+            $this->context->listService()
         );
     }
 
     public function activateUser(): ActivateUserApi {
         return new ActivateUserApi(
             $this->config->activate_user,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function archiveUser(): ArchiveUserApi {
         return new ArchiveUserApi(
             $this->config->archive_user,
-            $this->context->user_service
+            $this->context->userService()
         );
     }
 
     public function registerRack(): RegisterRackApi {
         return new RegisterRackApi(
             $this->config->register_rack,
-            $this->context->rack_service
+            $this->context->rackService()
         );
     }
 
     public function populateRack(): PopulateRackApi {
         return new PopulateRackApi(
             $this->config->populate_rack,
-            $this->context->rack_service
+            $this->context->rackService()
         );
     }
 }

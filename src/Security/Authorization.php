@@ -9,12 +9,22 @@ use WarehouseCore\Payload\DTO\SessionDTO;
 final readonly class Authorization
 {
     private const OPERATIONS = [
-        'find'   => [
+        'list'      => [
+            'area'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'user'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'userIdentities'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'zoneByArea'        => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'areaNames'         => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'zoneNames'         => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'userNames'         => [RoleNameEnum::Root, RoleNameEnum::Admin],
+
+        ],
+        'find'      => [
             'areaName'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'zoneName'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
             'rackName'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
         ],
-        'get'   => [
+        'get'       => [
             'area'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'storageSlot'       => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
             'item'              => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
@@ -31,7 +41,7 @@ final readonly class Authorization
             'role'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'provider'          => [RoleNameEnum::Root],
         ],
-        'area'  => [
+        'area'      => [
             'create'            => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin],
@@ -42,7 +52,19 @@ final readonly class Authorization
             'grantAccess'       => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'revokeAccess'      => [RoleNameEnum::Root, RoleNameEnum::Admin]
         ],
-        'zone'  => [
+        'user'      => [
+            'create'            => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'assignRole'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'dismissRole'       => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'addIdentity'       => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'removeIdentity'    => [RoleNameEnum::Root, RoleNameEnum::Admin]
+        ],
+        'zone'      => [
             'create'            => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
@@ -51,7 +73,7 @@ final readonly class Authorization
             'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
         ],
-        'rack'  => [
+        'rack'      => [
             'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'populate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
@@ -106,16 +128,6 @@ final readonly class Authorization
         );
     }
 
-    // Get
-    public function canGetStorageSlot(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            true
-        );
-    }
-
     public function canRevokeAreaAccess(): bool
     {
         return in_array(
@@ -161,11 +173,66 @@ final readonly class Authorization
         );
     }
 
+    // List
+    public function canListArea(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['area'],
+            true
+        );
+    }
+
+    public function canListZoneByArea(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['zoneByArea'],
+            true
+        );
+    }
+
+    public function canListAreaNames(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['areaNames'],
+            true
+        );
+    }
+
+    public function canListUserIdentities(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['userIdentities'],
+            true
+        );
+    }
+
+    public function canListUser(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['user'],
+            true
+        );
+    }
+
+    public function canListZoneNames(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['list']['zoneNames'],
+            true
+        );
+    }
+
     public function canListUserNames(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['list']['userNames'],
             true
         );
     }
@@ -223,92 +290,22 @@ final readonly class Authorization
         );
     }
 
-    public function canListUserIdentities(): bool
+    // User
+
+    public function canCreateUser(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['user']['create'],
             true
         );
     }
-
-    public function canListUser(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canRemoveUserIdentity(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canAddUserIdentity(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canRemoveUserName(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canSetPrimaryUserName(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canAddUserName(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canDismissUserRole(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canAssignUserRole(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
+    
     public function canActivateUser(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['user']['activate'],
             true
         );
     }
@@ -317,38 +314,84 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['user']['archive'],
             true
         );
     }
 
-    public function canListZoneNames(): bool
+    public function canAddUserName(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['user']['addName'],
             true
         );
     }
 
-
-    public function canListAreaNames(): bool
+    public function canSetPrimaryUserName(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['user']['setPrimaryName'],
             true
         );
     }
 
-    public function canListZone(): bool
+    public function canRemoveUserName(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            self::OPERATIONS['user']['removeName'],
             true
         );
     }
+
+    public function canAssignUserRole(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['user']['assignRole'],
+            true
+        );
+    }
+
+    public function canDismissUserRole(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['user']['dismissRole'],
+            true
+        );
+    }
+
+    public function canAddUserIdentity(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['user']['addIdentity'],
+            true
+        );
+    }
+    
+    public function canRemoveUserIdentity(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['user']['removeIdentity'],
+            true
+        );
+    }
+
+    // Zone
+    public function canCreateZone(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['zone']['create'],
+            true
+        );
+    }
+
 
     public function canArchiveZone(): bool
     {
@@ -373,15 +416,6 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['zone']['activate'],
-            true
-        );
-    }
-
-    public function canCreateZone(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
             true
         );
     }
@@ -427,15 +461,6 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['area']['setPrimaryName'],
-            true
-        );
-    }
-
-    public function canListArea(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
             true
         );
     }
@@ -494,20 +519,22 @@ final readonly class Authorization
         );
     }
 
+    // Get
+
     public function canGetArea(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            self::OPERATIONS['get']['area'],
             true
         );
     }
 
-    public function canGetContainer(): bool
+    public function canGetStorageSlot(): bool
     {
         return in_array(
             $this->role,
-            self::OPERATIONS['get']['container'],
+            self::OPERATIONS['get']['storageSlot'],
             true
         );
     }
@@ -517,6 +544,15 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['get']['item'],
+            true
+        );
+    }
+
+    public function canGetContainer(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['get']['container'],
             true
         );
     }
@@ -621,15 +657,6 @@ final readonly class Authorization
     }
 
     public function canCreatePhysicalTag(): bool
-    {
-        return in_array(
-            $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
-            true
-        );
-    }
-
-    public function canCreateUser(): bool
     {
         return in_array(
             $this->role,
