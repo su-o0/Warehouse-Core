@@ -2,7 +2,6 @@
 namespace WarehouseCore\Transaction\Area;
 
 use WarehouseCore\Contract\Transaction;
-use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
 use WarehouseCore\Repository\Identity\UserRepository;

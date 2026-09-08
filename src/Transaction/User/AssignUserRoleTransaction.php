@@ -2,7 +2,6 @@
 namespace WarehouseCore\Transaction\User;
 
 use WarehouseCore\Contract\Transaction;
-use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Enum\RoleNameEnum;
 use WarehouseCore\Payload\Enum\UserProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\UserStatusEnum;
@@ -47,9 +46,7 @@ final class AssignUserRoleTransaction extends Transaction {
                 );
             }
         
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

@@ -36,13 +36,13 @@ final class RemoveUserNameTransaction extends Transaction {
 
             if($old_primary_name !== null) {
                 $this->user_name_repository->updatePrimary(
-                    $old_primary_name->record_id,
-                    false
+                    record_id: $old_primary_name->record_id,
+                    is_primary: false
                 );
             }
 
             $this->user_processing_step_repository->delete(
-                $record_id
+                record_id: $record_id
             );
 
             if($user_status == UserStatusEnum::Active) {
@@ -52,9 +52,7 @@ final class RemoveUserNameTransaction extends Transaction {
                 );
             }
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

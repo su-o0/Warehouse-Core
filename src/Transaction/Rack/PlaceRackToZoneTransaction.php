@@ -2,7 +2,6 @@
 namespace WarehouseCore\Transaction\Rack;
 
 use WarehouseCore\Contract\Transaction;
-use WarehouseCore\Payload\Enum\RackProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Audit\RackPlacementArchiveRepository;
@@ -31,13 +30,7 @@ final class PlaceRackToZoneTransaction extends Transaction {
             $rack_status
         ) {
             
-            if ($rack_status === RackStatusEnum::Registered) {
-                $this->rack_repository->updateStatus(
-                    id: $user_id,
-                    status: RackStatusEnum::Processing->value
-                );
-            }
-
+           
             return new ServiceResult(
                 success: true
             );

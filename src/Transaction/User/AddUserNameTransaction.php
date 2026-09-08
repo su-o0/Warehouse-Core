@@ -41,8 +41,8 @@ final class AddUserNameTransaction extends Transaction {
 
             if($old_primary_name !== null) {
                 $this->user_name_repository->updatePrimary(
-                    $old_primary_name->record_id,
-                    false
+                    record_id: $old_primary_name->record_id,
+                    is_primary: false
                 );
             }
 
@@ -55,8 +55,8 @@ final class AddUserNameTransaction extends Transaction {
 
             if ($user_status === UserStatusEnum::Created) {
                 $this->user_repository->updateStatus(
-                    $user_id,
-                    UserStatusEnum::Processing->value
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
             }
 
@@ -67,9 +67,7 @@ final class AddUserNameTransaction extends Transaction {
                 );
             } 
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

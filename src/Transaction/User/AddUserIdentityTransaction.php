@@ -56,9 +56,7 @@ final class AddUserIdentityTransaction extends Transaction {
                 );
             }
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

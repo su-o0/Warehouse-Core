@@ -40,14 +40,12 @@ final class DismissUserRoleTransaction extends Transaction {
             
             if ($user_status === UserStatusEnum::Active) {
                 $this->user_repository->updateStatus(
-                    $user_id,
-                    UserStatusEnum::Processing->value
+                    id: $user_id,
+                    status: UserStatusEnum::Processing->value
                 );
             }
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

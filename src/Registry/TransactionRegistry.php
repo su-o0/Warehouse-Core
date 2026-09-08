@@ -8,7 +8,9 @@ use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Area\CreateAreaTransaction;
 use WarehouseCore\Transaction\Zone\CreateZoneTransaction;
 use WarehouseCore\Transaction\Area\SetPrimaryAreaNameTransaction;
+use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
 use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
+use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
 use WarehouseCore\Transaction\User\AddUserNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
@@ -37,6 +39,8 @@ final class TransactionRegistry {
     private ?RemoveUserIdentityTransaction $remove_user_identity = null;
 
     private ?PopulateRackTransaction $populate_rack = null;
+    private ?AddRackNameTransaction $add_rack_name = null;
+    private ?SetPrimaryRackNameTransaction $set_primary_rack_name = null;
 
     public function __construct(
         private TransactionConfig $config,
@@ -161,7 +165,24 @@ final class TransactionRegistry {
             $this->config->populate_rack,
             $this->repository->rack(),
             $this->repository->shelf(),
+            $this->repository->storageSlot(),
             $this->repository->rackProcessingStep()
+        );
+    }
+
+    public function addRackName(): AddRackNameTransaction {
+        return $this->add_rack_name ??= new AddRackNameTransaction(
+            $this->db,
+            $this->config->add_rack_name,
+            $this->repository->rackName()
+        );
+    }
+
+    public function setPrimaryRackName(): SetPrimaryRackNameTransaction {
+        return $this->set_primary_rack_name ??= new SetPrimaryRackNameTransaction(
+            $this->db,
+            $this->config->set_primary_rack_name,
+            $this->repository->rackName()
         );
     }
 }

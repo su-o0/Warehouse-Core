@@ -2,12 +2,11 @@
 namespace WarehouseCore\Transaction\Rack;
 
 use WarehouseCore\Contract\Transaction;
-use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Payload\Enum\RackProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Inventory\RackRepository;
-use WarehouseCore\Repository\Inventory\ShelfRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
 
 final class PlaceRackToAreaTransaction extends Transaction {
@@ -41,7 +40,7 @@ final class PlaceRackToAreaTransaction extends Transaction {
             for($i = 1; $i <= $count; $i++) {
                 $this->shelf_repository->add(
                     rack_id: $rack_id,
-                    rack_level_id: $i,
+                    shelf_level: $i,
                     user_id: $user_id
                 );
             }

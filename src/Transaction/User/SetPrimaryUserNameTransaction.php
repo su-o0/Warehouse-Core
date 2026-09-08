@@ -35,14 +35,14 @@ final class SetPrimaryUserNameTransaction extends Transaction {
 
             if($old_primary_name !== null) {
                 $this->user_name_repository->updatePrimary(
-                    $old_primary_name->record_id,
-                    false
+                    record_id: $old_primary_name->record_id,
+                    is_primary: false
                 );
             }
 
             $this->user_name_repository->updatePrimary(
-                $user_name_record_id,
-                true
+                record_id: $user_name_record_id,
+                is_primary: true
             );
 
             if ($create_processing_step) {
@@ -52,9 +52,7 @@ final class SetPrimaryUserNameTransaction extends Transaction {
                 );
             }
            
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

@@ -33,7 +33,7 @@ final class RemoveUserIdentityTransaction extends Transaction {
             $change_status
         ) {
             $this->user_identity_repository->delete(
-                $identity_record_id
+                record_id: $identity_record_id
             );
 
             if($change_status) {
@@ -44,14 +44,12 @@ final class RemoveUserIdentityTransaction extends Transaction {
                 
                 if($identified_record_id) {
                     $this->user_processing_step_repository->delete(
-                        $identified_record_id
+                        record_id: $identified_record_id
                     );
                 }
             }
 
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }

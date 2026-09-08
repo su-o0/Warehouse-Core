@@ -24,24 +24,22 @@ final class SetPrimaryZoneNameTransaction extends Transaction {
             $zone_id
         ) {
             $old_primary_name = $this->zone_name_repository->findPrimaryByZoneId(
-                $zone_id
+                zone_id: $zone_id
             );
 
             if($old_primary_name !== null) {
                 $this->zone_name_repository->updatePrimary(
-                    $old_primary_name->record_id,
-                    false
+                    record_id: $old_primary_name->record_id,
+                    is_primary: false
                 );
             }
 
             $this->zone_name_repository->updatePrimary(
-                $record_id,
-                true
+                record_id: $record_id,
+                is_primary: true
             );
   
-            return new ServiceResult(
-                success: true
-            );
+            return ServiceResult::success();
         });
     }
 }
