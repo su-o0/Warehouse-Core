@@ -26,6 +26,7 @@ use WarehouseCore\Api\Identity\User\AssignUserRoleApi;
 use WarehouseCore\Api\Identity\User\CreateUserApi;
 use WarehouseCore\Api\Identity\User\DismissUserRoleApi;
 use WarehouseCore\Api\Identity\User\RemoveUserIdentityApi;
+use WarehouseCore\Api\Inventory\Rack\ActivateRackApi;
 use WarehouseCore\Api\Inventory\Rack\PopulateRackApi;
 use WarehouseCore\Api\Inventory\Rack\RegisterRackApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
@@ -222,6 +223,7 @@ final class ApiRegistry {
     public function assignUserRole(): AssignUserRoleApi {
         return new AssignUserRoleApi(
             $this->config->assign_user_role,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -229,6 +231,7 @@ final class ApiRegistry {
     public function dismissUserRole(): DismissUserRoleApi {
         return new DismissUserRoleApi(
             $this->config->dismiss_user_role,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -236,6 +239,7 @@ final class ApiRegistry {
     public function addUserName(): AddUserNameApi {
         return new AddUserNameApi(
             $this->config->add_user_name,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -243,6 +247,8 @@ final class ApiRegistry {
     public function setPrimaryUserName(): SetPrimaryUserNameApi {
         return new SetPrimaryUserNameApi(
             $this->config->set_primary_user_name,
+            $this->context->getService(),
+            $this->context->findService(),
             $this->context->userService()
         );
     }
@@ -250,6 +256,7 @@ final class ApiRegistry {
     public function removeUserName(): RemoveUserNameApi {
         return new RemoveUserNameApi(
             $this->config->remove_user_name,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -257,6 +264,7 @@ final class ApiRegistry {
     public function addUserIdentity(): AddUserIdentityApi {
         return new AddUserIdentityApi(
             $this->config->add_user_identity,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -264,6 +272,7 @@ final class ApiRegistry {
     public function removeUserIdentity(): RemoveUserIdentityApi {
         return new RemoveUserIdentityApi(
             $this->config->remove_user_identity,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -294,6 +303,7 @@ final class ApiRegistry {
     public function archiveUser(): ArchiveUserApi {
         return new ArchiveUserApi(
             $this->config->archive_user,
+            $this->context->getService(),
             $this->context->userService()
         );
     }
@@ -308,6 +318,15 @@ final class ApiRegistry {
     public function populateRack(): PopulateRackApi {
         return new PopulateRackApi(
             $this->config->populate_rack,
+            $this->context->getService(),
+            $this->context->rackService()
+        );
+    }
+    
+    public function activateRack(): ActivateRackApi {
+        return new ActivateRackApi(
+            $this->config->activate_rack,
+            $this->context->getService(),
             $this->context->rackService()
         );
     }

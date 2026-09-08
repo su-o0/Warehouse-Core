@@ -387,9 +387,12 @@ final class ShellFacade {
     }
 
     public function registerRack(
+        string $rack_type
     ): string {
         return $this->output->render(
-            $this->api->registerRack()
+            $this->api->registerRack([
+                'value' => $rack_type
+            ])
         );
     }
 
@@ -401,6 +404,16 @@ final class ShellFacade {
             $this->api->populateRack([
                 'id' => $rack_id,
                 'record_id' => $count
+            ])
+        );
+    }
+
+    public function activateRack(
+        int $rack_id,
+    ): string {
+        return $this->output->render(
+            $this->api->activateRack([
+                'id' => $rack_id,
             ])
         );
     }

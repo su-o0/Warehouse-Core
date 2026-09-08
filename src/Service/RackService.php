@@ -225,25 +225,6 @@ final class RackService {
         );
     } 
 
-    public function markRackAsCrowded(
-        RackEntity $rack
-    ): ServiceResult {
-        if (!$this->authorization->canMarkRackAsCrowded()) {
-            throw ServiceException::FORBIDDEN();
-        }
-
-        if (!Lifecycle::canMarkRackAsCrowded($rack)) {
-            return ServiceResult::failure(
-                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
-            );
-        }   
-
-        return $this->changeStatus(
-            $rack->id,
-            RackStatusEnum::Crowded
-        );
-    }
-
     public function archiveRack(
         RackEntity $rack
     ) {

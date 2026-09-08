@@ -263,15 +263,6 @@ final readonly class Authorization
         );
     }
 
-    public function canMarkRackAsCrowded(): bool
-    {
-        return in_array(
-            $this->role,
-            self::OPERATIONS['rack']['markAsCrowded'],
-            true
-        );
-    }
-
     public function canActivateRack(): bool
     {
         return in_array(
@@ -406,6 +397,14 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['zone']['archive'],
+            true
+        );
+    }
+    public function canMarkZoneAsCrowded(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['zone']['markAsCrowded'],
             true
         );
     }

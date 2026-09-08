@@ -18,6 +18,7 @@ use WarehouseCore\Repository\Catalog\AreaNameRepository;
 use WarehouseCore\Repository\Catalog\PartNameRepository;
 use WarehouseCore\Repository\Catalog\PartNumberRepository;
 use WarehouseCore\Repository\Catalog\RackNameRepository;
+use WarehouseCore\Repository\Catalog\UserNameRepository;
 use WarehouseCore\Repository\Catalog\ZoneNameRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
@@ -59,6 +60,7 @@ final class FindService {
         private AreaNameRepository $area_name_repository,
         private RackNameRepository $rack_name,
         private ZoneNameRepository $zone_name_repository,
+        private UserNameRepository $user_name_repository,
         private OwnerRepository $owner_repository,
         private PhysicalTagRepository $physical_tag,
         private ItemSalesArchiveRepository $item_sales_archive,
@@ -112,6 +114,26 @@ final class FindService {
         }
 
         return ServiceResult::entity($zone_name);
+    }
+
+    public function findUserNameByRecordId(
+        int $record_id
+    ): ServiceResult {
+        if (!$this->authorization->canFindUserName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $user_name = $this->user_name_repository->findByRecordId(
+            $record_id
+        );
+
+        if ($user_name === null) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_NOT_FOUND
+            );
+        }
+
+        return ServiceResult::entity($user_name);
     }
 
 }

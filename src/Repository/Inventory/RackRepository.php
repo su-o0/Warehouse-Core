@@ -62,12 +62,12 @@ final class RackRepository extends Repository {
                 )
                 VALUES
                 (
-                    :type
-                    :user_id
+                    :type,
+                    :created_by_user_id
                 )",
                 [
                     ':type' => $type,
-                    ':user_id' => $user_id
+                    ':created_by_user_id' => $user_id
                 ]
             );
         } catch (\PDOException $e) {

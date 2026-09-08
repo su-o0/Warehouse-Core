@@ -12,6 +12,7 @@ use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Payload\Request\EntityRequest;
 use WarehouseCore\Payload\Request\EntityValueRequest;
 use WarehouseCore\Payload\Request\UserIdentityRequest;
+use WarehouseCore\Payload\Request\ValueRequest;
 
 final class ApiHandlerRegistry {
     public function __construct(
@@ -323,10 +324,11 @@ final class ApiHandlerRegistry {
     }
 
     public function registerRack(
+        array $raw
     ): ApiResult {
         return $this->handle(
             $this->api->registerRack(),
-            null
+            ValueRequest::fromRaw($raw)
         );
     }
 
@@ -336,6 +338,15 @@ final class ApiHandlerRegistry {
         return $this->handle(
             $this->api->populateRack(),
             EntityRecordRequest::fromRaw($raw)
+        );
+    }
+    
+    public function activateRack(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->activateRack(),
+            EntityRequest::fromRaw($raw)
         );
     }
 }

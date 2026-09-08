@@ -274,6 +274,7 @@ final class ServiceRegistry {
             $this->repository->areaName(),
             $this->repository->rackName(),
             $this->repository->zoneName(),
+            $this->repository->userName(),
             $this->repository->owner(),
             $this->repository->physicalTag(),
             $this->repository->itemSalesArchive(),

@@ -35,10 +35,10 @@ final class Lifecycle
         'rack' => [
             'populate'          => [RackStatusEnum::Registered],
             'activate'          => [RackStatusEnum::Processing, RackStatusEnum::Archived],
-            'archive'           => [RackStatusEnum::Active, RackStatusEnum::Crowded],
-            'addName'           => [RackStatusEnum::Active, RackStatusEnum::Crowded],
-            'setPrimaryName'    => [RackStatusEnum::Active, RackStatusEnum::Crowded],
-            'removeName'        => [RackStatusEnum::Active, RackStatusEnum::Crowded]
+            'archive'           => [RackStatusEnum::Active],
+            'addName'           => [RackStatusEnum::Active],
+            'setPrimaryName'    => [RackStatusEnum::Active],
+            'removeName'        => [RackStatusEnum::Active]
         ],
         'user' => [
             'activate'          => [UserStatusEnum::Processing, UserStatusEnum::Archived],
