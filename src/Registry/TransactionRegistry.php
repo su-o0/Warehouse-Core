@@ -8,7 +8,9 @@ use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Area\CreateAreaTransaction;
 use WarehouseCore\Transaction\Zone\CreateZoneTransaction;
 use WarehouseCore\Transaction\Area\SetPrimaryAreaNameTransaction;
+use WarehouseCore\Transaction\Rack\ActivateRackTransaction;
 use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
+use WarehouseCore\Transaction\Rack\ArchiveRackTransaction;
 use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
 use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
@@ -39,6 +41,8 @@ final class TransactionRegistry {
     private ?RemoveUserIdentityTransaction $remove_user_identity = null;
 
     private ?PopulateRackTransaction $populate_rack = null;
+    private ?ActivateRackTransaction $activate_rack = null;
+    private ?ArchiveRackTransaction $archive_rack = null;
     private ?AddRackNameTransaction $add_rack_name = null;
     private ?SetPrimaryRackNameTransaction $set_primary_rack_name = null;
 
@@ -167,6 +171,26 @@ final class TransactionRegistry {
             $this->repository->shelf(),
             $this->repository->storageSlot(),
             $this->repository->rackProcessingStep()
+        );
+    }
+
+    public function activateRack(): ActivateRackTransaction {
+        return $this->activate_rack ??= new ActivateRackTransaction(
+            $this->db,
+            $this->config->activate_rack,
+            $this->repository->rack(),
+            $this->repository->shelf(),
+            $this->repository->storageSlot(),
+        );
+    }
+ 
+    public function archiveRack(): ArchiveRackTransaction {
+        return $this->archive_rack ??= new ArchiveRackTransaction(
+            $this->db,
+            $this->config->archive_rack,
+            $this->repository->rack(),
+            $this->repository->shelf(),
+            $this->repository->storageSlot(),
         );
     }
 

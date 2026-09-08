@@ -417,4 +417,14 @@ final class ShellFacade {
             ])
         );
     }
+
+    public function archiveRack(
+        int $rack_id,
+    ): string {
+        return $this->output->render(
+            $this->api->archiveRack([
+                'id' => $rack_id,
+            ])
+        );
+    }
 }

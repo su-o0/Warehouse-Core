@@ -20,6 +20,8 @@ final readonly class TransactionConfig {
         public string $remove_user_identity,
 
         public string $populate_rack,
+        public string $activate_rack,
+        public string $archive_rack,
         public string $add_rack_name,
         public string $set_primary_rack_name,
         public string $remove_rack_name,
@@ -43,6 +45,8 @@ final readonly class TransactionConfig {
             remove_user_identity: self::requiredString($raw, 'RemoveUserIdentity'),
         
             populate_rack: self::requiredString($raw, 'PopulateRack'),
+            activate_rack: self::requiredString($raw, 'ActivateRack'),
+            archive_rack: self::requiredString($raw, 'ArchiveRack'),
             add_rack_name: self::requiredString($raw, 'AddRackName'),
             set_primary_rack_name: self::requiredString($raw, 'SetPrimaryRackName'),
             remove_rack_name: self::requiredString($raw, 'RemoveRackName'),

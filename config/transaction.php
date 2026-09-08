@@ -17,7 +17,10 @@ return [
     'RemoveUserIdentity' => 'remove_user_identity',
 
     'PopulateRack' => 'populate_rack',
+    'ActivateRack' => 'activate_rack',
+    'ArchiveRack' => 'archive_rack',
     'AddRackName' => 'add_rack_name',
     'SetPrimaryRackName' => 'set_primary_rack_name',
     'RemoveRackName' => 'remove_rack_name',
+
 ];  

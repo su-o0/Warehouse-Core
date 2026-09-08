@@ -349,4 +349,13 @@ final class ApiHandlerRegistry {
             EntityRequest::fromRaw($raw)
         );
     }
+
+    public function archiveRack(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveRack(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
 }

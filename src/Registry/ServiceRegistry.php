@@ -158,6 +158,8 @@ final class ServiceRegistry {
             $this->repository->rackName(),
             $this->repository->rackProcessingStep(),
             $this->transaction->populateRack(),
+            $this->transaction->activateRack(),
+            $this->transaction->archiveRack(),
             $this->transaction->addRackName(),
             $this->transaction->setPrimaryRackName()
         );

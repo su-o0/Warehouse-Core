@@ -27,6 +27,7 @@ use WarehouseCore\Api\Identity\User\CreateUserApi;
 use WarehouseCore\Api\Identity\User\DismissUserRoleApi;
 use WarehouseCore\Api\Identity\User\RemoveUserIdentityApi;
 use WarehouseCore\Api\Inventory\Rack\ActivateRackApi;
+use WarehouseCore\Api\Inventory\Rack\ArchiveRackApi;
 use WarehouseCore\Api\Inventory\Rack\PopulateRackApi;
 use WarehouseCore\Api\Inventory\Rack\RegisterRackApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
@@ -325,6 +326,14 @@ final class ApiRegistry {
     
     public function activateRack(): ActivateRackApi {
         return new ActivateRackApi(
+            $this->config->activate_rack,
+            $this->context->getService(),
+            $this->context->rackService()
+        );
+    }
+
+    public function archiveRack(): ArchiveRackApi {
+        return new ArchiveRackApi(
             $this->config->activate_rack,
             $this->context->getService(),
             $this->context->rackService()

@@ -15,7 +15,9 @@ use WarehouseCore\Repository\Inventory\RackRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Security\Lifecycle;
+use WarehouseCore\Transaction\Rack\ActivateRackTransaction;
 use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
+use WarehouseCore\Transaction\Rack\ArchiveRackTransaction;
 use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
 use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
 
@@ -27,27 +29,11 @@ final class RackService {
         private RackNameRepository $rack_name_repository,
         private RackProcessingStepRepository $rack_processing_step_repository,
         private PopulateRackTransaction $populate_rack_transaction,
+        private ActivateRackTransaction $activate_rack_transaction,
+        private ArchiveRackTransaction $archive_rack_transaction,
         private AddRackNameTransaction $add_rack_name_transaction,
         private SetPrimaryRackNameTransaction $set_primary_rack_name_transaction
     ) { }
-
-    private function changeStatus(
-        int $id,
-        RackStatusEnum $status
-    ): ServiceResult {
-        try {
-            $this->rack_repository->updateStatus(
-                $id,
-                $status->value
-            );
-        }catch(RepositoryException $e) {
-            return ServiceResult::failure(
-                $e->getMessage()
-            );
-        }
-
-        return ServiceResult::success();
-    }
 
     public function populateRack(
         RackEntity $rack,
@@ -219,9 +205,8 @@ final class RackService {
             );
         }
 
-        return $this->changeStatus(
-            $rack->id,
-            RackStatusEnum::Active
+        return $this->activate_rack_transaction->handle(
+            rack: $rack
         );
     } 
 
@@ -237,10 +222,20 @@ final class RackService {
                 ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         } 
-        
-        return $this->changeStatus(
-            $rack->id,
-            RackStatusEnum::Archived
+
+        $result = $this->rack_processing_step_repository->findByRackIdAndStage(
+            rack_id: $rack->id,
+            stage: RackProcessingStepStageEnum::Populate->value
+        );
+
+        if($result === null) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_PROCESSING_STEP_NOT_FOUND
+            );
+        }
+
+        return $this->archive_rack_transaction->handle(
+            rack: $rack
         );
     }
 }
