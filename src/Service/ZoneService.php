@@ -4,14 +4,17 @@ namespace WarehouseCore\Service;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Entity\AreaEntity;
+use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Enum\ZoneStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\VO\ZoneNameVO;
 use WarehouseCore\Repository\Catalog\ZoneNameRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
+use WarehouseCore\Security\Lifecycle;
 use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
-use WarehouseCore\Transaction\Zone\CreateZoneTransaction;
 
 final class ZoneService {
     public function __construct(
@@ -19,60 +22,9 @@ final class ZoneService {
         private Authorization $authorization,
         private ZoneRepository $zone_repository,
         private ZoneNameRepository $zone_name_repository,
-        private CreateZoneTransaction $create_zone_transaction,
         private AddZoneNameTransaction $add_zone_name_transaction,
         private SetPrimaryZoneNameTransaction $set_primary_zone_name_transaction
     ) { }
-
-    private function existsZone(
-        int $id
-    ): ServiceResult {
-        try { 
-            $result = $this->zone_repository->getById($id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    private function existsZoneName(
-        int $record_id
-    ): ServiceResult {
-        try { 
-            $result = $this->zone_name_repository->findByRecordId($record_id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NAME_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
 
     private function changeStatus(
         int $id,
@@ -84,122 +36,94 @@ final class ZoneService {
                 $status->value
             );
         }catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function addZoneName(
-        int $zone_id,
+        ZoneEntity $zone,
         string $name
     ): ServiceResult {
         if(!$this->authorization->canAddZoneName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $zone = $result->entity;
-
-        if (!in_array(
-            $zone->status,
-            [
-                ZoneStatusEnum::Active,
-                ZoneStatusEnum::Crowded
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canAddZoneName($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
         
         $result = $this->zone_name_repository->findByZoneIdAndValue(
-            zone_id: $zone_id,
+            zone_id: $zone->id,
             value: $name
         );
 
         if($result !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_ALREADY_EXISTS
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_ALREADY_EXISTS
             );
         } 
+
         return $this->add_zone_name_transaction->handle(
-            $zone->id,
-            $name,
-            $this->authorization->getUserId()
+            zone_id: $zone->id,
+            value: $name,
+            user_id: $this->authorization->getUserId()
         );
     }
 
     public function setPrimaryZoneName(
-        int $zone_id,
-        int $record_id,
+        ZoneEntity $zone,
+        ZoneNameVO $zone_name
     ): ServiceResult {
         if(!$this->authorization->canSetPrimaryZoneName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
+        if (!Lifecycle::canSetPrimaryZoneName($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
         }
 
-        $zone = $result->entity;
-        $result = $this->existsZoneName($record_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $zone_name = $result->entity;
-        
         if ($zone->id != $zone_name->zone_id) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_NAME_NOT_FOUND
             );
         }
 
         if ($zone_name->is_primary){
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NAME_ALREADY_PRIMARY
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_NAME_ALREADY_PRIMARY
             );
         }
 
         return $this->set_primary_zone_name_transaction->handle(
-            $record_id,
-            $zone_name->zone_id
+            record_id: $zone_name->record_id,
+            zone_id: $zone->id
         );
     }
 
     public function removeZoneName(
-        int $zone_id
+        ZoneEntity $zone
     ): ServiceResult {
         if(!$this->authorization->canRemoveZoneName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
+        if (!Lifecycle::canRemoveZoneName($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
         }
 
-        $zone_name = $this->zone_name_repository->findPrimaryByZoneId($zone_id);
+        $zone_name = $this->zone_name_repository->findPrimaryByZoneId(
+            $zone->id
+        );
 
         if ($zone_name === null) {
             return new ServiceResult(
@@ -214,57 +138,45 @@ final class ZoneService {
                 is_primary: false
             );
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function createZone(
-        int $area_id
+        AreaEntity $area
     ): ServiceResult {
         if(!$this->authorization->canCreateZone()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        return $this->create_zone_transaction->handle(
-            $area_id,
-            $this->authorization->getUserId()
-        );
+        try {
+            $this->zone_repository->add(
+                area_id: $area->id,
+                user_id: $this->authorization->getUserId()
+            );
+        } catch(RepositoryException $e) {
+            return ServiceResult::failure(
+                $e->getMessage()
+            );
+        }
+       
+        return ServiceResult::success();
     }
 
-
     public function activateZone(
-        int $zone_id
+        ZoneEntity $zone
     ): ServiceResult {
         if(!$this->authorization->canActivateZone()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-        
-        $zone = $result->entity;
-
-        if (!in_array(
-            $zone->status,
-            [
-                ZoneStatusEnum::Created,
-                ZoneStatusEnum::Archived,
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canActivateZone($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -275,30 +187,15 @@ final class ZoneService {
     }
 
     public function markZoneAsCrowded(
-        int $zone_id
+        ZoneEntity $zone
     ): ServiceResult {
         if(!$this->authorization->canMarkZoneAsCrowded()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $zone = $result->entity;
-
-        if (!in_array(
-            $zone->status,
-            [
-                ZoneStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canMarkZoneAsCrowded($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -309,32 +206,15 @@ final class ZoneService {
     }
 
     public function archiveZone(
-        int $zone_id
+        ZoneEntity $zone
     ): ServiceResult {
          if(!$this->authorization->canArchiveZone()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsZone($zone_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $zone = $result->entity;
-
-        if (!in_array(
-            $zone->status,
-            [
-                ZoneStatusEnum::Active,
-                ZoneStatusEnum::Crowded
-
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canArchiveZone($zone)) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 

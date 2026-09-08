@@ -4,15 +4,20 @@ namespace WarehouseCore\Service;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Entity\RackEntity;
 use WarehouseCore\Payload\Enum\RackProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
+use WarehouseCore\Payload\Enum\RackTypeEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\VO\RackNameVO;
 use WarehouseCore\Repository\Catalog\RackNameRepository;
 use WarehouseCore\Repository\Inventory\RackRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
-use WarehouseCore\Repository\Topology\RackPlacementRepository;
 use WarehouseCore\Security\Authorization;
+use WarehouseCore\Security\Lifecycle;
+use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
 use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
+use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
 
 final class RackService {
     public function __construct(
@@ -20,97 +25,43 @@ final class RackService {
         private Authorization $authorization,
         private RackRepository $rack_repository,
         private RackNameRepository $rack_name_repository,
-        private RackPlacementRepository $rack_placement_repository,
         private RackProcessingStepRepository $rack_processing_step_repository,
-        private PopulateRackTransaction $populate_rack_transaction
+        private PopulateRackTransaction $populate_rack_transaction,
+        private AddRackNameTransaction $add_rack_name_transaction,
+        private SetPrimaryRackNameTransaction $set_primary_rack_name_transaction
     ) { }
 
-    private function existsRack(
-        int $id
+    private function changeStatus(
+        int $id,
+        RackStatusEnum $status
     ): ServiceResult {
-        try { 
-            $result = $this->rack_repository->getById($id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+        try {
+            $this->rack_repository->updateStatus(
+                $id,
+                $status->value
+            );
+        }catch(RepositoryException $e) {
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::RACK_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    private function existsRackName(
-        int $record_id
-    ): ServiceResult {
-        try { 
-            $result = $this->rack_name_repository->findByRecordId($record_id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::RACK_NAME_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    public function registerRack(): ServiceResult {
-        if (!$this->authorization->canRegisterRack()) {
-            throw ServiceException::FORBIDDEN();
-        }
-
-        $this->rack_repository->add(
-            user_id: $this->authorization->getUserId()
-        );
-
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function populateRack(
-        int $rack_id,
+        RackEntity $rack,
         int $count
     ): ServiceResult {
         if (!$this->authorization->canPopulateRack()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsRack($rack_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $rack = $result->entity;
-
-        if ($rack->status !== RackStatusEnum::Registered) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::RACK_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canPopulateRack($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
-        }   
+        }
 
         $result = $this->rack_processing_step_repository->findByRackIdAndStage(
             rack_id: $rack->id,
@@ -125,38 +76,129 @@ final class RackService {
         }
 
         return $this->populate_rack_transaction->handle(
-            rack_id: $rack->id,
+            rack: $rack,
             count: $count,
             user_id: $this->authorization->getUserId(),
         );
     }
     
-    public function activateRack(
-        int $rack_id
+    public function addRackName(
+        RackEntity $rack,
+        string $name
     ) {
+        if (!$this->authorization->canAddRackName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        if (!Lifecycle::canAddRackName($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        } 
+
+        return $this->add_rack_name_transaction->handle(
+            rack_id: $rack->id,
+            value: $name,
+            user_id: $this->authorization->getUserId()
+        );
+    }
+
+    public function setPrimaryRackName(
+        RackEntity $rack,
+        RackNameVO $rack_name 
+    ) {
+        if (!$this->authorization->canSetPrimaryRackName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+        
+        if (!Lifecycle::canSetPrimaryRackName($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        } 
+
+        if ($rack->id != $rack_name->rack_id) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_NOT_FOUND
+            );
+        }
+
+        if ($rack_name->is_primary){
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_ALREADY_PRIMARY
+            );
+        }
+
+        return $this->set_primary_rack_name_transaction->handle(
+            $rack_name->record_id,
+            $rack_name->rack_id
+        );
+    }
+
+    public function removeRackName(
+        RackEntity $rack
+    ) {
+        if (!$this->authorization->canRemoveRackName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        if (!Lifecycle::canSetPrimaryRackName($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        } 
+
+        $rack_name = $this->rack_name_repository->findPrimaryByrackId(
+            $rack->id
+        );
+
+        if ($rack_name === null) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_NAME_NOT_FOUND
+            );
+        }   
+
+        try {
+            $this->rack_name_repository->updatePrimary(
+                record_id: $rack_name->record_id,
+                is_primary: false
+            );
+        } catch(RepositoryException $e) {
+            return ServiceResult::failure(
+                $e->getMessage()
+            );
+        }
+
+        return ServiceResult::success();
+    }
+    
+    public function registerRack(
+        RackTypeEnum $rack_type
+    ): ServiceResult {
+        if (!$this->authorization->canRegisterRack()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $this->rack_repository->add(
+            type: $rack_type->value,
+            user_id: $this->authorization->getUserId()
+        );
+
+        return new ServiceResult(
+            success: true
+        );
+    }
+
+    public function activateRack(
+        RackEntity $rack
+    ): ServiceResult {
         if (!$this->authorization->canActivateRack()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsRack($rack_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $rack = $result->entity;
-
-        if (!in_array(
-            $rack->status,
-            [
-                RackStatusEnum::Processing,
-                RackStatusEnum::Archived
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::RACK_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canActivateRack($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }   
 
@@ -166,59 +208,52 @@ final class RackService {
         );
 
         if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::RACK_PROCESSING_STEP_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::RACK_PROCESSING_STEP_NOT_FOUND
             );
         }
 
-        try {
-            $this->rack_repository->updateStatus(
-                $rack->id,
-                RackStatusEnum::Active->value
-            );
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        return new ServiceResult(
-            success: true
+        return $this->changeStatus(
+            $rack->id,
+            RackStatusEnum::Active
         );
     } 
 
-    public function markRackAsCrowded() {
+    public function markRackAsCrowded(
+        RackEntity $rack
+    ): ServiceResult {
         if (!$this->authorization->canMarkRackAsCrowded()) {
             throw ServiceException::FORBIDDEN();
         }
 
+        if (!Lifecycle::canMarkRackAsCrowded($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        }   
+
+        return $this->changeStatus(
+            $rack->id,
+            RackStatusEnum::Crowded
+        );
     }
 
-    public function archiveRack() {
+    public function archiveRack(
+        RackEntity $rack
+    ) {
         if (!$this->authorization->canArchiveRack()) {
             throw ServiceException::FORBIDDEN();
         }
 
-    }
-
-    public function addRackName() {
-        if (!$this->authorization->canAddRackName()) {
-            throw ServiceException::FORBIDDEN();
-        }
-
-    }
-
-    public function setPrimaryRackName() {
-        if (!$this->authorization->canSetPrimaryRackName()) {
-            throw ServiceException::FORBIDDEN();
-        }
-    }
-
-    public function removeRackName() {
-        if (!$this->authorization->canRemoveRackName()) {
-            throw ServiceException::FORBIDDEN();
-        }
+        if (!Lifecycle::canArchiveRack($rack)) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        } 
+        
+        return $this->changeStatus(
+            $rack->id,
+            RackStatusEnum::Archived
+        );
     }
 }

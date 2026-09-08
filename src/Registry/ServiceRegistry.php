@@ -156,9 +156,10 @@ final class ServiceRegistry {
             $authorization,
             $this->repository->rack(),
             $this->repository->rackName(),
-            $this->repository->rackPlacement(),
             $this->repository->rackProcessingStep(),
-            $this->transaction->populateRack()
+            $this->transaction->populateRack(),
+            $this->transaction->addRackName(),
+            $this->transaction->setPrimaryRackName()
         );
     }
 
@@ -243,7 +244,6 @@ final class ServiceRegistry {
             $authorization,
             $this->repository->zone(),
             $this->repository->zoneName(),
-            $this->transaction->createZone(),
             $this->transaction->addZoneName(),
             $this->transaction->setPrimaryZoneName()
         );

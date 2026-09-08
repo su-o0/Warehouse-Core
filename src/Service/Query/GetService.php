@@ -1,24 +1,8 @@
 <?php 
 namespace WarehouseCore\Service\Query;
 
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
-use WarehouseCore\Payload\Entity\AreaEntity;
-use WarehouseCore\Payload\Entity\ContainerEntity;
-use WarehouseCore\Payload\Entity\ItemEntity;
-use WarehouseCore\Payload\Entity\OwnerEntity;
-use WarehouseCore\Payload\Entity\PartEntity;
-use WarehouseCore\Payload\Entity\PhysicalTagEntity;
-use WarehouseCore\Payload\Entity\RackEntity;
-use WarehouseCore\Payload\Entity\ShelfEntity;
-use WarehouseCore\Payload\Entity\StockEntity;
-use WarehouseCore\Payload\Entity\StorageSlotEntity;
-use WarehouseCore\Payload\Entity\StoredFileEntity;
-use WarehouseCore\Payload\Entity\UserEntity;
-use WarehouseCore\Payload\Entity\ZoneEntity;
-use WarehouseCore\Payload\Reference\ProviderReference;
-use WarehouseCore\Payload\Reference\RoleReference;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
@@ -187,6 +171,22 @@ final class GetService {
         return ServiceResult::entity($shelf);
     }
 
+    public function getStorageSlot(
+        int $storage_slot_id
+    ): ServiceResult {
+        if (!$this->authorization->canGetShelf()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $storage_slot = $this->storage_slot->getById($storage_slot_id);
+
+        if ($storage_slot === null) {
+            return ServiceResult::failure(ErrorMessage::SHELF_NOT_FOUND);
+        }
+
+        return ServiceResult::entity($storage_slot);
+    }
+
     public function getStock(
         int $stock_id
     ): ServiceResult {
@@ -229,16 +229,12 @@ final class GetService {
         $user = $this->user->getById($user_id);
 
         if ($user === null) {
-            return new ServiceResult( 
-                success: false,
-                message: ErrorMessage::USER_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_NOT_FOUND
             );
         }
 
-        return new ServiceResult(
-            success: true,
-            entity: $user
-        );
+        return ServiceResult::entity($user);
     }
 
     public function getZone(
@@ -251,16 +247,12 @@ final class GetService {
         $zone = $this->zone->getById($zone_id);
 
         if ($zone === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ZONE_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_NOT_FOUND
             );
         }
 
-        return new ServiceResult(
-            success: true,
-            entity: $zone
-        );
+        return ServiceResult::entity($zone);
     }
 
     public function getRole(

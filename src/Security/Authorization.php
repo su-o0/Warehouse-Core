@@ -9,22 +9,27 @@ use WarehouseCore\Payload\DTO\SessionDTO;
 final readonly class Authorization
 {
     private const OPERATIONS = [
+        'find'   => [
+            'areaName'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'zoneName'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'rackName'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+        ],
         'get'   => [
-            'area' => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'storageSlot' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'item' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
-            'container' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'owner' => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'part' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
-            'physicalTag' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'rack' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'shelf' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'stock' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
-            'storedFile' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman, RoleNameEnum::Salesman],
-            'user' => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'zone' => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
-            'role' => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'provider' => [RoleNameEnum::Root],
+            'area'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'storageSlot'       => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'item'              => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
+            'container'         => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'owner'             => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'part'              => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
+            'physicalTag'       => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'rack'              => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'shelf'             => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'stock'             => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman],
+            'storedFile'        => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker, RoleNameEnum::Salesman, RoleNameEnum::Salesman],
+            'user'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'zone'              => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'role'              => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'provider'          => [RoleNameEnum::Root],
         ],
         'area'  => [
             'create'            => [RoleNameEnum::Root, RoleNameEnum::Admin],
@@ -36,6 +41,25 @@ final readonly class Authorization
             'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'grantAccess'       => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'revokeAccess'      => [RoleNameEnum::Root, RoleNameEnum::Admin]
+        ],
+        'zone'  => [
+            'create'            => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
+        ],
+        'rack'  => [
+            'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'populate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
         ]
     ];
 
@@ -63,16 +87,26 @@ final readonly class Authorization
         );
     }
 
-
+    // Find
     public function canFindAreaName(): bool
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['find']['areaName'],
             true
         );
     }
 
+    public function canFindZoneName(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['find']['zoneName'],
+            true
+        );
+    }
+
+    // Get
     public function canGetStorageSlot(): bool
     {
         return in_array(
@@ -113,7 +147,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['setPrimaryName'],
             true
         );
     }
@@ -122,7 +156,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['removeName'],
             true
         );
     }
@@ -140,7 +174,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['addName'],
             true
         );
     }
@@ -149,7 +183,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['activate'],
             true
         );
     }
@@ -158,7 +192,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['markAsCrowded'],
             true
         );
     }
@@ -167,7 +201,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['archive'],
             true
         );
     }
@@ -176,7 +210,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['populate'],
             true
         );
     }
@@ -184,7 +218,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['rack']['register'],
             true
         );
     }
@@ -320,7 +354,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['archive'],
             true
         );
     }
@@ -329,7 +363,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['markAsCrowded'],
             true
         );
     }
@@ -338,7 +372,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['activate'],
             true
         );
     }
@@ -356,7 +390,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['addName'],
             true
         );
     }
@@ -365,7 +399,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['setPrimaryName'],
             true
         );
     }
@@ -374,7 +408,7 @@ final readonly class Authorization
     {
         return in_array(
             $this->role,
-            [RoleNameEnum::Root, RoleNameEnum::Admin],
+            self::OPERATIONS['zone']['removeName'],
             true
         );
     }
@@ -558,9 +592,7 @@ final readonly class Authorization
             true
         );
     }
-
-
-
+    
     public function canGetZone(): bool
     {
         return in_array(

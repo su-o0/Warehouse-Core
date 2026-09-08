@@ -58,14 +58,25 @@ final class AreaService {
 
         if (!Lifecycle::canAddAreaName($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        }
+
+        $result = $this->area_name_repository->findByAreaIdAndValue(
+            area_id: $area->id,
+            value: $name
+        );
+
+        if ($result !== null) {
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_ALREADY_EXISTS
             );
         }
 
         return $this->add_area_name_transaction->handle(
-            $area->id,
-            $name,
-            $this->authorization->getUserId()
+            area_id: $area->id,
+            value: $name,
+            user_id: $this->authorization->getUserId()
         );
     }
 
@@ -79,7 +90,7 @@ final class AreaService {
         
         if (!Lifecycle::canSetPrimaryAreaName($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -96,8 +107,8 @@ final class AreaService {
         }
 
         return $this->set_primary_area_name_transaction->handle(
-            $area_name->record_id,
-            $area_name->area_id
+            record_id: $area_name->record_id,
+            area_id: $area_name->area_id
         );
     }
 
@@ -110,7 +121,7 @@ final class AreaService {
         
         if (!Lifecycle::canRemoveAreaName($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -148,7 +159,7 @@ final class AreaService {
 
         if (!Lifecycle::canGrantAreaAccess($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -188,7 +199,7 @@ final class AreaService {
 
         if (!Lifecycle::canRevokeAreaAccess($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -220,7 +231,7 @@ final class AreaService {
         }
 
         return $this->create_area_transaction->handle(
-            $this->authorization->getUserId()
+            user_id: $this->authorization->getUserId()
         );
     }
 
@@ -233,7 +244,7 @@ final class AreaService {
 
         if (!Lifecycle::canActivateArea($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -252,7 +263,7 @@ final class AreaService {
 
         if (!Lifecycle::canMarkAreaAsCrowded($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -271,7 +282,7 @@ final class AreaService {
 
         if (!Lifecycle::canArchiveArea($area)) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_INVALID_STATUS_TRANSITION
+                ErrorMessage::AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 

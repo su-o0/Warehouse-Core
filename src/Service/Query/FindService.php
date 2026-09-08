@@ -1,13 +1,9 @@
 <?php 
 namespace WarehouseCore\Service\Query;
 
-use WarehouseCore\Exception\DomainException;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
-use WarehouseCore\Payload\Enum\AreaStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
-use WarehouseCore\Payload\Type\ProviderType;
-use WarehouseCore\Payload\VO\AreaNameVO;
 use WarehouseCore\Repository\Audit\ContainerMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\ContainerPlacementArchiveRepository;
 use WarehouseCore\Repository\Audit\ItemMovementArchiveRepository;
@@ -60,9 +56,9 @@ final class FindService {
         private OwnerRepository $owner,
         private PartNumberRepository $part_number,
         private PartNameRepository $part_name,
-        private AreaNameRepository $area_name,
+        private AreaNameRepository $area_name_repository,
         private RackNameRepository $rack_name,
-        private ZoneNameRepository $zone_name,
+        private ZoneNameRepository $zone_name_repository,
         private OwnerRepository $owner_repository,
         private PhysicalTagRepository $physical_tag,
         private ItemSalesArchiveRepository $item_sales_archive,
@@ -78,25 +74,44 @@ final class FindService {
     ) { }
 
 
-    public function findAreaNameByAreaId(
-        int $area_id
+    public function findAreaNameByRecordId(
+        int $record_id
     ): ServiceResult {
         if (!$this->authorization->canFindAreaName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $area_name = $this->area_name->findByAreaId($area_id);
+        $area_name = $this->area_name_repository->findByRecordId(
+            $record_id
+        );
 
         if ($area_name === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::AREA_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::AREA_NAME_NOT_FOUND
             );
         }
 
-        return new ServiceResult(
-            success: true,
-            entity: $area_name
-        );
+        return ServiceResult::entity($area_name);
     }
+
+    public function findZoneNameByRecordId(
+        int $record_id
+    ): ServiceResult {
+        if (!$this->authorization->canFindZoneName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $zone_name = $this->zone_name_repository->findByRecordId(
+            $record_id
+        );
+
+        if ($zone_name === null) {
+            return ServiceResult::failure(
+                ErrorMessage::ZONE_NAME_NOT_FOUND
+            );
+        }
+
+        return ServiceResult::entity($zone_name);
+    }
+
 }

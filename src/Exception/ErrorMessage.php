@@ -115,12 +115,11 @@ final class ErrorMessage {
     public const PHYSICAL_TAG_MUST_BE_FREE = 'PhysicalTag Status must be Free';
     public const PHYSICAL_TAG_ALREADY_EXISTS = 'Physical tag already exists';
 
+    public const AREA_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE = 'Area operation not allower in current state'; //007
+    public const ZONE_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE = 'Zone operation not allower in current state'; //007
+    public const RACK_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE = 'Rack operation not allower in current state'; //007
+    public const USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE = 'User operation not allower in current state'; //007
 
-    public const AREA_INVALID_STATUS_TRANSITION = 'Area invalid status transition'; //007
-    public const ZONE_INVALID_STATUS_TRANSITION = 'Zone invalid status transition'; //007
-    public const RACK_INVALID_STATUS_TRANSITION = 'Rack invalid status transition'; //007
-    public const USER_INVALID_STATUS_TRANSITION = 'User invalid status transition'; //007
-
-    public const USER_PROCESSING_NOT_COMPLETED = 'User invalid status transition'; //007
+    public const USER_PROCESSING_NOT_COMPLETED = 'User processing not completed'; //007
     
 }

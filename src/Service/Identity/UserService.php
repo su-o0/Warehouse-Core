@@ -5,16 +5,19 @@ use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Payload\Enum\ProviderNameEnum;
 use WarehouseCore\Payload\Enum\RoleNameEnum;
 use WarehouseCore\Payload\Enum\UserProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
+use WarehouseCore\Payload\VO\UserNameVO;
 use WarehouseCore\Repository\Catalog\UserNameRepository;
 use WarehouseCore\Repository\Identity\RoleRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 use WarehouseCore\Security\Authorization;
+use WarehouseCore\Security\Lifecycle;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
 use WarehouseCore\Transaction\User\AddUserNameTransaction;
 use WarehouseCore\Transaction\User\AssignUserRoleTransaction;
@@ -40,98 +43,31 @@ final class UserService {
         private AddUserIdentityTransaction $add_user_identity_transaction,
         private RemoveUserIdentityTransaction $remove_user_identity_transaction
     ) { }
-    
-    private function existsUser(
-        int $id
-    ): ServiceResult {
-        try { 
-            $result = $this->user_repository->getById($id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
-
-    private function existsUserName(
-        int $record_id
-    ): ServiceResult {
-        try { 
-            $result = $this->user_name_repository->findByRecordId($record_id);
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
-
-        if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_NOT_FOUND
-            );
-        }
-
-        return new ServiceResult(
-            success: true,
-            entity: $result
-        );
-    }
 
     public function activateUser(
-        int $user_id
+        UserEntity $user
     ) {
         if (!$this->authorization->canActivateUser()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsUser($user_id);
-
-        if (!$result->success) {
-            return $result;
-        }
-
-        $user = $result->entity;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Processing,
-                UserStatusEnum::Archived
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canActivateUser($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
         $result = $this->user_processing_step_repository->findByUserId(
-            $user_id
+            $user->id
         );
 
         $user_processing_steps = $result;
         $user_processing_steps_count = count($user_processing_steps);
 
         if($user_processing_steps_count === 0) {
-                return new ServiceResult(
-                    success: false,
-                    message: ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
-                );
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
+            );
         }
 
         $has_named = false;
@@ -152,9 +88,8 @@ final class UserService {
         }
 
         if (!$has_named || !$has_assign_role || !$has_identified) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_PROCESSING_NOT_COMPLETED
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_NOT_COMPLETED
             );
         }
 
@@ -163,151 +98,102 @@ final class UserService {
             status: UserStatusEnum::Active->value
         );
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function archiveUser(
-        int $user_id
+        UserEntity $user
     ) {
         if (!$this->authorization->canArchiveUser()) {
             throw ServiceException::FORBIDDEN();
         }
-
-        $result = $this->existsUser($user_id);
-
-        if (!$result->success) {
-            return $result;
+        
+        if (!Lifecycle::canArchiveUser($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
         }
-
-        $user = $result->entity;
 
         if ($user->role === RoleNameEnum::Root) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::FORBIDDEN
+            return ServiceResult::failure(
+                ErrorMessage::FORBIDDEN
             );
         }
-
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
-            );
-        }
-
+       
         $this->user_repository->updateStatus(
             id: $user->id,
             status: UserStatusEnum::Archived->value
         );
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function createUser( 
     ): ServiceResult {
         if (!$this->authorization->canCreateUser()){
-            return new ServiceResult(
-                success: false,
-                message: ServiceException::Forbidden()->getMessage()
-            );
+            throw ServiceException::FORBIDDEN();
         }
 
         try { 
             $this->user_repository->add();
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
-        return new ServiceResult(
-            success: true
-        );
+        return ServiceResult::success();
     }
 
     public function assignUserRole(
-        int $user_id,
+        UserEntity $user,
         RoleNameEnum $role
     ) {
         if (!$this->authorization->canAssignUserRole()) {
             throw ServiceException::FORBIDDEN();
         }
 
+        if (!Lifecycle::canAssignUserRole($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        }
         if ($role === RoleNameEnum::Root) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::FORBIDDEN
+            return ServiceResult::failure(
+                ErrorMessage::FORBIDDEN
             );
-        }
-
-        $result = $this->existsUser($user_id);
-
-        if (!$result->success) {
-            return $result;
-        }
-
-        $user = $result->entity;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Created,
-                UserStatusEnum::Processing,
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
-            );
-        }
+        }        
 
         if ($user->role !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_ROLE_ALREADY_SET
+            return ServiceResult::failure(
+                ErrorMessage::USER_ROLE_ALREADY_SET
             );
         }
 
         try { 
             $result = $this->role_repository->getByName($role->value);
         } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
+            return ServiceResult::failure(
+                $e->getMessage()
             );
         }
 
         if ($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::ROLE_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::ROLE_NOT_FOUND
             );
         }
 
         $role = $result->name;
 
         $result = $this->user_processing_step_repository->findByUserIdAndStage(
-            $user_id,
+            $user->id,
             UserProcessingStepStageEnum::AssignRole->value
         );
 
         if($result !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_PROCESSING_STEP_ALREADY_EXISTS
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_STEP_ALREADY_EXISTS
             );
         }
 
@@ -319,57 +205,39 @@ final class UserService {
     }
 
     public function dismissUserRole(
-        int $user_id
+        UserEntity $user
     ) {
         if (!$this->authorization->canDismissUserRole()) {
             throw ServiceException::FORBIDDEN();
         }
         
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
+        if (!Lifecycle::canDismissUserRole($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
         }
-
-        $user = $result->entity;
 
         if ($user->role === RoleNameEnum::Root) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::FORBIDDEN
+            return ServiceResult::failure(
+                ErrorMessage::FORBIDDEN
             );
         }
 
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active,
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
-            );
-        }
-
+      
         if ($user->role === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_ROLE_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_ROLE_NOT_FOUND
             );
         }
 
         $result = $this->user_processing_step_repository->findByUserIdAndStage(
-            $user_id,
+            $user->id,
             UserProcessingStepStageEnum::AssignRole->value
         );
 
         if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
             );
         }
 
@@ -383,45 +251,27 @@ final class UserService {
     }
 
     public function addUserName(
-        int $user_id,
+        UserEntity $user,
         string $name
     ) {
         if(!$this->authorization->canAddUserName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $user = $result->entity;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Created,
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canAddUserName($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
         $result = $this->user_name_repository->findByUserIdAndValue(
-            user_id: $user_id,
+            user_id: $user->id,
             value: $name
         );
 
         if($result !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_ALREADY_EXISTS
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_ALREADY_EXISTS
             );
         }
 
@@ -442,54 +292,28 @@ final class UserService {
     }   
 
     public function setPrimaryUserName(
-        int $user_id,
-        int $record_id
+        UserEntity $user,
+        UserNameVO $user_name
     ) {
         if(!$this->authorization->canSetPrimaryUserName()) {
             throw ServiceException::FORBIDDEN();
         }
         
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $user = $result->entity;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
+        if (!Lifecycle::canSetPrimaryUserName($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
-        $result = $this->existsUserName($record_id);
-
-        if(!$result->success) {
-            return $result;
-        }
-
-        $user_name = $result->entity;
-
         if ($user->id != $user_name->user_id) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_NOT_FOUND
             );
         }
 
         if ($user_name->is_primary){
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_ALREADY_PRIMARY
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_ALREADY_PRIMARY
             );
         }
 
@@ -501,66 +325,49 @@ final class UserService {
         $create_processing_step = ($result === null)? true: false;
 
         return $this->set_primary_user_name_transaction->handle(
-            $record_id,
+            $user_name->record_id,
             $user_name->user_id,
             $create_processing_step
         );
     }
 
     public function removeUserName(
-        int $user_id
+        UserEntity $user
     ) {
         if(!$this->authorization->canRemoveUserName()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
-        }   
-
-        $user = $result->entity;
+        if (!Lifecycle::canRemoveUserName($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        }
 
         if ($user->role === RoleNameEnum::Root) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::FORBIDDEN
+            return ServiceResult::failure(
+                ErrorMessage::FORBIDDEN
             );
         }
 
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
-            );
-        }
-
-        $user_name = $this->user_name_repository->findPrimaryByUserId($user_id);
+        $user_name = $this->user_name_repository->findPrimaryByUserId(
+            $user->id
+        );
 
         if ($user_name === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_NAME_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_NAME_NOT_FOUND
             );
         }
 
         $result = $this->user_processing_step_repository->findByUserIdAndStage(
-            user_id: $user_id,
+            user_id: $user->id,
             stage: UserProcessingStepStageEnum::Named->value
         );
 
         if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
             );
         }
 
@@ -574,7 +381,7 @@ final class UserService {
     }
 
     public function addUserIdentity(
-        int $user_id,
+        UserEntity $user,
         ProviderNameEnum $provider,
         string $external_id
     ) {
@@ -582,26 +389,9 @@ final class UserService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
-        }   
-
-        $user = $result->entity;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Created,
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
+        if(!Lifecycle::canAddUserIdentity($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
             );
         }
 
@@ -611,9 +401,8 @@ final class UserService {
         );
 
         if($result !== null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_IDENTITY_ALREADY_EXISTS
+            return ServiceResult::failure(
+                ErrorMessage::USER_IDENTITY_ALREADY_EXISTS
             );
         }
 
@@ -634,20 +423,18 @@ final class UserService {
     }
 
     public function removeUserIdentity(
-        int $user_id,
+        UserEntity $user,
         ProviderNameEnum $provider
-    ) {
+    ): ServiceResult {
         if(!$this->authorization->canRemoveUserIdentity()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        $result = $this->existsUser($user_id);
-
-        if(!$result->success) {
-            return $result;
-        }   
-
-        $user = $result->entity;
+        if(!Lifecycle::canRemoveUserIdentity($user)) {
+            return ServiceResult::failure(
+                ErrorMessage::USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE
+            );
+        }
 
         $result = $this->user_identity_repository->findByUserIdAndProvider(
             user_id: $user->id,
@@ -655,28 +442,12 @@ final class UserService {
         );
 
         if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_IDENTITY_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_IDENTITY_NOT_FOUND
             );
         }
 
         $user_identity = $result;
-
-        if (!in_array(
-            $user->status,
-            [
-                UserStatusEnum::Created,
-                UserStatusEnum::Processing,
-                UserStatusEnum::Active
-            ],
-            true
-        )) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_INVALID_STATUS_TRANSITION
-            );
-        }
 
         $result = $this->user_processing_step_repository->findByUserIdAndStage(
             user_id: $user->id,
@@ -684,9 +455,8 @@ final class UserService {
         );
 
         if($result === null) {
-            return new ServiceResult(
-                success: false,
-                message: ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
+            return ServiceResult::failure(
+                ErrorMessage::USER_PROCESSING_STEP_NOT_FOUND
             );
         }
 
