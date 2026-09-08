@@ -89,6 +89,7 @@ final class ErrorCode {
     public const PART_STATUS_INVALID_TYPE               = "PART_STATUS_003";
     public const ZONE_STATUS_INVALID_TYPE               = "ZONE_STATUS_003";
     public const RACK_STATUS_INVALID_TYPE               = "RACK_STATUS_003";
+    public const RACK_TYPE_INVALID_TYPE                 = "RACK_TYPE_003";
     public const USER_STATUS_INVALID_TYPE               = "USER_STATUS_003";
     public const OWNER_STATUS_INVALID_TYPE              = "OWNER_STATUS_003";
     public const ITEM_CONDITION_INVALID_TYPE            = 'ITEM_CONDITION_003';

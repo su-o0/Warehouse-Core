@@ -3,12 +3,15 @@ namespace WarehouseCore\Payload\Entity;
 
 use WarehouseCore\Config\ConfigHelper;
 use WarehouseCore\Payload\Map\RackStatusMapper;
+use WarehouseCore\Payload\Map\RackTypeMapper;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
+use WarehouseCore\Payload\Enum\RackTypeEnum;
 
 final readonly class RackEntity {
     use ConfigHelper;
     public function __construct(
         public int $id,
+        public RackTypeEnum $type,
         public RackStatusEnum $status,
         public int $created_by_user_id,
         public string $created_at
@@ -19,6 +22,9 @@ final readonly class RackEntity {
     ): self {
         return new self(
             id: self::required($raw, 'id'),
+            type: RackTypeMapper::match(
+                self::requiredString($raw, 'type')
+            ),
             status: RackStatusMapper::match(
                 self::requiredString($raw, 'status')
             ),

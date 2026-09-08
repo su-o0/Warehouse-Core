@@ -101,6 +101,7 @@ final class ErrorMessage {
     public const PART_STATUS_INVALID_TYPE      = 'Part status must be ...';
     public const ZONE_STATUS_INVALID_TYPE      = 'Zone status must be ...';
     public const RACK_STATUS_INVALID_TYPE      = 'Rack status must be ...';
+    public const RACK_TYPE_INVALID_TYPE         = 'Rack type must be ...';
     public const USER_STATUS_INVALID_TYPE      = 'User status must be ...';
     public const OWNER_STATUS_INVALID_TYPE      = 'User status must be ...';
     public const ITEM_CONDITION_INVALID_TYPE = 'Item condition must be ...';

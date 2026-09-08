@@ -216,6 +216,13 @@ final class DomainException extends ExceptionContract {
         );
     }
 
+    public static function RACK_TYPE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::RACK_TYPE_INVALID_TYPE,
+            ErrorMessage::RACK_STATUS_INVALID_TYPE
+        );
+    }
+
     public static function USER_STATUS_INVALID_TYPE(): self {
         return new self(
             ErrorCode::USER_STATUS_INVALID_TYPE,
