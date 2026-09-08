@@ -156,7 +156,7 @@ final class ServiceContext {
         );
     }
     
-    public function find_serive(): FindService {
+    public function findService(): FindService {
         return $this->find_service ??= $this->service->find(
             $this->authorization
         );
