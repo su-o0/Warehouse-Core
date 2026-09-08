@@ -179,11 +179,17 @@ final class RackService {
             throw ServiceException::FORBIDDEN();
         }
 
-        $this->rack_repository->add(
-            type: $rack_type->value,
-            user_id: $this->authorization->getUserId()
-        );
-
+        try {
+            $this->rack_repository->add(
+                type: $rack_type->value,
+                user_id: $this->authorization->getUserId()
+            );
+        }catch(RepositoryException $e) {
+            return ServiceResult::failure(
+                $e->getMessage()
+            );
+        }
+       
         return new ServiceResult(
             success: true
         );

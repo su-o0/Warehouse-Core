@@ -77,7 +77,6 @@ final readonly class Authorization
             'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'populate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
             'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
             'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
@@ -124,6 +123,15 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['find']['zoneName'],
+            true
+        );
+    }
+
+    public function canFindUserName(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['find']['areaName'],
             true
         );
     }
@@ -398,15 +406,6 @@ final readonly class Authorization
         return in_array(
             $this->role,
             self::OPERATIONS['zone']['archive'],
-            true
-        );
-    }
-
-    public function canMarkZoneAsCrowded(): bool
-    {
-        return in_array(
-            $this->role,
-            self::OPERATIONS['zone']['markAsCrowded'],
             true
         );
     }

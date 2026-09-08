@@ -271,7 +271,6 @@ Rack
 │   ├── Registered
 │   ├── Processing
 │   ├── Active
-│   ├── Crowded
 │   └── Archived
 │
 ├── CreatedByUserId

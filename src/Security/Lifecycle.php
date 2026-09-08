@@ -35,7 +35,6 @@ final class Lifecycle
         'rack' => [
             'populate'          => [RackStatusEnum::Registered],
             'activate'          => [RackStatusEnum::Processing, RackStatusEnum::Archived],
-            'markAsCrowded'     => [RackStatusEnum::Active],
             'archive'           => [RackStatusEnum::Active, RackStatusEnum::Crowded],
             'addName'           => [RackStatusEnum::Active, RackStatusEnum::Crowded],
             'setPrimaryName'    => [RackStatusEnum::Active, RackStatusEnum::Crowded],
@@ -154,15 +153,6 @@ final class Lifecycle
         );
     }
 
-    public static function canMarkRackAsCrowded(RackEntity $rack): bool 
-    {
-        return in_array(
-            $rack->status,
-            self::OPERATIONS['rack']['markAsCrowded'],
-            true
-        );
-    }
-    
     public static function canArchiveRack(RackEntity $rack): bool 
     {
         return in_array(

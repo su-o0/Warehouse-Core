@@ -40,7 +40,7 @@ final class PopulateRackTransaction extends Transaction {
             );
 
             $this->rack_repository->updateStatus(
-                id: $user_id,
+                id: $rack->id,
                 status: RackStatusEnum::Processing->value
             );
 

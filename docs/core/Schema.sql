@@ -125,7 +125,7 @@ CREATE TABLE owners (
 CREATE TABLE racks (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,type ENUM('Shelf','StorageSlot') NOT NULL
-    ,status ENUM('Registered','Processing','Active','Crowded','Archived') NOT NULL DEFAULT 'Registered'
+    ,status ENUM('Registered','Processing','Active','Archived') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 

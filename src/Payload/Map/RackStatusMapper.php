@@ -13,7 +13,6 @@ final class RackStatusMapper implements Mapper {
             'Registered'    => RackStatusEnum::Registered,
             'Processing'    => RackStatusEnum::Processing,
             'Active'        => RackStatusEnum::Active,
-            'Crowded'       => RackStatusEnum::Crowded,
             'Archived'      => RackStatusEnum::Archived,
             default         => throw DomainException::RACK_STATUS_INVALID_TYPE()
         };
