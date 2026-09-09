@@ -45,7 +45,7 @@ final class PopulateRackTransaction extends Transaction {
             );
 
             if ($rack->type === RackTypeEnum::Shelf) {
-                for($i = 1; $i <= $count; $i++) {
+                for($i = 0; $i <= $count; $i++) {
                     $this->shelf_repository->add(
                         rack_id: $rack->id,
                         shelf_level: $i,
@@ -55,7 +55,7 @@ final class PopulateRackTransaction extends Transaction {
             }
 
             if ($rack->type === RackTypeEnum::StorageSlot) {
-                for($i = 1; $i <= $count; $i++) {
+                for($i = 0; $i <= $count; $i++) {
                     $this->storage_slot_repository->add(
                         rack_id: $rack->id,
                         slot_position: $i,

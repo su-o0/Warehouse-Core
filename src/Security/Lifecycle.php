@@ -4,10 +4,12 @@ namespace WarehouseCore\Security;
 
 use WarehouseCore\Payload\Entity\AreaEntity;
 use WarehouseCore\Payload\Entity\RackEntity;
+use WarehouseCore\Payload\Entity\ShelfEntity;
 use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Enum\AreaStatusEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
+use WarehouseCore\Payload\Enum\ShelfStatusEnum;
 use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Enum\ZoneStatusEnum;
 
@@ -38,8 +40,12 @@ final class Lifecycle
             'archive'           => [RackStatusEnum::Active],
             'addName'           => [RackStatusEnum::Active],
             'setPrimaryName'    => [RackStatusEnum::Active],
-            'removeName'        => [RackStatusEnum::Active]
-        ],
+            'removeName'        => [RackStatusEnum::Active],
+            'registerShelf'     => [RackStatusEnum::Processing, RackStatusEnum::Active],
+            'registerStorageSlot'   => [RackStatusEnum::Processing, RackStatusEnum::Active],
+            'markShelfAsCrowded'    => [RackStatusEnum::Active],
+            'removeShelf'       => [RackStatusEnum::Active]
+        ],44
         'user' => [
             'activate'          => [UserStatusEnum::Processing, UserStatusEnum::Archived],
             'archive'           => [UserStatusEnum::Active],
@@ -50,9 +56,47 @@ final class Lifecycle
             'dismissRole'       => [UserStatusEnum::Processing, UserStatusEnum::Active],
             'addIdentity'       => [UserStatusEnum::Created, UserStatusEnum::Processing, UserStatusEnum::Active],
             'removeIdentity'    => [UserStatusEnum::Created, UserStatusEnum::Processing, UserStatusEnum::Active]
+        ],
+        'shelf' => [
+            'markAsCrowded'     => [ShelfStatusEnum::Active],
+            'remove'            => [ShelfStatusEnum::Registered, ShelfStatusEnum::Active]
         ]
     ];
 
+    // Shelf
+    public static function canMarkShelfAsCrowded(
+        RackEntity $rack,
+        ShelfEntity $shelf
+    ): bool {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['markShelfAsCrowded'],
+            true
+            )
+            && in_array(
+            $shelf->status,
+            self::OPERATIONS['shelf']['markAsCrowded'],
+            true
+        );
+    }
+
+    public static function canRemoveShelf(
+        RackEntity $rack,
+        ShelfEntity $shelf
+    ): bool {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['removeShelf'],
+            true
+        )
+        && in_array(
+            $shelf->status,
+            self::OPERATIONS['shelf']['removeShelf'],
+            true
+        );
+    }
+
+    // User
     public static function canActivateUser(UserEntity $user): bool 
     {
         return in_array(
@@ -189,6 +233,24 @@ final class Lifecycle
         );
     }
 
+    public static function canRegisterShelf(RackEntity $rack): bool
+    {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['registerShelf'],
+            true
+        );
+    }
+    
+    public static function canRegisterStorageSlot(RackEntity $rack): bool
+    {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['registerStorageSlot'],
+            true
+        );
+    }
+
     // Zone
     public static function canActivateZone(ZoneEntity $zone): bool 
     {
@@ -244,7 +306,6 @@ final class Lifecycle
             true
         );
     }
-
 
     //Area 
     public static function canActivateArea(AreaEntity $area): bool

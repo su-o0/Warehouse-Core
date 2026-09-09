@@ -121,5 +121,7 @@ final class ErrorMessage {
     public const USER_OPERATION_NOT_ALLOWED_IN_CURRENT_STATE = 'User operation not allower in current state'; //007
 
     public const USER_PROCESSING_NOT_COMPLETED = 'User processing not completed'; //007
+
+    public const RACK_INVALID_STRUCTURE_COUNT = 'Invalid rack structure count';
     
 }

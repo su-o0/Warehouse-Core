@@ -25,6 +25,12 @@ final readonly class TransactionConfig {
         public string $add_rack_name,
         public string $set_primary_rack_name,
         public string $remove_rack_name,
+
+        public string $register_shelf,
+        public string $remove_shelf,
+
+        public string $register_storage_slot,
+
     ) { }
 
     public static function fromRaw(array $raw): self {
@@ -50,6 +56,11 @@ final readonly class TransactionConfig {
             add_rack_name: self::requiredString($raw, 'AddRackName'),
             set_primary_rack_name: self::requiredString($raw, 'SetPrimaryRackName'),
             remove_rack_name: self::requiredString($raw, 'RemoveRackName'),
+
+            register_shelf: self::requiredString($raw, 'RegisterShelf'),
+            remove_shelf: self::requiredString($raw, 'RemoveShelf'),
+
+            register_storage_slot: self::requiredString($raw, 'RegisterStorageSlot'),
         );
     }
 } 

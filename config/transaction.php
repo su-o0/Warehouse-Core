@@ -23,4 +23,11 @@ return [
     'SetPrimaryRackName' => 'set_primary_rack_name',
     'RemoveRackName' => 'remove_rack_name',
 
+    'RegisterShelf' => 'register_shelf',
+    'RemoveShelf' => 'remove_shelf',
+
+    'RegisterStorageSlot' => 'register_storage_slot',
+    'RemoveStorageSlot' => 'remove_storage_slot',
+
+    
 ];  

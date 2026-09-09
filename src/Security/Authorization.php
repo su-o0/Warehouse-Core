@@ -74,13 +74,18 @@ final readonly class Authorization
             'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
         ],
         'rack'      => [
-            'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'populate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin],
-            'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin],
+            'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'populate'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'activate'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'archive'           => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'addName'           => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'setPrimaryName'    => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'removeName'        => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+        ],
+        'shelf'     => [
+            'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'remove'            => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
         ]
     ];
 
@@ -681,6 +686,33 @@ final readonly class Authorization
         );
     }
 
+    // Shelf 
+    public function canRegisterShelf(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['shelf']['register'],
+            true
+        );
+    }
+
+    public function canMarkShelfAsCrowded(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['shelf']['markAsCrowded'],
+            true
+        );
+    }
+
+    public function canRemoveShelf(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['shelf']['remove'],
+            true
+        );
+    }
     public function canDelete(): bool
     {
         return $this->role === RoleNameEnum::Root;

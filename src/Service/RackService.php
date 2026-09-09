@@ -1,6 +1,7 @@
 <?php 
 namespace WarehouseCore\Service;
 
+use Error;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
@@ -58,6 +59,12 @@ final class RackService {
             return new ServiceResult(
                 success: false,
                 message: ErrorMessage::RACK_PROCESSING_STEP_ALREADY_EXISTS
+            );
+        }
+
+        if ($count <= 0) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_INVALID_STRUCTURE_COUNT
             );
         }
 

@@ -3,6 +3,7 @@ namespace WarehouseCore\Service\Query;
 
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ServiceException;
+use WarehouseCore\Payload\Entity\RackEntity;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Audit\ContainerMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\ContainerPlacementArchiveRepository;
@@ -33,6 +34,7 @@ use WarehouseCore\Repository\Topology\AreaRepository;
 use WarehouseCore\Repository\Topology\ContainerPlacementRepository;
 use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\RackPlacementRepository;
+use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
@@ -41,6 +43,7 @@ final class FindService {
     public function __construct(
         public string $service_name,
         private Authorization $authorization,
+        private ShelfRepository $shelf_repository,
         private ContainerPlacementRepository $container_placement,
         private ItemPlacementRepository $item_placement, 
         private RackPlacementRepository $rack_placement,
@@ -136,4 +139,25 @@ final class FindService {
         return ServiceResult::entity($user_name);
     }
 
+    public function findShelfByRackIdAndShelfLevel(
+        RackEntity $rack,
+        int $shelf_level
+    ): ServiceResult {
+        if (!$this->authorization->canFindUserName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $shelf = $this->shelf_repository->findByRackIdAndShelfLevel(
+            $rack->id,
+            $shelf_level
+        );
+
+        if ($shelf === null) {
+            return ServiceResult::failure(
+                ErrorMessage::SHELF_NOT_FOUND
+            );
+        }
+
+        return ServiceResult::entity($shelf);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace WarehouseCore\Registry;
 
+use WarehouseCore\Api\Inventory\Shelf\RegisterShelfApi;
 use WarehouseCore\Config\TransactionConfig;
 use WarehouseCore\Connection\Connection;
 use WarehouseCore\Transaction\Area\AddAreaNameTransaction;
@@ -13,6 +14,8 @@ use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
 use WarehouseCore\Transaction\Rack\ArchiveRackTransaction;
 use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
 use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
+use WarehouseCore\Transaction\Shelf\RegisterShelfTransaction;
+use WarehouseCore\Transaction\Shelf\RemoveShelfTransaction;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
 use WarehouseCore\Transaction\User\AddUserNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
@@ -45,6 +48,9 @@ final class TransactionRegistry {
     private ?ArchiveRackTransaction $archive_rack = null;
     private ?AddRackNameTransaction $add_rack_name = null;
     private ?SetPrimaryRackNameTransaction $set_primary_rack_name = null;
+
+    private ?RegisterShelfTransaction $register_shelf = null;
+    private ?RemoveShelfTransaction $remove_shelf = null;
 
     public function __construct(
         private TransactionConfig $config,
@@ -207,6 +213,24 @@ final class TransactionRegistry {
             $this->db,
             $this->config->set_primary_rack_name,
             $this->repository->rackName()
+        );
+    }
+
+    public function registerShelf(): RegisterShelfTransaction {
+        return $this->register_shelf ??= new RegisterShelfTransaction(
+            $this->db,
+            $this->config->register_shelf,
+            $this->repository->shelf()
+        );
+    }
+
+    public function removeShelf(): RemoveShelfTransaction {
+        return $this->remove_shelf ??= new RemoveShelfTransaction(
+            $this->db,
+            $this->config->remove_shelf,
+            $this->repository->rack(),
+            $this->repository->rackProcessingStep(),
+            $this->repository->shelf()
         );
     }
 }

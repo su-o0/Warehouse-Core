@@ -184,6 +184,9 @@ final class ServiceRegistry {
             $this->config->sales,
             $authorization,
             $this->repository->shelf(),
+            $this->repository->rackProcessingStep(),
+            $this->transaction->registerShelf(),
+            $this->transaction->removeShelf()
         );
     }
 
@@ -257,6 +260,7 @@ final class ServiceRegistry {
         return new FindService(
             $this->config->find,
             $authorization,
+            $this->repository->shelf(),
             $this->repository->containerPlacement(),
             $this->repository->itemPlacement(),
             $this->repository->rackPlacement(),

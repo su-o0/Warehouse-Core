@@ -24,6 +24,34 @@ final class ShelfRepository extends Repository {
         );
     }
 
+    public function countByRackId(
+        int $rack_id
+    ): int {
+        $result = $this->fetchOne(
+            "SELECT COUNT(*) as count FROM {$this->table}
+            WHERE rack_id = :rack_id",
+            [
+                ':rack_id' => $rack_id
+            ]
+        );
+    
+        return (int)$result['count'];
+    }
+
+    public function findLastLevelByRackId(
+        int $rack_id
+    ): ?ShelfEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id
+            ORDER BY shelf_level DESC LIMIT 1
+            ",
+            [
+                ':rack_id' => $rack_id
+            ]
+        );
+    }
+
     public function findByRackId(
         int $rack_id
     ): array {
@@ -39,8 +67,8 @@ final class ShelfRepository extends Repository {
     public function findByRackIdAndShelfLevel(
         int $rack_id,
         int $shelf_level
-    ): array {
-        return $this->entities(
+    ): ?ShelfEntity {
+        return $this->entity(
             "SELECT * FROM {$this->table}
             WHERE rack_id = :rack_id 
             AND shelf_level = :shelf_level",
