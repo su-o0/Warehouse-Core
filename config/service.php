@@ -16,6 +16,7 @@ return [
     'Rack'              => 'rack',
     'Sales'             => 'sales',
     'Shelf'             => 'shelf',
+    'StorageSlot'       => 'storage_slot',
     'Stock'             => 'stock',
     'Vehicle'           => 'vehicle',
     'Video'             => 'video',

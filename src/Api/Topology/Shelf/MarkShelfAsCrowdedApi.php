@@ -1,8 +1,9 @@
 <?php 
-namespace WarehouseCore\Api\Inventory\Shelf;
+namespace WarehouseCore\Api\Topology\Shelf;
 
 use WarehouseCore\Contract\ApiResult;
-use WarehouseCore\Payload\Request\EntityRequest;
+use WarehouseCore\Payload\Request\EntityRecordRequest;
+use WarehouseCore\Service\Query\FindService;
 use WarehouseCore\Service\Query\GetService;
 use WarehouseCore\Service\ShelfService;
 
@@ -10,13 +11,14 @@ final class MarkShelfAsCrowdedApi {
     public function __construct(
         public string $api_name,
         private GetService $get_service,
+        private FindService $find_service,
         private ShelfService $shelf_service
     ) { }
 
     public function handle(
-        EntityRequest $request
+        EntityRecordRequest $request
     ): ApiResult {
-        $result = $this->get_service->getShelf(
+        $result = $this->get_service->getRack(
             $request->id
         );
 
@@ -24,9 +26,21 @@ final class MarkShelfAsCrowdedApi {
             return $result;
         }
 
-        $shelf = $result->entity;
+        $rack = $result->entity;
 
+        $result = $this->find_service->findShelfByRackIdAndShelfLevel(
+            $rack,
+            $request->record_id
+        );
+
+        if (!$result->success) {
+            return $result;
+        }
+
+        $shelf = $result->entity;
+        
         return $this->shelf_service->markShelfAsCrowded(
+            rack: $rack,
             shelf: $shelf
         );
     }

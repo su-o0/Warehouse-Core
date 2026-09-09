@@ -385,4 +385,31 @@ final class ApiHandlerRegistry {
             EntityRecordRequest::fromRaw($raw)
         );
     }
+
+    public function registerStorageSlot(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->registerShelf(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function markStorageSlotAsCrowded(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->markShelfAsCrowded(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
+
+    public function removeStorageSlot(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeStorageSlot(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
 }

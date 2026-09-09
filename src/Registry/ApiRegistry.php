@@ -30,9 +30,10 @@ use WarehouseCore\Api\Inventory\Rack\ActivateRackApi;
 use WarehouseCore\Api\Inventory\Rack\ArchiveRackApi;
 use WarehouseCore\Api\Inventory\Rack\PopulateRackApi;
 use WarehouseCore\Api\Inventory\Rack\RegisterRackApi;
-use WarehouseCore\Api\Inventory\Shelf\MarkShelfAsCrowdedApi;
-use WarehouseCore\Api\Inventory\Shelf\RegisterShelfApi;
-use WarehouseCore\Api\Inventory\Shelf\RemoveShelfApi;
+use WarehouseCore\Api\Inventory\Shelf\RemoveStorageSlotApi;
+use WarehouseCore\Api\Topology\Shelf\MarkShelfAsCrowdedApi;
+use WarehouseCore\Api\Topology\Shelf\RegisterShelfApi;
+use WarehouseCore\Api\Topology\Shelf\RemoveShelfApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
 use WarehouseCore\Api\Query\List\ListAreaNamesApi;
 use WarehouseCore\Api\Query\List\ListUserApi;
@@ -40,6 +41,8 @@ use WarehouseCore\Api\Query\List\ListUserIdentitiesApi;
 use WarehouseCore\Api\Query\List\ListZoneByAreaApi;
 use WarehouseCore\Api\Query\List\ListZoneNamesApi;
 use WarehouseCore\Api\Query\List\ListUserNamesApi;
+use WarehouseCore\Api\Topology\StorageSlot\MarkStorageSlotAsCrowdedApi;
+use WarehouseCore\Api\Topology\StorageSlot\RegisterStorageSlotApi;
 use WarehouseCore\Api\Topology\Zone\ActivateZoneApi;
 use WarehouseCore\Api\Topology\Zone\ArchiveZoneApi;
 use WarehouseCore\Api\Topology\Zone\CreateZoneApi;
@@ -355,6 +358,7 @@ final class ApiRegistry {
         return new MarkShelfAsCrowdedApi(
             $this->config->mark_shelf_as_crowded,
             $this->context->getService(),
+            $this->context->findService(),
             $this->context->shelfService()
         );
     }
@@ -365,6 +369,32 @@ final class ApiRegistry {
             $this->context->getService(),
             $this->context->findService(),
             $this->context->shelfService()
+        );
+    }
+
+    public function registerStorageSlot(): RegisterStorageSlotApi {
+        return new RegisterStorageSlotApi(
+            $this->config->register_storage_slot,
+            $this->context->getService(),
+            $this->context->storageSlotService()
+        );
+    }
+
+    public function markStorageSlotAsCrowded(): MarkStorageSlotAsCrowdedApi {
+        return new MarkStorageSlotAsCrowdedApi(
+            $this->config->mark_storage_slot_as_crowded,
+            $this->context->getService(),
+            $this->context->findService(),
+            $this->context->storageSlotService()
+        );
+    }
+
+    public function removeStorageSlot(): RemoveStorageSlotApi {
+        return new RemoveStorageSlotApi(
+            $this->config->remove_storage_slot,
+            $this->context->getService(),
+            $this->context->findService(),
+            $this->context->storageSlotService()
         );
     }
 }

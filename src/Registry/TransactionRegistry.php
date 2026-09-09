@@ -16,6 +16,8 @@ use WarehouseCore\Transaction\Rack\PopulateRackTransaction;
 use WarehouseCore\Transaction\Rack\SetPrimaryRackNameTransaction;
 use WarehouseCore\Transaction\Shelf\RegisterShelfTransaction;
 use WarehouseCore\Transaction\Shelf\RemoveShelfTransaction;
+use WarehouseCore\Transaction\StorageSlot\RegisterStorageSlotTransaction;
+use WarehouseCore\Transaction\StorageSlot\RemoveStorageSlotTransaction;
 use WarehouseCore\Transaction\User\AddUserIdentityTransaction;
 use WarehouseCore\Transaction\User\AddUserNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
@@ -51,6 +53,9 @@ final class TransactionRegistry {
 
     private ?RegisterShelfTransaction $register_shelf = null;
     private ?RemoveShelfTransaction $remove_shelf = null;
+
+    private ?RegisterStorageSlotTransaction $register_storage_slot = null;
+    private ?RemoveStorageSlotTransaction $remove_storage_slot = null;
 
     public function __construct(
         private TransactionConfig $config,
@@ -231,6 +236,24 @@ final class TransactionRegistry {
             $this->repository->rack(),
             $this->repository->rackProcessingStep(),
             $this->repository->shelf()
+        );
+    }
+    
+    public function registerStorageSlot(): RegisterStorageSlotTransaction {
+        return $this->register_storage_slot ??= new RegisterStorageSlotTransaction(
+            $this->db,
+            $this->config->register_storage_slot,
+            $this->repository->storageSlot()
+        );
+    }
+
+    public function removeStorageSlot(): RemoveStorageSlotTransaction {
+        return $this->remove_storage_slot ??= new RemoveStorageSlotTransaction(
+            $this->db,
+            $this->config->remove_storage_slot,
+            $this->repository->rack(),
+            $this->repository->rackProcessingStep(),
+            $this->repository->storageSlot()
         );
     }
 }

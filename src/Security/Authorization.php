@@ -86,6 +86,11 @@ final readonly class Authorization
             'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
             'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
             'remove'            => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+        ],
+        'storageSlot'     => [
+            'register'          => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'markAsCrowded'     => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
+            'remove'            => [RoleNameEnum::Root, RoleNameEnum::Admin, RoleNameEnum::Worker],
         ]
     ];
 
@@ -713,6 +718,35 @@ final readonly class Authorization
             true
         );
     }
+
+    // StorageSlot
+    public function canRegisterStorageSlot(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['storageSlot']['register'],
+            true
+        );
+    }
+
+    public function canMarkStorageSlotAsCrowded(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['storageSlot']['markAsCrowded'],
+            true
+        );
+    }
+
+    public function canRemoveStorageSlot(): bool
+    {
+        return in_array(
+            $this->role,
+            self::OPERATIONS['storageSlot']['remove'],
+            true
+        );
+    }
+
     public function canDelete(): bool
     {
         return $this->role === RoleNameEnum::Root;

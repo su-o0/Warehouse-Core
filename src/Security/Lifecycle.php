@@ -5,11 +5,13 @@ namespace WarehouseCore\Security;
 use WarehouseCore\Payload\Entity\AreaEntity;
 use WarehouseCore\Payload\Entity\RackEntity;
 use WarehouseCore\Payload\Entity\ShelfEntity;
+use WarehouseCore\Payload\Entity\StorageSlotEntity;
 use WarehouseCore\Payload\Entity\UserEntity;
 use WarehouseCore\Payload\Entity\ZoneEntity;
 use WarehouseCore\Payload\Enum\AreaStatusEnum;
 use WarehouseCore\Payload\Enum\RackStatusEnum;
 use WarehouseCore\Payload\Enum\ShelfStatusEnum;
+use WarehouseCore\Payload\Enum\StorageSlotStatusEnum;
 use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Enum\ZoneStatusEnum;
 
@@ -60,6 +62,10 @@ final class Lifecycle
         'shelf' => [
             'markAsCrowded'     => [ShelfStatusEnum::Active],
             'remove'            => [ShelfStatusEnum::Registered, ShelfStatusEnum::Active]
+        ],
+        'storageSlot' => [
+            'markAsCrowded'     => [StorageSlotStatusEnum::Active],
+            'remove'            => [StorageSlotStatusEnum::Registered, ShelfStatusEnum::Active]
         ]
     ];
 
@@ -83,6 +89,39 @@ final class Lifecycle
     public static function canRemoveShelf(
         RackEntity $rack,
         ShelfEntity $shelf
+    ): bool {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['removeShelf'],
+            true
+        )
+        && in_array(
+            $shelf->status,
+            self::OPERATIONS['shelf']['removeShelf'],
+            true
+        );
+    }
+
+    // StorageSlot
+    public static function canMarkStorageSlotAsCrowded(
+        RackEntity $rack,
+        StorageSlotEntity $shelf
+    ): bool {
+        return in_array(
+            $rack->status,
+            self::OPERATIONS['rack']['markShelfAsCrowded'],
+            true
+            )
+            && in_array(
+            $shelf->status,
+            self::OPERATIONS['shelf']['markAsCrowded'],
+            true
+        );
+    }
+    
+    public static function canRemoveStorageSlot(
+        RackEntity $rack,
+        StorageSlotEntity $shelf
     ): bool {
         return in_array(
             $rack->status,

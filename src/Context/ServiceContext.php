@@ -2,6 +2,7 @@
 namespace WarehouseCore\Context;
 
 use WarehouseCore\Payload\DTO\SessionDTO;
+use WarehouseCore\Payload\Entity\StorageSlotEntity;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Registry\ServiceRegistry;
 
@@ -23,6 +24,7 @@ use WarehouseCore\Service\MovementService;
 use WarehouseCore\Service\PlacementService;
 use WarehouseCore\Service\RackService;
 use WarehouseCore\Service\ShelfService;
+use WarehouseCore\Service\StorageSlotService;
 use WarehouseCore\Service\VideoService;
 use WarehouseCore\Service\ZoneService;
 
@@ -40,6 +42,7 @@ final class ServiceContext {
     private ?RackService $rack_service = null;
     private ?SalesService $sales_service = null;
     private ?ShelfService $shelf_service = null;
+    private ?StorageSlotService $storage_slot_service = null;
     private ?StockService $stock_service = null;
     private ?VehicleService $vehicle_service = null;
     private ?VideoService $video_service = null;
@@ -128,6 +131,12 @@ final class ServiceContext {
 
     public function shelfService(): ShelfService {
         return $this->shelf_service ??= $this->service->shelf(
+            $this->authorization
+        );
+    }
+
+    public function storageSlotService(): StorageSlotService {
+        return $this->storage_slot_service ??= $this->service->storageSlot(
             $this->authorization
         );
     }

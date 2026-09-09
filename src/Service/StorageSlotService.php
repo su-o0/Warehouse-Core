@@ -5,40 +5,40 @@ use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\Entity\RackEntity;
-use WarehouseCore\Payload\Entity\ShelfEntity;
+use WarehouseCore\Payload\Entity\StorageSlotEntity;
 use WarehouseCore\Payload\Enum\RackProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\RackTypeEnum;
-use WarehouseCore\Payload\Enum\ShelfStatusEnum;
+use WarehouseCore\Payload\Enum\StorageSlotStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
-use WarehouseCore\Repository\Topology\ShelfRepository;
+use WarehouseCore\Repository\Topology\StorageSlotRepository;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Security\Lifecycle;
-use WarehouseCore\Transaction\Shelf\RegisterShelfTransaction;
-use WarehouseCore\Transaction\Shelf\RemoveShelfTransaction;
+use WarehouseCore\Transaction\StorageSlot\RegisterStorageSlotTransaction;
+use WarehouseCore\Transaction\StorageSlot\RemoveStorageSlotTransaction;
 
-final class ShelfService {
+final class StorageSlotService {
     public function __construct(
         public string $service_name,
         private Authorization $authorization,
-        private ShelfRepository $shelf_repository,
+        private StorageSlotRepository $storage_slot_repository,
         private RackProcessingStepRepository $rack_processing_step_repository,
-        private RegisterShelfTransaction $register_shelf_transaction,
-        private RemoveShelfTransaction $remove_shelf_transaction,
+        private RegisterStorageSlotTransaction $register_storage_slot_transaction,
+        private RemoveStorageSlotTransaction $remove_storage_slot_transaction,
     ) { }
 
-    public function registerShelf(
+    public function registerStorageSlot(
         RackEntity $rack
     ): ServiceResult {
-        if (!$this->authorization->canRegisterShelf()) {
+        if (!$this->authorization->canRegisterStorageSlot()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        if (!Lifecycle::canRegisterShelf($rack)) {
+        if (!Lifecycle::canRegisterStorageSlot($rack)) {
             throw ServiceException::FORBIDDEN();
         }
 
-        if ($rack->type !== RackTypeEnum::Shelf) {
+        if ($rack->type !== RackTypeEnum::StorageSlot) {
             throw ServiceException::FORBIDDEN();
         }
 
@@ -53,7 +53,7 @@ final class ShelfService {
             );
         }
 
-        $result = $this->shelf_repository->findLastLevelByRackId(
+        $result = $this->storage_slot_repository->findLastPositionByRackId(
             rack_id: $rack->id
         );
 
@@ -63,31 +63,31 @@ final class ShelfService {
             );
         }
 
-        $shelf_level = $result->shelf_level + 1;
+        $slot_position = $result->slot_position + 1;
         
-        return $this->register_shelf_transaction->handle(
+        return $this->register_storage_slot_transaction->handle(
             rack: $rack,
-            shelf_level: $shelf_level,
+            slot_position: $slot_position,
             user_id: $this->authorization->getUserId()
         );
     }
 
-    public function markShelfAsCrowded(
+    public function markStorageSlotAsCrowded(
         RackEntity $rack,
-        ShelfEntity $shelf
+        StorageSlotEntity $storage_slot
     ): ServiceResult {
-        if (!$this->authorization->canMarkShelfAsCrowded()) {
+        if (!$this->authorization->canMarkStorageSlotAsCrowded()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        if (!Lifecycle::canMarkShelfAsCrowded($rack, $shelf)) {
+        if (!Lifecycle::canMarkStorageSlotAsCrowded($rack, $storage_slot)) {
             throw ServiceException::FORBIDDEN();
         }
 
         try {
-            $this->shelf_repository->updateStatus(
-                id: $shelf->id,
-                status: ShelfStatusEnum::Crowded->value
+            $this->storage_slot_repository->updateStatus(
+                id: $storage_slot->id,
+                status: StorageSlotStatusEnum::Crowded->value
             );
         } catch (RepositoryException $e) {
             return ServiceResult::failure(
@@ -98,21 +98,21 @@ final class ShelfService {
         return ServiceResult::success();
     }
 
-    public function removeShelf(
+    public function removeStorageSlot(
         RackEntity $rack,
-        ShelfEntity $shelf
+        StorageSlotEntity $storage_slot
     ): ServiceResult {
-        if (!$this->authorization->canRemoveShelf()) {
+        if (!$this->authorization->canRemoveStorageSlot()) {
             throw ServiceException::FORBIDDEN();
         }
 
-        if (!Lifecycle::canRemoveShelf($rack, $shelf)) {
+        if (!Lifecycle::canRemoveStorageSlot($rack, $storage_slot)) {
             throw ServiceException::FORBIDDEN();
         }
 
-        return $this->remove_shelf_transaction->handle(
+        return $this->remove_storage_slot_transaction->handle(
             rack: $rack,
-            shelf: $shelf,
+            storage_slot: $storage_slot
         );
     }
 }

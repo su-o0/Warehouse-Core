@@ -461,4 +461,38 @@ final class ShellFacade {
             ])
         );
     }
+
+    public function registerStorageSlot(
+        int $rack_id,
+    ): string {
+        return $this->output->render(
+            $this->api->registerStorageSlot([
+                'id' => $rack_id,
+            ])
+        );
+    }
+
+    public function markStorageSlotAsCrowded(
+        int $rack_id,
+        int $slot_position,
+    ): string {
+        return $this->output->render(
+            $this->api->markStorageSlotAsCrowded([
+                'id' => $rack_id,
+                'record_id' => $slot_position,
+            ])
+        );
+    }
+
+    public function removeStorageSlot(
+        int $rack_id,
+        int $slot_position,
+    ): string {
+        return $this->output->render(
+            $this->api->removeStorageSlot([
+                'id' => $rack_id,
+                'record_id' => $slot_position,
+            ])
+        );
+    }
 }

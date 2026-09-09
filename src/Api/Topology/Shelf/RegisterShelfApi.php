@@ -1,5 +1,5 @@
 <?php 
-namespace WarehouseCore\Api\Inventory\Shelf;
+namespace WarehouseCore\Api\Topology\Shelf;
 
 use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Payload\Request\EntityRequest;

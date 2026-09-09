@@ -3,7 +3,6 @@ namespace WarehouseCore\Repository\Topology;
 
 use WarehouseCore\Contract\Repository;
 use WarehouseCore\Payload\Map\PdoExceptionMapper;
-use WarehouseCore\Payload\Entity\ShelfEntity;
 use WarehouseCore\Payload\Entity\StorageSlotEntity;
 
 final class StorageSlotRepository extends Repository {
@@ -21,6 +20,34 @@ final class StorageSlotRepository extends Repository {
             WHERE id = :id",
             [
                 ':id' => $id
+            ]
+        );
+    }
+
+    public function countByRackId(
+        int $rack_id
+    ): int {
+        $result = $this->fetchOne(
+            "SELECT COUNT(*) as count FROM {$this->table}
+            WHERE rack_id = :rack_id",
+            [
+                ':rack_id' => $rack_id
+            ]
+        );
+    
+        return (int)$result['count'];
+    }
+
+    public function findLastPositionByRackId(
+        int $rack_id
+    ): ?StorageSlotEntity {
+        return $this->entity(
+            "SELECT * FROM {$this->table}
+            WHERE rack_id = :rack_id
+            ORDER BY slot_position DESC LIMIT 1
+            ",
+            [
+                ':rack_id' => $rack_id
             ]
         );
     }

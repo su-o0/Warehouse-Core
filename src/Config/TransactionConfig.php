@@ -30,6 +30,7 @@ final readonly class TransactionConfig {
         public string $remove_shelf,
 
         public string $register_storage_slot,
+        public string $remove_storage_slot,
 
     ) { }
 
@@ -61,6 +62,7 @@ final readonly class TransactionConfig {
             remove_shelf: self::requiredString($raw, 'RemoveShelf'),
 
             register_storage_slot: self::requiredString($raw, 'RegisterStorageSlot'),
+            remove_storage_slot: self::requiredString($raw, 'RemoveStorageSlot'),
         );
     }
 } 

@@ -5,14 +5,14 @@ use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Payload\Request\EntityRecordRequest;
 use WarehouseCore\Service\Query\FindService;
 use WarehouseCore\Service\Query\GetService;
-use WarehouseCore\Service\ShelfService;
+use WarehouseCore\Service\StorageSlotService;
 
-final class RemoveShelfApi {
+final class RemoveStorageSlotApi {
     public function __construct(
         public string $api_name,
         private GetService $get_service,
         private FindService $find_service,
-        private ShelfService $shelf_service
+        private StorageSlotService $storage_slot_service
     ) { }
 
     public function handle(
@@ -37,12 +37,11 @@ final class RemoveShelfApi {
             return $result;
         }
 
-        $shelf = $result->entity;
+        $storage_slot = $result->entity;
 
-        
-        return $this->shelf_service->removeShelf(
+        return $this->storage_slot_service->removeStorageSlot(
             rack: $rack,
-            shelf: $shelf
+            storage_slot: $storage_slot
         );
     }
 }

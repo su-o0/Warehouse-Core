@@ -20,11 +20,34 @@ use WarehouseCore\Service\PlacementService;
 use WarehouseCore\Service\RackService;
 use WarehouseCore\Service\SalesService;
 use WarehouseCore\Service\ShelfService;
+use WarehouseCore\Service\StorageSlotService;
 use WarehouseCore\Service\VehicleService;
 use WarehouseCore\Service\VideoService;
 use WarehouseCore\Service\ZoneService;
 
 final class ServiceRegistry {
+
+    private ?AreaService $area = null;
+    private ?ContainerService $container = null;
+    private ?ItemService $item = null;
+    private ?MovementService $movement = null;
+    private ?OwnerService $owner = null;
+    private ?PartService $part = null;
+    private ?PhotoService $photo = null;
+    private ?PhysicalTagService $physical_tag = null;
+    private ?PlacementService $placement = null;
+    private ?RackService $rack = null;
+    private ?SalesService $sales = null;
+    private ?StorageSlotService $storage_slot = null;
+    private ?StockService $stock = null;
+    private ?UserService $user = null;
+    private ?VehicleService $vehicle = null;
+    private ?VideoService $video = null;
+    private ?ZoneService $zone = null;
+    private ?FindService $find = null;
+    private ?GetService $get = null;
+    private ?ListService $list = null;
+
     public function __construct(
         private ServiceConfig $config,
         private RepositoryRegistry $repository, 
@@ -34,7 +57,7 @@ final class ServiceRegistry {
     public function area(
         Authorization $authorization
     ): AreaService {
-        return new AreaService(
+        return $this->area ??= new AreaService(
             $this->config->area,
             $authorization,
             $this->repository->area(),
@@ -49,7 +72,7 @@ final class ServiceRegistry {
     public function container(
         Authorization $authorization
     ): ContainerService {
-        return new ContainerService(
+        return $this->container ??= new ContainerService(
             $this->config->container,
             $authorization,
             $this->repository->container()
@@ -59,7 +82,7 @@ final class ServiceRegistry {
     public function item(
         Authorization $authorization
     ): ItemService {
-        return new ItemService(
+        return $this->item ??=new ItemService(
             $this->config->item,
             $authorization,
             $this->repository->item(),
@@ -70,7 +93,7 @@ final class ServiceRegistry {
     public function movement(
         Authorization $authorization
     ): MovementService {
-        return new MovementService(
+        return $this->movement ??= new MovementService(
             $this->config->movement,
             $authorization,
             $this->repository->container(),
@@ -85,7 +108,7 @@ final class ServiceRegistry {
     public function owner(
         Authorization $authorization
     ): OwnerService {
-        return new OwnerService(
+        return $this->owner ??= new OwnerService(
             $this->config->owner,
             $authorization,
             $this->repository->owner(),
@@ -96,7 +119,7 @@ final class ServiceRegistry {
     public function part(
         Authorization $authorization
     ): PartService {
-        return new PartService(
+        return $this->part ??= new PartService(
             $this->config->part,
             $authorization,
             $this->repository->part(),
@@ -108,7 +131,7 @@ final class ServiceRegistry {
     public function photo(
         Authorization $authorization
     ): PhotoService {
-        return new PhotoService(
+        return $this->photo ??= new PhotoService(
             $this->config->photo,
             $authorization,
             $this->repository->partPhoto(),
@@ -121,7 +144,7 @@ final class ServiceRegistry {
     public function physicalTag(
         Authorization $authorization
     ): PhysicalTagService {
-        return new PhysicalTagService(
+        return $this->physical_tag ??=new PhysicalTagService(
             $this->config->physical_tag,
             $authorization,
             $this->repository->physicalTag()
@@ -131,7 +154,7 @@ final class ServiceRegistry {
     public function placement(
         Authorization $authorization
     ): PlacementService {
-        return new PlacementService(
+        return $this->placement ??=new PlacementService(
             $this->config->placement,
             $authorization,
             $this->repository->area(),
@@ -151,7 +174,7 @@ final class ServiceRegistry {
     public function rack(
         Authorization $authorization
     ): RackService {
-        return new RackService(
+        return $this->rack ??=new RackService(
             $this->config->rack,
             $authorization,
             $this->repository->rack(),
@@ -165,11 +188,10 @@ final class ServiceRegistry {
         );
     }
 
-
     public function sales(
         Authorization $authorization
     ): SalesService {
-        return new SalesService(
+        return $this->sales ??=new SalesService(
             $this->config->sales,
             $authorization,
             $this->repository->itemSalesArchive(),
@@ -180,8 +202,8 @@ final class ServiceRegistry {
     public function shelf(
         Authorization $authorization
     ): ShelfService {
-        return new ShelfService(
-            $this->config->sales,
+        return $this->shelf ??=new ShelfService(
+            $this->config->shelf,
             $authorization,
             $this->repository->shelf(),
             $this->repository->rackProcessingStep(),
@@ -190,10 +212,23 @@ final class ServiceRegistry {
         );
     }
 
+    public function storageSlot(
+        Authorization $authorization
+    ): StorageSlotService {
+        return$this->storage_slot ??= new StorageSlotService(
+            $this->config->storage_slot,
+            $authorization,
+            $this->repository->storageSlot(),
+            $this->repository->rackProcessingStep(),
+            $this->transaction->registerStorageSlot(),
+            $this->transaction->removeStorageSlot()
+        );
+    }
+
     public function stock(
         Authorization $authorization
     ): StockService {
-        return new StockService(
+        return $this->stock ??=new StockService(
             $this->config->stock,
             $authorization,
             $this->repository->stock(),
@@ -204,7 +239,7 @@ final class ServiceRegistry {
     public function user(
         Authorization $authorization
     ): UserService {
-        return new UserService(
+        return $this->user ??=new UserService(
             $this->config->user,
             $authorization,
             $this->repository->role(),
@@ -225,7 +260,7 @@ final class ServiceRegistry {
     public function vehicle(
         Authorization $authorization
     ): VehicleService {
-        return new VehicleService(
+        return $this->vehicle ??=new VehicleService(
             $this->config->vehicle,
             $authorization,
             $this->repository->vehicle()
@@ -235,7 +270,7 @@ final class ServiceRegistry {
     public function video(
         Authorization $authorization
     ): VideoService {
-        return new VideoService(
+        return $this->video ??=new VideoService(
             $this->config->video,
             $authorization,
         );
@@ -244,7 +279,7 @@ final class ServiceRegistry {
     public function zone(
         Authorization $authorization
     ): ZoneService {
-        return new ZoneService(
+        return $this->zone ??= new ZoneService(
             $this->config->zone,
             $authorization,
             $this->repository->zone(),
@@ -257,10 +292,11 @@ final class ServiceRegistry {
     public function find(
         Authorization $authorization
     ): FindService {
-        return new FindService(
+        return $this->find ??= new FindService(
             $this->config->find,
             $authorization,
             $this->repository->shelf(),
+            $this->repository->storageSlot(),
             $this->repository->containerPlacement(),
             $this->repository->itemPlacement(),
             $this->repository->rackPlacement(),
@@ -299,7 +335,7 @@ final class ServiceRegistry {
     public function get(
         Authorization $authorization
     ) : GetService {
-        return new GetService(
+        return $this->get ??= new GetService(
             $this->config->get, 
             $authorization,
             $this->repository->area(),
@@ -323,7 +359,7 @@ final class ServiceRegistry {
     public function list(
         Authorization $authorization
     ): ListService {
-        return new ListService(
+        return $this->list ??= new ListService(
             $this->config->list,
             $authorization,
             $this->repository->area(),

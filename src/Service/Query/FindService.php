@@ -36,6 +36,7 @@ use WarehouseCore\Repository\Topology\ItemPlacementRepository;
 use WarehouseCore\Repository\Topology\RackPlacementRepository;
 use WarehouseCore\Repository\Topology\ShelfRepository;
 use WarehouseCore\Repository\Topology\StockPlacementRepository;
+use WarehouseCore\Repository\Topology\StorageSlotRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
 
@@ -44,6 +45,7 @@ final class FindService {
         public string $service_name,
         private Authorization $authorization,
         private ShelfRepository $shelf_repository,
+        private StorageSlotRepository $storage_slot_repository,
         private ContainerPlacementRepository $container_placement,
         private ItemPlacementRepository $item_placement, 
         private RackPlacementRepository $rack_placement,
@@ -155,6 +157,28 @@ final class FindService {
         if ($shelf === null) {
             return ServiceResult::failure(
                 ErrorMessage::SHELF_NOT_FOUND
+            );
+        }
+
+        return ServiceResult::entity($shelf);
+    }
+
+    public function findStorageSlotByRackIdAndShelfLevel(
+        RackEntity $rack,
+        int $slot_position
+    ): ServiceResult {
+        if (!$this->authorization->canFindUserName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $shelf = $this->storage_slot_repository->findByRackIdAndSlotPosition(
+            $rack->id,
+            $slot_position
+        );
+
+        if ($shelf === null) {
+            return ServiceResult::failure(
+                ErrorMessage::STORAGE_SLOT_NOT_FOUND
             );
         }
 
