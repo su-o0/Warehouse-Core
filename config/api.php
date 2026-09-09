@@ -44,7 +44,6 @@ return [
 
     'RegisterRack' => 'register_rack',
     'ActivateRack' => 'activate_rack',
-    'MarkRackAsCrowded' => 'mark_rack_as_crowded',
     'ArchiveRack' => 'archive_rack',
     'PopulateRack' => 'populate_rack',
     'PlaceRackToArea' => 'place_rack_to_area',
@@ -55,9 +54,19 @@ return [
     'SetPrimaryRackName' => 'set_primary_rack_name',
     'RemoveRackName' => 'remove_rack_name',
 
+    'RegisterShelf' => 'register_shelf',
+    'MarkShelfAsCrowded' => 'mark_shelf_as_crowded',
+    'RemoveShelf' => 'remove_shelf',
+
+    'RegisterStorageSlot' => 'register_storage_slot',
+    'MarkStorageSlotAsCrowded' => 'mark_storage_slot_as_crowded',
+    'RemoveStorageSlot' => 'remove_storage_slot',
+
+
     'CreatePhysicalTag' => 'create_physical_tag',
     'CreateContainer' => 'create_container',
     'AssignPhysicalTag' => 'assign_physical_tag',
     'CreateStock' => 'create_stock',
-    'PlaceItem' => 'place_item'
+    'PlaceItem' => 'place_item',
+
 ];

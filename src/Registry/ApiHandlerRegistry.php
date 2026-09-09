@@ -358,4 +358,31 @@ final class ApiHandlerRegistry {
             EntityRequest::fromRaw($raw)
         );
     }
+
+    public function registerShelf(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->registerShelf(),
+            EntityRequest::fromRaw($raw)
+        );
+    }
+
+    public function markShelfAsCrowded(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->markShelfAsCrowded(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
+
+    public function removeShelf(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeShelf(),
+            EntityRecordRequest::fromRaw($raw)
+        );
+    }
 }

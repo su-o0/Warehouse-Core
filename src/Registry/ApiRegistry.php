@@ -30,6 +30,9 @@ use WarehouseCore\Api\Inventory\Rack\ActivateRackApi;
 use WarehouseCore\Api\Inventory\Rack\ArchiveRackApi;
 use WarehouseCore\Api\Inventory\Rack\PopulateRackApi;
 use WarehouseCore\Api\Inventory\Rack\RegisterRackApi;
+use WarehouseCore\Api\Inventory\Shelf\MarkShelfAsCrowdedApi;
+use WarehouseCore\Api\Inventory\Shelf\RegisterShelfApi;
+use WarehouseCore\Api\Inventory\Shelf\RemoveShelfApi;
 use WarehouseCore\Api\Query\List\ListAreaApi;
 use WarehouseCore\Api\Query\List\ListAreaNamesApi;
 use WarehouseCore\Api\Query\List\ListUserApi;
@@ -337,6 +340,31 @@ final class ApiRegistry {
             $this->config->activate_rack,
             $this->context->getService(),
             $this->context->rackService()
+        );
+    }
+
+    public function registerShelf(): RegisterShelfApi {
+        return new RegisterShelfApi(
+            $this->config->register_shelf,
+            $this->context->getService(),
+            $this->context->shelfService()
+        );
+    }
+
+    public function markShelfAsCrowded(): MarkShelfAsCrowdedApi {
+        return new MarkShelfAsCrowdedApi(
+            $this->config->mark_shelf_as_crowded,
+            $this->context->getService(),
+            $this->context->shelfService()
+        );
+    }
+
+    public function removeShelf(): RemoveShelfApi {
+        return new RemoveShelfApi(
+            $this->config->remove_shelf,
+            $this->context->getService(),
+            $this->context->findService(),
+            $this->context->shelfService()
         );
     }
 }

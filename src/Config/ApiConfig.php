@@ -49,7 +49,6 @@ final readonly class ApiConfig implements Config{
 
         public string $register_rack,
         public string $activate_rack,
-        public string $mark_rack_as_crowded,
         public string $archive_rack,
         public string $populate_rack,
         public string $place_rack_to_area,
@@ -64,6 +63,14 @@ final readonly class ApiConfig implements Config{
         public string $assign_physical_tag,
         public string $create_container,
         public string $place_item,
+
+        public string $register_shelf,
+        public string $mark_shelf_as_crowded,
+        public string $remove_shelf,
+
+        public string $register_storage_slot,
+        public string $mark_storage_slot_as_crowded,
+        public string $remove_storage_slot,
     ) { }
 
     public static function fromRaw(
@@ -113,7 +120,6 @@ final readonly class ApiConfig implements Config{
 
             register_rack: self::requiredString($raw, 'RegisterRack'),
             activate_rack: self::requiredString($raw, 'ActivateRack'),
-            mark_rack_as_crowded: self::requiredString($raw, 'MarkRackAsCrowded'),
             archive_rack: self::requiredString($raw, 'ArchiveRack'),
             populate_rack: self::requiredString($raw, 'PopulateRack'),
             place_rack_to_area: self::requiredString($raw, 'PlaceRackToArea'),
@@ -127,7 +133,15 @@ final readonly class ApiConfig implements Config{
             create_physical_tag: self::requiredString($raw, 'CreatePhysicalTag'),
             assign_physical_tag: self::requiredString($raw, 'AssignPhysicalTag'),
             create_container: self::requiredString($raw, 'CreateContainer'),
-            place_item: self::requiredString($raw, 'PlaceItem')
+            place_item: self::requiredString($raw, 'PlaceItem'),
+            
+            register_shelf: self::requiredString($raw, 'RegisterShelf'),
+            mark_shelf_as_crowded: self::requiredString($raw, 'MarkShelfAsCrowded'),
+            remove_shelf: self::requiredString($raw, 'RemoveShelf'),
+
+            register_storage_slot: self::requiredString($raw, 'RegisterStorageSlot'),
+            mark_storage_slot_as_crowded: self::requiredString($raw, 'MarkStorageSlotAsCrowded'),
+            remove_storage_slot: self::requiredString($raw, 'RemoveStorageSlot'),
         );
     }
 }

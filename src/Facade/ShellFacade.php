@@ -427,4 +427,38 @@ final class ShellFacade {
             ])
         );
     }
+
+    public function registerShelf(
+        int $rack_id,
+    ): string {
+        return $this->output->render(
+            $this->api->registerShelf([
+                'id' => $rack_id,
+            ])
+        );
+    }
+
+    public function markShelfAsCrowded(
+        int $rack_id,
+        int $shelf_level,
+    ): string {
+        return $this->output->render(
+            $this->api->markShelfAsCrowded([
+                'id' => $rack_id,
+                'record_id' => $shelf_level,
+            ])
+        );
+    }
+
+    public function removeShelf(
+        int $rack_id,
+        int $shelf_level,
+    ): string {
+        return $this->output->render(
+            $this->api->removeShelf([
+                'id' => $rack_id,
+                'record_id' => $shelf_level,
+            ])
+        );
+    }
 }
