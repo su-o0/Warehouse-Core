@@ -45,7 +45,7 @@ final class Lifecycle
             'registerStorageSlot'   => [RackStatusEnum::Processing, RackStatusEnum::Active],
             'markShelfAsCrowded'    => [RackStatusEnum::Active],
             'removeShelf'       => [RackStatusEnum::Active]
-        ],44
+        ],
         'user' => [
             'activate'          => [UserStatusEnum::Processing, UserStatusEnum::Archived],
             'archive'           => [UserStatusEnum::Active],

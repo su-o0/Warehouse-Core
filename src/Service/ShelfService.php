@@ -107,7 +107,7 @@ final class ShelfService {
             throw ServiceException::FORBIDDEN();
         }
 
-        if (!Lifecycle::canRemoveShelf($shelf)) {
+        if (!Lifecycle::canRemoveShelf($rack, $shelf)) {
             throw ServiceException::FORBIDDEN();
         }
 
