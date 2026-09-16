@@ -10,7 +10,7 @@ final class ItemProcessingStepStageMapper implements Mapper {
         string $field
     ) : ItemProcessingStepStageEnum {
         return match ($field) {
-            'Identified'      => ItemProcessingStepStageEnum::Identified,
+            'Identified'    => ItemProcessingStepStageEnum::Identified,
             'Photo'         => ItemProcessingStepStageEnum::Photo,
             'Inspection'    => ItemProcessingStepStageEnum::Inspection,
             default         => throw DomainException::ITEM_PROCESSING_STEP_STAGE_INVALID_TYPE()

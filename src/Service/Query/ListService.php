@@ -18,11 +18,13 @@ use WarehouseCore\Payload\Result\ListUserIdentitiesResult;
 use WarehouseCore\Payload\Result\ListUserResult;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\AreaNameRepository;
+use WarehouseCore\Repository\Catalog\RackNameRepository;
 use WarehouseCore\Repository\Catalog\UserNameRepository;
 use WarehouseCore\Repository\Catalog\ZoneNameRepository;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
+use WarehouseCore\Repository\Inventory\RackRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 use WarehouseCore\Repository\Topology\AreaRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
@@ -41,6 +43,8 @@ final class ListService {
         private UserProcessingStepRepository $user_processing_stage_repository,
         private ZoneRepository $zone_repository,
         private ZoneNameRepository $zone_name_repository,
+        private RackRepository $rack_repository,
+        private RackNameRepository $rack_name_repository
 
     ) { }
 
@@ -84,6 +88,68 @@ final class ListService {
         );
     }
 
+    public function listZone(): ListStructureResult {
+        if(!$this->authorization->canListArea()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $zones = $this->zone_repository->list();
+
+        $result = [];
+        foreach($zones as $zone) {
+            $zone_name = $this->zone_name_repository->findPrimaryByZoneId(
+                $zone->id
+            );
+
+            array_push($result, 
+                new StructureDTO(
+                    id: $zone->id,
+                    name: ($zone_name !== null)?
+                        $zone_name->value :
+                        null,
+                    status: $zone->status
+                ) 
+            );
+        }
+
+        return new ListStructureResult(
+            success: true,
+            structure_name: 'Zone',
+            list: $result
+        );
+    }
+
+    public function listRack(): ListStructureResult {
+        if(!$this->authorization->canListArea()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $racks = $this->rack_repository->list();
+
+        $result = [];
+        foreach($racks as $rack) {
+            $rack_name = $this->rack_name_repository->findPrimaryByRackId(
+                $rack->id
+            );
+
+            array_push($result, 
+                new StructureDTO(
+                    id: $rack->id,
+                    name: ($rack_name !== null)?
+                        $rack_name->value :
+                        null,
+                    status: $rack->status
+                ) 
+            );
+        }
+
+        return new ListStructureResult(
+            success: true,
+            structure_name: 'Rack',
+            list: $result
+        );
+    }
+
     public function listZoneByArea(
         AreaEntity $area
     ): ApiResult {
@@ -103,7 +169,7 @@ final class ListService {
 
             array_push($result, 
                 new StructureDTO(
-                    id: $area->id,
+                    id: $zone->id,
                     name: ($zone_name !== null)?
                         $zone_name->value :
                         null,
@@ -281,6 +347,41 @@ final class ListService {
             success: true,
             entity_name: 'User',
             entity_id: $user->id,
+            list: $result
+        );
+    }
+
+    public function listRackByArea(
+        RackEntity $rack
+    ): ApiResult {
+        if(!$this->authorization->canListZoneByArea()) {
+            throw ServiceException::FORBIDDEN();
+        }
+        
+        $zones = $this->rack_repository->findByAreaId(
+            $area->id
+        );
+
+        $result = [];
+        foreach($zones as $zone) {
+            $zone_name = $this->zone_name_repository->findPrimaryByZoneId(
+                $area->id
+            );
+
+            array_push($result, 
+                new StructureDTO(
+                    id: $zone->id,
+                    name: ($zone_name !== null)?
+                        $zone_name->value :
+                        null,
+                    status: $zone->status
+                ) 
+            );
+        }
+
+        return new ListStructureResult(
+            success: true,
+            structure_name: 'Zone',
             list: $result
         );
     }

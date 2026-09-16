@@ -23,6 +23,42 @@ final readonly class PhotoVO {
         );
     }
 
+    public static function fromContainerRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::container(self::requiredInt($raw, 'container_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
+
+    public static function fromRackRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::rack(self::requiredInt($raw, 'rack_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
+
+    public static function fromUserRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::user(self::requiredInt($raw, 'user_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
+    
+    public static function fromZoneRaw(array $raw): self {
+        return new self(
+            file: self::requiredString($raw, 'file'),
+            owner: PhotoDTO::zone(self::requiredInt($raw, 'zone_id')),
+            stored_file_id: self::requiredInt($raw, 'stored_file_id'),
+            created_at: self::requiredString($raw, 'created_at'),
+        );
+    }
+
     public static function fromItemRaw(array $raw): self {
         return new self(
             file: self::requiredString($raw, 'file'),

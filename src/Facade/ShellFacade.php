@@ -69,7 +69,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->activateArea([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -79,7 +79,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->archiveArea([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -89,7 +89,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->markAreaAsCrowded([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -100,8 +100,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->grantAreaAccess([
-                'first_id' => $area_id,
-                'second_id' => $user_id
+                'area_id' => $area_id,
+                'user_id' => $user_id
             ])
         );
     }
@@ -112,8 +112,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->revokeAreaAccess([
-                'first_id' => $area_id,
-                'second_id' => $user_id
+                'area_id' => $area_id,
+                'user_id' => $user_id
             ])
         );
     }
@@ -124,8 +124,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->addAreaName([
-                'id' => $area_id,
-                'value' => $name
+                'area_id' => $area_id,
+                'name' => $name
             ])
         );
     }
@@ -135,7 +135,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->removeAreaName([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -146,7 +146,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->setPrimaryAreaName([
-                'id' => $area_id,
+                'area_id' => $area_id,
                 'record_id' => $record_id
             ])
         );
@@ -155,6 +155,12 @@ final class ShellFacade {
     public function listArea(): string {
         return $this->output->render(
             $this->api->listArea()
+        );
+    }
+    
+    public function listZone(): string {
+        return $this->output->render(
+            $this->api->listZone()
         );
     }
 
@@ -170,8 +176,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->addZoneName([
-                'id' => $zone_id,
-                'value' => $name
+                'zone_id' => $zone_id,
+                'name' => $name
             ])
         );
     }
@@ -182,7 +188,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->setPrimaryZoneName([
-                'id' => $zone_id,
+                'zone_id' => $zone_id,
                 'record_id' => $record_id
             ])
         );
@@ -193,18 +199,14 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->removeZoneName([
-                'id' => $zone_id
+                'zone_id' => $zone_id
             ])
         );
     }
     
-    public function createZone(
-        int $area_id
-    ): string {
+    public function createZone(): string {
         return $this->output->render(
-            $this->api->createZone([
-                'id' => $area_id
-            ])
+            $this->api->createZone()
         );
     }
 
@@ -213,7 +215,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->activateZone([
-                'id' => $zone_id
+                'zone_id' => $zone_id
             ])
         );
     }
@@ -223,7 +225,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->archiveZone([
-                'id' => $zone_id
+                'zone_id' => $zone_id
             ])
         );
     }
@@ -233,7 +235,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->markZoneAsCrowded([
-                'id' => $zone_id
+                'zone_id' => $zone_id
             ])
         );
     }
@@ -243,7 +245,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->listZoneByArea([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -253,7 +255,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->listAreaNames([
-                'id' => $area_id
+                'area_id' => $area_id
             ])
         );
     }
@@ -270,8 +272,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->assignUserRole([
-                'id' => $user_id,
-                'value' => $role
+                'user_id' => $user_id,
+                'role' => $role
             ])
         );
     }
@@ -281,7 +283,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->dismissUserRole([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -292,8 +294,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->addUserName([
-                'id' => $user_id,
-                'value' => $name
+                'user_id' => $user_id,
+                'name' => $name
             ])
         );
     }
@@ -304,7 +306,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->setPrimaryUserName([
-                'id' => $user_id,
+                'user_id' => $user_id,
                 'record_id' => $record_id
             ])
         );
@@ -315,7 +317,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->removeUserName([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -351,7 +353,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->listUserIdentities([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -361,7 +363,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->listUserNames([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -371,7 +373,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->activateUser([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -381,7 +383,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->archiveUser([
-                'id' => $user_id
+                'user_id' => $user_id
             ])
         );
     }
@@ -391,7 +393,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->registerRack([
-                'value' => $rack_type
+                'rack_type' => $rack_type
             ])
         );
     }
@@ -402,7 +404,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->populateRack([
-                'id' => $rack_id,
+                'rack_id' => $rack_id,
                 'record_id' => $count
             ])
         );
@@ -413,7 +415,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->activateRack([
-                'id' => $rack_id,
+                'rack_id' => $rack_id,
             ])
         );
     }
@@ -423,7 +425,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->archiveRack([
-                'id' => $rack_id,
+                'rack_id' => $rack_id,
             ])
         );
     }
@@ -433,7 +435,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->registerShelf([
-                'id' => $rack_id,
+                'rack_id' => $rack_id,
             ])
         );
     }
@@ -444,8 +446,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->markShelfAsCrowded([
-                'id' => $rack_id,
-                'record_id' => $shelf_level,
+                'rack_id' => $rack_id,
+                'shelf_level' => $shelf_level,
             ])
         );
     }
@@ -456,8 +458,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->removeShelf([
-                'id' => $rack_id,
-                'record_id' => $shelf_level,
+                'rack_id' => $rack_id,
+                'shelf_level' => $shelf_level,
             ])
         );
     }
@@ -467,7 +469,7 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->registerStorageSlot([
-                'id' => $rack_id,
+                'rack_id' => $rack_id,
             ])
         );
     }
@@ -478,8 +480,8 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->markStorageSlotAsCrowded([
-                'id' => $rack_id,
-                'record_id' => $slot_position,
+                'rack_id' => $rack_id,
+                'slot_position' => $slot_position,
             ])
         );
     }
@@ -490,8 +492,54 @@ final class ShellFacade {
     ): string {
         return $this->output->render(
             $this->api->removeStorageSlot([
-                'id' => $rack_id,
-                'record_id' => $slot_position,
+                'rack_id' => $rack_id,
+                'slot_position' => $slot_position,
+            ])
+        );
+    }
+
+    public function addRackName(
+        int $rack_id,
+        string $name,
+    ): string {
+        return $this->output->render(
+            $this->api->addRackName([
+                'rack_id' => $rack_id,
+                'name' => $name,
+            ])
+        );
+    }
+
+    public function setPrimaryRackName(
+        int $rack_id,
+        int $record_id,
+    ): string {
+        return $this->output->render(
+            $this->api->addRackName([
+                'rack_id' => $rack_id,
+                'record_id' => $record_id,
+            ])
+        );
+    }
+
+    public function removeRackName(
+        int $rack_id
+    ): string {
+        return $this->output->render(
+            $this->api->addRackName([
+                'rack_id' => $rack_id
+            ])
+        );
+    }
+
+    public function placeZoneToArea(
+        int $zone_id,
+        int $area_id
+    ): string {
+        return $this->output->render(
+            $this->api->placeZoneToArea([
+                'zone_id' => $zone_id,
+                'area_id' => $area_id
             ])
         );
     }

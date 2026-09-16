@@ -32,6 +32,8 @@ final readonly class TransactionConfig {
         public string $register_storage_slot,
         public string $remove_storage_slot,
 
+        public string $place_zone_to_area,
+
     ) { }
 
     public static function fromRaw(array $raw): self {
@@ -63,6 +65,8 @@ final readonly class TransactionConfig {
 
             register_storage_slot: self::requiredString($raw, 'RegisterStorageSlot'),
             remove_storage_slot: self::requiredString($raw, 'RemoveStorageSlot'),
+            
+            place_zone_to_area: self::requiredString($raw, 'PlaceZoneToArea'),
         );
     }
 } 

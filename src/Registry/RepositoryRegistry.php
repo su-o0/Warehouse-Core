@@ -43,16 +43,27 @@ use WarehouseCore\Repository\Audit\ItemMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\ItemSalesArchiveRepository;
 use WarehouseCore\Repository\Audit\StockMovementArchiveRepository;
 use WarehouseCore\Repository\Audit\StockSalesArchiveRepository;
+use WarehouseCore\Repository\Audit\ZoneMovementArchiveRepository;
+use WarehouseCore\Repository\Audit\ZonePlacementArchiveRepository;
 use WarehouseCore\Repository\Catalog\UserNameRepository;
-use WarehouseCore\Repository\Identity\RoleRepository;
+use WarehouseCore\Repository\Security\RoleRepository;
 use WarehouseCore\Repository\Identity\ProviderRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\AreaAccessRepository;
+use WarehouseCore\Repository\Media\ContainerPhotoRepository;
+use WarehouseCore\Repository\Media\RackPhotoRepository;
 use WarehouseCore\Repository\Media\StoredFileRepository;
+use WarehouseCore\Repository\Media\UserPhotoRepository;
+use WarehouseCore\Repository\Media\ZonePhotoRepository;
+use WarehouseCore\Repository\Processing\ContainerProcessingStepRepository;
 use WarehouseCore\Repository\Processing\RackProcessingStepRepository;
+use WarehouseCore\Repository\Processing\StockProcessingStepRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
+use WarehouseCore\Repository\Processing\ZoneProcessingStepRepository;
+use WarehouseCore\Repository\Security\PasswordRepository;
+use WarehouseCore\Repository\Topology\ZonePlacementRepository;
 
 final class RepositoryRegistry {
     private \PDO $db;
@@ -107,12 +118,100 @@ final class RepositoryRegistry {
     private ?UserNameRepository $user_name = null;
     private ?UserProcessingStepRepository $user_processing_step = null;
     private ?RackProcessingStepRepository $rack_processing_step = null;
+    private ?ContainerPhotoRepository $container_photo = null;
+    private ?RackPhotoRepository $rack_photo = null;
+    private ?UserPhotoRepository $user_photo = null;
+    private ?ZonePhotoRepository $zone_photo = null;
+    private ?PasswordRepository $password = null;
+    private ?ContainerProcessingStepRepository $container_processing_step = null;
+    private ?ZoneProcessingStepRepository $zone_processing_step = null;
+    private ?StockProcessingStepRepository $stock_processing_step = null;
+    private ?ZonePlacementRepository $zone_placement = null;
+    private ?ZonePlacementArchiveRepository $zone_placement_archive = null;
+    private ?ZoneMovementArchiveRepository $zone_movement_archive = null;
 
     public function __construct(
         private RepositoryConfig $config,
         Connection $connection
     ) { 
         $this->db = $connection->get();
+    }
+
+    public function zoneMovementArchive(): ZonePlacementArchiveRepository {
+        return $this->zone_placement_archive ??= new ZonePlacementArchiveRepository(
+            $this->db,
+            $this->config->zone_placement_archive
+        );
+    }
+
+    public function zonePlacementArchive(): ZonePlacementArchiveRepository {
+        return $this->zone_placement_archive ??= new ZonePlacementArchiveRepository(
+            $this->db,
+            $this->config->zone_placement_archive
+        );
+    }
+
+    public function zonePlacement(): ZonePlacementRepository {
+        return $this->zone_placement ??= new ZonePlacementRepository(
+            $this->db,
+            $this->config->zone_placement
+        );
+    }
+
+    public function containerProcessingStep(): ContainerProcessingStepRepository {
+        return $this->container_processing_step ??= new ContainerProcessingStepRepository(
+            $this->db,
+            $this->config->container_processing_step
+        );
+    }
+
+    public function stockProcessingStep(): StockProcessingStepRepository {
+        return $this->stock_processing_step ??= new StockProcessingStepRepository(
+            $this->db,
+            $this->config->stock_processing_step
+        );
+    }
+
+    public function zoneProcessingStep(): ZoneProcessingStepRepository {
+        return $this->zone_processing_step ??= new ZoneProcessingStepRepository(
+            $this->db,
+            $this->config->zone_processing_step
+        );
+    }
+
+    public function containerPhoto(): ContainerPhotoRepository {
+        return $this->container_photo ??= new ContainerPhotoRepository(
+            $this->db,
+            $this->config->container_photo
+        );
+    } 
+
+    public function rackPhoto(): RackPhotoRepository {
+        return $this->rack_photo ??= new RackPhotoRepository(
+            $this->db,
+            $this->config->rack_photo
+        );
+    } 
+
+    public function userPhoto(): UserPhotoRepository {
+        return $this->user_photo ??= new UserPhotoRepository(
+            $this->db,
+            $this->config->user_photo
+        );
+    } 
+    
+    public function zonePhoto(): ZonePhotoRepository {
+        return $this->zone_photo ??= new ZonePhotoRepository(
+            $this->db,
+            $this->config->zone_photo
+        );
+    } 
+
+    public function password(): PasswordRepository {
+        return $this->password ??= new PasswordRepository(
+            $this->db,
+            $this->config->password
+        );
     }
 
     public function area(): AreaRepository {

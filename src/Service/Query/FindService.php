@@ -63,7 +63,7 @@ final class FindService {
         private PartNumberRepository $part_number,
         private PartNameRepository $part_name,
         private AreaNameRepository $area_name_repository,
-        private RackNameRepository $rack_name,
+        private RackNameRepository $rack_name_repository,
         private ZoneNameRepository $zone_name_repository,
         private UserNameRepository $user_name_repository,
         private OwnerRepository $owner_repository,
@@ -139,6 +139,26 @@ final class FindService {
         }
 
         return ServiceResult::entity($user_name);
+    }
+
+    public function findRackNameByRecordId(
+        int $record_id
+    ): ServiceResult {
+        if (!$this->authorization->canFindUserName()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $rack_name = $this->rack_name_repository->findByRecordId(
+            $record_id
+        );
+
+        if ($rack_name === null) {
+            return ServiceResult::failure(
+                ErrorMessage::RACK_NAME_NOT_FOUND
+            );
+        }
+
+        return ServiceResult::entity($rack_name);
     }
 
     public function findShelfByRackIdAndShelfLevel(

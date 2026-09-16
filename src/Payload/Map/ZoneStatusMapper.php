@@ -11,6 +11,7 @@ final class ZoneStatusMapper implements Mapper {
     ): ZoneStatusEnum {
         return match($field){
             'Created'       => ZoneStatusEnum::Created,
+            'Processing'    => ZoneStatusEnum::Processing,
             'Active'        => ZoneStatusEnum::Active,
             'Crowded'       => ZoneStatusEnum::Crowded,
             'Archived'      => ZoneStatusEnum::Archived,

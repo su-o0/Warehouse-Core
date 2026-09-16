@@ -8,6 +8,7 @@ use WarehouseCore\Exception\ValidationException;
 final readonly class StockPlacementVO {
     use ConfigHelper;
     public function __construct(
+        public int $record_id,
         public ?int $zone_id,
         public ?int $shelf_id,
         public ?int $container_id,
@@ -28,6 +29,7 @@ final readonly class StockPlacementVO {
         }
         
         return new self(
+            record_id: self::requiredInt($raw, 'record_id'),
             zone_id: $zone_id,
             shelf_id: $shelf_id,
             container_id: $container_id,

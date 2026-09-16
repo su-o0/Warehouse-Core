@@ -6,7 +6,7 @@ use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Payload\Enum\ProviderNameEnum;
 use WarehouseCore\Repository\Identity\ProviderRepository;
-use WarehouseCore\Repository\Identity\RoleRepository;
+use WarehouseCore\Repository\Security\RoleRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 

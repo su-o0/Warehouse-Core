@@ -78,20 +78,4 @@ final class RackMovementArchiveRepository extends Repository {
             throw PdoExceptionMapper::map($e);
         }
     }
-
-    public function delete(
-        int $rack_id
-    ): void {
-        try {
-            $this->execute(
-                "DELETE FROM {$this->table}
-                WHERE rack_id = :rack_id",
-                [
-                    ':rack_id' => $rack_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
 }

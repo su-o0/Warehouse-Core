@@ -1,0 +1,44 @@
+<?php
+namespace WarehouseCore\Api\Area\Command;
+
+use WarehouseCore\Context\ParameterBag;
+use WarehouseCore\Contract\Api;
+use WarehouseCore\Contract\ApiResult;
+use WarehouseCore\Payload\DTO\ApiConfigDTO;
+use WarehouseCore\Service\AreaService;
+use WarehouseCore\Service\Query\GetService;
+
+final class RevokeAreaAccessApi implements Api {
+    public function __construct(
+        public ApiConfigDTO $config,
+        private AreaService $area_service,
+        private GetService $get_service
+    ) { }
+
+    public function handle(
+        ParameterBag $parameter
+    ): ApiResult {
+        $result = $this->get_service->getUser(
+            user_id: $parameter->area_id
+        );
+
+        if (!$result->success) {
+            return $result;
+        }
+
+        $user = $result->entity;
+
+        $result = $this->get_service->getArea(
+            area_id: $parameter->user_id
+        );
+
+        if (!$result->success) {
+            return $result;
+        }
+    
+        return $this->area_service->revokeAreaAccess(
+            area: $result->entity,
+            user: $user
+        );
+    }
+}

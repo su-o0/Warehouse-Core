@@ -158,14 +158,14 @@ final class ItemPlacementRepository extends Repository {
     }
 
     public function delete(
-        int $item_id
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE item_id = :item_id",
+                WHERE record_id = :record_id",
                 [
-                    ':item_id' => $item_id
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

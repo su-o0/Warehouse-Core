@@ -1,18 +1,12 @@
 <?php
 namespace WarehouseCore\Registry;
 
+use WarehouseCore\Context\ParameterBag;
 use WarehouseCore\Contract\ApiResult;
 use WarehouseCore\Registry\ApiRegistry;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\ValidationException;
-use WarehouseCore\Payload\Request\AddUserIdentityRequest;
-use WarehouseCore\Payload\Request\EntityEntityRequest;
-use WarehouseCore\Payload\Request\EntityRecordRequest;
-use WarehouseCore\Payload\Request\EntityRequest;
-use WarehouseCore\Payload\Request\EntityValueRequest;
-use WarehouseCore\Payload\Request\UserIdentityRequest;
-use WarehouseCore\Payload\Request\ValueRequest;
 
 final class ApiHandlerRegistry {
     public function __construct(
@@ -20,11 +14,21 @@ final class ApiHandlerRegistry {
     ) { }
 
     private function handle(
-        object $api,
-        ?object $request = null
+        callable $api,
+        ?array $raw = null
     ): ApiResult {
         try {
-            return $api->handle($request);
+            $api = $api();
+            if ($raw !== null) {
+                $request = new ParameterBag(
+                    raw: $raw,
+                    parameters: $api->config->parameters,
+                );
+                return $api->handle($request);  
+            }
+            else {
+                return $api->handle();  
+            }
         } catch (ValidationException $e) {
             return ServiceResult::failure(
                 $e->getMessage()
@@ -41,12 +45,12 @@ final class ApiHandlerRegistry {
             return ServiceResult::failure(
                 ErrorMessage::SERVICE_UNAVAILABLE
             );
-        }
+        }   
     }
 
     public function createArea(): ApiResult{
         return $this->handle(
-            $this->api->createArea(),
+            $this->api->createArea(...)
         );
     }
 
@@ -54,8 +58,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->activateArea(),
-            EntityRequest::fromRaw($raw)
+            $this->api->activateArea(...),
+            $raw
         );
     }
 
@@ -63,8 +67,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->archiveArea(),
-            EntityRequest::fromRaw($raw)
+            $this->api->archiveArea(...),
+            $raw
         );
     }
 
@@ -72,8 +76,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->markAreaAsCrowded(),
-            EntityRequest::fromRaw($raw)
+            $this->api->markAreaAsCrowded(...),
+            $raw
         );
     }
 
@@ -81,8 +85,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->grantAreaAccess(),
-            EntityEntityRequest::fromRaw($raw)
+            $this->api->grantAreaAccess(...),
+            $raw
         );
     }
 
@@ -90,8 +94,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->revokeAreaAccess(),
-            EntityEntityRequest::fromRaw($raw)
+            $this->api->revokeAreaAccess(...),
+            $raw
         );
     }
 
@@ -99,8 +103,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->addAreaName(),
-            EntityValueRequest::fromRaw($raw)
+            $this->api->addAreaName(...),
+            $raw
         );
     }
 
@@ -108,8 +112,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->removeAreaName(),
-            EntityRequest::fromRaw($raw)
+            $this->api->removeAreaName(...),
+            $raw
         );
     }
 
@@ -117,94 +121,14 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->setPrimaryAreaName(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->setPrimaryAreaName(...),
+            $raw
         );
     }
 
     public function listArea(): ApiResult {
         return $this->handle(
-            $this->api->listArea(),
-            null
-        );
-    }
-
-    public function listUser(): ApiResult {
-        return $this->handle(
-            $this->api->listUser(),
-            null
-        );
-    }
-
-    public function addZoneName(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->addZoneName(),
-            EntityValueRequest::fromRaw($raw)
-        );
-    }
-
-    public function setPrimaryZoneName(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->setPrimaryZoneName(),
-            EntityRecordRequest::fromRaw($raw)
-        );
-    }
-
-    public function removeZoneName(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->removeZoneName(),
-            EntityRequest::fromRaw($raw)
-        );
-    }
-
-    public function createZone(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->createZone(),
-            EntityRequest::fromRaw($raw)
-        );
-    }
-
-    public function activateZone(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->activateZone(),
-            EntityRequest::fromRaw($raw)
-        );
-    }
-
-    public function archiveZone(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->archiveZone(),
-            EntityRequest::fromRaw($raw)
-        );
-    }
-
-    public function markZoneAsCrowded(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->archiveZone(),
-            EntityRequest::fromRaw($raw)
-        );
-    }
-
-    public function listZoneByArea(
-        array $raw
-    ): ApiResult {
-        return $this->handle(
-            $this->api->listZoneByArea(),
-            EntityRequest::fromRaw($raw)
+            $this->api->listArea(...)
         );
     }
 
@@ -212,14 +136,98 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->listAreaNames(),
-            EntityRequest::fromRaw($raw)
+            $this->api->listAreaNames(...),
+            $raw
+        );
+    }
+
+    public function addZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addZoneName(...),
+            $raw
+        );
+    }
+
+    public function setPrimaryZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->setPrimaryZoneName(...),
+            $raw
+        );
+    }
+
+    public function removeZoneName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeZoneName(...),
+            $raw
+        );
+    }
+
+    public function createZone(): ApiResult {
+        return $this->handle(
+            $this->api->createZone(...)
+        );
+    }
+
+    public function activateZone(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->activateZone(...),
+            $raw
+        );
+    }
+
+    public function archiveZone(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveZone(...),
+            $raw
+        );
+    }
+
+    public function markZoneAsCrowded(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->archiveZone(...),
+            $raw
+        );
+    }
+
+    public function listZone(): ApiResult {
+        return $this->handle(
+            $this->api->listZone(...)
+        );
+    }
+
+    public function listZoneByArea(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listZoneByArea(...),
+            $raw
+        );
+    }
+    
+    public function listZoneNames(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->listZoneNames(...),
+            $raw
         );
     }
 
     public function createUser(): ApiResult{
         return $this->handle(
-            $this->api->createUser(),
+            $this->api->createUser(...),
             null
         );
     }
@@ -228,8 +236,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->assignUserRole(),
-            EntityValueRequest::fromRaw($raw)
+            $this->api->assignUserRole(...),
+            $raw
         );
     }
 
@@ -237,8 +245,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->dismissUserRole(),
-            EntityRequest::fromRaw($raw)
+            $this->api->dismissUserRole(...),
+            $raw
         );
     }
 
@@ -246,8 +254,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->addUserName(),
-            EntityValueRequest::fromRaw($raw)
+            $this->api->addUserName(...),
+            $raw
         );
     }
 
@@ -255,8 +263,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->setPrimaryUserName(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->setPrimaryUserName(...),
+            $raw
         );
     }
 
@@ -264,8 +272,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->removeUserName(),
-            EntityRequest::fromRaw($raw)
+            $this->api->removeUserName(...),
+            $raw
         );
     }
 
@@ -273,8 +281,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->addUserIdentity(),
-            AddUserIdentityRequest::fromRaw($raw)
+            $this->api->addUserIdentity(...),
+            $raw
         );
     }
 
@@ -282,8 +290,14 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->removeUserIdentity(),
-            UserIdentityRequest::fromRaw($raw)
+            $this->api->removeUserIdentity(...),
+            $raw
+        );
+    }
+
+    public function listUser(): ApiResult {
+        return $this->handle(
+            $this->api->listUser(...)
         );
     }
 
@@ -291,8 +305,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->listUserIdentities(),
-            EntityRequest::fromRaw($raw)
+            $this->api->listUserIdentities(...),
+            $raw
         );
     }
 
@@ -300,8 +314,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->listUserNames(),
-            EntityRequest::fromRaw($raw)
+            $this->api->listUserNames(...),
+            $raw
         );
     }
 
@@ -309,8 +323,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->activateUser(),
-            EntityRequest::fromRaw($raw)
+            $this->api->activateUser(...),
+            $raw
         );
     }
     
@@ -318,8 +332,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->archiveUser(),
-            EntityRequest::fromRaw($raw)
+            $this->api->archiveUser(...),
+            $raw
         );
     }
 
@@ -327,8 +341,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->registerRack(),
-            ValueRequest::fromRaw($raw)
+            $this->api->registerRack(...),
+            $raw
         );
     }
 
@@ -336,8 +350,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->populateRack(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->populateRack(...),
+            $raw
         );
     }
     
@@ -345,8 +359,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->activateRack(),
-            EntityRequest::fromRaw($raw)
+            $this->api->activateRack(...),
+            $raw
         );
     }
 
@@ -354,8 +368,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->archiveRack(),
-            EntityRequest::fromRaw($raw)
+            $this->api->archiveRack(...),
+            $raw
         );
     }
 
@@ -363,8 +377,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->registerShelf(),
-            EntityRequest::fromRaw($raw)
+            $this->api->registerShelf(...),
+            $raw
         );
     }
 
@@ -372,8 +386,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->markShelfAsCrowded(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->markShelfAsCrowded(...),
+            $raw
         );
     }
 
@@ -381,8 +395,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->removeShelf(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->removeShelf(...),
+            $raw
         );
     }
 
@@ -390,8 +404,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->registerShelf(),
-            EntityRequest::fromRaw($raw)
+            $this->api->registerShelf(...),
+            $raw
         );
     }
 
@@ -399,8 +413,8 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->markShelfAsCrowded(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->markShelfAsCrowded(...),
+            $raw
         );
     }
 
@@ -408,8 +422,44 @@ final class ApiHandlerRegistry {
         array $raw
     ): ApiResult {
         return $this->handle(
-            $this->api->removeStorageSlot(),
-            EntityRecordRequest::fromRaw($raw)
+            $this->api->removeStorageSlot(...),
+            $raw
+        );
+    }
+
+    public function addRackName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->addRackName(...),
+            $raw
+        );
+    }
+
+    public function setPrimaryRackName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->setPrimaryRackName(...),
+            $raw
+        );
+    }
+
+    public function removeRackName(
+        array $raw
+    ): ApiResult {
+        return $this->handle(
+            $this->api->removeRackName(...),
+            $raw
+        );
+    }
+
+    public function placeZoneToArea(
+        array $raw
+   ): ApiResult {
+        return $this->handle(
+            $this->api->placeZoneToArea(...),
+            $raw
         );
     }
 }

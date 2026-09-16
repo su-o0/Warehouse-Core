@@ -43,6 +43,7 @@ Type Enums
 ├── Area Status
 ├── Container Status
 ├── Container Type
+├── ContainerProcessingStep Stage
 ├── Item Condition
 ├── Item Status
 ├── ItemProcessingStep Stage
@@ -58,9 +59,11 @@ Type Enums
 ├── Shelf Status
 ├── StorageSlot Status
 ├── Stock Status
+├── StockProcessingStep Stage
 ├── User Status
 ├── UserProcessingStep Stage 
-└── Zone Status
+├── Zone Status
+└── ZoneProcessingStep Stage
 ```
 ---
 ```
@@ -77,28 +80,34 @@ Value Objects
 │   ├── RackPlacementArchive
 │   ├── StockMovementArchive
 │   ├── StockPlacementArchive
-│   └── StockSalesArchive
+│   ├── StockSalesArchive
+│   ├── ZoneMovementArchive
+│   └── ZonePlacementArchive
 │
+├── ContainerProcessingStep
 ├── ItemProcessingStep
+├── PartProcessingStep
+├── Password
 ├── PartName
 ├── PartNumber
-├── PartProcessingStep
 ├── Photo
 ├── RackName
 ├── RackProcessingStep
-│
-├── Relationship
-│   ├── AreaAccess
-│   ├── ContainerPlacement
-│   ├── ItemPlacement
-│   ├── RackPlacement
-│   ├── StockPlacement
-│   └── UserIdentity
-│
+├── StockProcessingStep
 ├── UserName
 ├── UserProcessingStep
 ├── Video
-└── ZoneName
+├── ZoneName
+├── ZoneProcessingStep
+│
+└── Relationship
+    ├── AreaAccess
+    ├── ContainerPlacement
+    ├── ItemPlacement
+    ├── RackPlacement
+    ├── StockPlacement
+    ├── UserIdentity
+    └── ZonePlacement
 ```
 ---
 ```

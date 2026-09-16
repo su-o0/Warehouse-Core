@@ -158,14 +158,14 @@ final class StockPlacementRepository extends Repository {
     }
 
     public function delete(
-        int $stock_id
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE stock_id = :stock_id",
+                WHERE record_id = :record_id",
                 [
-                    ':stock_id' => $stock_id
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

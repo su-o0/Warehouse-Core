@@ -112,13 +112,13 @@ final class RackService {
 
         if ($rack->id != $rack_name->rack_id) {
             return ServiceResult::failure(
-                ErrorMessage::AREA_NAME_NOT_FOUND
+                ErrorMessage::RACK_NAME_NOT_FOUND
             );
         }
 
         if ($rack_name->is_primary){
             return ServiceResult::failure(
-                ErrorMessage::AREA_NAME_ALREADY_PRIMARY
+                ErrorMessage::RACK_NAME_ALREADY_PRIMARY
             );
         }
 

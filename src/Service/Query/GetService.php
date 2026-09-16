@@ -7,7 +7,7 @@ use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Repository\Catalog\PartRepository;
 use WarehouseCore\Repository\Identity\OwnerRepository;
 use WarehouseCore\Repository\Identity\ProviderRepository;
-use WarehouseCore\Repository\Identity\RoleRepository;
+use WarehouseCore\Repository\Security\RoleRepository;
 use WarehouseCore\Repository\Identity\UserRepository;
 use WarehouseCore\Repository\Inventory\ContainerRepository;
 use WarehouseCore\Repository\Inventory\ItemRepository;

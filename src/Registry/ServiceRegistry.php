@@ -7,42 +7,33 @@ use WarehouseCore\Service\AreaService;
 use WarehouseCore\Service\ContainerService;
 use WarehouseCore\Service\Identity\UserService;
 use WarehouseCore\Service\ItemService;
-use WarehouseCore\Service\MovementService;
 use WarehouseCore\Service\OwnerService;
 use WarehouseCore\Service\PartService;
-use WarehouseCore\Service\PhotoService;
 use WarehouseCore\Service\PhysicalTagService;
 use WarehouseCore\Service\StockService;
 use WarehouseCore\Service\Query\FindService;
 use WarehouseCore\Service\Query\GetService;
 use WarehouseCore\Service\Query\ListService;
-use WarehouseCore\Service\PlacementService;
 use WarehouseCore\Service\RackService;
 use WarehouseCore\Service\SalesService;
 use WarehouseCore\Service\ShelfService;
 use WarehouseCore\Service\StorageSlotService;
 use WarehouseCore\Service\VehicleService;
-use WarehouseCore\Service\VideoService;
 use WarehouseCore\Service\ZoneService;
 
 final class ServiceRegistry {
-
     private ?AreaService $area = null;
     private ?ContainerService $container = null;
     private ?ItemService $item = null;
-    private ?MovementService $movement = null;
     private ?OwnerService $owner = null;
     private ?PartService $part = null;
-    private ?PhotoService $photo = null;
     private ?PhysicalTagService $physical_tag = null;
-    private ?PlacementService $placement = null;
     private ?RackService $rack = null;
     private ?SalesService $sales = null;
     private ?StorageSlotService $storage_slot = null;
     private ?StockService $stock = null;
     private ?UserService $user = null;
     private ?VehicleService $vehicle = null;
-    private ?VideoService $video = null;
     private ?ZoneService $zone = null;
     private ?FindService $find = null;
     private ?GetService $get = null;
@@ -90,21 +81,6 @@ final class ServiceRegistry {
         );
     }
 
-    public function movement(
-        Authorization $authorization
-    ): MovementService {
-        return $this->movement ??= new MovementService(
-            $this->config->movement,
-            $authorization,
-            $this->repository->container(),
-            $this->repository->containerPlacement(),
-            $this->repository->item(),
-            $this->repository->itemPlacement(),
-            $this->repository->stock(),
-            $this->repository->stockPlacement()
-        );
-    }
-
     public function owner(
         Authorization $authorization
     ): OwnerService {
@@ -128,19 +104,6 @@ final class ServiceRegistry {
         );
     }
 
-    public function photo(
-        Authorization $authorization
-    ): PhotoService {
-        return $this->photo ??= new PhotoService(
-            $this->config->photo,
-            $authorization,
-            $this->repository->partPhoto(),
-            $this->repository->itemPhoto(),
-            $this->repository->stockPhoto(),
-            $this->repository->vehiclePhoto()
-        );
-    }
-
     public function physicalTag(
         Authorization $authorization
     ): PhysicalTagService {
@@ -148,26 +111,6 @@ final class ServiceRegistry {
             $this->config->physical_tag,
             $authorization,
             $this->repository->physicalTag()
-        );
-    }
-
-    public function placement(
-        Authorization $authorization
-    ): PlacementService {
-        return $this->placement ??=new PlacementService(
-            $this->config->placement,
-            $authorization,
-            $this->repository->area(),
-            $this->repository->zone(),
-            $this->repository->rack(),
-            $this->repository->shelf(),
-            $this->repository->container(),
-            $this->repository->item(),
-            $this->repository->stock(),
-            $this->repository->rackPlacement(),
-            $this->repository->containerPlacement(),
-            $this->repository->itemPlacement(),
-            $this->repository->stockPlacement()
         );
     }
 
@@ -267,15 +210,6 @@ final class ServiceRegistry {
         );
     }
 
-    public function video(
-        Authorization $authorization
-    ): VideoService {
-        return $this->video ??=new VideoService(
-            $this->config->video,
-            $authorization,
-        );
-    }
-
     public function zone(
         Authorization $authorization
     ): ZoneService {
@@ -284,8 +218,12 @@ final class ServiceRegistry {
             $authorization,
             $this->repository->zone(),
             $this->repository->zoneName(),
+            $this->repository->zonePlacement(),
+            $this->repository->zoneProcessingStep(),
+            $this->repository->zonePhoto(),
             $this->transaction->addZoneName(),
-            $this->transaction->setPrimaryZoneName()
+            $this->transaction->setPrimaryZoneName(),
+            $this->transaction->placeZoneToArea()
         );
     }
 
@@ -371,6 +309,8 @@ final class ServiceRegistry {
             $this->repository->userProcessingStep(),
             $this->repository->zone(),
             $this->repository->zoneName(),
+            $this->repository->rack(),
+            $this->repository->rackName()
         );
     }
 }

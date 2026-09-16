@@ -119,14 +119,14 @@ final class ContainerPlacementRepository extends Repository {
     }
 
     public function delete(
-        int $container_id
+        int $record_id
     ): void {
         try {
             $this->execute(
                 "DELETE FROM {$this->table}
-                WHERE container_id = :container_id",
+                WHERE record_id = :record_id",
                 [
-                    ':container_id' => $container_id
+                    ':record_id' => $record_id
                 ]
             );
         } catch (\PDOException $e) {

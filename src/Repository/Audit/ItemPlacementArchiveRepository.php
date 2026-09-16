@@ -74,20 +74,4 @@ final class ItemPlacementArchiveRepository extends Repository {
             throw PdoExceptionMapper::map($e);
         }
     }
-
-    public function delete(
-        int $item_id
-    ): void {
-        try {
-            $this->execute(
-                "DELETE FROM {$this->table}
-                WHERE item_id = :item_id",
-                [
-                    ':item_id' => $item_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
 }

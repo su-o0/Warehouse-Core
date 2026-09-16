@@ -25,6 +25,13 @@ final class RackRepository extends Repository {
         );
     }
 
+    public function list(): array {
+        return $this->entities(
+            "SELECT * FROM {$this->table}",
+            []
+        );
+    }
+
     public function findByStatus(
         string $status
     ): array {

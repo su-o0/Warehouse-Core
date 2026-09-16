@@ -6,13 +6,18 @@ use WarehouseCore\Exception\RepositoryException;
 use WarehouseCore\Exception\ServiceException;
 use WarehouseCore\Payload\Entity\AreaEntity;
 use WarehouseCore\Payload\Entity\ZoneEntity;
+use WarehouseCore\Payload\Enum\ZoneProcessingStepStageEnum;
 use WarehouseCore\Payload\Enum\ZoneStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\VO\ZoneNameVO;
 use WarehouseCore\Repository\Catalog\ZoneNameRepository;
+use WarehouseCore\Repository\Media\ZonePhotoRepository;
+use WarehouseCore\Repository\Processing\ZoneProcessingStepRepository;
+use WarehouseCore\Repository\Topology\ZonePlacementRepository;
 use WarehouseCore\Repository\Topology\ZoneRepository;
 use WarehouseCore\Security\Authorization;
 use WarehouseCore\Security\Lifecycle;
+use WarehouseCore\Transaction\Zone\PlaceZoneToAreaTransaction;
 use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Zone\SetPrimaryZoneNameTransaction;
 
@@ -22,8 +27,12 @@ final class ZoneService {
         private Authorization $authorization,
         private ZoneRepository $zone_repository,
         private ZoneNameRepository $zone_name_repository,
+        private ZonePlacementRepository $zone_placement_repository,
+        private ZoneProcessingStepRepository $zone_processing_step_repository,
+        private ZonePhotoRepository $zone_photo_repository,
         private AddZoneNameTransaction $add_zone_name_transaction,
-        private SetPrimaryZoneNameTransaction $set_primary_zone_name_transaction
+        private SetPrimaryZoneNameTransaction $set_primary_zone_name_transaction,
+        private PlaceZoneToAreaTransaction $place_zone_to_area_transaction,
     ) { }
 
     private function changeStatus(
@@ -146,16 +155,13 @@ final class ZoneService {
         return ServiceResult::success();
     }
 
-    public function createZone(
-        AreaEntity $area
-    ): ServiceResult {
+    public function createZone(): ServiceResult {
         if(!$this->authorization->canCreateZone()) {
             throw ServiceException::FORBIDDEN();
         }
 
         try {
             $this->zone_repository->add(
-                area_id: $area->id,
                 user_id: $this->authorization->getUserId()
             );
         } catch(RepositoryException $e) {
@@ -222,5 +228,61 @@ final class ZoneService {
             $zone->id,
             ZoneStatusEnum::Archived
         );
+    }
+
+    public function placeZoneToArea(
+        ZoneEntity $zone,
+        AreaEntity $area
+    ): ServiceResult {
+        if (!$this->authorization->canPlaceRackToZone()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        $result = $this->zone_placement_repository->findByZoneId(
+            $zone->id
+        );
+
+        if ($result !== null) {
+            echo 'pidor';
+            return ServiceResult::success();
+        }
+        
+        $result = $this->zone_processing_step_repository->findByZoneIdAndStage(
+            $zone->id,
+            ZoneProcessingStepStageEnum::Placed->value
+        );
+
+        if ($result !== null) {
+            echo 'pidor1';
+            return ServiceResult::success();
+        }
+
+        return $this->place_zone_to_area_transaction->handle(
+            zone_id: $zone->id,
+            area_id: $area->id,
+            user_id: $this->authorization->getUserId()
+        );
+    }
+
+    public function moveZoneToArea(
+        ZoneEntity $zone,
+        AreaEntity $area
+    ): ServiceResult {
+        if (!$this->authorization->canPlaceRackToZone()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        return ServiceResult::success();
+    }
+
+    public function removeZonePlacement(
+        ZoneEntity $zone,
+        AreaEntity $area
+    ): ServiceResult {
+        if (!$this->authorization->canPlaceRackToZone()) {
+            throw ServiceException::FORBIDDEN();
+        }
+
+        return ServiceResult::success();
     }
 }

@@ -14,7 +14,9 @@ Audit
 ├── RackPlacementArchive
 ├── StockMovementArchive
 ├── StockPlacementArchive
-└── StockSalesArchive
+├── StockSalesArchive
+├── ZoneMovementArchive
+└── ZonePlacementArchive
 ```
 ---
 ```
@@ -113,6 +115,19 @@ StockSalesArchive
 ├── StockId
 ├── Qty
 ├── UserId
+├── CreatedByUserId
+└── CreatedAt
+
+ZoneMovementArchive
+├── ZoneId
+├── FromAreaId
+├── ToAreaId
+├── CreatedByUserId
+└── CreatedAt
+
+ZonePlacementArchive
+├── ZoneId
+├── ToAreaId
 ├── CreatedByUserId
 └── CreatedAt
 ```
@@ -219,6 +234,7 @@ Container
 │
 ├── Status
 │   ├── Registered
+│   ├── Processing
 │   ├── Active
 │   ├── Crowded
 │   ├── Archived
@@ -296,7 +312,10 @@ Stock
 ```
 Identity
 ├── AreaAccess
-└── Owner
+├── Owner
+├── Provider
+├── User
+└── UserIdentity
 ```
 ---
 ```
@@ -315,24 +334,54 @@ Owner
 │
 ├── CreatedByUserId
 └── CreatedAt
+
+Provider
+└── Name
+
+User
+├── Id
+├── Role
+├── Status
+│   ├── Created
+│   ├── Processing
+│   ├── Active
+│   └── Archived
+│
+└── CreatedAt
+
+UserIdentity
+├── RecordId
+├── UserId
+├── Provider
+├── ExternalId
+└── CreatedAt
 ```
 
 ### Media
 *Digital assets* 
 ```
 Media
+├── ContainerPhoto
 ├── ItemPhoto
 ├── ItemVideo
 ├── PartPhoto
 ├── PartVideo
+├── RackPhoto
 ├── StockPhoto
 ├── StockVideo
 ├── StoredFile
+├── UserPhoto
 ├── VehiclePhoto
-└── VehicleVideo
+├── VehicleVideo
+└── ZonePhoto
 ```
 ---
 ```
+ContainerPhoto
+├── ContainerId
+├── StoredFileId
+└── CreatedAt
+
 ItemPhoto
 ├── ItemId
 ├── StoredFileId
@@ -350,6 +399,11 @@ PartPhoto
 
 PartVideo
 ├── PartId
+├── StoredFileId
+└── CreatedAt
+
+RackPhoto
+├── RackId
 ├── StoredFileId
 └── CreatedAt
 
@@ -372,6 +426,11 @@ StoredFile
 ├── CreatedByUserId
 └── CreatedAt
 
+UserPhoto
+├── UserId
+├── StoredFileId
+└── CreatedAt
+
 VehiclePhoto
 ├── VehicleId
 ├── StoredFileId
@@ -381,19 +440,34 @@ VehicleVideo
 ├── VehicleId
 ├── StoredFileId
 └── CreatedAt
+
+ZonePhoto
+├── ZoneId
+├── StoredFileId
+└── CreatedAt
 ```
 
 ### Processing
 *What else needs to be done*
 ```
 Processing
+├── ContainerProcessingStep
 ├── ItemProcessingStep
 ├── PartProcessingStep
 ├── RackProcessingStep
-└── UserProcessingStep
+├── UserProcessingStep
+└── ZoneProcessingStep
 ```
 ---
 ```
+ContainerProcessingStep
+├── RecordId
+├── ContainerId
+├── Stage
+│   └── Placed
+│
+└── CreatedAt
+
 ItemProcessingStep
 ├── RecordId
 ├── ItemId
@@ -417,7 +491,8 @@ RackProcessingStep
 ├── RecordId
 ├── RackId
 ├── Stage
-│   └── Populate
+│   ├── Populate
+│   └── Placed
 │
 └── CreatedAt
 
@@ -430,42 +505,33 @@ UserProcessingStep
 │   └── Identified
 │
 └── CreatedAt
+
+ZoneProcessingStep
+├── RecordId
+├── ZoneId
+├── Stage
+│   └── Placed
+│
+└── CreatedAt
+
 ```
 
 ### Security
 *Authentication and authorization*
 ```
 Security
-├── Provider
-├── Role
-├── User
-└── UserIdentity
+├── Password
+└── Role
 ```
 ---
 ```
-Provider
+Password
+├── UserIdentityRecordId
+├── Hash
 └── Name
 
 Role
 └── Name
-
-User
-├── Id
-├── Role
-├── Status
-│   ├── Created
-│   ├── Processing
-│   ├── Active
-│   └── Archived
-│
-└── CreatedAt
-
-UserIdentity
-├── RecordId
-├── UserId
-├── Provider
-├── ExternalId
-└── CreatedAt
 ```
 
 ### Topology
@@ -477,7 +543,8 @@ Topology
 ├── ItemPlacement
 ├── RackPlacement
 ├── StockPlacement
-└── Zone
+├── Zone
+└── ZonePlacement
 ```
 ---
 ```
@@ -512,7 +579,7 @@ RackPlacement
 ├── AreaId
 ├── ZoneId
 ├── RackId
-└── CreatedAt   
+└── CreatedAt
 
 Shelf
 ├── Id
@@ -550,13 +617,19 @@ StorageSlot
 
 Zone
 ├── Id
-├── AreaId
 ├── Status 
 │   ├── Created
+│   ├── Processing
 │   ├── Active
 │   ├── Crowded
 │   └── Archived
 │
 ├── CreatedByUserId
+└── CreatedAt
+
+ZonePlacement
+├── RecordId
+├── AreaId
+├── ZoneId
 └── CreatedAt
 ```

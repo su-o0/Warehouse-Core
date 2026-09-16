@@ -11,6 +11,7 @@ final class ContainerStatusMapper implements Mapper{
     ): ContainerStatusEnum {
         return match ($field) {
             'Registered'   => ContainerStatusEnum::Registered,
+            'Processing' => ContainerStatusEnum::Processing,
             'Active'    => ContainerStatusEnum::Active,
             'Crowded'   => ContainerStatusEnum::Crowded,
             'Archived'  => ContainerStatusEnum::Archived,

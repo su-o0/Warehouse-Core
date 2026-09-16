@@ -24,18 +24,13 @@ final class ZoneRepository extends Repository {
         );
     }
 
-    public function findByAreaId(
-        int $area_id
-    ): array {
+    public function list(): array {
         return $this->entities(
-            "SELECT * FROM {$this->table}
-            WHERE area_id = :area_id",
-            [
-                ':area_id' => $area_id
-            ]
+            "SELECT * FROM {$this->table}",
+            []
         );
     }
-
+    
     public function findByStatus(
         string $status
     ): array {
@@ -61,43 +56,20 @@ final class ZoneRepository extends Repository {
     }
 
     public function add(
-        int $area_id,
         int $user_id
     ): int {
         try {
             return $this->insert(
                 "INSERT INTO {$this->table}
                 (
-                    area_id,
                     created_by_user_id
                 )
                 VALUES
                 (
-                    :area_id,
                     :user_id
                 )",
                 [
-                    ':area_id' => $area_id,
                     ':user_id' => $user_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
-
-    public function updateAreaId(
-        int $id,
-        int $area_id
-    ): void {
-        try {
-            $this->execute(
-                "UPDATE {$this->table}
-                SET area_id = :area_id
-                WHERE id = :id",
-                [
-                    ':area_id' => $area_id,
-                    ':id' => $id
                 ]
             );
         } catch (\PDOException $e) {

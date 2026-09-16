@@ -1,13 +1,12 @@
 <?php
 namespace WarehouseCore\Registry;
 
-use WarehouseCore\Api\Inventory\Shelf\RegisterShelfApi;
 use WarehouseCore\Config\TransactionConfig;
 use WarehouseCore\Connection\Connection;
 use WarehouseCore\Transaction\Area\AddAreaNameTransaction;
 use WarehouseCore\Transaction\Zone\AddZoneNameTransaction;
 use WarehouseCore\Transaction\Area\CreateAreaTransaction;
-use WarehouseCore\Transaction\Zone\CreateZoneTransaction;
+use WarehouseCore\Transaction\Zone\PlaceZoneToAreaTransaction;
 use WarehouseCore\Transaction\Area\SetPrimaryAreaNameTransaction;
 use WarehouseCore\Transaction\Rack\ActivateRackTransaction;
 use WarehouseCore\Transaction\Rack\AddRackNameTransaction;
@@ -57,12 +56,24 @@ final class TransactionRegistry {
     private ?RegisterStorageSlotTransaction $register_storage_slot = null;
     private ?RemoveStorageSlotTransaction $remove_storage_slot = null;
 
+    private ?PlaceZoneToAreaTransaction $place_zone_to_area = null;
+
     public function __construct(
         private TransactionConfig $config,
         private RepositoryRegistry $repository,
         Connection $connection,
     ) { 
         $this->db = $connection->get();
+    }
+
+    public function placeZoneToArea(): PlaceZoneToAreaTransaction {
+        return $this->place_zone_to_area ??= new PlaceZoneToAreaTransaction(
+            $this->db,
+            $this->config->place_zone_to_area,
+            $this->repository->zonePlacement(),
+            $this->repository->zonePlacementArchive(),
+            $this->repository->zoneProcessingStep()
+        );
     }
 
     public function createArea(): CreateAreaTransaction {

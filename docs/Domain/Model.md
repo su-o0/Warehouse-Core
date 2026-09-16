@@ -10,13 +10,15 @@ Core
 │   │   ├── ContainerMovementArchive
 │   │   ├── ItemMovementArchive
 │   │   ├── RackMovementArchive
-│   │   └── StockMovementArchive
+│   │   ├── StockMovementArchive
+│   │   └── ZoneMovementArchive
 │   │
 │   ├── PlacementHistory
 │   │   ├── ContainerPlacementArchive
 │   │   ├── ItemPlacementArchive
 │   │   ├── RackPlacementArchive
-│   │   └── StockPlacementArchive
+│   │   ├── StockPlacementArchive
+│   │   └── ZonePlacementArchive
 │   │
 │   └── SalesHistory
 │       ├── ItemSalesArchive
@@ -34,8 +36,12 @@ Core
 │
 ├── Identity
 │   ├── AreaAccess
-│   └── Membership
-│       └── Owner
+│   ├── Membership
+│   │   └── Owner
+│   │
+│   ├── Provider
+│   ├── User
+│   └── UserIdentity
 │
 ├── Inventory
 │   ├── Container
@@ -46,10 +52,14 @@ Core
 │
 ├── Media
 │   ├── Photo
+│   │   ├── ContainerPhoto
 │   │   ├── ItemPhoto
 │   │   ├── PartPhoto
+│   │   ├── RackPhoto
 │   │   ├── StockPhoto
-│   │   └── VehiclePhoto
+│   │   ├── UserPhoto
+│   │   ├── VehiclePhoto
+│   │   └── ZonePhoto
 │   │
 │   ├── StoredFile
 │   │
@@ -60,23 +70,25 @@ Core
 │       └── VehicleVideo
 │
 ├── Processing
+│   ├── ContainerProcessingStep
 │   ├── ItemProcessingStep
 │   ├── PartProcessingStep
 │   ├── RackProcessingStep
-│   └── UserProcessingStep
+│   ├── StockProcessingStep
+│   ├── UserProcessingStep
+│   └── ZoneProcessingStep
 │
 ├── Security
-│   ├── Provider
-│   ├── Role
-│   ├── User
-│   └── UserIdentity
+│   ├── Password
+│   └── Role
 │
 └── Topology
     ├── Placement
     │   ├── ContainerPlacement
     │   ├── ItemPlacement
     │   ├── RackPlacement
-    │   └── StockPlacement
+    │   ├── StockPlacement
+    │   └── ZonePlacement
     │
     └── Structure
         ├── Area
@@ -91,8 +103,10 @@ AreaAccess
 AreaName
 Container
 ContainerMovementArchive
+ContainerPhoto
 ContainerPlacement
 ContainerPlacementArchive
+ContainerProcessingStep
 Item
 ItemMovementArchive
 ItemPhoto
@@ -109,11 +123,13 @@ PartNumber
 PartPhoto
 PartProcessingStep
 PartVideo
+Password
 PhysicalTag
 Provider
 Rack
 RackMovementArchive
 RackName
+RackPhoto
 RackPlacement
 RackPlacementArchive
 RackProcessingStep
@@ -124,6 +140,7 @@ StockMovementArchive
 StockPhoto
 StockPlacement
 StockPlacementArchive
+StockProcessingStep
 StockSalesArchive
 StockVideo
 StorageSlot
@@ -131,12 +148,18 @@ StoredFile
 User
 UserIdentity
 UserName
+UserPhoto
 UserProcessingStep
 Vehicle
 VehiclePhoto
 VehicleVideo
 Zone
+ZoneMovementArchive
 ZoneName
+ZonePhoto
+ZonePlacement
+ZonePlacementArchive
+ZoneProcessingStep
 ```
 ---
 ```
@@ -163,7 +186,9 @@ Audit
 ├── RackPlacementArchive
 ├── StockMovementArchive
 ├── StockPlacementArchive
-└── StockSalesArchive
+├── StockSalesArchive
+├── ZoneMovementArchive
+└── ZonePlacementArchive
 
 
 Catalog
@@ -177,6 +202,14 @@ Catalog
 └── ZoneName
 
 
+Identity
+├── AreaAccess
+├── Owner
+├── Provider
+├── User
+└── UserIdentity
+
+
 Inventory
 ├── Container
 ├── Item
@@ -185,35 +218,35 @@ Inventory
 └── Stock
 
 
-Identity
-├── AreaAccess
-└── Owner
-
-
 Media
+├── ContainerPhoto
 ├── ItemPhoto
 ├── ItemVideo
 ├── PartPhoto
 ├── PartVideo
+├── RackPhoto
 ├── StockPhoto
 ├── StockVideo
 ├── StoredFile
+├── UserPhoto
 ├── VehiclePhoto
-└── VehicleVideo
+├── VehicleVideo
+└── ZonePhoto
 
 
 Processing
+├── ContainerProcessingStep
 ├── ItemProcessingStep
 ├── PartProcessingStep
 ├── RackProcessingStep
-└── UserProcessingStep
+├── StockProcessingStep
+├── UserProcessingStep
+└── ZoneProcessingStep
 
 
 Security
-├── Provider
-├── Role
-├── User
-└── UserIdentity
+├── Password
+└── Role
 
 
 Topology
@@ -224,5 +257,6 @@ Topology
 ├── Shelf
 ├── StockPlacement
 ├── StorageSlot
-└── Zone
+├── Zone
+└── ZonePlacement
 ```

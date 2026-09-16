@@ -46,6 +46,8 @@ final class ErrorMessage {
     public const USER_IDENTITY_ALREADY_EXISTS = 'User identity already exists';
 
     public const AREA_NOT_FOUND = 'Area not found';
+    public const API_DOMAIN_STATUS_INVALID_TYPE = 'Api domain not found';
+    public const API_TYPE_STATUS_INVALID_TYPE = 'Api type not found';
     public const STORAGE_SLOT_NOT_FOUND = 'Storage slot not found';
     public const ITEM_PROCESSING_STEP_NOT_FOUND  = 'Item processing step not found';
     public const PART_PROCESSING_STEP_NOT_FOUND  = 'Part processing step not found';
@@ -109,6 +111,9 @@ final class ErrorMessage {
     public const PART_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Part processing stage ...';
     public const RACK_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Rack processing stage ...';
     public const USER_PROCESSING_STEP_STAGE_INVALID_TYPE = 'User processing stage ...';
+    public const CONTAINER_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Container processing stage ...';
+    public const STOCK_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Stock processing stage ...';
+    public const ZONE_PROCESSING_STEP_STAGE_INVALID_TYPE = 'Zone processing stage ...';
 
 
     public const ITEM_ALREADY_PLACED = 'Item already placed';

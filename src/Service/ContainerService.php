@@ -5,6 +5,7 @@ use WarehouseCore\Repository\Inventory\ContainerRepository;
 
 use WarehouseCore\Exception\ErrorMessage;
 use WarehouseCore\Exception\RepositoryException;
+use WarehouseCore\Payload\Entity\ContainerEntity;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\Enum\ContainerTypeEnum;
 use WarehouseCore\Security\Authorization;
@@ -16,33 +17,38 @@ final class ContainerService {
         private ContainerRepository $container_repository
     ) { }
 
-    public function create(
-        int $id, 
-        ContainerTypeEnum $type
+    public function registerContainer(
+        ContainerTypeEnum $container_type
     ): ServiceResult {
-        if(!$this->authorization->canCreateContainer()) {
-            return new ServiceResult( 
-                success: false,
-                message: ErrorMessage::AUTHENTICATION_FAILED 
-            );
-        }
 
-        try {
-            $container_id = $this->container_repository->add(
-                $this->authorization->getUserId(),
-                $id,
-                $type->value
-            );
+        return ServiceResult::success();
+    }
 
-            return new ServiceResult(
-                success: true,
-                entity: $container_id
-            );
-        } catch(RepositoryException $e) {
-            return new ServiceResult(
-                success: false,
-                message: $e->getMessage()
-            );
-        }
+    public function activateContainer(
+        ContainerEntity $container
+    ): ServiceResult {
+
+        return ServiceResult::success();
+    }
+
+    public function markContainerAsCrowded(
+        ContainerEntity $container
+    ): ServiceResult {
+
+        return ServiceResult::success();
+    }
+
+    public function markContainerAsLost(
+        ContainerEntity $container
+    ): ServiceResult {
+
+        return ServiceResult::success();
+    }
+    
+    public function archiveContainer(
+        ContainerEntity $container
+    ): ServiceResult {
+        
+        return ServiceResult::success();
     }
 }

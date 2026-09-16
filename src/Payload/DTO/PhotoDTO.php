@@ -24,4 +24,20 @@ final readonly class PhotoDTO {
     public static function vehicle(int $id): self {
         return new self(PhotoSubjectEnum::Vehicle, $id);
     }
+
+    public static function container(int $id): self {
+        return new self(PhotoSubjectEnum::Container, $id);
+    }
+
+    public static function rack(int $id): self {
+        return new self(PhotoSubjectEnum::Rack, $id);
+    }
+
+    public static function user(int $id): self {
+        return new self(PhotoSubjectEnum::User, $id);
+    }
+
+    public static function zone(int $id): self {
+        return new self(PhotoSubjectEnum::Zone, $id);
+    }
 }

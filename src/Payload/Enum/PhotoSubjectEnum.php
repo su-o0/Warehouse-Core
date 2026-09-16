@@ -6,4 +6,8 @@ enum PhotoSubjectEnum: string {
     case Item = 'item';
     case Stock = 'stock';
     case Vehicle = 'vehicle';
+    case Container = 'container';
+    case Rack = 'rack';
+    case User = 'user';
+    case Zone = 'zone';
 }

@@ -13,7 +13,7 @@ use WarehouseCore\Payload\Enum\UserStatusEnum;
 use WarehouseCore\Payload\Result\ServiceResult;
 use WarehouseCore\Payload\VO\UserNameVO;
 use WarehouseCore\Repository\Catalog\UserNameRepository;
-use WarehouseCore\Repository\Identity\RoleRepository;
+use WarehouseCore\Repository\Security\RoleRepository;
 use WarehouseCore\Repository\Identity\UserIdentityRepository;
 use WarehouseCore\Repository\Processing\UserProcessingStepRepository;
 use WarehouseCore\Security\Authorization;

@@ -5,6 +5,20 @@ use WarehouseCore\Contract\Exception as ExceptionContract;
 
 final class DomainException extends ExceptionContract {
 
+
+    public static function API_DOMAIN_STATUS_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::API_DOMAIN_STATUS_INVALID_TYPE,
+            ErrorMessage::API_DOMAIN_STATUS_INVALID_TYPE
+        );
+    }
+    
+    public static function API_TYPE_STATUS_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::API_TYPE_STATUS_INVALID_TYPE,
+            ErrorMessage::API_TYPE_STATUS_INVALID_TYPE
+        );
+    }
     public static function AREA_NOT_FOUND(): self {
         return new self(
             ErrorCode::AREA_NOT_FOUND,
@@ -90,6 +104,26 @@ final class DomainException extends ExceptionContract {
         );
     }
 
+    public static function CONTAINER_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::CONTAINER_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::CONTAINER_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
+
+    public static function STOCK_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::STOCK_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::STOCK_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
+
+    public static function ZONE_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
+        return new self(
+            ErrorCode::ZONE_PROCESSING_STEP_STAGE_INVALID_TYPE,
+            ErrorMessage::ZONE_PROCESSING_STEP_STAGE_INVALID_TYPE
+        );
+    }
     public static function PART_PROCESSING_STEP_STAGE_INVALID_TYPE(): self {
         return new self(
             ErrorCode::PART_PROCESSING_STEP_STAGE_INVALID_TYPE,

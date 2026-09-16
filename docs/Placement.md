@@ -23,7 +23,16 @@ Area
     └── StorageSlot
         └── Item
 ```
-
+# Zone Placement
+```
+Area -> Zone
+```
+---
+```
+Area
+└── Zone
+```
+---
 
 # Rack Placement
 ```

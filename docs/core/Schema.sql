@@ -28,6 +28,13 @@ CREATE TABLE user_identities (
     ,FOREIGN KEY (provider) REFERENCES providers(name)
 );
 
+CREATE TABLE passwords (
+    user_identity_record_id BIGINT
+    ,hash VARCHAR(64) NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ,FOREIGN KEY (user_identity_record_id) REFERENCES user_identities(record_id)
+);
+
 CREATE TABLE physical_tags (
     id BIGINT PRIMARY KEY
     ,status ENUM('Free','Assigned','Lost','Broken') NOT NULL DEFAULT 'Free'
@@ -95,11 +102,9 @@ CREATE TABLE areas (
 
 CREATE TABLE zones (
     id BIGINT PRIMARY KEY AUTO_INCREMENT
-    ,area_id BIGINT NOT NULL
-    ,status ENUM('Created','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Created','Processing','Active','Crowded','Archived') NOT NULL DEFAULT 'Created'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ,FOREIGN KEY (area_id) REFERENCES areas(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 );
 
@@ -170,7 +175,7 @@ CREATE TABLE storage_slots (
 CREATE TABLE containers (
     id BIGINT PRIMARY KEY
     ,type ENUM('Box','Pallet') NOT NULL
-    ,status ENUM('Registered','Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Registered'
+    ,status ENUM('Registered','Processing', 'Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Registered'
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -208,7 +213,7 @@ CREATE TABLE stock (
 
     ,part_id BIGINT NULL
     ,qty INT NOT NULL DEFAULT 0
-    ,status ENUM('Created','Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Created'
+    ,status ENUM('Created','Processing','Active','Crowded','Archived','Lost') NOT NULL DEFAULT 'Created'
 
     ,created_by_user_id BIGINT NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -316,10 +321,19 @@ CREATE TABLE user_names (
 -- PROCESSING
 -- =========================
 
+CREATE TABLE container_processing_steps (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,container_id BIGINT NOT NULL
+    ,stage ENUM('Placed') NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+);
+
 CREATE TABLE item_processing_steps (
     record_id BIGINT PRIMARY KEY AUTO_INCREMENT
     ,item_id BIGINT NOT NULL
-    ,stage ENUM('Identified','Capture','Inspection') NOT NULL
+    ,stage ENUM('Identified','Placed','Capture','Inspection') NOT NULL
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (item_id) REFERENCES items(id)
@@ -332,6 +346,15 @@ CREATE TABLE part_processing_steps (
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
+);
+
+CREATE TABLE stock_processing_steps (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,stock_id BIGINT NOT NULL
+    ,stage ENUM('Placed') NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (stock_id) REFERENCES stock(id)
 );
 
 CREATE TABLE rack_processing_steps (
@@ -352,6 +375,14 @@ CREATE TABLE user_processing_steps (
     ,FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE zone_processing_steps (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,zone_id BIGINT NOT NULL
+    ,stage ENUM('Placed') NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (zone_id) REFERENCES zones(id)
+);
 -- =========================
 -- TOPOLOGY / PLACEMENT
 -- Each placement table enforces the XOR invariant:
@@ -374,7 +405,7 @@ CREATE TABLE rack_placements (
     ,CONSTRAINT chk_rack_placement_target_xor
         CHECK ((area_id IS NULL) != (zone_id IS NULL))
 
-    ,UNIQUE KEY uq_rack_placement_rack (rack_id)
+    ,UNIQUE KEY uq_rack_placement (rack_id)
 );
 
 CREATE TABLE container_placements (
@@ -391,7 +422,7 @@ CREATE TABLE container_placements (
     ,CONSTRAINT chk_container_placement_target_xor
         CHECK ((zone_id IS NULL) != (shelf_id IS NULL))
 
-    ,UNIQUE KEY uq_container_placement_container (container_id)
+    ,UNIQUE KEY uq_container_placement (container_id)
 );
 
 CREATE TABLE item_placements (
@@ -418,7 +449,7 @@ CREATE TABLE item_placements (
             = 1
         )
 
-    ,UNIQUE KEY uq_item_placement_item (item_id)
+    ,UNIQUE KEY uq_item_placement (item_id)
 );
 
 CREATE TABLE stock_placements (
@@ -439,7 +470,20 @@ CREATE TABLE stock_placements (
             (zone_id IS NOT NULL) + (shelf_id IS NOT NULL) + (container_id IS NOT NULL) = 1
         )
 
-    ,UNIQUE KEY uq_stock_placement_stock (stock_id)
+    ,UNIQUE KEY uq_stock_placement (stock_id)
+);
+
+
+CREATE TABLE zone_placements (
+    record_id BIGINT PRIMARY KEY AUTO_INCREMENT
+    ,area_id BIGINT NOT NULL
+    ,zone_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (area_id) REFERENCES areas(id)
+    ,FOREIGN KEY (zone_id) REFERENCES zones(id)
+
+    ,UNIQUE KEY uq_zone_placement (zone_id)
 );
 
 -- =========================
@@ -483,6 +527,42 @@ CREATE TABLE part_photos (
     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
     ,FOREIGN KEY (part_id) REFERENCES parts(id)
+    ,FOREIGN KEY (stored_file_id) REFERENCES stored_files(id)
+);
+
+CREATE TABLE container_photos (
+    container_id BIGINT NOT NULL
+    ,stored_file_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (container_id) REFERENCES containers(id)
+    ,FOREIGN KEY (stored_file_id) REFERENCES stored_files(id)
+);
+
+CREATE TABLE rack_photos (
+    rack_id BIGINT NOT NULL
+    ,stored_file_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (rack_id) REFERENCES racks(id)
+    ,FOREIGN KEY (stored_file_id) REFERENCES stored_files(id)
+);
+
+CREATE TABLE zone_photos (
+    zone_id BIGINT NOT NULL
+    ,stored_file_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (zone_id) REFERENCES zones(id)
+    ,FOREIGN KEY (stored_file_id) REFERENCES stored_files(id)
+);
+
+CREATE TABLE user_photos (
+    user_id BIGINT NOT NULL
+    ,stored_file_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (user_id) REFERENCES users(id)
     ,FOREIGN KEY (stored_file_id) REFERENCES stored_files(id)
 );
 
@@ -591,7 +671,7 @@ CREATE TABLE item_sales_archive (
     ,FOREIGN KEY (user_id) REFERENCES users(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_item_sales_item (item_id)
+    ,INDEX idx_item_sales (item_id)
 );
 
 CREATE TABLE stock_sales_archive (
@@ -605,7 +685,7 @@ CREATE TABLE stock_sales_archive (
     ,FOREIGN KEY (user_id) REFERENCES users(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_stock_sales_stock (stock_id)
+    ,INDEX idx_stock_sales (stock_id)
 );
 
 -- PlacementArchive: first-ever placement of an entity (no prior position).
@@ -621,7 +701,7 @@ CREATE TABLE rack_placement_archive (
     ,FOREIGN KEY (to_zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_rack_placement_archive_rack (rack_id)
+    ,INDEX idx_rack_placement_archive (rack_id)
 );
 
 CREATE TABLE container_placement_archive (
@@ -636,7 +716,7 @@ CREATE TABLE container_placement_archive (
     ,FOREIGN KEY (to_shelf_id) REFERENCES shelfs(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_container_placement_archive_container (container_id)
+    ,INDEX idx_container_placement_archive (container_id)
 );
 
 CREATE TABLE item_placement_archive (
@@ -655,7 +735,7 @@ CREATE TABLE item_placement_archive (
     ,FOREIGN KEY (to_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_item_placement_archive_item (item_id)
+    ,INDEX idx_item_placement_archive (item_id)
 );
 
 CREATE TABLE stock_placement_archive (
@@ -672,9 +752,21 @@ CREATE TABLE stock_placement_archive (
     ,FOREIGN KEY (to_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_stock_placement_archive_stock (stock_id)
+    ,INDEX idx_stock_placement_archive (stock_id)
 );
 
+CREATE TABLE zone_placement_archive (
+    zone_id BIGINT NOT NULL
+    ,to_area_id BIGINT NULL
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (zone_id) REFERENCES zones(id)
+    ,FOREIGN KEY (to_area_id) REFERENCES areas(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+
+    ,INDEX idx_zone_placement_archive (zone_id)
+);
 -- MovementArchive: a change from one known position to another.
 CREATE TABLE rack_movement_archive (
     rack_id BIGINT NOT NULL
@@ -692,7 +784,7 @@ CREATE TABLE rack_movement_archive (
     ,FOREIGN KEY (to_zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_rack_movement_archive_rack (rack_id)
+    ,INDEX idx_rack_movement_archive (rack_id)
 );
 
 CREATE TABLE container_movement_archive (
@@ -711,7 +803,7 @@ CREATE TABLE container_movement_archive (
     ,FOREIGN KEY (to_shelf_id) REFERENCES shelfs(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_container_movement_archive_container (container_id)
+    ,INDEX idx_container_movement_archive (container_id)
 );
 
 CREATE TABLE item_movement_archive (
@@ -730,13 +822,15 @@ CREATE TABLE item_movement_archive (
     ,FOREIGN KEY (item_id) REFERENCES items(id)
     ,FOREIGN KEY (from_zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (from_shelf_id) REFERENCES shelfs(id)
+    ,FOREIGN KEY (from_storage_slot_id) REFERENCES storage_slots(id)
     ,FOREIGN KEY (from_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (to_zone_id) REFERENCES zones(id)
     ,FOREIGN KEY (to_shelf_id) REFERENCES shelfs(id)
+    ,FOREIGN KEY (to_storage_slot_id) REFERENCES storage_slots(id)
     ,FOREIGN KEY (to_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_item_movement_archive_item (item_id)
+    ,INDEX idx_item_movement_archive (item_id)
 );
 
 CREATE TABLE stock_movement_archive (
@@ -759,7 +853,22 @@ CREATE TABLE stock_movement_archive (
     ,FOREIGN KEY (to_container_id) REFERENCES containers(id)
     ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
 
-    ,INDEX idx_stock_movement_archive_stock (stock_id)
+    ,INDEX idx_stock_movement_archive (stock_id)
+);
+
+CREATE TABLE zone_movement_archive (
+    zone_id BIGINT NOT NULL
+    ,from_area_id BIGINT NULL
+    ,to_area_id BIGINT NULL
+    ,created_by_user_id BIGINT NOT NULL
+    ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    ,FOREIGN KEY (zone_id) REFERENCES zones(id)
+    ,FOREIGN KEY (from_area_id) REFERENCES areas(id)
+    ,FOREIGN KEY (to_area_id) REFERENCES areas(id)
+    ,FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+
+    ,INDEX idx_zone_movement_archive (zone_id)
 );
 
 DELIMITER $$
@@ -786,7 +895,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-INSERT INTO roles (name)
+INSERT INTO roles (name) 
 VALUES ('Root'), ('Admin'), ('Worker'), ('Salesman'), ('Viewer');
 
 INSERT INTO providers (name)
@@ -800,3 +909,6 @@ VALUES (1, 'Root', TRUE, 1);
 
 INSERT INTO user_identities (user_id, provider, external_id)
 VALUES (1, 'Shell', 'root');
+
+INSERT INTO passwords (user_identity_record_id, hash)
+VALUES (1, 'ce5ca673d13b36118d54a7cf13aeb0ca012383bf771e713421b4d1fd841f539a'); -- toor

@@ -1,5 +1,21 @@
 ### Movement Model
 
+# Zone Movement
+```
+Area -> Zone
+```
+---
+```
+Area
+└── Zone
+
+After:
+
+Area
+└── Zone
+```
+---
+
 # Rack Movement
 *From -> To*
 ```

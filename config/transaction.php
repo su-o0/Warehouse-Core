@@ -29,5 +29,5 @@ return [
     'RegisterStorageSlot' => 'register_storage_slot',
     'RemoveStorageSlot' => 'remove_storage_slot',
 
-    
+    'PlaceZoneToArea' => 'place_zone_to_area'
 ];  

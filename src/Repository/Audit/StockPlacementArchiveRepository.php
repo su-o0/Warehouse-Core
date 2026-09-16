@@ -74,20 +74,4 @@ final class StockPlacementArchiveRepository extends Repository {
             throw PdoExceptionMapper::map($e);
         }
     }
-
-    public function delete(
-        int $stock_id
-    ): void {
-        try {
-            $this->execute(
-                "DELETE FROM {$this->table}
-                WHERE stock_id = :stock_id",
-                [
-                    ':stock_id' => $stock_id
-                ]
-            );
-        } catch (\PDOException $e) {
-            throw PdoExceptionMapper::map($e);
-        }
-    }
 }

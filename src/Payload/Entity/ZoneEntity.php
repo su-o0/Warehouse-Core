@@ -9,7 +9,6 @@ final readonly class ZoneEntity {
     use ConfigHelper;
     public function __construct(
         public int $id,
-        public int $area_id,
         public ZoneStatusEnum $status,
         public int $created_by_user_id,
         public string $created_at
@@ -20,7 +19,6 @@ final readonly class ZoneEntity {
     ): self {
         return new self(
             id: self::requiredInt($raw, 'id'),
-            area_id: self::requiredInt($raw, 'area_id'),
             status: ZoneStatusMapper::match(
                self::requiredString($raw, 'status')
             ),
